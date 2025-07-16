@@ -233,6 +233,19 @@ function App() {
           </div>
         </div>
       )}
+
+      <SettingsModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        currentUser={currentUser}
+        onUpdateUser={handleUpdateUser}
+      />
+      
+      <NotificationModal
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
+        onOpenSettings={() => setShowSettings(true)}
+      />
     </div>
   );
 }

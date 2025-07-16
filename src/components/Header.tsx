@@ -203,8 +203,8 @@ export default function Header({
                   </button>
                   <button
                     onClick={() => {
+                      onShowSettings?.();
                       setShowProfileMenu(false);
-                      // Add settings handler here
                     }}
                     className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200"
                   >
