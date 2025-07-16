@@ -15,9 +15,11 @@ import LocalJobsPage from './components/LocalJobsPage';
 import SettingsModal from './components/SettingsModal';
 import NotificationModal from './components/NotificationModal';
 import InstallPrompt from './components/InstallPrompt';
-import { mockUsers, mockPosts } from './data/mockData';
+import { mockUsers, getLocalizedPosts } from './data/mockData';
+import { useLanguage } from './hooks/useLanguage';
 
 function App() {
+  const { language } = useLanguage();
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem('isAuthenticated') === 'true';
   });
@@ -31,10 +33,14 @@ function App() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [posts] = useState(mockPosts);
+  const [posts, setPosts] = useState(() => getLocalizedPosts(language));
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState('home');
 
+  // Update posts when language changes
+  React.useEffect(() => {
+    setPosts(getLocalizedPosts(language));
+  }, [language]);
   const handleSubscribe = () => {
     const updatedUser = { ...currentUser, isSubscribed: true };
     setCurrentUser(updatedUser);

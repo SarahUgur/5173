@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MapPin, Search, Filter, Clock, DollarSign, Star, Briefcase, Users, ChevronDown, Navigation } from 'lucide-react';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface LocalJobsPageProps {
   currentUser: any;
@@ -26,13 +27,14 @@ interface Job {
 }
 
 export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
+  const { t, getJobTypeLabel, getUrgencyLabel } = useLanguage();
   const [selectedArea, setSelectedArea] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [showAreaDropdown, setShowAreaDropdown] = useState(false);
 
   const areas = [
-    { id: 'all', name: 'Alle områder', count: 45 },
+    { id: 'all', name: t('allAreas'), count: 45 },
     { id: 'copenhagen', name: 'København', count: 18 },
     { id: 'aarhus', name: 'Aarhus', count: 12 },
     { id: 'odense', name: 'Odense', count: 8 },
@@ -142,15 +144,6 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
     }
   ];
 
-  const getJobTypeLabel = (type: string) => {
-    const labels = {
-      'home_cleaning': 'Hjemmerengøring',
-      'office_cleaning': 'Kontorrengøring',
-      'deep_cleaning': 'Hovedrengøring',
-      'regular_cleaning': 'Fast rengøring'
-    };
-    return labels[type as keyof typeof labels] || type;
-  };
 
   const getUrgencyColor = (urgency: string) => {
     const colors = {
@@ -161,14 +154,6 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
     return colors[urgency as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
-  const getUrgencyLabel = (urgency: string) => {
-    const labels = {
-      'immediate': 'Akut',
-      'this_week': 'Denne uge',
-      'flexible': 'Fleksibel'
-    };
-    return labels[urgency as keyof typeof labels] || urgency;
-  };
 
   const filteredJobs = jobs.filter(job => {
     const matchesArea = selectedArea === 'all' || job.area === selectedArea;
@@ -191,13 +176,13 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
     }
   });
 
-  const selectedAreaName = areas.find(area => area.id === selectedArea)?.name || 'Alle områder';
+  const selectedAreaName = areas.find(area => area.id === selectedArea)?.name || t('allAreas');
 
   return (
     <div className="max-w-6xl mx-auto p-3 sm:p-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Lokale Jobs</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{t('localJobs')}</h1>
         <p className="text-gray-600">Find rengøringsjobs i dit område</p>
       </div>
 
@@ -245,7 +230,7 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Søg efter jobs, lokationer..."
+              placeholder={t('searchJobs')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -259,9 +244,9 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
               onChange={(e) => setSortBy(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="newest">Nyeste først</option>
-              <option value="distance">Nærmeste først</option>
-              <option value="budget">Højeste budget</option>
+              <option value="newest">{t('newestFirst')}</option>
+              <option value="distance">{t('closestFirst')}</option>
+              <option value="budget">{t('highestBudget')}</option>
             </select>
           </div>
         </div>
@@ -299,14 +284,14 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
       {/* Results Summary */}
       <div className="flex items-center justify-between mb-6">
         <p className="text-gray-600">
-          Viser <span className="font-semibold text-gray-900">{sortedJobs.length}</span> jobs
+          {t('showing')} <span className="font-semibold text-gray-900">{sortedJobs.length}</span> {t('jobs_count')}
           {selectedArea !== 'all' && (
-            <span> i <span className="font-semibold text-blue-600">{selectedAreaName}</span></span>
+            <span> {t('in')} <span className="font-semibold text-blue-600">{selectedAreaName}</span></span>
           )}
         </p>
         <button className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors duration-200">
           <Navigation className="w-4 h-4" />
-          <span className="text-sm font-medium">Brug min lokation</span>
+          <span className="text-sm font-medium">{t('useMyLocation')}</span>
         </button>
       </div>
 
@@ -315,8 +300,8 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
         {sortedJobs.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200">
             <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen jobs fundet</h3>
-            <p className="text-gray-600">Prøv at justere dine søgekriterier eller vælg et andet område.</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">{t('noJobsFound')}</h3>
+            <p className="text-gray-600">{t('adjustSearchCriteria')}</p>
           </div>
         ) : (
           sortedJobs.map((job) => (
@@ -358,7 +343,7 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
                     </div>
                     <div className="flex items-center space-x-1">
                       <Users className="w-4 h-4" />
-                      <span>{job.applicants} ansøgere</span>
+                      <span>{job.applicants} {t('applicants')}</span>
                     </div>
                   </div>
 
@@ -388,10 +373,10 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
 
                     <div className="flex items-center space-x-2">
                       <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                        Se detaljer
+                        {t('seeDetails')}
                       </button>
                       <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                        Ansøg nu
+                        {t('applyNow')}
                       </button>
                     </div>
                   </div>
@@ -406,7 +391,7 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
       {sortedJobs.length > 0 && (
         <div className="text-center mt-8">
           <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-            Indlæs flere jobs
+            {t('loadMoreJobs')}
           </button>
         </div>
       )}

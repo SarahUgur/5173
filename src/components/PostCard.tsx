@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal } from 'lucide-react';
+import { useLanguage } from '../hooks/useLanguage';
 import type { Post } from '../types';
 
 interface PostCardProps {
@@ -9,6 +10,7 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, currentUser, onShowSubscription }: PostCardProps) {
+  const { t, getJobTypeLabel, getUrgencyLabel } = useLanguage();
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
 
@@ -25,17 +27,6 @@ export default function PostCard({ post, currentUser, onShowSubscription }: Post
     }
   };
 
-  const getJobTypeLabel = (type: string) => {
-    const labels = {
-      'home_cleaning': 'Hjemmerengøring',
-      'office_cleaning': 'Kontorrengøring',
-      'deep_cleaning': 'Hovedrengøring',
-      'regular_cleaning': 'Fast rengøring',
-      'one_time': 'Engangsjob'
-    };
-    return labels[type as keyof typeof labels] || type;
-  };
-
   const getUrgencyColor = (urgency: string) => {
     const colors = {
       'immediate': 'bg-red-100 text-red-800',
@@ -43,15 +34,6 @@ export default function PostCard({ post, currentUser, onShowSubscription }: Post
       'flexible': 'bg-green-100 text-green-800'
     };
     return colors[urgency as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getUrgencyLabel = (urgency: string) => {
-    const labels = {
-      'immediate': 'Akut',
-      'this_week': 'Denne uge',
-      'flexible': 'Fleksibel'
-    };
-    return labels[urgency as keyof typeof labels] || urgency;
   };
 
   return (
@@ -161,7 +143,7 @@ export default function PostCard({ post, currentUser, onShowSubscription }: Post
             
             <button className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors duration-200">
               <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="font-medium text-sm sm:text-base hidden sm:inline">Del</span>
+              <span className="font-medium text-sm sm:text-base hidden sm:inline">{t('share')}</span>
             </button>
           </div>
 
@@ -170,7 +152,7 @@ export default function PostCard({ post, currentUser, onShowSubscription }: Post
               onClick={() => handleInteraction('apply')}
               className="bg-blue-600 text-white px-3 sm:px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2 text-sm sm:text-base"
             >
-              <span>Ansøg</span>
+              <span>{t('apply')}</span>
               {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4" />}
             </button>
           )}
@@ -180,7 +162,7 @@ export default function PostCard({ post, currentUser, onShowSubscription }: Post
           <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-xs sm:text-sm text-amber-800">
               <Lock className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1" />
-              Opgrader til Pro for at interagere med opslag og kontakte andre brugere
+              {t('upgradeToPro')} for at interagere med opslag og kontakte andre brugere
             </p>
           </div>
         )}
@@ -216,7 +198,7 @@ export default function PostCard({ post, currentUser, onShowSubscription }: Post
               <div className="flex-1">
                 <input
                   type="text"
-                  placeholder="Skriv en kommentar..."
+                  placeholder={t('writeComment')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 />
               </div>
