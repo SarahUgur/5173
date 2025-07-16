@@ -9,22 +9,6 @@ interface Translations {
 }
 
 const translations: Translations = {
-  brandName: {
-    da: 'Privat Rengøring',
-    en: 'Private Cleaning',
-    ar: 'التنظيف الخاص',
-    pl: 'Prywatne Sprzątanie',
-    tr: 'Özel Temizlik',
-    de: 'Private Reinigung'
-  },
-  brandTagline: {
-    da: 'Social platform for rengøring',
-    en: 'Social platform for cleaning',
-    ar: 'منصة اجتماعية للتنظيف',
-    pl: 'Platforma społecznościowa do sprzątania',
-    tr: 'Temizlik için sosyal platform',
-    de: 'Soziale Plattform für Reinigung'
-  },
   searchPlaceholder: {
     da: 'Søg efter rengøringsopgaver, personer...',
     en: 'Search for cleaning tasks, people...',
@@ -280,6 +264,46 @@ const translations: Translations = {
     pl: 'Integracja Strony',
     tr: 'Web Sitesi Entegrasyonu',
     de: 'Website Integration'
+  },
+  messages: {
+    da: 'Beskeder',
+    en: 'Messages',
+    ar: 'الرسائل',
+    pl: 'Wiadomości',
+    tr: 'Mesajlar',
+    de: 'Nachrichten'
+  },
+  notifications: {
+    da: 'Notifikationer',
+    en: 'Notifications',
+    ar: 'الإشعارات',
+    pl: 'Powiadomienia',
+    tr: 'Bildirimler',
+    de: 'Benachrichtigungen'
+  },
+  profile: {
+    da: 'Profil',
+    en: 'Profile',
+    ar: 'الملف الشخصي',
+    pl: 'Profil',
+    tr: 'Profil',
+    de: 'Profil'
+  },
+  viewProfile: {
+    da: 'Se profil',
+    en: 'View Profile',
+    ar: 'عرض الملف الشخصي',
+    pl: 'Zobacz profil',
+    tr: 'Profili Görüntüle',
+    de: 'Profil anzeigen'
+  },
+  settings: {
+    da: 'Indstillinger',
+    en: 'Settings',
+    ar: 'الإعدادات',
+    pl: 'Ustawienia',
+    tr: 'Ayarlar',
+    de: 'Einstellungen'
   }
 };
 

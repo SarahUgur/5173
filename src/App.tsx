@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { X } from 'lucide-react';
 import LoginScreen from './components/LoginScreen';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -19,6 +20,9 @@ function App() {
   const [currentUser, setCurrentUser] = useState(mockUsers[0]);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
+  const [showMessages, setShowMessages] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const [posts] = useState(mockPosts);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState('home');
@@ -66,6 +70,9 @@ function App() {
         onShowSubscription={() => setShowSubscriptionModal(true)}
         onLogout={handleLogout}
         onToggleMobileMenu={toggleMobileMenu}
+        onShowMessages={() => setShowMessages(true)}
+        onShowNotifications={() => setShowNotifications(true)}
+        onShowProfile={() => setShowProfile(true)}
       />
       
       <div className="flex relative">
@@ -169,6 +176,55 @@ function App() {
         onSubscribe={handleSubscribe}
         userEmail={currentUser.email}
       />
+      
+      {/* Messages Modal */}
+      {showMessages && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Beskeder</h2>
+              <button onClick={() => setShowMessages(false)} className="p-2 hover:bg-gray-100 rounded-full">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-gray-600">Du har 3 nye beskeder...</p>
+          </div>
+        </div>
+      )}
+      
+      {/* Notifications Modal */}
+      {showNotifications && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Notifikationer</h2>
+              <button onClick={() => setShowNotifications(false)} className="p-2 hover:bg-gray-100 rounded-full">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-gray-600">Du har 5 nye notifikationer...</p>
+          </div>
+        </div>
+      )}
+      
+      {/* Profile Modal */}
+      {showProfile && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Min Profil</h2>
+              <button onClick={() => setShowProfile(false)} className="p-2 hover:bg-gray-100 rounded-full">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="text-center">
+              <img src={currentUser.avatar} alt="Profile" className="w-20 h-20 rounded-full mx-auto mb-4" />
+              <h3 className="text-lg font-semibold">{currentUser.name}</h3>
+              <p className="text-gray-600">{currentUser.email}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
