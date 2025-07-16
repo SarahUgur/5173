@@ -1,5 +1,6 @@
 import React from 'react';
-import { Home, Briefcase, Users, Star, MapPin, Calendar, TrendingUp, X } from 'lucide-react';
+import { Home, Briefcase, Users, Star, MapPin, Calendar, TrendingUp, X, Globe } from 'lucide-react';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface SidebarProps {
   currentUser: any;
@@ -10,14 +11,17 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ currentUser, isOpen = true, onClose, currentPage = 'home', onPageChange }: SidebarProps) {
+  const { t } = useLanguage();
+  
   const menuItems = [
-    { icon: Home, label: 'Hjem', page: 'home' },
-    { icon: Briefcase, label: 'Mine Opgaver', page: 'tasks', count: 3 },
-    { icon: Users, label: 'Netværk', page: 'network', count: 12 },
-    { icon: Star, label: 'Favoritter', page: 'favorites' },
-    { icon: MapPin, label: 'Lokale Jobs', page: 'local' },
-    { icon: Calendar, label: 'Planlægning', page: 'planning' },
-    { icon: TrendingUp, label: 'Trending', page: 'trending' },
+    { icon: Home, label: t('home'), page: 'home' },
+    { icon: Briefcase, label: t('myTasks'), page: 'tasks', count: 3 },
+    { icon: Users, label: t('network'), page: 'network', count: 12 },
+    { icon: Star, label: t('favorites'), page: 'favorites' },
+    { icon: MapPin, label: t('localJobs'), page: 'local' },
+    { icon: Calendar, label: t('planning'), page: 'planning' },
+    { icon: TrendingUp, label: t('trending'), page: 'trending' },
+    { icon: Globe, label: t('websiteIntegration'), page: 'integration' },
   ];
 
   const handleMenuClick = (page: string) => {

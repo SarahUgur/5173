@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Image, MapPin, DollarSign, Clock, Briefcase, X } from 'lucide-react';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface CreatePostProps {
   currentUser: any;
 }
 
 export default function CreatePost({ currentUser }: CreatePostProps) {
+  const { t } = useLanguage();
   const [postType, setPostType] = useState<'regular' | 'job'>('regular');
   const [content, setContent] = useState('');
   const [jobType, setJobType] = useState('home_cleaning');
@@ -45,7 +47,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                Almindeligt Opslag
+                {t('regularPost')}
               </button>
               <button
                 onClick={() => setPostType('job')}
@@ -56,7 +58,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                 }`}
               >
                 <Briefcase className="w-4 h-4" />
-                <span>Job Opslag</span>
+                <span>{t('jobPost')}</span>
               </button>
             </div>
           )}
@@ -67,7 +69,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 onFocus={() => setIsExpanded(true)}
-                placeholder={postType === 'job' ? "Beskriv den rengøringsopgave du har brug for hjælp til..." : "Hvad tænker du på?"}
+                placeholder={postType === 'job' ? t('describeCleaningTask') : t('whatAreYouThinking')}
                 className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                 rows={isExpanded ? 4 : 2}
               />
@@ -90,30 +92,30 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
               <div className="mt-4 space-y-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Type af rengøring</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('cleaningType')}</label>
                     <select
                       value={jobType}
                       onChange={(e) => setJobType(e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                     >
-                      <option value="home_cleaning">Hjemmerengøring</option>
-                      <option value="office_cleaning">Kontorrengøring</option>
-                      <option value="deep_cleaning">Hovedrengøring</option>
-                      <option value="regular_cleaning">Fast rengøring</option>
-                      <option value="one_time">Engangsjob</option>
+                      <option value="home_cleaning">{t('homeCleaning')}</option>
+                      <option value="office_cleaning">{t('officeCleaning')}</option>
+                      <option value="deep_cleaning">{t('deepCleaning')}</option>
+                      <option value="regular_cleaning">{t('regularCleaning')}</option>
+                      <option value="one_time">{t('oneTimeJob')}</option>
                     </select>
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Hastighed</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('urgency')}</label>
                     <select
                       value={urgency}
                       onChange={(e) => setUrgency(e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                     >
-                      <option value="flexible">Fleksibel</option>
-                      <option value="this_week">Denne uge</option>
-                      <option value="immediate">Akut</option>
+                      <option value="flexible">{t('flexible')}</option>
+                      <option value="this_week">{t('thisWeek')}</option>
+                      <option value="immediate">{t('immediate')}</option>
                     </select>
                   </div>
                 </div>
@@ -125,7 +127,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                       type="text"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      placeholder="Lokation"
+                      placeholder={t('location')}
                       className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                     />
                   </div>
@@ -136,7 +138,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                       type="text"
                       value={budget}
                       onChange={(e) => setBudget(e.target.value)}
-                      placeholder="Budget (valgfrit)"
+                      placeholder={t('budget')}
                       className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                     />
                   </div>
@@ -152,14 +154,14 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                     className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 text-sm"
                   >
                     <Image className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Billede</span>
+                    <span>{t('image')}</span>
                   </button>
                   <button
                     type="button"
                     className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 text-sm"
                   >
                     <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Lokation</span>
+                    <span>{t('location')}</span>
                   </button>
                 </div>
 
@@ -172,7 +174,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >
-                  {postType === 'job' ? 'Opret Job' : 'Del'}
+                  {postType === 'job' ? t('createJob') : t('share')}
                 </button>
               </div>
             )}

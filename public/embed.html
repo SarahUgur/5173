@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privat Rengøring - Embed</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f9fafb;
+        }
+        
+        .embed-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .job-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .job-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .job-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+        
+        .job-user {
+            font-weight: 600;
+            color: #111827;
+        }
+        
+        .job-time {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .job-content {
+            margin-bottom: 16px;
+            line-height: 1.5;
+            color: #374151;
+        }
+        
+        .job-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .job-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-urgent {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        
+        .badge-flexible {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+    </style>
+</head>
+<body>
+    <div class="embed-container">
+        <div class="job-card">
+            <div class="job-header">
+                <img src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop" alt="Maria" class="job-avatar">
+                <div>
+                    <div class="job-user">Maria Hansen</div>
+                    <div class="job-time">4 timer siden</div>
+                </div>
+                <span class="badge badge-flexible" style="margin-left: auto;">Fleksibel</span>
+            </div>
+            <div class="job-content">
+                Søger en pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen. Jeg har 2 børn og en hund, så erfaring med familier er et plus! 🏠✨
+            </div>
+            <div class="job-meta">
+                <span>📍 København NV</span>
+                <span>💰 300-400 kr/gang</span>
+                <span>🏠 Hjemmerengøring</span>
+            </div>
+            <div class="job-actions">
+                <button class="btn btn-primary">Ansøg nu</button>
+                <button class="btn btn-secondary">Se profil</button>
+            </div>
+        </div>
+        
+        <div class="job-card">
+            <div class="job-header">
+                <img src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop" alt="Sofie" class="job-avatar">
+                <div>
+                    <div class="job-user">Sofie Andersen</div>
+                    <div class="job-time">30 minutter siden</div>
+                </div>
+                <span class="badge badge-urgent" style="margin-left: auto;">Akut</span>
+            </div>
+            <div class="job-content">
+                AKUT: Vores kontor i Odense har brug for rengøring i morgen tidlig! Vi har et vigtigt klientmøde kl. 10, og stedet skal være perfekt. Kan betale ekstra for den korte varsel. 🚨
+            </div>
+            <div class="job-meta">
+                <span>📍 Odense C</span>
+                <span>💰 800-1000 kr</span>
+                <span>🏢 Kontorrengøring</span>
+            </div>
+            <div class="job-actions">
+                <button class="btn btn-primary">Ansøg nu</button>
+                <button class="btn btn-secondary">Kontakt</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Handle button clicks
+        document.querySelectorAll('.btn-primary').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Redirect to main app
+                window.parent.postMessage({
+                    type: 'PRIVAT_RENGORING_ACTION',
+                    action: 'APPLY_JOB'
+                }, '*');
+            });
+        });
+        
+        document.querySelectorAll('.btn-secondary').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Redirect to main app
+                window.parent.postMessage({
+                    type: 'PRIVAT_RENGORING_ACTION',
+                    action: 'VIEW_PROFILE'
+                }, '*');
+            });
+        });
+    </script>
+</body>
+</html>

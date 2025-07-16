@@ -9,6 +9,7 @@ import SuccessPage from './components/SuccessPage';
 import PlanningPage from './components/PlanningPage';
 import MyTasksPage from './components/MyTasksPage';
 import NetworkPage from './components/NetworkPage';
+import WebsiteIntegration from './components/WebsiteIntegration';
 import { mockUsers, mockPosts } from './data/mockData';
 
 function App() {
@@ -109,6 +110,10 @@ function App() {
           
           {currentPage === 'network' && (
             <NetworkPage currentUser={currentUser} />
+          )}
+          
+          {currentPage === 'integration' && (
+            <WebsiteIntegration currentUser={currentUser} />
           )}
         </main>
 
