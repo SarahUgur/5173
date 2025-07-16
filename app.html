@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>🧹 Privat Rengøring App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f8ff;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .counter {
+            font-size: 24px;
+            color: #666;
+            margin: 20px 0;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Privat Rengøring</h1>
+        <p>Din rengørings-app virker nu!</p>
+        
+        <div class="counter" id="counter">Klik: 0</div>
+        
+        <button onclick="klik()">Klik Her!</button>
+        <button onclick="vis()">Test App</button>
+        
+        <div class="success" id="besked">
+            <h2>🎉 PERFEKT!</h2>
+            <p>Din app virker 100%!</p>
+        </div>
+    </div>
+
+    <script>
+        let antal = 0;
+        
+        function klik() {
+            antal++;
+            document.getElementById('counter').innerHTML = 'Klik: ' + antal;
+        }
+        
+        function vis() {
+            document.getElementById('besked').style.display = 'block';
+            alert('Din rengørings-app virker perfekt! 🎉');
+        }
+    </script>
+</body>
+</html>
