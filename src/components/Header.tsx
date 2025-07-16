@@ -53,7 +53,11 @@ export default function Header({
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg sm:text-xl">PR</span>
+                <svg className="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
+                  <path d="M19 15L19.5 17L21.5 17.5L19.5 18L19 20L18.5 18L16.5 17.5L18.5 17L19 15Z"/>
+                  <path d="M5 15L5.5 17L7.5 17.5L5.5 18L5 20L4.5 18L2.5 17.5L4.5 17L5 15Z"/>
+                </svg>
               </div>
               <div className="ml-3 hidden sm:block">
                 <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -62,7 +66,7 @@ export default function Header({
                 <p className="text-xs text-gray-500 -mt-1">Social platform for rengøring</p>
               </div>
               <h1 className="ml-2 text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent sm:hidden">
-                PR
+                Privat Rengøring
               </h1>
             </div>
           </div>
@@ -90,25 +94,31 @@ export default function Header({
           {/* Navigation and Actions */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex space-x-1">
+            <nav className="hidden md:flex space-x-1">
               <button 
-                className="p-3 rounded-xl hover:bg-blue-50 text-blue-600 transition-all duration-200 relative group"
+                onClick={() => window.location.hash = '#home'}
+                className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-blue-50 text-blue-600 transition-all duration-200 relative group"
                 title={t('home')}
               >
-                <Home className="w-6 h-6" />
-                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full"></span>
+                <Home className="w-5 h-5" />
+                <span className="hidden lg:inline font-medium">{t('home')}</span>
+                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full lg:hidden"></span>
               </button>
               <button 
-                className="p-3 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-gray-900 transition-all duration-200"
+                onClick={() => window.location.hash = '#jobs'}
+                className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-gray-900 transition-all duration-200"
                 title={t('jobs')}
               >
-                <Briefcase className="w-6 h-6" />
+                <Briefcase className="w-5 h-5" />
+                <span className="hidden lg:inline font-medium">{t('jobs')}</span>
               </button>
               <button 
-                className="p-3 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-gray-900 transition-all duration-200"
+                onClick={() => window.location.hash = '#network'}
+                className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-gray-900 transition-all duration-200"
                 title={t('network')}
               >
-                <Users className="w-6 h-6" />
+                <Users className="w-5 h-5" />
+                <span className="hidden lg:inline font-medium">{t('network')}</span>
               </button>
             </nav>
 

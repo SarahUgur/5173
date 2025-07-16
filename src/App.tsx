@@ -93,11 +93,11 @@ function App() {
         />
         
         {/* Main Content */}
-        <main className="flex-1 min-h-screen">
+        <main className="flex-1 min-h-screen md:ml-0">
           {currentPage === 'home' && (
             <div className="max-w-2xl mx-auto">
               {/* Create Post - Mobile optimized */}
-              <div className="sticky top-14 sm:top-16 z-30 bg-gray-50 pt-3 sm:pt-6">
+              <div className="sticky top-16 z-30 bg-gray-50 pt-3 sm:pt-6">
                 <CreatePost currentUser={currentUser} />
               </div>
               

@@ -46,13 +46,23 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
       {/* Sidebar */}
       <div className={`
         fixed md:static inset-y-0 left-0 z-50 md:z-auto
-        w-64 bg-white h-full border-r border-gray-200
+        w-64 bg-white h-full border-r border-gray-200 md:shadow-sm
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         md:block
       `}>
-        {/* Mobile Close Button */}
-        <div className="md:hidden flex justify-end p-4">
+        {/* Mobile Header */}
+        <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-200">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
+                <path d="M19 15L19.5 17L21.5 17.5L19.5 18L19 20L18.5 18L16.5 17.5L18.5 17L19 15Z"/>
+                <path d="M5 15L5.5 17L7.5 17.5L5.5 18L5 20L4.5 18L2.5 17.5L4.5 17L5 15Z"/>
+              </svg>
+            </div>
+            <span className="font-bold text-gray-900">Menu</span>
+          </div>
           <button
             onClick={onClose}
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
@@ -63,7 +73,7 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
 
         <div className="p-4">
           {/* User Profile Card */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 hidden md:block">
             <div className="flex items-center space-x-3">
               <img
                 src={currentUser?.avatar || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop"}
@@ -84,6 +94,23 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
             </div>
           </div>
 
+          {/* Mobile User Info */}
+          <div className="md:hidden mb-6 p-4 bg-gray-50 rounded-xl">
+            <div className="flex items-center space-x-3">
+              <img
+                src={currentUser?.avatar || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop"}
+                alt="Profile"
+                className="w-10 h-10 rounded-full"
+              />
+              <div>
+                <h3 className="font-semibold text-gray-900">{currentUser?.name || 'Bruger'}</h3>
+                {currentUser?.isSubscribed && (
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Pro</span>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Navigation Menu */}
           <nav className="space-y-1">
             {menuItems.map((item, index) => (
@@ -92,7 +119,7 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
                 onClick={() => handleMenuClick(item.page)}
                 className={`w-full flex items-center justify-between px-3 py-3 rounded-lg text-left transition-colors duration-200 ${
                   currentPage === item.page
-                    ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' 
+                    ? 'bg-blue-50 text-blue-700 shadow-sm' 
                     : 'text-gray-700 hover:bg-gray-50'
                 }`}
               >
