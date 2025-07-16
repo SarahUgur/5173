@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import LoginScreen from './components/LoginScreen';
+import AuthScreen from './components/AuthScreen';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import CreatePost from './components/CreatePost';
@@ -20,7 +20,10 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem('isAuthenticated') === 'true';
   });
-  const [currentUser, setCurrentUser] = useState(mockUsers[0]);
+  const [currentUser, setCurrentUser] = useState(() => {
+    const saved = localStorage.getItem('currentUser');
+    return saved ? JSON.parse(saved) : mockUsers[0];
+  });
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
@@ -32,17 +35,21 @@ function App() {
   const [currentPage, setCurrentPage] = useState('home');
 
   const handleSubscribe = () => {
-    setCurrentUser(prev => ({ ...prev, isSubscribed: true }));
+    const updatedUser = { ...currentUser, isSubscribed: true };
+    setCurrentUser(updatedUser);
+    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
     setShowSubscriptionModal(false);
     setShowSuccessPage(true);
   };
 
-  const handleLogin = () => {
+  const handleLogin = (user: any) => {
     setIsAuthenticated(true);
+    setCurrentUser(user);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('currentUser');
     setIsAuthenticated(false);
   };
 
@@ -56,11 +63,12 @@ function App() {
 
   const handleUpdateUser = (updates: any) => {
     setCurrentUser(updates);
+    localStorage.setItem('currentUser', JSON.stringify(updates));
   };
 
   // Vis login skærm hvis ikke autentificeret
   if (!isAuthenticated) {
-    return <LoginScreen onLogin={handleLogin} />;
+    return <AuthScreen onLogin={handleLogin} />;
   }
 
   if (showSuccessPage) {
