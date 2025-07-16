@@ -14,6 +14,7 @@ import WebsiteIntegration from './components/WebsiteIntegration';
 import LocalJobsPage from './components/LocalJobsPage';
 import SettingsModal from './components/SettingsModal';
 import NotificationModal from './components/NotificationModal';
+import InstallPrompt from './components/InstallPrompt';
 import { mockUsers, mockPosts } from './data/mockData';
 
 function App() {
@@ -259,6 +260,8 @@ function App() {
         onClose={() => setShowNotifications(false)}
         onOpenSettings={() => setShowSettings(true)}
       />
+      
+      <InstallPrompt />
     </div>
   );
 }
