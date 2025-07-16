@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privat Rengøring</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        
+        p {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Privat Rengøring</h1>
+        <p>Din professionelle rengørings-app!</p>
+        
+        <button onclick="bookCleaning()">📅 Book Rengøring</button>
+        <button onclick="createProfile()">👤 Opret Profil</button>
+        <button onclick="showServices()">🏠 Se Services</button>
+        
+        <div class="success" id="message"></div>
+    </div>
+
+    <script>
+        function bookCleaning() {
+            document.getElementById('message').innerHTML = '✅ Booking modtaget! Vi kontakter dig snart.';
+            document.getElementById('message').style.display = 'block';
+        }
+        
+        function createProfile() {
+            document.getElementById('message').innerHTML = '🎉 Profil oprettet! Velkommen til Privat Rengøring!';
+            document.getElementById('message').style.display = 'block';
+            document.body.style.background = 'linear-gradient(135deg, #2196F3, #1976D2)';
+        }
+        
+        function showServices() {
+            document.getElementById('message').innerHTML = '🏠 Almindelig rengøring<br>🪟 Vinduesrengøring<br>🧽 Dybderengøring<br>🏢 Erhvervsrengøring';
+            document.getElementById('message').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
