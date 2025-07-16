@@ -21,7 +21,6 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
     { icon: MapPin, label: t('localJobs'), page: 'local' },
     { icon: Calendar, label: t('planning'), page: 'planning' },
     { icon: TrendingUp, label: t('trending'), page: 'trending' },
-    { icon: Globe, label: t('websiteIntegration'), page: 'integration' },
   ];
 
   const handleMenuClick = (page: string) => {

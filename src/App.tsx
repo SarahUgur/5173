@@ -146,10 +146,6 @@ function App() {
           {currentPage === 'integration' && (
             <WebsiteIntegration currentUser={currentUser} />
           )}
-          
-          {currentPage === 'local' && (
-            <LocalJobsPage currentUser={currentUser} />
-          )}
         </main>
 
         {/* Right sidebar - Hidden on mobile and tablet */}
