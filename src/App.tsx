@@ -11,6 +11,8 @@ import PlanningPage from './components/PlanningPage';
 import MyTasksPage from './components/MyTasksPage';
 import NetworkPage from './components/NetworkPage';
 import WebsiteIntegration from './components/WebsiteIntegration';
+import SettingsModal from './components/SettingsModal';
+import NotificationModal from './components/NotificationModal';
 import { mockUsers, mockPosts } from './data/mockData';
 
 function App() {
@@ -23,6 +25,7 @@ function App() {
   const [showMessages, setShowMessages] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [posts] = useState(mockPosts);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState('home');
@@ -50,6 +53,10 @@ function App() {
     setIsMobileMenuOpen(false);
   };
 
+  const handleUpdateUser = (updates: any) => {
+    setCurrentUser(updates);
+  };
+
   // Vis login skærm hvis ikke autentificeret
   if (!isAuthenticated) {
     return <LoginScreen onLogin={handleLogin} />;
@@ -73,6 +80,7 @@ function App() {
         onShowMessages={() => setShowMessages(true)}
         onShowNotifications={() => setShowNotifications(true)}
         onShowProfile={() => setShowProfile(true)}
+        onShowSettings={() => setShowSettings(true)}
       />
       
       <div className="flex relative">
