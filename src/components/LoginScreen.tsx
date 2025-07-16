@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Lock, Eye, EyeOff, Smartphone } from 'lucide-react';
+import { Lock, Eye, EyeOff, Smartphone, HelpCircle, FileText } from 'lucide-react';
+import TermsModal from './TermsModal';
+import HelpModal from './HelpModal';
 
 interface LoginScreenProps {
   onLogin: () => void;
@@ -10,6 +12,11 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(() => {
+    return localStorage.getItem('termsAccepted') === 'true';
+  });
 
   // Din private adgangskode - skift denne til hvad du ønsker
   const ADMIN_PASSWORD = 'Allah0103@';
@@ -17,6 +24,12 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!termsAccepted) {
+      setShowTerms(true);
+      return;
+    }
+    
     setIsLoading(true);
     setError('');
 
@@ -32,8 +45,27 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     }, 1000);
   };
 
+  const handleAcceptTerms = () => {
+    setTermsAccepted(true);
+    localStorage.setItem('termsAccepted', 'true');
+    setShowTerms(false);
+    // Auto-submit after accepting terms if password is filled
+    if (password === ADMIN_PASSWORD) {
+      handleSubmit(new Event('submit') as any);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 flex items-center justify-center p-4 relative">
+      {/* Help Button - Fixed position */}
+      <button
+        onClick={() => setShowHelp(true)}
+        className="fixed top-4 right-4 bg-white bg-opacity-20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-opacity-30 transition-all duration-200 z-10"
+        title="Hjælp"
+      >
+        <HelpCircle className="w-6 h-6" />
+      </button>
+
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
         {/* Logo og titel */}
         <div className="text-center mb-8">
@@ -80,7 +112,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
 
           <button
             type="submit"
-            disabled={isLoading || !password}
+            disabled={isLoading || !password || !termsAccepted}
             className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
           >
             {isLoading ? (
@@ -97,6 +129,43 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
           </button>
         </form>
 
+        {/* Terms & Conditions */}
+        <div className="mt-6 p-4 bg-gray-50 rounded-xl">
+          <div className="flex items-start space-x-3">
+            <input
+              type="checkbox"
+              id="terms"
+              checked={termsAccepted}
+              onChange={(e) => {
+                if (!e.target.checked) {
+                  setTermsAccepted(false);
+                  localStorage.removeItem('termsAccepted');
+                } else {
+                  setShowTerms(true);
+                }
+              }}
+              className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <div className="flex-1">
+              <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer">
+                Jeg accepterer{' '}
+                <button
+                  type="button"
+                  onClick={() => setShowTerms(true)}
+                  className="text-blue-600 hover:text-blue-700 underline"
+                >
+                  vilkår & betingelser
+                </button>
+              </label>
+              {!termsAccepted && (
+                <p className="text-xs text-red-600 mt-1">
+                  Du skal acceptere vilkår & betingelser for at fortsætte
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* Mobile installation hint */}
         <div className="mt-8 p-4 bg-blue-50 rounded-xl">
           <div className="flex items-center space-x-2 mb-2">
@@ -108,6 +177,18 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
           </p>
         </div>
       </div>
+
+      {/* Modals */}
+      <TermsModal
+        isOpen={showTerms}
+        onClose={() => setShowTerms(false)}
+        onAccept={handleAcceptTerms}
+      />
+      
+      <HelpModal
+        isOpen={showHelp}
+        onClose={() => setShowHelp(false)}
+      />
     </div>
   );
 }
