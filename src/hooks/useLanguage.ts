@@ -82,14 +82,6 @@ const translations: Translations = {
     tr: 'Trend',
     de: 'Trending'
   },
-  websiteIntegration: {
-    da: 'Website Integration',
-    en: 'Website Integration',
-    ar: 'تكامل الموقع',
-    pl: 'Integracja Strony',
-    tr: 'Web Sitesi Entegrasyonu',
-    de: 'Website Integration'
-  },
 
   // User actions
   upgradeToPro: {

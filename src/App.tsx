@@ -142,10 +142,6 @@ function App() {
           {currentPage === 'network' && (
             <NetworkPage currentUser={currentUser} />
           )}
-          
-          {currentPage === 'integration' && (
-            <WebsiteIntegration currentUser={currentUser} />
-          )}
         </main>
 
         {/* Right sidebar - Hidden on mobile and tablet */}
