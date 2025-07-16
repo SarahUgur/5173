@@ -25,11 +25,6 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!termsAccepted) {
-      setShowTerms(true);
-      return;
-    }
-    
     setIsLoading(true);
     setError('');
 
@@ -49,10 +44,6 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     setTermsAccepted(true);
     localStorage.setItem('termsAccepted', 'true');
     setShowTerms(false);
-    // Auto-submit after accepting terms if password is filled
-    if (password === ADMIN_PASSWORD) {
-      handleSubmit(new Event('submit') as any);
-    }
   };
 
   return (
@@ -136,14 +127,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               type="checkbox"
               id="terms"
               checked={termsAccepted}
-              onChange={(e) => {
-                if (!e.target.checked) {
-                  setTermsAccepted(false);
-                  localStorage.removeItem('termsAccepted');
-                } else {
-                  setShowTerms(true);
-                }
-              }}
+              onChange={(e) => setTermsAccepted(e.target.checked)}
               className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
             <div className="flex-1">
