@@ -3,9 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://ditbrugernavn.github.io/privat-rengoring-app",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --base=/privat-rengoring-app/",
     "lint": "eslint .",
     "preview": "vite preview"
   },
