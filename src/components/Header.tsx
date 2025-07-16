@@ -54,7 +54,7 @@ export default function Header({
             </button>
 
             {/* Logo and Brand */}
-            <div className="flex items-center min-w-0 flex-1">
+            <div className="flex items-center min-w-0 flex-1 -ml-1 sm:-ml-2">
               <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
                 <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-7 lg:h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
@@ -64,7 +64,7 @@ export default function Header({
               </div>
               
               {/* Brand text - responsive */}
-              <div className="ml-2 sm:ml-3 min-w-0 flex-1">
+              <div className="ml-3 sm:ml-4 min-w-0 flex-1">
                 {/* Desktop brand */}
                 <div className="hidden lg:block">
                   <h1 className="text-xl xl:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -82,7 +82,7 @@ export default function Header({
                 
                 {/* Mobile brand */}
                 <div className="sm:hidden">
-                  <h1 className="text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent truncate">
+                  <h1 className="text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent truncate leading-tight">
                     Privat Rengøring
                   </h1>
                 </div>
