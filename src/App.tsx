@@ -11,6 +11,7 @@ import PlanningPage from './components/PlanningPage';
 import MyTasksPage from './components/MyTasksPage';
 import NetworkPage from './components/NetworkPage';
 import WebsiteIntegration from './components/WebsiteIntegration';
+import LocalJobsPage from './components/LocalJobsPage';
 import SettingsModal from './components/SettingsModal';
 import NotificationModal from './components/NotificationModal';
 import { mockUsers, mockPosts } from './data/mockData';
@@ -129,6 +130,10 @@ function App() {
           
           {currentPage === 'integration' && (
             <WebsiteIntegration currentUser={currentUser} />
+          )}
+          
+          {currentPage === 'local' && (
+            <LocalJobsPage currentUser={currentUser} />
           )}
         </main>
 
