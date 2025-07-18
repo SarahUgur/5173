@@ -71,21 +71,19 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
     setIsLoading(true);
     setError('');
 
-    setTimeout(() => {
-      // Find user in mock database
-      const user = mockUsers.find(u => 
-        u.email === loginData.email && u.password === loginData.password
-      );
+    // Find user in mock database
+    const user = mockUsers.find(u => 
+      u.email === loginData.email && u.password === loginData.password
+    );
 
-      if (user) {
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        onLogin(user);
-      } else {
-        setError('Forkert email eller adgangskode');
-      }
-      setIsLoading(false);
-    }, 1000);
+    if (user) {
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      onLogin(user);
+    } else {
+      setError('Forkert email eller adgangskode');
+    }
+    setIsLoading(false);
   };
 
   const handleSignUp = (e: React.FormEvent) => {
@@ -99,33 +97,31 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
     setIsLoading(true);
     setError('');
 
-    setTimeout(() => {
-      // Check if user already exists
-      const existingUser = mockUsers.find(u => u.email === signupData.email);
-      
-      if (existingUser) {
-        setError('En bruger med denne email eksisterer allerede');
-        setIsLoading(false);
-        return;
-      }
-
-      // Create new user
-      const newUser = {
-        id: Date.now().toString(),
-        ...signupData,
-        avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        isSubscribed: false,
-        verified: false
-      };
-
-      // Save to localStorage (i virkeligheden ville dette være en database)
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('currentUser', JSON.stringify(newUser));
-      localStorage.setItem('termsAccepted', 'true');
-      
-      onLogin(newUser);
+    // Check if user already exists
+    const existingUser = mockUsers.find(u => u.email === signupData.email);
+    
+    if (existingUser) {
+      setError('En bruger med denne email eksisterer allerede');
       setIsLoading(false);
-    }, 1000);
+      return;
+    }
+
+    // Create new user
+    const newUser = {
+      id: Date.now().toString(),
+      ...signupData,
+      avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+      isSubscribed: false,
+      verified: false
+    };
+
+    // Save to localStorage (i virkeligheden ville dette være en database)
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    localStorage.setItem('termsAccepted', 'true');
+    
+    onLogin(newUser);
+    setIsLoading(false);
   };
 
   const handleAcceptTerms = () => {

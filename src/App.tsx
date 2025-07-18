@@ -52,6 +52,8 @@ function App() {
   const handleLogin = (user: any) => {
     setIsAuthenticated(true);
     setCurrentUser(user);
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('currentUser', JSON.stringify(user));
   };
 
   const handleLogout = () => {
