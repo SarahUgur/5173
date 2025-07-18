@@ -51,6 +51,18 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
       isSubscribed: false,
       location: 'København',
       verified: false
+    },
+    {
+      id: 'admin',
+      name: 'Administrator',
+      email: 'admin@privatrengoring.dk',
+      password: 'admin123',
+      avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+      userType: 'admin',
+      isSubscribed: true,
+      location: 'Danmark',
+      verified: true,
+      isAdmin: true
     }
   ];
 
