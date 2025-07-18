@@ -84,6 +84,22 @@ const translations: Translations = {
   },
 
   // User actions
+  createJob: {
+    da: 'Opret Job',
+    en: 'Create Job',
+    ar: 'إنشاء وظيفة',
+    pl: 'Utwórz Pracę',
+    tr: 'İş Oluştur',
+    de: 'Job erstellen'
+  },
+  findExperts: {
+    da: 'Find Eksperter',
+    en: 'Find Experts',
+    ar: 'العثور على خبراء',
+    pl: 'Znajdź Ekspertów',
+    tr: 'Uzman Bul',
+    de: 'Experten finden'
+  },
   upgradeToPro: {
     da: 'Opgrader til Pro',
     en: 'Upgrade to Pro',

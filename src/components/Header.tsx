@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, MessageCircle, Bell, User, Home, Briefcase, Users, Settings, Menu, X, Globe } from 'lucide-react';
+import { Search, MessageCircle, Bell, User, Home, Briefcase, Users, Settings, Menu, X, Globe, MapPin, Calendar, Star, TrendingUp } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 
 interface HeaderProps {
@@ -11,6 +11,8 @@ interface HeaderProps {
   onShowNotifications?: () => void;
   onShowProfile?: () => void;
   onShowSettings?: () => void;
+  currentPage?: string;
+  onPageChange?: (page: string) => void;
 }
 
 export default function Header({ 
@@ -21,11 +23,17 @@ export default function Header({
   onShowMessages,
   onShowNotifications,
   onShowProfile,
-  onShowSettings
+  onShowSettings,
+  currentPage = 'home',
+  onPageChange
 }: HeaderProps) {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const { language, setLanguage, t } = useLanguage();
 
   const languages = [
@@ -38,6 +46,45 @@ export default function Header({
   ];
 
   const currentLanguage = languages.find(lang => lang.code === language) || languages[0];
+
+  // Mock search data
+  const mockSearchData = [
+    { type: 'user', name: 'Maria Hansen', location: 'København', avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' },
+    { type: 'user', name: 'Lars Nielsen', location: 'Aarhus', avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' },
+    { type: 'job', title: 'Hjemmerengøring København', location: 'København NV', budget: '350 kr' },
+    { type: 'job', title: 'Kontorrengøring Aarhus', location: 'Aarhus C', budget: '600 kr' },
+    { type: 'location', name: 'København', count: 24 },
+    { type: 'location', name: 'Aarhus', count: 18 },
+    { type: 'location', name: 'Odense', count: 12 }
+  ];
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query.length > 1) {
+      const filtered = mockSearchData.filter(item => 
+        (item.name || item.title || '').toLowerCase().includes(query.toLowerCase()) ||
+        item.location?.toLowerCase().includes(query.toLowerCase())
+      );
+      setSearchResults(filtered);
+      setShowSearchResults(true);
+    } else {
+      setShowSearchResults(false);
+    }
+  };
+
+  const quickActions = [
+    { icon: Briefcase, label: t('createJob'), action: () => onPageChange?.('create-job') },
+    { icon: Users, label: t('findExperts'), action: () => onPageChange?.('network') },
+    { icon: MapPin, label: t('localJobs'), action: () => onPageChange?.('local') },
+    { icon: Calendar, label: t('planning'), action: () => onPageChange?.('planning') }
+  ];
+
+  const navigationItems = [
+    { icon: Home, label: t('home'), page: 'home', active: currentPage === 'home' },
+    { icon: Briefcase, label: t('jobs'), page: 'local', active: currentPage === 'local' },
+    { icon: Users, label: t('network'), page: 'network', active: currentPage === 'network' },
+    { icon: Calendar, label: t('planning'), page: 'planning', active: currentPage === 'planning' }
+  ];
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
@@ -91,14 +138,58 @@ export default function Header({
           </div>
 
           {/* Center - Desktop Search */}
-          <div className="hidden lg:flex flex-1 max-w-2xl mx-8">
+          <div className="hidden lg:flex flex-1 max-w-2xl mx-8 relative">
             <div className="relative w-full">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder={t('searchPlaceholder')}
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                onFocus={() => searchQuery.length > 1 && setShowSearchResults(true)}
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors duration-200"
               />
+              
+              {/* Search Results Dropdown */}
+              {showSearchResults && searchResults.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50 max-h-96 overflow-y-auto">
+                  {searchResults.map((result, index) => (
+                    <div key={index} className="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
+                      {result.type === 'user' && (
+                        <div className="flex items-center space-x-3">
+                          <img src={result.avatar} alt={result.name} className="w-8 h-8 rounded-full" />
+                          <div>
+                            <p className="font-medium text-gray-900">{result.name}</p>
+                            <p className="text-sm text-gray-500">{result.location}</p>
+                          </div>
+                        </div>
+                      )}
+                      {result.type === 'job' && (
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                            <Briefcase className="w-4 h-4 text-green-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-900">{result.title}</p>
+                            <p className="text-sm text-gray-500">{result.location} • {result.budget}</p>
+                          </div>
+                        </div>
+                      )}
+                      {result.type === 'location' && (
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <MapPin className="w-4 h-4 text-blue-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-900">{result.name}</p>
+                            <p className="text-sm text-gray-500">{result.count} aktive jobs</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -112,33 +203,55 @@ export default function Header({
               <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
             </button>
 
+            {/* Quick Actions Button */}
+            <div className="relative hidden md:block">
+              <button
+                onClick={() => setShowQuickActions(!showQuickActions)}
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                title="Hurtige handlinger"
+              >
+                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+              </button>
+              
+              {showQuickActions && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                  {quickActions.map((action, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        action.action();
+                        setShowQuickActions(false);
+                      }}
+                      className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      <action.icon className="w-4 h-4 text-gray-500" />
+                      <span className="text-gray-700 text-sm">{action.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-1">
-              <button 
-                onClick={() => window.location.hash = '#home'}
-                className="flex items-center space-x-2 px-2 lg:px-3 py-2 rounded-xl hover:bg-blue-50 text-blue-600 transition-all duration-200 relative group"
-                title={t('home')}
-              >
-                <Home className="w-4 h-4 lg:w-5 lg:h-5" />
-                <span className="hidden xl:inline font-medium text-sm">{t('home')}</span>
-                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full xl:hidden"></span>
-              </button>
-              <button 
-                onClick={() => window.location.hash = '#jobs'}
-                className="flex items-center space-x-2 px-2 lg:px-3 py-2 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-gray-900 transition-all duration-200"
-                title={t('jobs')}
-              >
-                <Briefcase className="w-4 h-4 lg:w-5 lg:h-5" />
-                <span className="hidden xl:inline font-medium text-sm">{t('jobs')}</span>
-              </button>
-              <button 
-                onClick={() => window.location.hash = '#network'}
-                className="flex items-center space-x-2 px-2 lg:px-3 py-2 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-gray-900 transition-all duration-200"
-                title={t('network')}
-              >
-                <Users className="w-4 h-4 lg:w-5 lg:h-5" />
-                <span className="hidden xl:inline font-medium text-sm">{t('network')}</span>
-              </button>
+              {navigationItems.map((item, index) => (
+                <button 
+                  key={index}
+                  onClick={() => onPageChange?.(item.page)}
+                  className={`flex items-center space-x-2 px-2 lg:px-3 py-2 rounded-xl transition-all duration-200 relative group ${
+                    item.active 
+                      ? 'text-blue-600 bg-blue-50' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}
+                  title={item.label}
+                >
+                  <item.icon className="w-4 h-4 lg:w-5 lg:h-5" />
+                  <span className="hidden xl:inline font-medium text-sm">{item.label}</span>
+                  {item.active && (
+                    <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full xl:hidden"></span>
+                  )}
+                </button>
+              ))}
             </nav>
 
             {/* Language Selector */}
@@ -215,11 +328,26 @@ export default function Header({
                   alt="Profile"
                   className="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 rounded-full border-2 border-gray-200 hover:border-blue-300 transition-colors duration-200"
                 />
+                {currentUser?.isSubscribed && (
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
+                    <Star className="w-2 h-2 text-white" />
+                  </div>
+                )}
               </button>
               
               {/* Profile Dropdown */}
               {showProfileMenu && (
                 <div className="absolute right-0 top-full mt-2 w-44 sm:w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                  <div className="px-4 py-2 border-b border-gray-100">
+                    <p className="font-semibold text-gray-900 text-sm">{currentUser?.name}</p>
+                    <p className="text-xs text-gray-500">{currentUser?.email}</p>
+                    {currentUser?.isSubscribed && (
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 mt-1">
+                        <Star className="w-3 h-3 mr-1" />
+                        Pro Medlem
+                      </span>
+                    )}
+                  </div>
                   <button
                     onClick={() => {
                       onShowProfile?.();
@@ -265,6 +393,8 @@ export default function Header({
               <input
                 type="text"
                 placeholder={t('searchPlaceholder')}
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
                 className="w-full pl-9 sm:pl-10 pr-10 py-2.5 sm:py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 text-sm sm:text-base"
                 autoFocus
               />
@@ -275,6 +405,36 @@ export default function Header({
                 <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
+            
+            {/* Mobile Search Results */}
+            {showSearchResults && searchResults.length > 0 && (
+              <div className="mt-2 bg-white rounded-xl shadow-lg border border-gray-200 py-2 max-h-64 overflow-y-auto">
+                {searchResults.slice(0, 5).map((result, index) => (
+                  <div key={index} className="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
+                    {result.type === 'user' && (
+                      <div className="flex items-center space-x-3">
+                        <img src={result.avatar} alt={result.name} className="w-8 h-8 rounded-full" />
+                        <div>
+                          <p className="font-medium text-gray-900 text-sm">{result.name}</p>
+                          <p className="text-xs text-gray-500">{result.location}</p>
+                        </div>
+                      </div>
+                    )}
+                    {result.type === 'job' && (
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                          <Briefcase className="w-4 h-4 text-green-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900 text-sm">{result.title}</p>
+                          <p className="text-xs text-gray-500">{result.location} • {result.budget}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
