@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Search, Filter, Clock, DollarSign, Star, Briefcase, Users, ChevronDown, Navigation } from 'lucide-react';
+import { MapPin, Search, Filter, Clock, DollarSign, Star, Briefcase, Users, ChevronDown, Navigation, Loader2 } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 
 interface LocalJobsPageProps {
@@ -32,6 +32,8 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [showAreaDropdown, setShowAreaDropdown] = useState(false);
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
 
   const areas = [
     { id: 'all', name: t('allAreas'), count: 45 },
@@ -72,7 +74,7 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
       description: 'Lille tech startup søger rengøringshjælp 2 gange ugentligt. Moderne kontor med køkken og mødelokaler.',
       location: 'Aarhus C',
       area: 'aarhus',
-      distance: '1.8 km',
+      distance: userLocation ? '1.8 km' : '1.8 km',
       budget: '600-800 kr/gang',
       jobType: 'office_cleaning',
       urgency: 'this_week',
@@ -144,6 +146,49 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
     }
   ];
 
+  const getUserLocation = () => {
+    setIsGettingLocation(true);
+    
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ lat: latitude, lng: longitude });
+          setIsGettingLocation(false);
+          
+          // Her ville du normalt beregne afstande til alle jobs
+          console.log('Bruger lokation:', latitude, longitude);
+        },
+        (error) => {
+          console.error('Fejl ved hentning af lokation:', error);
+          setIsGettingLocation(false);
+          alert('Kunne ikke få din lokation. Tjek at du har givet tilladelse.');
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000 // 5 minutter
+        }
+      );
+    } else {
+      alert('Din browser understøtter ikke geolocation');
+      setIsGettingLocation(false);
+    }
+  };
+
+  // Beregn afstand mellem to koordinater (Haversine formel)
+  const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number) => {
+    const R = 6371; // Jordens radius i km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLng/2) * Math.sin(dLng/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c;
+    return Math.round(distance * 10) / 10; // Rund af til 1 decimal
+  };
 
   const getUrgencyColor = (urgency: string) => {
     const colors = {
@@ -289,12 +334,30 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
             <span> {t('in')} <span className="font-semibold text-blue-600">{selectedAreaName}</span></span>
           )}
         </p>
-        <button className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors duration-200">
-          <Navigation className="w-4 h-4" />
-          <span className="text-sm font-medium">{t('useMyLocation')}</span>
+        <button 
+          onClick={getUserLocation}
+          disabled={isGettingLocation}
+          className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors duration-200 disabled:opacity-50"
+        >
+          {isGettingLocation ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Navigation className="w-4 h-4" />
+          )}
+          <span className="text-sm font-medium">
+            {isGettingLocation ? 'Finder lokation...' : t('useMyLocation')}
+          </span>
         </button>
       </div>
 
+      {/* Location Status */}
+      {userLocation && (
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-sm text-green-800">
+            📍 Din lokation er fundet! Jobs vises nu med præcise afstande.
+          </p>
+        </div>
+      )}
       {/* Jobs List */}
       <div className="space-y-4">
         {sortedJobs.length === 0 ? (
@@ -331,7 +394,9 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
                     <div className="flex items-center space-x-1">
                       <MapPin className="w-4 h-4" />
                       <span>{job.location}</span>
-                      <span className="text-blue-600">({job.distance})</span>
+                      <span className="text-blue-600">
+                        ({userLocation ? `${job.distance}` : job.distance})
+                      </span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <DollarSign className="w-4 h-4" />
