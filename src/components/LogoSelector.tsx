@@ -171,7 +171,7 @@ export default function LogoSelector({ onSelectLogo, currentLogo }: LogoSelector
         </div>
 
         {/* Logo Grid */}
-        <div className="p-6 overflow-y-auto max-h-[70vh]">
+        <div className="p-6 overflow-y-auto max-h-[60vh] lg:max-h-[70vh]">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {logoOptions.map((logo) => (
               <div

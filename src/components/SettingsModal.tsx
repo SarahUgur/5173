@@ -185,7 +185,7 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
           </div>
 
           {/* Content */}
-          <div className="flex-1 p-2 sm:p-3 lg:p-6 overflow-y-auto" style={{ height: 'calc(98vh - 120px)' }}>
+          <div className="flex-1 p-2 sm:p-3 lg:p-6 overflow-y-auto max-h-[60vh] lg:max-h-[70vh]">
             {activeTab === 'profile' && (
               <div className="space-y-4 sm:space-y-6 animate-fadeIn">
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900">Profil Information</h3>

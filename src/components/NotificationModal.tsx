@@ -215,7 +215,7 @@ export default function NotificationModal({ isOpen, onClose, onOpenSettings }: N
         )}
 
         {/* Notifications List */}
-        <div className="overflow-y-auto max-h-96">
+        <div className="overflow-y-auto max-h-[50vh] lg:max-h-[60vh]">
           {filteredNotifications.length === 0 ? (
             <div className="p-8 text-center">
               <Bell className="w-12 h-12 text-gray-400 mx-auto mb-4" />

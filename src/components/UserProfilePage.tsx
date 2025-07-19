@@ -274,7 +274,7 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
         </div>
 
         {/* Tab Content */}
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto max-h-[60vh] lg:max-h-[70vh]">
           {activeTab === 'about' && (
             <div className="space-y-6">
               <div>

@@ -179,7 +179,7 @@ export default function FriendRequestModal({
         )}
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-96">
+        <div className="p-6 overflow-y-auto max-h-[50vh] lg:max-h-[60vh]">
           {activeTab === 'received' && (
             <div className="space-y-4">
               {receivedRequests.length === 0 ? (

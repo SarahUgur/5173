@@ -268,7 +268,7 @@ export default function UserProfileModal({
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-96">
+        <div className="p-6 overflow-y-auto max-h-[50vh] lg:max-h-[60vh]">
           {activeTab === 'about' && (
             <div className="space-y-6">
               <div>
