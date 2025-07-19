@@ -251,6 +251,17 @@ export default function MapPage({ currentUser }: MapPageProps) {
             </span>
           </button>
 
+          {/* Area Filter */}
+          <select
+            value={selectedArea}
+            onChange={(e) => setSelectedArea(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            {areas.map((area) => (
+              <option key={area.id} value={area.id}>{area.name}</option>
+            ))}
+          </select>
+
           {/* Google Maps Toggle */}
           <button
             onClick={() => setShowGoogleMapsEmbed(!showGoogleMapsEmbed)}
