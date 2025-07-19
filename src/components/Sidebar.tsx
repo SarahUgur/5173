@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Users, ExternalLink, Eye, EyeOff, Trash2, Edit } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Users, ExternalLink, Eye, EyeOff, Trash2, Edit, X } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import AdBanner from './AdBanner';
 import type { Post } from '../types';
@@ -203,8 +203,9 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
     'Falske oplysninger',
     'Svindel eller bedrageri',
     'Overtræder platformens regler',
-                    className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors duration-200 ${
+    'Andet'
   ];
+  
   const getUrgencyColor = (urgency: string) => {
     const colors = {
       'immediate': 'bg-red-100 text-red-800',
@@ -291,10 +292,9 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               <button 
                 className="more-menu-dropdown"
                 onClick={() => setShowMoreMenu(!showMoreMenu)}
-                className="p-1 rounded-full hover:bg-gray-100 transition-all duration-200 hover:scale-110"
               >
-              <MoreHorizontal className="w-5 h-5 text-gray-400" />
-            </button>
+                <MoreHorizontal className="w-5 h-5 text-gray-400 p-1 rounded-full hover:bg-gray-100 transition-all duration-200 hover:scale-110" />
+              </button>
               
               {/* More Menu Dropdown */}
               {showMoreMenu && (
@@ -836,8 +836,8 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                   <button
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}
-                        ? item.adminOnly ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
-                        : item.adminOnly ? 'text-red-600 hover:bg-red-50' : 'text-gray-700 hover:bg-gray-100'
+                    className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+                      index === selectedImageIndex ? 'bg-white' : 'bg-gray-400'
                     }`}
                   />
                 ))}
