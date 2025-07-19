@@ -200,7 +200,14 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
         <EyeOff className="w-8 h-8 text-gray-400 mx-auto mb-2" />
         <p className="text-gray-600">Opslag skjult</p>
         <button
-          onClick={() => setIsPostHidden(false)}
+          onClick={() => {
+            if (!currentUser?.isSubscribed) {
+              onShowSubscription();
+              return;
+            }
+            // Handle job application
+            alert('Ansøgning sendt! Kunden vil kontakte dig snart.');
+          }}
           className="text-blue-600 hover:text-blue-700 text-sm mt-2"
         >
           Vis igen

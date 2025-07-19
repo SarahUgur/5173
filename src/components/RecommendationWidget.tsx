@@ -154,10 +154,16 @@ export default function RecommendationWidget({ currentUser, onShowUserProfile, o
                     src={user.avatar}
                     alt={user.name}
                     className="w-12 h-12 rounded-full cursor-pointer"
-                    onClick={() => onShowUserProfile?.(user)}
+                      className="w-8 h-8 rounded-full cursor-pointer hover:scale-110 transition-transform duration-200"
+                      onClick={() => onShowUserProfile?.(user)}
                   />
                   {user.verified && (
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                      <button
+                        onClick={() => onShowUserProfile?.(user)}
+                        className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200"
+                      >
+                        {user.name}
+                      </button>
                       <span className="text-white text-xs">✓</span>
                     </div>
                   )}
@@ -222,7 +228,13 @@ export default function RecommendationWidget({ currentUser, onShowUserProfile, o
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getUrgencyColor(job.urgency)}`}>
                     {job.urgency === 'immediate' ? 'Akut' : job.urgency === 'this_week' ? 'Denne uge' : 'Fleksibel'}
                   </span>
-                  <button className="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-xs">
+                  <button 
+                    onClick={() => {
+                      // Simuler følg funktionalitet
+                      alert(`Du følger nu ${user.name}!`);
+                    }}
+                    className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200 transition-colors duration-200"
+                  >
                     Ansøg
                   </button>
                 </div>

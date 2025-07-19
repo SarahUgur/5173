@@ -251,7 +251,10 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
               <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
                 {areas.map((area) => (
                   <button
-                    key={area.id}
+                    onClick={() => {
+                      // Simuler ansøgning
+                      alert(`Ansøgning sendt til ${job.client.name}! De vil kontakte dig snart.`);
+                    }}
                     onClick={() => {
                       setSelectedArea(area.id);
                       setShowAreaDropdown(false);
@@ -345,7 +348,13 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
             <Navigation className="w-4 h-4" />
           )}
           <span className="text-sm font-medium">
-            {isGettingLocation ? 'Finder lokation...' : t('useMyLocation')}
+        <button 
+          onClick={() => {
+            // Simuler indlæsning af flere jobs
+            alert('Indlæser flere jobs...');
+          }}
+          className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+        >
           </span>
         </button>
       </div>
