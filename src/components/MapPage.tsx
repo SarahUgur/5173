@@ -32,6 +32,7 @@ export default function MapPage({ currentUser }: MapPageProps) {
   const [mapZoom, setMapZoom] = useState(12);
   const [mapCenter, setMapCenter] = useState({ lat: 55.6761, lng: 12.5683 }); // København centrum
   const [showGoogleMapsEmbed, setShowGoogleMapsEmbed] = useState(false);
+  const [selectedArea, setSelectedArea] = useState('all');
 
   // Mock job locations med rigtige adresser
   const jobLocations: JobLocation[] = [
