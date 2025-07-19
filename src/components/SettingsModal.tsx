@@ -185,7 +185,7 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
           </div>
 
           {/* Content */}
-          <div className="flex-1 p-2 sm:p-3 lg:p-6 overflow-y-auto max-h-[60vh] lg:max-h-[70vh]">
+          <div className="flex-1 p-2 sm:p-3 lg:p-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 200px)' }}>
             {activeTab === 'profile' && (
               <div className="space-y-4 sm:space-y-6 animate-fadeIn">
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900">Profil Information</h3>
@@ -248,7 +248,7 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
             )}
 
             {activeTab === 'activity' && (
-              <div className="space-y-6">
+              <div className="space-y-6 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 150px)' }}>
                 <h3 className="text-lg font-semibold text-gray-900">Min Aktivitet</h3>
                 
                 {/* Liked Posts */}
@@ -328,7 +328,7 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
             )}
 
             {activeTab === 'blocked' && (
-              <div className="space-y-6">
+              <div className="space-y-6 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 150px)' }}>
                 <h3 className="text-lg font-semibold text-gray-900">Blokerede Brugere</h3>
                 
                 {blockedUsers.length > 0 ? (
@@ -457,7 +457,7 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
             )}
 
             {activeTab === 'privacy' && (
-              <div className="space-y-6">
+              <div className="space-y-6 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 150px)' }}>
                 <h3 className="text-lg font-semibold text-gray-900">Privatliv & Sikkerhed</h3>
                 
                 <div className="space-y-4">
@@ -735,7 +735,7 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
             )}
 
             {activeTab === 'help' && (
-              <div className="space-y-6">
+              <div className="space-y-6 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 150px)' }}>
                 <h3 className="text-lg font-semibold text-gray-900">Hjælp & Support</h3>
                 
                 {/* FAQ Section */}
