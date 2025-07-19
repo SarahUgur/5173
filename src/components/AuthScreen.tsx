@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Users, ExternalLink, Eye, EyeOff, Trash2, Edit, X } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Users, ExternalLink, Eye, EyeOff, Trash2, Edit } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import AdBanner from './AdBanner';
 import type { Post } from '../types';
@@ -201,15 +201,10 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
     'Spam eller uønsket indhold',
     'Upassende eller krænkende sprog',
     'Falske oplysninger',
-    '\Svindel eller bedrageri',
+    'Svindel eller bedrageri',
     'Overtræder platformens regler',
     'Andet'
   ];
-
-  const handleUserTypeTogg\le = (type: any) => {
-    // Implementation for user type toggle
-  };
-
   const getUrgencyColor = (urgency: string) => {
     const colors = {
       'immediate': 'bg-red-100 text-red-800',
@@ -284,7 +279,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
           <div className="flex items-center space-x-2 ml-2">
             {post.isJobPost && (
               <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
-                <span className={\`px-2 py-1 rounded-full text-xs font-medium ${getUrgencyColor(post.urgency)}`}>
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getUrgencyColor(post.urgency)}`}>
                   {getUrgencyLabel(post.urgency)}
                 </span>
                 <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hidden sm:inline">
@@ -298,8 +293,8 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                 onClick={() => setShowMoreMenu(!showMoreMenu)}
                 className="p-1 rounded-full hover:bg-gray-100 transition-all duration-200 hover:scale-110"
               >
-                <MoreHorizontal className="w-5 h-5 text-gray-400" />
-              </button>
+              <MoreHorizontal className="w-5 h-5 text-gray-400" />
+            </button>
               
               {/* More Menu Dropdown */}
               {showMoreMenu && (
@@ -381,13 +376,13 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
         )}
 
         {post.images && post.images.length > 0 && (
-          <div className={\`grid gap-2 mb-4 ${post.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+          <div className={`grid gap-2 mb-4 ${post.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
             {post.images.map((image, index) => (
               <React.Fragment key={index}>
                 <div className="relative">
                   <img
                     src={image}
-                    alt={\`Post image ${index + 1}`}
+                    alt={`Post image ${index + 1}`}
                     className="rounded-lg object-cover h-32 sm:h-48 w-full hover:scale-105 transition-transform duration-300 cursor-pointer"
                     onClick={() => handleImageClick(index)}
                   />
@@ -416,7 +411,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                 onClick={() => reactionType ? setReactionType(null) : handleReaction('like')}
                 onMouseEnter={() => setShowReactions(true)}
                 onMouseLeave={() => setTimeout(() => setShowReactions(false), 300)}
-                className={\`reactions-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                className={`reactions-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
                   reactionType ? 'text-blue-600 bg-blue-50' : 
                   !currentUser?.isSubscribed ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'
                 }`}
@@ -454,7 +449,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             
             <button
               onClick={() => handleInteraction('comment')}
-              className={\`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+              className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
                 !currentUser?.isSubscribed ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'
               }`}
               disabled={!currentUser?.isSubscribed}
@@ -467,7 +462,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             <div className="relative">
               <button 
                 onClick={() => setShowShareMenu(!showShareMenu)}
-                className={\`share-menu-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                className={`share-menu-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
                   !currentUser?.isSubscribed ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'
                 }`}
                 disabled={!currentUser?.isSubscribed}
@@ -486,7 +481,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                       <button
                         key={option.platform}
                         onClick={() => handleShare(option.platform)}
-                        className={\`flex items-center space-x-2 p-2 rounded-lg text-white hover:opacity-90 transition-all duration-200 hover:scale-105 ${option.color}`}
+                        className={`flex items-center space-x-2 p-2 rounded-lg text-white hover:opacity-90 transition-all duration-200 hover:scale-105 ${option.color}`}
                       >
                         <span>{option.icon}</span>
                         <span className="text-xs font-medium">{option.name}</span>
@@ -501,7 +496,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
           {post.isJobPost && (
             <button
               onClick={() => handleInteraction('apply')}
-              className={\`px-3 sm:px-6 py-2 rounded-lg font-medium flex items-center space-x-2 text-sm sm:text-base transition-all duration-200 ${
+              className={`px-3 sm:px-6 py-2 rounded-lg font-medium flex items-center space-x-2 text-sm sm:text-base transition-all duration-200 ${
                 currentUser?.isSubscribed 
                   ? 'btn-primary text-white hover:scale-105' 
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -634,7 +629,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleCommentSubmit()}
-                    placeholder={\`${t('writeComment')} (brug @ for at tagge)`}
+                    placeholder={`${t('writeComment')} (brug @ for at tagge)`}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm pr-20 transition-all duration-200"
                   />
                   <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
@@ -674,7 +669,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                   </div>
                   <button
                     onClick={() => {
-                      setCommentText(prev => prev + \`@${user.name} `);
+                      setCommentText(prev => prev + `@${user.name} `);
                       handleTagUser(user.id);
                     }}
                     className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors duration-200 text-sm"
@@ -831,7 +826,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             
             <img
               src={post.images[selectedImageIndex]}
-              alt={\`Post image ${selectedImageIndex + 1}`}
+              alt={`Post image ${selectedImageIndex + 1}`}
               className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
             />
             
@@ -841,7 +836,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                   <button
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}
-                    className={\`w-3 h-3 rounded-full ${
+                    className={`w-3 h-3 rounded-full ${
                       index === selectedImageIndex ? 'bg-white' : 'bg-white bg-opacity-50'
                     }`}
                   />
