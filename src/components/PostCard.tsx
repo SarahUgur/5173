@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Users, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import AdBanner from './AdBanner';
 import UserProfileModal from './UserProfileModal';
@@ -11,17 +11,49 @@ interface PostCardProps {
   onShowSubscription: () => void;
   onReport?: (postId: string, reason: string) => void;
   onShowUserProfile?: (user: any) => void;
+  onTagUser?: (userId: string, postId: string) => void;
+  onSharePost?: (postId: string, platform: string) => void;
 }
 
-export default function PostCard({ post, currentUser, onShowSubscription, onReport, onShowUserProfile }: PostCardProps) {
+export default function PostCard({ post, currentUser, onShowSubscription, onReport, onShowUserProfile, onTagUser, onSharePost }: PostCardProps) {
   const { t, getJobTypeLabel, getUrgencyLabel } = useLanguage();
   const [liked, setLiked] = useState(false);
+  const [reactionType, setReactionType] = useState<'like' | 'love' | 'laugh' | 'wow' | null>(null);
+  const [showReactions, setShowReactions] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [shareCount, setShareCount] = useState(Math.floor(Math.random() * 20) + 5);
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [taggedUsers, setTaggedUsers] = useState<string[]>([]);
+  const [commentText, setCommentText] = useState('');
   const [showComments, setShowComments] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [reportReason, setReportReason] = useState('');
   const [reportDescription, setReportDescription] = useState('');
+
+  const reactions = [
+    { type: 'like', emoji: '👍', label: 'Synes godt om', color: 'text-blue-600' },
+    { type: 'love', emoji: '❤️', label: 'Elsker', color: 'text-red-600' },
+    { type: 'laugh', emoji: '😂', label: 'Sjovt', color: 'text-yellow-600' },
+    { type: 'wow', emoji: '😮', label: 'Wow', color: 'text-purple-600' }
+  ];
+
+  const shareOptions = [
+    { platform: 'facebook', name: 'Facebook', icon: '📘', color: 'bg-blue-600' },
+    { platform: 'instagram', name: 'Instagram', icon: '📷', color: 'bg-pink-600' },
+    { platform: 'whatsapp', name: 'WhatsApp', icon: '💬', color: 'bg-green-600' },
+    { platform: 'messenger', name: 'Messenger', icon: '💬', color: 'bg-blue-500' },
+    { platform: 'twitter', name: 'Twitter', icon: '🐦', color: 'bg-blue-400' },
+    { platform: 'linkedin', name: 'LinkedIn', icon: '💼', color: 'bg-blue-700' },
+    { platform: 'copy', name: 'Kopier Link', icon: '🔗', color: 'bg-gray-600' }
+  ];
+
+  const mockUsers = [
+    { id: '1', name: 'Maria Hansen', avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' },
+    { id: '2', name: 'Lars Nielsen', avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' },
+    { id: '3', name: 'Sofie Andersen', avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' }
+  ];
 
   const handleInteraction = (action: string) => {
     if (!currentUser?.isSubscribed) {
@@ -33,6 +65,77 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
       setLiked(!liked);
     } else if (action === 'comment') {
       setShowComments(!showComments);
+    }
+  };
+
+  const handleReaction = (type: string) => {
+    if (!currentUser?.isSubscribed) {
+      onShowSubscription();
+      return;
+    }
+    setReactionType(reactionType === type ? null : type as any);
+    setShowReactions(false);
+  };
+
+  const handleShare = (platform: string) => {
+    const postUrl = `${window.location.origin}/post/${post.id}`;
+    const text = `Tjek dette opslag på Privat Rengøring: ${post.content.substring(0, 100)}...`;
+    
+    switch (platform) {
+      case 'facebook':
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
+        break;
+      case 'instagram':
+        // Instagram doesn't support direct sharing, copy to clipboard
+        navigator.clipboard.writeText(`${text} ${postUrl}`);
+        alert('Link kopieret! Indsæt i Instagram Story eller post');
+        break;
+      case 'whatsapp':
+        window.open(`https://wa.me/?text=${encodeURIComponent(`${text} ${postUrl}`)}`, '_blank');
+        break;
+      case 'messenger':
+        window.open(`https://www.messenger.com/t/?link=${encodeURIComponent(postUrl)}`, '_blank');
+        break;
+      case 'twitter':
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(postUrl)}`, '_blank');
+        break;
+      case 'linkedin':
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}`, '_blank');
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(postUrl);
+        alert('Link kopieret til udklipsholder!');
+        break;
+    }
+    
+    setShareCount(prev => prev + 1);
+    onSharePost?.(post.id, platform);
+    setShowShareMenu(false);
+  };
+
+  const handleTagUser = (userId: string) => {
+    if (!taggedUsers.includes(userId)) {
+      setTaggedUsers([...taggedUsers, userId]);
+      onTagUser?.(userId, post.id);
+    }
+  };
+
+  const handleCommentSubmit = () => {
+    if (commentText.trim()) {
+      // Process @mentions in comment
+      const mentions = commentText.match(/@(\w+)/g);
+      if (mentions) {
+        mentions.forEach(mention => {
+          const username = mention.substring(1);
+          const user = mockUsers.find(u => u.name.toLowerCase().includes(username.toLowerCase()));
+          if (user) {
+            handleTagUser(user.id);
+          }
+        });
+      }
+      
+      console.log('Posting comment:', commentText);
+      setCommentText('');
     }
   };
 
@@ -210,16 +313,44 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
       <div className="px-3 sm:px-4 py-3 border-t border-gray-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <button
-              onClick={() => handleInteraction('like')}
-              className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-colors duration-200 ${
-                liked ? 'text-red-600 bg-red-50' : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${liked ? 'fill-current' : ''}`} />
-              <span className="font-medium text-sm sm:text-base">{post.likes + (liked ? 1 : 0)}</span>
-              {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />}
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => reactionType ? setReactionType(null) : handleReaction('like')}
+                onMouseEnter={() => setShowReactions(true)}
+                onMouseLeave={() => setTimeout(() => setShowReactions(false), 300)}
+                className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-colors duration-200 ${
+                  reactionType ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                {reactionType ? (
+                  <span className="text-lg">{reactions.find(r => r.type === reactionType)?.emoji}</span>
+                ) : (
+                  <ThumbsUp className="w-4 h-4 sm:w-5 sm:h-5" />
+                )}
+                <span className="font-medium text-sm sm:text-base">{post.likes + (reactionType ? 1 : 0)}</span>
+                {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />}
+              </button>
+              
+              {/* Reaction Menu */}
+              {showReactions && (
+                <div 
+                  className="absolute bottom-full left-0 mb-2 bg-white rounded-full shadow-lg border border-gray-200 p-2 flex space-x-2 z-50"
+                  onMouseEnter={() => setShowReactions(true)}
+                  onMouseLeave={() => setShowReactions(false)}
+                >
+                  {reactions.map((reaction) => (
+                    <button
+                      key={reaction.type}
+                      onClick={() => handleReaction(reaction.type)}
+                      className="hover:scale-125 transition-transform duration-200 p-1"
+                      title={reaction.label}
+                    >
+                      <span className="text-xl">{reaction.emoji}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             
             <button
               onClick={() => handleInteraction('comment')}
@@ -230,10 +361,35 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />}
             </button>
             
-            <button className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors duration-200">
-              <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="font-medium text-sm sm:text-base hidden sm:inline">{t('share')}</span>
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setShowShareMenu(!showShareMenu)}
+                className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors duration-200"
+              >
+                <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="font-medium text-sm sm:text-base">{shareCount}</span>
+                <span className="font-medium text-sm sm:text-base hidden sm:inline ml-1">{t('share')}</span>
+              </button>
+              
+              {/* Share Menu */}
+              {showShareMenu && (
+                <div className="absolute bottom-full left-0 mb-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 p-3 z-50">
+                  <h4 className="font-semibold text-gray-900 mb-3 text-sm">Del opslag</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    {shareOptions.map((option) => (
+                      <button
+                        key={option.platform}
+                        onClick={() => handleShare(option.platform)}
+                        className={`flex items-center space-x-2 p-2 rounded-lg text-white hover:opacity-90 transition-opacity duration-200 ${option.color}`}
+                      >
+                        <span>{option.icon}</span>
+                        <span className="text-xs font-medium">{option.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {post.isJobPost && (
@@ -273,7 +429,18 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                     <span className="font-semibold text-sm">{comment.user.name}</span>
                     <span className="text-xs text-gray-500">{comment.createdAt}</span>
                   </div>
-                  <p className="text-sm text-gray-800">{comment.content}</p>
+                  <p className="text-sm text-gray-800">
+                    {comment.content.split(' ').map((word, index) => {
+                      if (word.startsWith('@')) {
+                        return (
+                          <span key={index} className="text-blue-600 font-medium cursor-pointer hover:underline">
+                            {word}{' '}
+                          </span>
+                        );
+                      }
+                      return word + ' ';
+                    })}
+                  </p>
                 </div>
               </div>
             ))}
@@ -285,15 +452,86 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                 className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex-shrink-0"
               />
               <div className="flex-1">
-                <input
-                  type="text"
-                  placeholder={t('writeComment')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleCommentSubmit()}
+                    placeholder={`${t('writeComment')} (brug @ for at tagge)`}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm pr-20"
+                  />
+                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                    <button
+                      onClick={() => setShowTagModal(true)}
+                      className="p-1 rounded hover:bg-gray-100 transition-colors duration-200"
+                      title="Tag brugere"
+                    >
+                      <Users className="w-4 h-4 text-gray-500" />
+                    </button>
+                    <button
+                      onClick={handleCommentSubmit}
+                      disabled={!commentText.trim()}
+                      className="text-blue-600 hover:text-blue-700 disabled:text-gray-400 text-sm font-medium"
+                    >
+                      Send
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Tag Users Modal */}
+      {showTagModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Tag Brugere</h3>
+            <div className="space-y-3 mb-6">
+              {mockUsers.map((user) => (
+                <div key={user.id} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full" />
+                    <span className="font-medium text-gray-900">{user.name}</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setCommentText(prev => prev + `@${user.name} `);
+                      handleTagUser(user.id);
+                    }}
+                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors duration-200 text-sm"
+                  >
+                    Tag
+                  </button>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => setShowTagModal(false)}
+              className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+            >
+              Luk
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Share Menu Overlay */}
+      {showShareMenu && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowShareMenu(false)}
+        />
+      )}
+
+      {/* Reactions Overlay */}
+      {showReactions && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowReactions(false)}
+        />
       )}
 
       {/* Report Modal */}

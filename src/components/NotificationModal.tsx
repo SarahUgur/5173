@@ -22,44 +22,70 @@ export default function NotificationModal({ isOpen, onClose, onOpenSettings }: N
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: '1',
-      type: 'message',
-      title: 'Ny besked fra Maria Hansen',
-      message: 'Hej! Jeg så dit profil og ville gerne høre mere om dine rengøringsservices...',
+      type: 'job',
+      title: 'Nyt job i dit område',
+      message: 'Hjemmerengøring i København NV - 350 kr. Klik for at se detaljer.',
       time: '5 min siden',
       read: false,
       avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
     },
     {
       id: '2',
-      type: 'job',
-      title: 'Nyt job i dit område',
-      message: 'Kontorrengøring i København - 800 kr/dag. Klik for at se detaljer.',
+      type: 'message',
+      title: 'Ny besked fra Lars Nielsen',
+      message: 'Tak for dit opslag! Jeg er interesseret i jobbet...',
       time: '1 time siden',
       read: false
     },
     {
       id: '3',
-      type: 'connection',
-      title: 'Lars Nielsen vil forbinde',
-      message: 'Lars Nielsen har sendt dig en forbindelsesanmodning.',
+      type: 'system',
+      title: 'Maria Hansen likede dit opslag',
+      message: 'Maria Hansen reagerede med ❤️ på dit opslag om kontorrengøring.',
       time: '2 timer siden',
-      read: true,
+      read: false,
       avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
     },
     {
       id: '4',
-      type: 'job',
-      title: 'Din ansøgning blev accepteret',
-      message: 'Sofie Andersen har accepteret din ansøgning til kontorrengøring.',
+      type: 'system',
+      title: 'Dit opslag blev delt',
+      message: 'Sofie Andersen delte dit opslag på Facebook.',
       time: '3 timer siden',
       read: true,
       avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
     },
     {
       id: '5',
+      type: 'connection',
+      title: 'Peter Hansen vil forbinde',
+      message: 'Peter Hansen har sendt dig en venskabsanmodning.',
+      time: '4 timer siden',
+      read: true,
+      avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
+    },
+    {
+      id: '6',
       type: 'system',
-      title: 'Velkommen til Pro!',
-      message: 'Din Pro-opgradering er nu aktiv. Nyd alle de nye funktioner!',
+      title: 'Du blev tagget i en kommentar',
+      message: 'Anna Nielsen taggede dig i en kommentar: "@DitNavn har du erfaring med dette?"',
+      time: '5 timer siden',
+      read: false,
+      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
+    },
+    {
+      id: '7',
+      type: 'job',
+      title: 'Nyt job tæt på dig',
+      message: 'Hovedrengøring i Østerbro - 2.500 kr. Kun 1.2 km fra dig!',
+      time: '6 timer siden',
+      read: true
+    },
+    {
+      id: '8',
+      type: 'system',
+      title: 'Kommentar på dit opslag',
+      message: 'Michael Sørensen kommenterede: "Hvor lang tid tager denne type rengøring?"',
       time: '1 dag siden',
       read: true
     }

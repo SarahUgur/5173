@@ -18,6 +18,7 @@ import FriendRequestModal from './components/FriendRequestModal';
 import InstallPrompt from './components/InstallPrompt';
 import AdminPage from './components/AdminPage';
 import AdBanner from './components/AdBanner';
+import RecommendationWidget from './components/RecommendationWidget';
 import { mockUsers, getLocalizedPosts } from './data/mockData';
 import { useLanguage } from './hooks/useLanguage';
 
@@ -106,6 +107,16 @@ function App() {
     alert('Bruger rapporteret til admin');
   };
 
+  const handleTagUser = (userId: string, postId: string) => {
+    console.log('Tagging user:', userId, 'in post:', postId);
+    // I en rigtig app ville dette sende en notifikation til den taggede bruger
+    alert('Bruger tagget i opslag!');
+  };
+
+  const handleSharePost = (postId: string, platform: string) => {
+    console.log('Sharing post:', postId, 'on:', platform);
+    // I en rigtig app ville dette tracke delinger for analytics
+  };
   const handleUpdateUser = (updates: any) => {
     setCurrentUser(updates);
     localStorage.setItem('currentUser', JSON.stringify(updates));
@@ -169,6 +180,8 @@ function App() {
                         // I en rigtig app ville dette sendes til admin database
                       }}
                       onShowUserProfile={handleShowUserProfile}
+                      onTagUser={handleTagUser}
+                      onSharePost={handleSharePost}
                     />
                     
                     {/* Reklame efter hver 3. post */}
@@ -211,25 +224,13 @@ function App() {
 
         {/* Right sidebar - Hidden on mobile and tablet */}
         <div className="w-80 p-6 hidden xl:block">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-            <h3 className="font-semibold text-gray-900 mb-3">Trending Jobs</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Hjemmerengøring</span>
-                <span className="text-blue-600 font-medium">+24%</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Kontorrengøring</span>
-                <span className="text-green-600 font-medium">+18%</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Hovedrengøring</span>
-                <span className="text-purple-600 font-medium">+12%</span>
-              </div>
-            </div>
-          </div>
+          <RecommendationWidget 
+            currentUser={currentUser}
+            onShowUserProfile={handleShowUserProfile}
+            onPageChange={setCurrentPage}
+          />
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mt-6">
             <h3 className="font-semibold text-gray-900 mb-3">Foreslåede Kontakter</h3>
             <div className="space-y-3">
               {mockUsers.slice(1).map((user) => (
