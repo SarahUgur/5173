@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Users, Briefcase, TrendingUp, AlertTriangle, Eye, Ban, CheckCircle, XCircle, Search, Filter, BarChart3, DollarSign, Activity, Clock, Globe, MessageCircle, Star, MapPin, Calendar, Bell, Zap, Target, UserCheck, FileText, Settings } from 'lucide-react';
+import AdRevenue from './AdRevenue';
 
 interface AdminPageProps {
   currentUser: any;
@@ -428,6 +429,9 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
       {/* Dashboard */}
       {activeTab === 'dashboard' && (
         <div className="space-y-6">
+          {/* Ad Revenue Component */}
+          <AdRevenue isAdmin={true} />
+          
           {/* Extended Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">

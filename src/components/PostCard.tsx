@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
+import AdBanner from './AdBanner';
 import type { Post } from '../types';
 
 interface PostCardProps {
@@ -175,12 +176,19 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
         {post.images && post.images.length > 0 && (
           <div className={`grid gap-2 mb-4 ${post.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
             {post.images.map((image, index) => (
-              <img
-                key={index}
-                src={image}
-                alt={`Post image ${index + 1}`}
-                className="rounded-lg object-cover h-32 sm:h-48 w-full"
-              />
+              <React.Fragment key={index}>
+                <img
+                  src={image}
+                  alt={`Post image ${index + 1}`}
+                  className="rounded-lg object-cover h-32 sm:h-48 w-full"
+                />
+                {/* Reklame mellem billeder (hver 2. billede) */}
+                {index === 1 && post.images.length > 2 && (
+                  <div className="col-span-full my-2">
+                    <AdBanner type="banner" position="middle" className="w-full" />
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </div>
         )}

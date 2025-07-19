@@ -15,6 +15,7 @@ import SettingsModal from './components/SettingsModal';
 import NotificationModal from './components/NotificationModal';
 import InstallPrompt from './components/InstallPrompt';
 import AdminPage from './components/AdminPage';
+import AdBanner from './components/AdBanner';
 import { mockUsers, getLocalizedPosts } from './data/mockData';
 import { useLanguage } from './hooks/useLanguage';
 
@@ -122,16 +123,28 @@ function App() {
               {/* Posts Feed */}
               <div className="space-y-4 sm:space-y-6 pb-6">
                 {posts.map((post) => (
-                  <PostCard
-                    key={post.id}
-                    post={post}
-                    currentUser={currentUser}
-                    onShowSubscription={() => setShowSubscriptionModal(true)}
-                    onReport={(postId, reason) => {
-                      console.log(`Rapport modtaget for post ${postId}: ${reason}`);
-                      // I en rigtig app ville dette sendes til admin database
-                    }}
-                  />
+                  <React.Fragment key={post.id}>
+                    <PostCard
+                      post={post}
+                      currentUser={currentUser}
+                      onShowSubscription={() => setShowSubscriptionModal(true)}
+                      onReport={(postId, reason) => {
+                        console.log(`Rapport modtaget for post ${postId}: ${reason}`);
+                        // I en rigtig app ville dette sendes til admin database
+                      }}
+                    />
+                    
+                    {/* Reklame efter hver 3. post */}
+                    {(index + 1) % 3 === 0 && (
+                      <div className="mx-3 sm:mx-0">
+                        {index % 6 === 2 ? (
+                          <AdBanner type="video" position="middle" className="w-full" />
+                        ) : (
+                          <AdBanner type="native" position="middle" className="w-full" />
+                        )}
+                      </div>
+                    )}
+                  </React.Fragment>
                 ))}
               </div>
             </div>

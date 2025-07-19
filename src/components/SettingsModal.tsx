@@ -144,7 +144,7 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-white rounded-2xl max-w-4xl w-full h-[95vh] sm:max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="relative p-6 border-b border-gray-200">
           <button
@@ -160,27 +160,28 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
 
         <div className="flex">
           {/* Sidebar */}
-          <div className="w-64 border-r border-gray-200 p-4">
+          <div className="w-20 sm:w-64 border-r border-gray-200 p-2 sm:p-4 overflow-y-auto">
             <nav className="space-y-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors duration-200 ${
+                  className={`w-full flex flex-col sm:flex-row items-center sm:space-x-3 space-y-1 sm:space-y-0 px-1 sm:px-3 py-2 rounded-lg text-left transition-colors duration-200 ${
                     activeTab === tab.id
                       ? 'bg-blue-50 text-blue-700'
                       : 'text-gray-700 hover:bg-gray-50'
                   }`}
                 >
-                  <tab.icon className="w-5 h-5" />
-                  <span>{tab.label}</span>
+                  <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                  <span className="text-xs sm:text-sm font-medium hidden sm:block">{tab.label}</span>
+                  <span className="text-xs font-medium sm:hidden text-center">{tab.label.split(' ')[0]}</span>
                 </button>
               ))}
             </nav>
           </div>
 
           {/* Content */}
-          <div className="flex-1 p-6 overflow-y-auto max-h-[70vh]">
+          <div className="flex-1 p-3 sm:p-6 overflow-y-auto h-[70vh] sm:max-h-[70vh]">
             {activeTab === 'profile' && (
               <div className="space-y-6">
                 <h3 className="text-lg font-semibold text-gray-900">Profil Information</h3>
@@ -827,17 +828,17 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200 bg-gray-50">
+        <div className="p-3 sm:p-6 border-t border-gray-200 bg-gray-50 flex-shrink-0">
           <div className="flex justify-end space-x-3">
             <button
               onClick={onClose}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+              className="px-3 sm:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-sm sm:text-base"
             >
               Annuller
             </button>
             <button
               onClick={handleSave}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              className="px-3 sm:px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm sm:text-base"
             >
               Gem Ændringer
             </button>
