@@ -160,9 +160,22 @@ export default function NetworkPage({ currentUser }: NetworkPageProps) {
             <div className="flex items-center space-x-2">
               {type === 'connection' && (
                 <>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2 text-sm">
+                  <button 
+                    onClick={() => {
+                      if (!currentUser?.isSubscribed) {
+                        alert('🔒 Kun Pro-medlemmer kan sende beskeder. Opgrader for kun 29 kr/måned!');
+                        return;
+                      }
+                      alert('Besked sendt!');
+                    }}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2 text-sm ${
+                      currentUser?.isSubscribed 
+                        ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
                     <MessageCircle className="w-4 h-4" />
-                    <span>Besked</span>
+                    <span>{currentUser?.isSubscribed ? 'Besked' : '🔒 Pro'}</span>
                   </button>
                   <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200 text-sm">
                     Profil
@@ -172,9 +185,22 @@ export default function NetworkPage({ currentUser }: NetworkPageProps) {
               
               {type === 'discover' && (
                 <>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2 text-sm">
+                  <button 
+                    onClick={() => {
+                      if (!currentUser?.isSubscribed) {
+                        alert('🔒 Kun Pro-medlemmer kan forbinde med andre. Opgrader for kun 29 kr/måned!');
+                        return;
+                      }
+                      alert('Forbindelsesanmodning sendt!');
+                    }}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2 text-sm ${
+                      currentUser?.isSubscribed 
+                        ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
                     <UserPlus className="w-4 h-4" />
-                    <span>Forbind</span>
+                    <span>{currentUser?.isSubscribed ? 'Forbind' : '🔒 Pro'}</span>
                   </button>
                   <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200 text-sm">
                     Se profil

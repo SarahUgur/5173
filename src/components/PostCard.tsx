@@ -409,12 +409,13 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             <div className="relative">
               <button
                 onClick={() => reactionType ? setReactionType(null) : handleReaction('like')}
-                className="reactions-dropdown"
                 onMouseEnter={() => setShowReactions(true)}
                 onMouseLeave={() => setTimeout(() => setShowReactions(false), 300)}
-                className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                  reactionType ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'
+                className={`reactions-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                  reactionType ? 'text-blue-600 bg-blue-50' : 
+                  !currentUser?.isSubscribed ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'
                 }`}
+                disabled={!currentUser?.isSubscribed}
               >
                 {reactionType ? (
                   <span className="text-lg">{reactions.find(r => r.type === reactionType)?.emoji}</span>
@@ -448,7 +449,10 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             
             <button
               onClick={() => handleInteraction('comment')}
-              className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-all duration-200 hover:scale-105"
+              className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                !currentUser?.isSubscribed ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'
+              }`}
+              disabled={!currentUser?.isSubscribed}
             >
               <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="font-medium text-sm sm:text-base">{post.comments.length}</span>
@@ -457,9 +461,11 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             
             <div className="relative">
               <button 
-                className="share-menu-dropdown"
                 onClick={() => setShowShareMenu(!showShareMenu)}
-                className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-all duration-200 hover:scale-105"
+                className={`share-menu-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                  !currentUser?.isSubscribed ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'
+                }`}
+                disabled={!currentUser?.isSubscribed}
               >
                 <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="font-medium text-sm sm:text-base">{shareCount}</span>
@@ -490,19 +496,89 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
           {post.isJobPost && (
             <button
               onClick={() => handleInteraction('apply')}
-              className="btn-primary text-white px-3 sm:px-6 py-2 rounded-lg font-medium flex items-center space-x-2 text-sm sm:text-base hover:scale-105"
+              className={`px-3 sm:px-6 py-2 rounded-lg font-medium flex items-center space-x-2 text-sm sm:text-base transition-all duration-200 ${
+                currentUser?.isSubscribed 
+                  ? 'btn-primary text-white hover:scale-105' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+              disabled={!currentUser?.isSubscribed}
             >
-              <span>{t('apply')}</span>
+              <span>{currentUser?.isSubscribed ? t('apply') : 'Kun Pro'}</span>
               {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4" />}
             </button>
           )}
         </div>
 
         {!currentUser?.isSubscribed && (
-          <div className="mt-3 p-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg animate-pulse">
-            <p className="text-xs sm:text-sm text-amber-800">
+          <div className="mt-3 p-3 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <p className="text-xs sm:text-sm text-blue-800 font-medium mb-1">
+                  🔒 Denne funktion er kun for Pro-medlemmer
+                </p>
+                <p className="text-xs text-blue-700">
+                  Som Pro-medlem kan du like, kommentere, ansøge om jobs og sende beskeder
+                </p>
+              </div>
+              <button
+                onClick={onShowSubscription}
+                className="ml-3 px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-xs font-medium"
+              >
+                Opgrader
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Pro Comparison for non-subscribers */}
+        {!currentUser?.isSubscribed && post.isJobPost && (
+          <div className="mt-3 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg">
+            <h4 className="font-semibold text-yellow-900 mb-3">💎 Hvad får du med Pro?</h4>
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <span className="text-green-600">✅</span>
+                  <span className="text-yellow-800">Ansøg om jobs</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-green-600">✅</span>
+                  <span className="text-yellow-800">Send beskeder</span>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <span className="text-green-600">✅</span>
+                  <span className="text-yellow-800">Like og gem opslag</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-green-600">✅</span>
+                  <span className="text-yellow-800">Verificeret profil</span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 pt-3 border-t border-yellow-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-lg font-bold text-yellow-900">29 kr/måned</span>
+                  <span className="text-xs text-yellow-700 ml-2">Opsig når som helst</span>
+                </div>
+                <button
+                  onClick={onShowSubscription}
+                  className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-200 text-sm font-medium"
+                >
+                  Opgrader Nu
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Admin has access to everything */}
+        {currentUser?.email === 'admin@privatrengoring.dk' && (
+          <div className="mt-3 p-3 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg">
+            <p className="text-xs text-red-800 flex items-center space-x-2">
               <Lock className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1" />
-              {t('upgradeToPro')} for at interagere med opslag og kontakte andre brugere
+              <span>🛡️ Admin har fuld adgang til alle funktioner</span>
             </p>
           </div>
         )}

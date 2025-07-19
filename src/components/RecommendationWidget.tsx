@@ -236,12 +236,19 @@ export default function RecommendationWidget({ currentUser, onShowUserProfile, o
                   </span>
                   <button 
                     onClick={() => {
-                      // Simuler følg funktionalitet
-                      alert(`Du følger nu ${user.name}!`);
+                      if (!currentUser?.isSubscribed) {
+                        alert('🔒 Kun Pro-medlemmer kan følge andre brugere. Opgrader for kun 29 kr/måned!');
+                        return;
+                      }
+                      alert(`Du følger nu ${person.name}!`);
                     }}
-                    className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200 transition-colors duration-200"
+                    className={`text-xs px-3 py-1 rounded-full transition-colors duration-200 ${
+                      currentUser?.isSubscribed 
+                        ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' 
+                        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    }`}
                   >
-                    Ansøg
+                    {currentUser?.isSubscribed ? 'Ansøg' : '🔒 Pro'}
                   </button>
                 </div>
               </div>

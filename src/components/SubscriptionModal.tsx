@@ -81,14 +81,69 @@ export default function SubscriptionModal({ isOpen, onClose, onSubscribe, userEm
 
         {/* Features */}
         <div className="p-4 sm:p-6">
+          {/* Comparison Table */}
+          <div className="mb-6 bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 text-center">
+              <h3 className="font-bold text-lg">Gratis vs Pro Medlemskab</h3>
+            </div>
+            <div className="p-4">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-2 font-medium text-gray-900">Funktion</th>
+                    <th className="text-center py-2 font-medium text-gray-600">Gratis</th>
+                    <th className="text-center py-2 font-medium text-blue-600">Pro (29 kr/md)</th>
+                  </tr>
+                </thead>
+                <tbody className="space-y-2">
+                  <tr className="border-b border-gray-100">
+                    <td className="py-2 text-gray-700">Se jobs og opslag</td>
+                    <td className="text-center py-2"><span className="text-green-600 text-lg">✅</span></td>
+                    <td className="text-center py-2"><span className="text-green-600 text-lg">✅</span></td>
+                  </tr>
+                  <tr className="border-b border-gray-100">
+                    <td className="py-2 text-gray-700">Ansøg om jobs</td>
+                    <td className="text-center py-2"><span className="text-red-500 text-lg">❌</span></td>
+                    <td className="text-center py-2"><span className="text-green-600 text-lg">✅</span></td>
+                  </tr>
+                  <tr className="border-b border-gray-100">
+                    <td className="py-2 text-gray-700">Send beskeder direkte</td>
+                    <td className="text-center py-2"><span className="text-red-500 text-lg">❌</span></td>
+                    <td className="text-center py-2"><span className="text-green-600 text-lg">✅</span></td>
+                  </tr>
+                  <tr className="border-b border-gray-100">
+                    <td className="py-2 text-gray-700">Like og gem opslag</td>
+                    <td className="text-center py-2"><span className="text-red-500 text-lg">❌</span></td>
+                    <td className="text-center py-2"><span className="text-green-600 text-lg">✅</span></td>
+                  </tr>
+                  <tr className="border-b border-gray-100">
+                    <td className="py-2 text-gray-700">Prioriteret visning</td>
+                    <td className="text-center py-2"><span className="text-red-500 text-lg">❌</span></td>
+                    <td className="text-center py-2"><span className="text-green-600 text-lg">✅</span></td>
+                  </tr>
+                  <tr className="border-b border-gray-100">
+                    <td className="py-2 text-gray-700">Verificeret profil badge</td>
+                    <td className="text-center py-2"><span className="text-red-500 text-lg">❌</span></td>
+                    <td className="text-center py-2"><span className="text-green-600 text-lg">✅</span></td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-700">Jobstatistikker</td>
+                    <td className="text-center py-2"><span className="text-red-500 text-lg">❌</span></td>
+                    <td className="text-center py-2"><span className="text-green-600 text-lg">✅</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
-            <h3 className="font-semibold text-blue-900 mb-3">🌟 Hvorfor Pro Medlemskab?</h3>
+            <h3 className="font-semibold text-blue-900 mb-3">🌟 Hvorfor vælger folk Pro?</h3>
             <div className="text-sm text-blue-800 space-y-2">
-              <p>• <strong>Ubegrænset kontakt</strong> - Skriv til alle rengøringseksperter</p>
-              <p>• <strong>Prioriteret visning</strong> - Dine opslag vises øverst</p>
-              <p>• <strong>Verificeret badge</strong> - Øg tilliden til din profil</p>
-              <p>• <strong>Avancerede filtre</strong> - Find præcis det du søger</p>
-              <p>• <strong>Ingen reklamer</strong> - Ren og fokuseret oplevelse</p>
+              <p>• <strong>Få flere jobs</strong> - Kun Pro kan ansøge og kontakte kunder</p>
+              <p>• <strong>Byg netværk</strong> - Forbind med andre rengøringseksperter</p>
+              <p>• <strong>Øg tillid</strong> - Verificeret badge giver mere troværdighed</p>
+              <p>• <strong>Spar tid</strong> - Prioriteret visning og avancerede filtre</p>
+              <p>• <strong>Ingen reklamer</strong> - Fokuseret og professionel oplevelse</p>
             </div>
           </div>
 

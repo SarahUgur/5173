@@ -360,10 +360,10 @@ export default function Header({
               {!currentUser?.isSubscribed && (
               <button 
                 onClick={onShowSubscription}
-                className="btn-primary text-white px-2 py-1.5 sm:px-4 sm:py-2 lg:px-6 lg:py-2 rounded-full text-xs sm:text-sm font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="btn-primary text-white px-2 py-1.5 sm:px-4 sm:py-2 lg:px-6 lg:py-2 rounded-full text-xs sm:text-sm font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 animate-pulse"
               >
                 <span className="hidden sm:inline">{t('upgradeToPro')}</span>
-                <span className="sm:hidden">Pro</span>
+                <span className="sm:hidden">🔒 Pro</span>
               </button>
             )}
             

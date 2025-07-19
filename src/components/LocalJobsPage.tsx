@@ -460,8 +460,21 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
                       <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
                         {t('seeDetails')}
                       </button>
-                      <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                        {t('applyNow')}
+                      <button 
+                        onClick={() => {
+                          if (!currentUser?.isSubscribed) {
+                            alert('🔒 Kun Pro-medlemmer kan ansøge om jobs. Opgrader for kun 29 kr/måned!');
+                            return;
+                          }
+                          alert(`Ansøgning sendt til ${job.client.name}! De vil kontakte dig snart.`);
+                        }}
+                        className={`px-6 py-2 rounded-lg transition-colors duration-200 font-medium ${
+                          currentUser?.isSubscribed 
+                            ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
+                      >
+                        {currentUser?.isSubscribed ? t('applyNow') : '🔒 Kun Pro'}
                       </button>
                     </div>
                   </div>
