@@ -131,7 +131,7 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
                 <textarea
                   value={editData.bio}
                   onChange={(e) => setEditData({...editData, bio: e.target.value})}
-                  placeholder="Fortæl lidt om dig selv..."
+                  placeholder="Skriv kort hvem du er, og hvad du tilbyder inden for rengøring..."
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={2}
                 />

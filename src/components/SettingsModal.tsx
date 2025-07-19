@@ -240,7 +240,7 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                     value={settings.bio}
                     onChange={(e) => updateSetting('bio', e.target.value)}
                     rows={2}
-                    placeholder="Fortæl lidt om dig selv..."
+                    placeholder="Skriv kort hvem du er, og hvad du tilbyder inden for rengøring..."
                     className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base transition-all duration-200"
                   />
                 </div>
