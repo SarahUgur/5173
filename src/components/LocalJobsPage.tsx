@@ -150,7 +150,7 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
       jobType: 'home_cleaning',
       urgency: 'this_week',
       duration: '1-3',
-      frequency: 'one_time',
+      frequency: 'one-time',
       client: {
         name: 'Anna Nielsen',
         avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
