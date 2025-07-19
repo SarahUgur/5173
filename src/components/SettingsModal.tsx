@@ -81,7 +81,11 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
     theme: 'light',
     language: language,
     autoRefresh: true,
-    soundEnabled: true
+    soundEnabled: true,
+    
+    // Online status
+    showOnlineStatus: true,
+    appearOffline: false
   });
 
   if (!isOpen) return null;
@@ -646,6 +650,48 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                     >
                       <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
                         settings.soundEnabled ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-5 h-5 rounded-full ${settings.appearOffline ? 'bg-gray-400' : 'bg-green-500'}`}></div>
+                      <div>
+                        <p className="font-medium text-gray-900">Online Status</p>
+                        <p className="text-sm text-gray-600">Vis dig som online for andre brugere</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => updateSetting('appearOffline', !settings.appearOffline)}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        !settings.appearOffline ? 'bg-green-600' : 'bg-gray-300'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        !settings.appearOffline ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-blue-600 text-xs">👁️</span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">Vis Online Status</p>
+                        <p className="text-sm text-gray-600">Andre kan se når du er online</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => updateSetting('showOnlineStatus', !settings.showOnlineStatus)}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        settings.showOnlineStatus ? 'bg-blue-600' : 'bg-gray-300'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        settings.showOnlineStatus ? 'translate-x-6' : 'translate-x-1'
                       }`} />
                     </button>
                   </div>
