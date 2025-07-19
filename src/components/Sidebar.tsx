@@ -18,10 +18,11 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
   
   const menuItems = [
     { icon: Home, label: t('home'), page: 'home' },
+    { icon: MapPin, label: 'Kort', page: 'map' },
     { icon: Briefcase, label: t('myTasks'), page: 'tasks', count: 3 },
     { icon: Users, label: t('network'), page: 'network', count: 12 },
     { icon: Star, label: t('favorites'), page: 'favorites' },
-    { icon: MapPin, label: t('localJobs'), page: 'local' },
+    { icon: Globe, label: t('localJobs'), page: 'local' },
     { icon: Calendar, label: t('planning'), page: 'planning' },
     { icon: TrendingUp, label: t('trending'), page: 'trending' },
     ...(isAdmin ? [{ icon: Shield, label: 'Admin', page: 'admin', adminOnly: true }] : []),

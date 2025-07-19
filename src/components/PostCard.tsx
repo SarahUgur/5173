@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Users, ExternalLink } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Users, ExternalLink, Eye, EyeOff, Trash2, Edit } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import AdBanner from './AdBanner';
-import UserProfileModal from './UserProfileModal';
 import type { Post } from '../types';
 
 interface PostCardProps {
@@ -31,6 +30,9 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [reportReason, setReportReason] = useState('');
   const [reportDescription, setReportDescription] = useState('');
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isPostHidden, setIsPostHidden] = useState(false);
 
   const reactions = [
     { type: 'like', emoji: '👍', label: 'Synes godt om', color: 'text-blue-600' },
@@ -156,6 +158,24 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
     setShowMoreMenu(false);
   };
 
+  const handleImageClick = (index: number) => {
+    setSelectedImageIndex(index);
+    setShowImageModal(true);
+  };
+
+  const handleHidePost = () => {
+    setIsPostHidden(true);
+    setShowMoreMenu(false);
+    alert('Opslag skjult. Du kan vise det igen i dine indstillinger.');
+  };
+
+  const handleDeletePost = () => {
+    if (confirm('Er du sikker på at du vil slette dette opslag? Dette kan ikke fortrydes.')) {
+      alert('Opslag slettet permanent.');
+      setShowMoreMenu(false);
+    }
+  };
+
   const reportReasons = [
     'Spam eller uønsket indhold',
     'Upassende eller krænkende sprog',
@@ -172,6 +192,22 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
     };
     return colors[urgency as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
+
+  // Skjul opslag hvis brugeren har valgt det
+  if (isPostHidden) {
+    return (
+      <div className="bg-gray-100 rounded-xl p-4 mx-3 sm:mx-0 text-center">
+        <EyeOff className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+        <p className="text-gray-600">Opslag skjult</p>
+        <button
+          onClick={() => setIsPostHidden(false)}
+          className="text-blue-600 hover:text-blue-700 text-sm mt-2"
+        >
+          Vis igen
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-xl shadow-soft border border-gray-200 overflow-hidden hover:shadow-medium transition-all duration-300 mx-3 sm:mx-0 card hover-lift">
@@ -234,6 +270,25 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               {/* More Menu Dropdown */}
               {showMoreMenu && (
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                  {post.userId === currentUser?.id && (
+                    <>
+                      <button
+                        onClick={handleHidePost}
+                        className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200 text-gray-700"
+                      >
+                        <EyeOff className="w-4 h-4" />
+                        <span className="text-sm">Skjul opslag</span>
+                      </button>
+                      <button
+                        onClick={handleDeletePost}
+                        className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200 text-red-600"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span className="text-sm">Slet opslag</span>
+                      </button>
+                      <hr className="my-2" />
+                    </>
+                  )}
                   <button
                     onClick={() => {
                       setShowBlockModal(true);
@@ -292,11 +347,17 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
           <div className={`grid gap-2 mb-4 ${post.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
             {post.images.map((image, index) => (
               <React.Fragment key={index}>
-                <img
-                  src={image}
-                  alt={`Post image ${index + 1}`}
-                  className="rounded-lg object-cover h-32 sm:h-48 w-full hover:scale-105 transition-transform duration-300 cursor-pointer"
-                />
+                <div className="relative">
+                  <img
+                    src={image}
+                    alt={`Post image ${index + 1}`}
+                    className="rounded-lg object-cover h-32 sm:h-48 w-full hover:scale-105 transition-transform duration-300 cursor-pointer"
+                    onClick={() => handleImageClick(index)}
+                  />
+                  <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
+                    {index + 1}/{post.images.length}
+                  </div>
+                </div>
                 {/* Reklame mellem billeder (hver 2. billede) */}
                 {index === 1 && post.images.length > 2 && (
                   <div className="col-span-full my-2">
@@ -637,6 +698,44 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               >
                 Blokér Bruger
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Modal */}
+      {showImageModal && post.images && (
+        <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
+          <div className="relative max-w-4xl w-full">
+            <button
+              onClick={() => setShowImageModal(false)}
+              className="absolute top-4 right-4 p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-75 z-10"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            
+            <img
+              src={post.images[selectedImageIndex]}
+              alt={`Post image ${selectedImageIndex + 1}`}
+              className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
+            />
+            
+            {post.images.length > 1 && (
+              <div className="flex justify-center space-x-2 mt-4">
+                {post.images.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImageIndex(index)}
+                    className={`w-3 h-3 rounded-full ${
+                      index === selectedImageIndex ? 'bg-white' : 'bg-white bg-opacity-50'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+            
+            <div className="absolute bottom-4 left-4 bg-black bg-opacity-75 text-white px-3 py-2 rounded">
+              {selectedImageIndex + 1} af {post.images.length}
             </div>
           </div>
         </div>

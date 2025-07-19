@@ -83,6 +83,7 @@ export default function Header({
 
   const navigationItems = [
     { icon: Home, label: t('home'), page: 'home', active: currentPage === 'home' },
+    { icon: MapPin, label: 'Kort', page: 'map', active: currentPage === 'map' },
     { icon: Briefcase, label: t('jobs'), page: 'local', active: currentPage === 'local' },
     { icon: Users, label: t('network'), page: 'network', active: currentPage === 'network' },
     { icon: Calendar, label: t('planning'), page: 'planning', active: currentPage === 'planning' }

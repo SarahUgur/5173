@@ -16,6 +16,9 @@ import NotificationModal from './components/NotificationModal';
 import UserProfileModal from './components/UserProfileModal';
 import FriendRequestModal from './components/FriendRequestModal';
 import InstallPrompt from './components/InstallPrompt';
+import MessagesModal from './components/MessagesModal';
+import UserProfilePage from './components/UserProfilePage';
+import MapPage from './components/MapPage';
 import AdminPage from './components/AdminPage';
 import AdBanner from './components/AdBanner';
 import RecommendationWidget from './components/RecommendationWidget';
@@ -37,7 +40,6 @@ function App() {
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [posts, setPosts] = useState(() => getLocalizedPosts(language));
   const [showUserProfile, setShowUserProfile] = useState(false);
@@ -215,9 +217,15 @@ function App() {
         onShowSubscription={() => setShowSubscriptionModal(true)}
         onLogout={handleLogout}
         onToggleMobileMenu={toggleMobileMenu}
-        onShowMessages={() => setShowMessages(true)}
+        onShowMessages={() => {
+          if (!currentUser?.isSubscribed) {
+            setShowSubscriptionModal(true);
+          } else {
+            setShowMessages(true);
+          }
+        }}
         onShowNotifications={() => setShowNotifications(true)}
-        onShowProfile={() => setShowProfile(true)}
+        onShowProfile={() => setCurrentPage('profile')}
         onShowSettings={() => setShowSettings(true)}
         onShowFriendRequests={() => setShowFriendRequests(true)}
         currentPage={currentPage}
@@ -299,6 +307,22 @@ function App() {
             </div>
           )}
           
+          {currentPage === 'profile' && (
+            <div className="animate-fadeIn">
+              <UserProfilePage 
+                currentUser={currentUser} 
+                onUpdateUser={handleUpdateUser}
+                onShowSettings={() => setShowSettings(true)}
+              />
+            </div>
+          )}
+          
+          {currentPage === 'map' && (
+            <div className="animate-fadeIn">
+              <MapPage currentUser={currentUser} />
+            </div>
+          )}
+          
           {currentPage === 'admin' && currentUser?.email === 'admin@privatrengoring.dk' && (
             <div className="animate-fadeIn">
               <AdminPage currentUser={currentUser} />
@@ -348,7 +372,12 @@ function App() {
         userEmail={currentUser.email}
       />
       
-      {/* Messages Modal */}
+      <MessagesModal
+        isOpen={showMessages}
+        onClose={() => setShowMessages(false)}
+        currentUser={currentUser}
+      />
+      
       <SettingsModal
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
