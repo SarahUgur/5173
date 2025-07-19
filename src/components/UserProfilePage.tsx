@@ -97,6 +97,49 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
 
       {/* Profile Header */}
       <div className="bg-white rounded-b-2xl shadow-sm border border-gray-200 p-4 sm:p-6 -mt-16 relative z-10">
+        {/* Profile Completion */}
+        <div className="mb-6 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-yellow-900">Fuldfør din profil</h3>
+            <span className="text-2xl font-bold text-yellow-700">75%</span>
+          </div>
+          <div className="w-full bg-yellow-200 rounded-full h-2 mb-3">
+            <div className="bg-yellow-600 h-2 rounded-full" style={{ width: '75%' }}></div>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            <div className="flex items-center space-x-2">
+              <span className="text-green-600">✅</span>
+              <span className="text-yellow-800">Profilbillede</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-green-600">✅</span>
+              <span className="text-yellow-800">Navn & lokation</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-red-600">❌</span>
+              <span className="text-yellow-800">Bio beskrivelse</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-green-600">✅</span>
+              <span className="text-yellow-800">Kontaktinfo</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-red-600">❌</span>
+              <span className="text-yellow-800">Arbejdsområder</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-green-600">✅</span>
+              <span className="text-yellow-800">Erfaring</span>
+            </div>
+          </div>
+          <button
+            onClick={() => setIsEditing(true)}
+            className="mt-3 w-full bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors duration-200 font-medium"
+          >
+            Fuldfør Profil Nu
+          </button>
+        </div>
+
         <div className="flex flex-col sm:flex-row items-start sm:items-end space-y-4 sm:space-y-0 sm:space-x-6">
           {/* Avatar */}
           <div className="relative -mt-16 sm:-mt-20">

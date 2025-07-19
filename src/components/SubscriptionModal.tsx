@@ -81,6 +81,17 @@ export default function SubscriptionModal({ isOpen, onClose, onSubscribe, userEm
 
         {/* Features */}
         <div className="p-4 sm:p-6">
+          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+            <h3 className="font-semibold text-blue-900 mb-3">🌟 Hvorfor Pro Medlemskab?</h3>
+            <div className="text-sm text-blue-800 space-y-2">
+              <p>• <strong>Ubegrænset kontakt</strong> - Skriv til alle rengøringseksperter</p>
+              <p>• <strong>Prioriteret visning</strong> - Dine opslag vises øverst</p>
+              <p>• <strong>Verificeret badge</strong> - Øg tilliden til din profil</p>
+              <p>• <strong>Avancerede filtre</strong> - Find præcis det du søger</p>
+              <p>• <strong>Ingen reklamer</strong> - Ren og fokuseret oplevelse</p>
+            </div>
+          </div>
+
           <h3 className="text-lg sm:text-xl font-semibold gradient-text mb-4">Hvad får du med Pro?</h3>
           <div className="grid grid-cols-1 gap-3 sm:gap-4">
             {features.map((feature, index) => (

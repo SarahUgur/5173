@@ -248,6 +248,14 @@ const translations: Translations = {
     tr: 'Tek Seferlik İş',
     de: 'Einmaliger Job'
   },
+  oneTimeCleaning: {
+    da: 'Engangsrengøring',
+    en: 'One-time Cleaning',
+    ar: 'تنظيف لمرة واحدة',
+    pl: 'Jednorazowe Sprzątanie',
+    tr: 'Tek Seferlik Temizlik',
+    de: 'Einmalige Reinigung'
+  },
 
   // New cleaning categories
   specializedCleaning: {

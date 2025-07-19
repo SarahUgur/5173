@@ -440,11 +440,9 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
 
                 <button
                   type="submit"
-                  disabled={!content.trim()}
+                  disabled={false}
                   className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:scale-105 ${
-                    content.trim()
-                      ? 'btn-primary text-white'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    'btn-primary text-white'
                   }`}
                 >
                   {postType === 'job' ? t('createJob') : t('share')}
