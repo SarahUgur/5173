@@ -251,6 +251,36 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
               <div className="space-y-6 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 150px)' }}>
                 <h3 className="text-lg font-semibold text-gray-900">Min Aktivitet</h3>
                 
+                {/* Aktivitets Badges */}
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 mb-6">
+                  <h4 className="font-semibold text-purple-900 mb-3">🏆 Dine Badges</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {userActivity.likedPosts.length > 5 && (
+                      <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
+                        ❤️ Aktiv Liker
+                      </span>
+                    )}
+                    {userActivity.comments.length > 3 && (
+                      <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                        💬 Kommenterer Ofte
+                      </span>
+                    )}
+                    {userActivity.savedPosts.length > 2 && (
+                      <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                        ⭐ Samler Favoritter
+                      </span>
+                    )}
+                    {userActivity.sharedPosts.length > 0 && (
+                      <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                        🔄 Deler Indhold
+                      </span>
+                    )}
+                    <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
+                      🔥 Aktiv Bruger
+                    </span>
+                  </div>
+                </div>
+
                 {/* Liked Posts */}
                 <div className="bg-blue-50 rounded-lg p-4">
                   <h4 className="font-semibold text-blue-900 mb-3 flex items-center">
@@ -388,7 +418,43 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                       }`} />
                     </button>
                   </div>
-                  <p className="text-sm text-blue-700">Modtag notifikationer direkte på din enhed</p>
+                  <p className="text-sm text-blue-700">Du vil nu modtage beskeder om nye jobs i dit område og direkte beskeder</p>
+                  
+                  {/* Notifikation Indstillinger */}
+                  {settings.pushNotifications && (
+                    <div className="mt-4 p-4 bg-white rounded-lg border border-blue-200">
+                      <h5 className="font-medium text-blue-900 mb-3">Vælg notifikation typer:</h5>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-blue-800">Nye jobs i mit område</span>
+                          <button className="relative inline-flex h-5 w-9 items-center rounded-full bg-blue-600">
+                            <span className="inline-block h-3 w-3 transform rounded-full bg-white translate-x-5" />
+                          </button>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-blue-800">Direkte beskeder</span>
+                          <button className="relative inline-flex h-5 w-9 items-center rounded-full bg-blue-600">
+                            <span className="inline-block h-3 w-3 transform rounded-full bg-white translate-x-5" />
+                          </button>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-blue-800">Jobansøgninger</span>
+                          <button className="relative inline-flex h-5 w-9 items-center rounded-full bg-gray-300">
+                            <span className="inline-block h-3 w-3 transform rounded-full bg-white translate-x-1" />
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4">
+                        <label className="block text-sm font-medium text-blue-800 mb-2">Hyppighed:</label>
+                        <select className="w-full p-2 border border-blue-300 rounded-lg text-sm">
+                          <option value="instant">Straks</option>
+                          <option value="daily">Dagligt sammendrag</option>
+                          <option value="weekly">Ugentligt sammendrag</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Email Notifikationer */}
@@ -495,8 +561,8 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-gray-900">Vis telefonnummer</p>
-                      <p className="text-sm text-gray-600">Andre kan se dit telefonnummer</p>
+                      <p className="font-medium text-gray-900">Vis telefonnummer på profil</p>
+                      <p className="text-sm text-gray-600">Gør det nemt for kunder at kontakte dig direkte</p>
                     </div>
                     <button
                       onClick={() => updateSetting('showPhone', !settings.showPhone)}
@@ -512,8 +578,8 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-gray-900">Vis email adresse</p>
-                      <p className="text-sm text-gray-600">Andre kan se din email adresse</p>
+                      <p className="font-medium text-gray-900">Vis email adresse på profil</p>
+                      <p className="text-sm text-gray-600">Tillad professionel kontakt via email</p>
                     </div>
                     <button
                       onClick={() => updateSetting('showEmail', !settings.showEmail)}
@@ -529,8 +595,8 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-gray-900">Vis lokation</p>
-                      <p className="text-sm text-gray-600">Andre kan se din lokation</p>
+                      <p className="font-medium text-gray-900">Vis arbejdsområde</p>
+                      <p className="text-sm text-gray-600">Vis by eller område du arbejder i (f.eks. København)</p>
                     </div>
                     <button
                       onClick={() => updateSetting('showLocation', !settings.showLocation)}
@@ -581,7 +647,7 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium text-gray-900">Tillad direkte beskeder</p>
-                      <p className="text-sm text-gray-600">Andre kan sende dig private beskeder</p>
+                      <p className="text-sm text-gray-600">Tillad at andre kontakter dig uden forbindelse først</p>
                     </div>
                     <button
                       onClick={() => updateSetting('allowDirectMessages', !settings.allowDirectMessages)}
@@ -628,8 +694,8 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                       onChange={(e) => updateSetting('theme', e.target.value)}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                      <option value="light">Lyst</option>
-                      <option value="dark">Mørkt</option>
+                      <option value="light">Lyst tema (hvid baggrund)</option>
+                      <option value="dark">Mørkt tema (skån øjnene)</option>
                       <option value="auto">Automatisk</option>
                     </select>
                   </div>
@@ -703,17 +769,71 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
               <div className="space-y-6">
                 <h3 className="text-lg font-semibold text-gray-900">Abonnement</h3>
                 
+                {/* Pro vs Gratis Sammenligning */}
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 mb-6">
+                  <h4 className="text-xl font-bold text-gray-900 mb-4 text-center">Gratis vs Pro Medlemskab</h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-gray-200">
+                          <th className="text-left py-3 px-2 font-semibold text-gray-900">Funktion</th>
+                          <th className="text-center py-3 px-2 font-semibold text-gray-600">Gratis Bruger</th>
+                          <th className="text-center py-3 px-2 font-semibold text-purple-700">Pro Bruger (29 kr/md)</th>
+                        </tr>
+                      </thead>
+                      <tbody className="space-y-2">
+                        <tr className="border-b border-gray-100">
+                          <td className="py-3 px-2 font-medium">Søg og ansøg jobs</td>
+                          <td className="text-center py-3 px-2"><span className="text-green-600 text-lg">✅</span></td>
+                          <td className="text-center py-3 px-2"><span className="text-green-600 text-lg">✅</span></td>
+                        </tr>
+                        <tr className="border-b border-gray-100">
+                          <td className="py-3 px-2 font-medium">Ubegrænset profilvisning</td>
+                          <td className="text-center py-3 px-2"><span className="text-red-600 text-lg">❌</span></td>
+                          <td className="text-center py-3 px-2"><span className="text-green-600 text-lg">✅</span></td>
+                        </tr>
+                        <tr className="border-b border-gray-100">
+                          <td className="py-3 px-2 font-medium">Send beskeder direkte</td>
+                          <td className="text-center py-3 px-2"><span className="text-red-600 text-lg">❌</span></td>
+                          <td className="text-center py-3 px-2"><span className="text-green-600 text-lg">✅</span></td>
+                        </tr>
+                        <tr className="border-b border-gray-100">
+                          <td className="py-3 px-2 font-medium">Prioriteret visning i søgeresultater</td>
+                          <td className="text-center py-3 px-2"><span className="text-red-600 text-lg">❌</span></td>
+                          <td className="text-center py-3 px-2"><span className="text-green-600 text-lg">✅</span></td>
+                        </tr>
+                        <tr className="border-b border-gray-100">
+                          <td className="py-3 px-2 font-medium">Adgang til jobstatistikker</td>
+                          <td className="text-center py-3 px-2"><span className="text-red-600 text-lg">❌</span></td>
+                          <td className="text-center py-3 px-2"><span className="text-green-600 text-lg">✅</span></td>
+                        </tr>
+                        <tr className="border-b border-gray-100">
+                          <td className="py-3 px-2 font-medium">Verificeret profil badge</td>
+                          <td className="text-center py-3 px-2"><span className="text-red-600 text-lg">❌</span></td>
+                          <td className="text-center py-3 px-2"><span className="text-green-600 text-lg">✅</span></td>
+                        </tr>
+                        <tr>
+                          <td className="py-3 px-2 font-medium">Ingen reklamer</td>
+                          <td className="text-center py-3 px-2"><span className="text-red-600 text-lg">❌</span></td>
+                          <td className="text-center py-3 px-2"><span className="text-green-600 text-lg">✅</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
                 {currentUser?.isSubscribed ? (
                   <div className="bg-green-50 rounded-lg p-4">
                     <div className="flex items-center space-x-2 mb-2">
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                       <span className="font-semibold text-green-900">Pro Medlem</span>
                     </div>
-                    <p className="text-green-700 mb-4">Du har fuld adgang til alle funktioner</p>
+                    <p className="text-green-700 mb-4">Du har fuld adgang til alle Pro funktioner og kan kontakte alle brugere direkte</p>
                     <div className="space-y-2 text-sm text-green-700">
                       <p>• Næste betaling: 15. februar 2024</p>
                       <p>• Beløb: 29 kr/måned</p>
                       <p>• Status: Aktiv</p>
+                      <p>• Opgraderingsfordele: Verificeret badge, prioriteret visning, ingen reklamer</p>
                     </div>
                     <button 
                       onClick={() => window.location.href = 'mailto:support@privatrengoring.dk?subject=Opsigelse af Pro Abonnement&body=Hej Support Team,%0D%0A%0D%0AJeg ønsker at opsige mit Pro abonnement.%0D%0A%0D%0AKonto email: ' + encodeURIComponent(currentUser?.email || '') + '%0D%0A%0D%0AMed venlig hilsen'}
@@ -725,7 +845,13 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                 ) : (
                   <div className="bg-blue-50 rounded-lg p-4">
                     <h4 className="font-semibold text-blue-900 mb-2">Gratis Bruger</h4>
-                    <p className="text-blue-700 mb-4">Opgrader til Pro for fuld adgang</p>
+                    <p className="text-blue-700 mb-4">Du kan søge jobs og se profiler, men har begrænsede kontaktmuligheder</p>
+                    <div className="space-y-2 text-sm text-blue-700 mb-4">
+                      <p>• Kan søge og ansøge jobs</p>
+                      <p>• Kan se andre profiler (begrænset)</p>
+                      <p>• Kan ikke sende direkte beskeder</p>
+                      <p>• Ingen prioriteret visning</p>
+                    </div>
                     <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
                       Opgrader til Pro
                     </button>
@@ -742,6 +868,22 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                 <div className="p-4 bg-blue-50 rounded-lg">
                   <h4 className="font-semibold text-blue-900 mb-4">Ofte Stillede Spørgsmål</h4>
                   <div className="space-y-3">
+                    <div className="bg-white rounded-lg p-3">
+                      <h5 className="font-medium text-blue-900 mb-2">Hvordan opretter jeg et jobopslag?</h5>
+                      <p className="text-sm text-blue-700">Gå til hjemmesiden, klik i tekstfeltet "Hvad kan du hjælpe med i dag?", vælg "Job Opslag" og udfyld alle felter. Husk at tilføje lokation og budget.</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3">
+                      <h5 className="font-medium text-blue-900 mb-2">Hvordan ændrer jeg mit abonnement?</h5>
+                      <p className="text-sm text-blue-700">Gå til "Indstillinger" → "Abonnement". Pro medlemmer kan opsige via email til support. Gratis brugere kan opgradere direkte.</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3">
+                      <h5 className="font-medium text-blue-900 mb-2">Hvordan rapporterer jeg en bruger?</h5>
+                      <p className="text-sm text-blue-700">Klik på "..." menuen på brugerens opslag eller profil, vælg "Rapportér" og beskriv problemet. Admin teamet gennemgår alle rapporter.</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3">
+                      <h5 className="font-medium text-blue-900 mb-2">Hvordan får jeg flere anmeldelser?</h5>
+                      <p className="text-sm text-blue-700">Udfør jobs professionelt, kommuniker klart med kunder, og bed høfligt om feedback efter afsluttet arbejde. Verificeret profil hjælper også.</p>
+                    </div>
                     <div className="bg-white rounded-lg p-3">
                       <h5 className="font-medium text-blue-900 mb-2">Hvordan sletter jeg mit opslag?</h5>
                       <p className="text-sm text-blue-700">Klik på "..." menuen på dit opslag og vælg "Slet opslag". Dette kan ikke fortrydes.</p>
