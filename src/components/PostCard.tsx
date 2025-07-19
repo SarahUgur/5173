@@ -30,6 +30,27 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [reportReason, setReportReason] = useState('');
   const [reportDescription, setReportDescription] = useState('');
+  
+  // Auto-close dropdowns when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      
+      if (!target.closest('.more-menu-dropdown')) {
+        setShowMoreMenu(false);
+      }
+      if (!target.closest('.share-menu-dropdown')) {
+        setShowShareMenu(false);
+      }
+      if (!target.closest('.reactions-dropdown')) {
+        setShowReactions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isPostHidden, setIsPostHidden] = useState(false);
@@ -268,6 +289,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             )}
             <div className="relative">
               <button 
+                className="more-menu-dropdown"
                 onClick={() => setShowMoreMenu(!showMoreMenu)}
                 className="p-1 rounded-full hover:bg-gray-100 transition-all duration-200 hover:scale-110"
               >
@@ -276,7 +298,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               
               {/* More Menu Dropdown */}
               {showMoreMenu && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 more-menu-dropdown">
                   {post.userId === currentUser?.id && (
                     <>
                       <button
@@ -384,6 +406,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             <div className="relative">
               <button
                 onClick={() => reactionType ? setReactionType(null) : handleReaction('like')}
+                className="reactions-dropdown"
                 onMouseEnter={() => setShowReactions(true)}
                 onMouseLeave={() => setTimeout(() => setShowReactions(false), 300)}
                 className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
@@ -402,7 +425,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               {/* Reaction Menu */}
               {showReactions && (
                 <div 
-                  className="absolute bottom-full left-0 mb-2 bg-white rounded-full shadow-strong border border-gray-200 p-2 flex space-x-2 z-50 animate-fadeIn"
+                  className="absolute bottom-full left-0 mb-2 bg-white rounded-full shadow-strong border border-gray-200 p-2 flex space-x-2 z-50 animate-fadeIn reactions-dropdown"
                   onMouseEnter={() => setShowReactions(true)}
                   onMouseLeave={() => setShowReactions(false)}
                 >
@@ -431,6 +454,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             
             <div className="relative">
               <button 
+                className="share-menu-dropdown"
                 onClick={() => setShowShareMenu(!showShareMenu)}
                 className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-all duration-200 hover:scale-105"
               >
@@ -441,7 +465,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               
               {/* Share Menu */}
               {showShareMenu && (
-                <div className="absolute bottom-full left-0 mb-2 w-64 bg-white rounded-xl shadow-strong border border-gray-200 p-3 z-50 animate-fadeIn">
+                <div className="absolute bottom-full left-0 mb-2 w-64 bg-white rounded-xl shadow-strong border border-gray-200 p-3 z-50 animate-fadeIn share-menu-dropdown">
                   <h4 className="font-semibold text-gray-900 mb-3 text-sm">Del opslag</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {shareOptions.map((option) => (

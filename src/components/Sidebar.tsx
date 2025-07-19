@@ -13,6 +13,21 @@ interface SidebarProps {
 export default function Sidebar({ currentUser, isOpen = true, onClose, currentPage = 'home', onPageChange }: SidebarProps) {
   const { t } = useLanguage();
   
+  // Auto-close sidebar on mobile when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      
+      // Only auto-close on mobile/tablet
+      if (window.innerWidth < 1024 && !target.closest('.sidebar-container') && isOpen) {
+        onClose?.();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen, onClose]);
+
   // Check if user is admin
   const isAdmin = currentUser?.email === 'admin@privatrengoring.dk';
   
@@ -50,7 +65,7 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
       {/* Sidebar */}
       <div className={`
         fixed md:static inset-y-0 left-0 z-50 md:z-auto
-        w-64 bg-gradient-to-b from-white to-gray-50 h-full border-r border-gray-200 md:shadow-soft
+        w-64 bg-gradient-to-b from-white to-gray-50 h-full border-r border-gray-200 md:shadow-soft sidebar-container
         transform transition-all duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         md:block

@@ -10,6 +10,16 @@ interface RecommendationWidgetProps {
 export default function RecommendationWidget({ currentUser, onShowUserProfile, onPageChange }: RecommendationWidgetProps) {
   const [activeTab, setActiveTab] = useState<'users' | 'jobs' | 'trending'>('users');
 
+  // Auto-close any dropdowns when clicking outside (if any are added later)
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Future dropdown handling can be added here
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // Mock recommendation data
   const recommendedUsers = [
     {

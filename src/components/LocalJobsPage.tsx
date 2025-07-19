@@ -34,6 +34,20 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
   const [showAreaDropdown, setShowAreaDropdown] = useState(false);
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  
+  // Auto-close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      
+      if (!target.closest('.area-dropdown')) {
+        setShowAreaDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const areas = [
     { id: 'all', name: t('allAreas'), count: 45 },
@@ -235,7 +249,7 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Area Selector */}
-          <div className="relative flex-1">
+          <div className="relative flex-1 area-dropdown">
             <button
               onClick={() => setShowAreaDropdown(!showAreaDropdown)}
               className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
@@ -248,7 +262,7 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
             </button>
             
             {showAreaDropdown && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto area-dropdown">
                 {areas.map((area) => (
                   <button
                     onClick={() => {

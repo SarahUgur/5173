@@ -39,6 +39,34 @@ export default function Header({
   const [showSearchResults, setShowSearchResults] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const [showLogoSelector, setShowLogoSelector] = useState(false);
+  
+  // Auto-close dropdowns when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      
+      // Close all dropdowns if clicking outside
+      if (!target.closest('.language-dropdown')) {
+        setShowLanguageMenu(false);
+      }
+      if (!target.closest('.profile-dropdown')) {
+        setShowProfileMenu(false);
+      }
+      if (!target.closest('.quick-actions-dropdown')) {
+        setShowQuickActions(false);
+      }
+      if (!target.closest('.search-dropdown')) {
+        setShowSearchResults(false);
+      }
+      if (!target.closest('.share-dropdown')) {
+        setShowShareMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const [currentLogoSvg, setCurrentLogoSvg] = useState(`<svg className="w-full h-full text-white" fill="currentColor" viewBox="0 0 24 24">
     <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
     <path d="M19 15L19.5 17L21.5 17.5L19.5 18L19 20L18.5 18L16.5 17.5L18.5 17L19 15Z"/>
@@ -167,7 +195,7 @@ export default function Header({
 
           {/* Center - Search */}
           <div className="hidden md:flex flex-1 max-w-xl lg:max-w-2xl mx-4 lg:mx-8 relative">
-            <div className="relative w-full">
+            <div className="relative w-full search-dropdown">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
@@ -234,6 +262,7 @@ export default function Header({
             {/* Quick Actions Button */}
             <div className="relative hidden md:block">
               <button
+                className="quick-actions-dropdown"
                 onClick={() => setShowQuickActions(!showQuickActions)}
                 className="p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 hover:scale-110"
                 title="Hurtige handlinger"
@@ -242,7 +271,7 @@ export default function Header({
               </button>
               
               {showQuickActions && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-strong border border-gray-200 py-2 z-50 animate-fadeIn">
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-strong border border-gray-200 py-2 z-50 animate-fadeIn quick-actions-dropdown">
                   {quickActions.map((action, index) => (
                     <button
                       key={index}
@@ -263,7 +292,7 @@ export default function Header({
             {/* Right side actions */}
             <div className="flex items-center space-x-2">
               {/* Language Selector */}
-              <div className="relative">
+              <div className="relative language-dropdown">
               <button
                 onClick={() => setShowLanguageMenu(!showLanguageMenu)}
                 className="flex items-center space-x-1 p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 hover:scale-110"
@@ -273,7 +302,7 @@ export default function Header({
               </button>
               
               {showLanguageMenu && (
-                <div className="absolute right-0 top-full mt-2 w-44 sm:w-48 bg-white rounded-xl shadow-strong border border-gray-200 py-2 z-50 animate-fadeIn">
+                <div className="absolute right-0 top-full mt-2 w-44 sm:w-48 bg-white rounded-xl shadow-strong border border-gray-200 py-2 z-50 animate-fadeIn language-dropdown">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
@@ -323,7 +352,7 @@ export default function Header({
             )}
             
               {/* User Menu */}
-            <div className="flex items-center relative ml-1 sm:ml-2">
+            <div className="flex items-center relative ml-1 sm:ml-2 profile-dropdown">
               <button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
                 className="flex items-center p-1 rounded-full hover:bg-gray-100 transition-all duration-200 hover:scale-110"
@@ -343,7 +372,7 @@ export default function Header({
               
               {/* Profile Dropdown */}
               {showProfileMenu && (
-                <div className="absolute right-0 top-full mt-2 w-44 sm:w-48 bg-white rounded-xl shadow-strong border border-gray-200 py-2 z-50 animate-fadeIn">
+                <div className="absolute right-0 top-full mt-2 w-44 sm:w-48 bg-white rounded-xl shadow-strong border border-gray-200 py-2 z-50 animate-fadeIn profile-dropdown">
                   <div className="px-4 py-2 border-b border-gray-100">
                     <p className="font-semibold text-gray-900 text-sm">{currentUser?.name}</p>
                     <p className="text-xs text-gray-500">{currentUser?.email}</p>
@@ -415,7 +444,7 @@ export default function Header({
             
             {/* Mobile Search Results */}
             {showSearchResults && searchResults.length > 0 && (
-              <div className="mt-2 bg-white rounded-xl shadow-strong border border-gray-200 py-2 max-h-64 overflow-y-auto animate-fadeIn">
+              <div className="mt-2 bg-white rounded-xl shadow-strong border border-gray-200 py-2 max-h-64 overflow-y-auto animate-fadeIn search-dropdown">
                 {searchResults.slice(0, 5).map((result, index) => (
                   <div key={index} className="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-all duration-200 hover:scale-105">
                     {result.type === 'user' && (

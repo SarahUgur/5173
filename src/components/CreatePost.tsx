@@ -24,6 +24,20 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
   const [videoText, setVideoText] = useState('');
   const [selectedMusic, setSelectedMusic] = useState('none');
 
+  // Auto-close media editor when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      
+      if (showMediaEditor && !target.closest('.media-editor-modal')) {
+        setShowMediaEditor(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showMediaEditor]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Creating post:', { 
@@ -444,7 +458,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
       {/* Media Editor Modal */}
       {showMediaEditor && selectedVideo && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto media-editor-modal">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Rediger Video</h3>
