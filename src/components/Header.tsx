@@ -128,7 +128,7 @@ export default function Header({
             <div className="flex items-center min-w-0 flex-1">
               <button
                 onClick={() => setShowLogoSelector(true)}
-                className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 gradient-bg rounded-xl flex items-center justify-center shadow-strong flex-shrink-0 hover:scale-110 transition-transform duration-200 group"
+                className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-strong flex-shrink-0 hover:scale-110 transition-transform duration-200 group"
                 title="Klik for at ændre logo"
               >
                 <div 
@@ -141,7 +141,7 @@ export default function Header({
               <div className="ml-6 sm:ml-8 lg:ml-12 min-w-0 flex-1">
                 {/* Desktop brand */}
                 <div className="hidden lg:block">
-                  <h1 className="text-3xl xl:text-4xl font-bold gradient-text leading-tight">
+                  <h1 className="text-3xl xl:text-4xl font-bold text-blue-600 leading-tight">
                     Privat Rengøring
                   </h1>
                   <p className="text-base text-gray-500 mt-2">Social platform for rengøring</p>
@@ -149,7 +149,7 @@ export default function Header({
                 
                 {/* Tablet brand */}
                 <div className="hidden sm:block lg:hidden">
-                  <h1 className="text-2xl font-bold gradient-text leading-tight">
+                  <h1 className="text-2xl font-bold text-blue-600 leading-tight">
                     Privat Rengøring
                   </h1>
                   <p className="text-sm text-gray-500 mt-1">Social platform</p>
@@ -157,7 +157,7 @@ export default function Header({
                 
                 {/* Mobile brand */}
                 <div className="sm:hidden">
-                  <h1 className="text-xl font-bold gradient-text truncate leading-tight">
+                  <h1 className="text-xl font-bold text-blue-600 truncate leading-tight">
                     Privat Rengøring
                   </h1>
                 </div>

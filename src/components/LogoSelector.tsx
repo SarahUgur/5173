@@ -129,15 +129,17 @@ export default function LogoSelector({ onSelectLogo, currentLogo }: LogoSelector
       description: 'Planet med ring og stjerner - global rengøring',
       icon: Star,
       svg: `<svg className="w-full h-full text-white" fill="currentColor" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="8" fill="currentColor"/>
-        <ellipse cx="12" cy="12" rx="12" ry="3" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.8"/>
-        <circle cx="6" cy="6" r="1" fill="currentColor" opacity="0.9"/>
-        <circle cx="18" cy="8" r="0.8" fill="currentColor" opacity="0.7"/>
-        <circle cx="4" cy="16" r="0.6" fill="currentColor" opacity="0.6"/>
-        <circle cx="20" cy="16" r="1.2" fill="currentColor" opacity="0.8"/>
-        <path d="M8 10l2 2 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.9"/>
+        <circle cx="12" cy="12" r="6" fill="currentColor"/>
+        <ellipse cx="12" cy="12" rx="10" ry="2.5" fill="none" stroke="currentColor" strokeWidth="1.8" opacity="0.9"/>
+        <ellipse cx="12" cy="12" rx="11" ry="3" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.6"/>
+        <circle cx="7" cy="7" r="0.8" fill="currentColor" opacity="0.8"/>
+        <circle cx="17" cy="6" r="0.6" fill="currentColor" opacity="0.7"/>
+        <circle cx="5" cy="17" r="0.5" fill="currentColor" opacity="0.6"/>
+        <circle cx="19" cy="17" r="0.9" fill="currentColor" opacity="0.8"/>
+        <circle cx="15" cy="9" r="0.4" fill="currentColor" opacity="0.5"/>
+        <circle cx="9" cy="15" r="0.3" fill="currentColor" opacity="0.4"/>
       </svg>`,
-      gradient: 'from-blue-500 to-cyan-400'
+      gradient: 'from-blue-600 to-cyan-500'
     },
     {
       id: 'diamond-luxury',
