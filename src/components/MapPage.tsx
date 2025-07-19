@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Navigation, Filter, Search, Briefcase, DollarSign, Clock, Star, Users, Layers } from 'lucide-react';
+import { MapPin, Navigation, Filter, Search, Briefcase, DollarSign, Clock, Star, Users, Layers, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 
 interface MapPageProps {
   currentUser: any;
@@ -28,6 +28,9 @@ export default function MapPage({ currentUser }: MapPageProps) {
   const [mapFilter, setMapFilter] = useState('all');
   const [searchRadius, setSearchRadius] = useState(10); // km
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [mapZoom, setMapZoom] = useState(12);
+  const [mapCenter, setMapCenter] = useState({ lat: 55.6761, lng: 12.5683 }); // København centrum
+  const [showGoogleMaps, setShowGoogleMaps] = useState(false);
 
   // Mock job locations (i virkeligheden ville dette komme fra database)
   const jobLocations: JobLocation[] = [
@@ -89,6 +92,7 @@ export default function MapPage({ currentUser }: MapPageProps) {
         (position) => {
           const { latitude, longitude } = position.coords;
           setUserLocation({ lat: latitude, lng: longitude });
+          setMapCenter({ lat: latitude, lng: longitude });
           setIsGettingLocation(false);
         },
         (error) => {
@@ -96,6 +100,7 @@ export default function MapPage({ currentUser }: MapPageProps) {
           setIsGettingLocation(false);
           // Fallback til København centrum
           setUserLocation({ lat: 55.6761, lng: 12.5683 });
+          setMapCenter({ lat: 55.6761, lng: 12.5683 });
           alert('Kunne ikke få din præcise lokation. Viser København centrum.');
         },
         {
@@ -115,6 +120,28 @@ export default function MapPage({ currentUser }: MapPageProps) {
     // Auto-get location on component mount
     getUserLocation();
   }, []);
+
+  const handleZoomIn = () => {
+    setMapZoom(prev => Math.min(prev + 1, 18));
+  };
+
+  const handleZoomOut = () => {
+    setMapZoom(prev => Math.max(prev - 1, 8));
+  };
+
+  const handleResetView = () => {
+    if (userLocation) {
+      setMapCenter(userLocation);
+      setMapZoom(12);
+    }
+  };
+
+  const openGoogleMaps = () => {
+    if (userLocation) {
+      const url = `https://www.google.com/maps/@${userLocation.lat},${userLocation.lng},${mapZoom}z`;
+      window.open(url, '_blank');
+    }
+  };
 
   const getJobTypeColor = (type: string) => {
     const colors = {
@@ -168,6 +195,16 @@ export default function MapPage({ currentUser }: MapPageProps) {
             </span>
           </button>
 
+          {/* Google Maps Button */}
+          <button
+            onClick={openGoogleMaps}
+            disabled={!userLocation}
+            className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+          >
+            <MapPin className="w-4 h-4" />
+            <span>Åbn Google Maps</span>
+          </button>
+
           {/* Filter */}
           <select
             value={mapFilter}
@@ -181,18 +218,33 @@ export default function MapPage({ currentUser }: MapPageProps) {
           </select>
 
           {/* Search Radius */}
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">Radius:</span>
-            <select
+          <div className="flex flex-col space-y-2">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">Radius: {searchRadius}km</span>
+            </div>
+            <input
+              type="range"
+              min="1"
+              max="50"
               value={searchRadius}
               onChange={(e) => setSearchRadius(Number(e.target.value))}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value={5}>5 km</option>
-              <option value={10}>10 km</option>
-              <option value={25}>25 km</option>
-              <option value={50}>50 km</option>
-            </select>
+              className="w-32 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+            />
+          </div>
+
+          {/* Zoom Controls */}
+          <div className="flex flex-col space-y-2">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">Zoom: {mapZoom}</span>
+            </div>
+            <input
+              type="range"
+              min="8"
+              max="18"
+              value={mapZoom}
+              onChange={(e) => setMapZoom(Number(e.target.value))}
+              className="w-32 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+            />
           </div>
 
           {/* Results Count */}
@@ -210,8 +262,18 @@ export default function MapPage({ currentUser }: MapPageProps) {
             {/* Map Header */}
             <div className="p-4 border-b border-gray-200 bg-gray-50">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-gray-900">Interaktivt Kort</h3>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Interaktivt Kort</h3>
+                  <p className="text-sm text-gray-600">Zoom: {mapZoom} • Radius: {searchRadius}km</p>
+                </div>
                 <div className="flex items-center space-x-2">
+                  <button 
+                    onClick={handleResetView}
+                    className="p-2 hover:bg-gray-200 rounded-lg transition-colors duration-200"
+                    title="Nulstil visning"
+                  >
+                    <RotateCcw className="w-4 h-4 text-gray-600" />
+                  </button>
                   <button className="p-2 hover:bg-gray-200 rounded-lg">
                     <Layers className="w-4 h-4 text-gray-600" />
                   </button>
@@ -223,7 +285,7 @@ export default function MapPage({ currentUser }: MapPageProps) {
             </div>
 
             {/* Mock Map */}
-            <div className="relative h-96 bg-gradient-to-br from-blue-100 to-green-100">
+            <div className="relative h-96 bg-gradient-to-br from-blue-100 to-green-100 overflow-hidden">
               {/* Map Background */}
               <div className="absolute inset-0 opacity-20">
                 <svg className="w-full h-full" viewBox="0 0 400 300">
@@ -240,7 +302,7 @@ export default function MapPage({ currentUser }: MapPageProps) {
               {/* User Location */}
               {userLocation && (
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <div className="w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
+                  <div className="w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-lg animate-pulse" style={{ transform: `scale(${mapZoom / 12})` }}></div>
                   <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs bg-blue-600 text-white px-2 py-1 rounded whitespace-nowrap">
                     Din lokation
                   </div>
@@ -258,7 +320,7 @@ export default function MapPage({ currentUser }: MapPageProps) {
                   }`}
                   onClick={() => setSelectedJob(job)}
                 >
-                  <div className={`w-6 h-6 rounded-full border-2 border-white shadow-lg ${getJobTypeColor(job.jobType)} hover:scale-110 transition-transform duration-200`}>
+                  <div className={`w-6 h-6 rounded-full border-2 border-white shadow-lg ${getJobTypeColor(job.jobType)} hover:scale-110 transition-transform duration-200`} style={{ transform: `scale(${mapZoom / 12})` }}>
                     <div className="w-full h-full rounded-full animate-ping opacity-75"></div>
                   </div>
                   {selectedJob?.id === job.id && (
@@ -273,8 +335,8 @@ export default function MapPage({ currentUser }: MapPageProps) {
                   <div 
                     className="border-2 border-blue-300 border-dashed rounded-full opacity-50"
                     style={{
-                      width: `${searchRadius * 4}px`,
-                      height: `${searchRadius * 4}px`
+                      width: `${searchRadius * (mapZoom / 3)}px`,
+                      height: `${searchRadius * (mapZoom / 3)}px`
                     }}
                   ></div>
                 </div>
@@ -282,11 +344,11 @@ export default function MapPage({ currentUser }: MapPageProps) {
 
               {/* Map Controls */}
               <div className="absolute top-4 right-4 flex flex-col space-y-2">
-                <button className="w-8 h-8 bg-white border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50 shadow-sm">
-                  <span className="text-lg font-bold text-gray-600">+</span>
+                <button onClick={handleZoomIn} className="w-8 h-8 bg-white border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50 shadow-sm transition-all duration-200 hover:scale-110">
+                  <ZoomIn className="w-4 h-4 text-gray-600" />
                 </button>
-                <button className="w-8 h-8 bg-white border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50 shadow-sm">
-                  <span className="text-lg font-bold text-gray-600">-</span>
+                <button onClick={handleZoomOut} className="w-8 h-8 bg-white border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50 shadow-sm transition-all duration-200 hover:scale-110">
+                  <ZoomOut className="w-4 h-4 text-gray-600" />
                 </button>
               </div>
 

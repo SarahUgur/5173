@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Search, Send, Trash2, MoreHorizontal, Phone, Video, Paperclip, Smile, Check, CheckCheck, MessageCircle } from 'lucide-react';
+import { X, Search, Send, Trash2, MoreHorizontal, Phone, Video, Paperclip, Smile, Check, CheckCheck, MessageCircle, PhoneCall } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -37,6 +37,8 @@ export default function MessagesModal({ isOpen, onClose, currentUser }: Messages
   const [messageText, setMessageText] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [isCallActive, setIsCallActive] = useState(false);
+  const [callDuration, setCallDuration] = useState(0);
 
   // Mock conversations data
   const [conversations, setConversations] = useState<Conversation[]>([
@@ -156,6 +158,36 @@ export default function MessagesModal({ isOpen, onClose, currentUser }: Messages
       return conv;
     }));
     setShowDeleteConfirm(null);
+  };
+
+  const handleStartCall = (userId: string, userName: string) => {
+    setIsCallActive(true);
+    setCallDuration(0);
+    
+    // Simuler opkald - i virkeligheden ville dette bruge WebRTC eller telefon API
+    const callInterval = setInterval(() => {
+      setCallDuration(prev => prev + 1);
+    }, 1000);
+    
+    // Auto-afslut opkald efter 30 sekunder (demo)
+    setTimeout(() => {
+      setIsCallActive(false);
+      clearInterval(callInterval);
+      alert(`Opkald til ${userName} afsluttet efter ${Math.floor(callDuration / 60)}:${(callDuration % 60).toString().padStart(2, '0')}`);
+    }, 30000);
+    
+    alert(`Ringer til ${userName}... (Demo opkald)`);
+  };
+
+  const handleEndCall = () => {
+    setIsCallActive(false);
+    setCallDuration(0);
+  };
+
+  const formatCallDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   const handleDeleteConversation = (conversationId: string) => {
@@ -296,14 +328,41 @@ export default function MessagesModal({ isOpen, onClose, currentUser }: Messages
                   </div>
                   
                   <div className="flex items-center space-x-2">
-                    <button className="p-2 hover:bg-gray-200 rounded-full">
+                    <button 
+                      onClick={() => handleStartCall(selectedConv.user.id, selectedConv.user.name)}
+                      disabled={isCallActive}
+                      className="p-2 hover:bg-gray-200 rounded-full disabled:opacity-50 transition-all duration-200 hover:scale-110"
+                      title="Ring op"
+                    >
                       <Phone className="w-5 h-5 text-gray-600" />
                     </button>
-                    <button className="p-2 hover:bg-gray-200 rounded-full">
+                    <button 
+                      className="p-2 hover:bg-gray-200 rounded-full transition-all duration-200 hover:scale-110"
+                      title="Video opkald"
+                    >
                       <Video className="w-5 h-5 text-gray-600" />
                     </button>
                   </div>
                 </div>
+                
+                {/* Active Call Indicator */}
+                {isCallActive && (
+                  <div className="bg-green-100 border-t border-green-200 p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                        <span className="text-green-800 font-medium">Opkald aktiv</span>
+                        <span className="text-green-600">{formatCallDuration(callDuration)}</span>
+                      </div>
+                      <button
+                        onClick={handleEndCall}
+                        className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-200"
+                      >
+                        Afslut
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Messages */}
