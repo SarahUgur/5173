@@ -12,6 +12,7 @@ interface SettingsModalProps {
 export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUser }: SettingsModalProps) {
   const { language, setLanguage, t } = useLanguage();
   const [activeTab, setActiveTab] = useState('profile');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [settings, setSettings] = useState({
     // Profil indstillinger
     name: currentUser?.name || '',
@@ -59,6 +60,18 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
 
   const updateSetting = (key: string, value: any) => {
     setSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleDeleteAccount = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteAccount = () => {
+    // I en rigtig app ville dette slette brugeren fra databasen
+    alert('Din konto er blevet slettet. Du vil blive logget ud.');
+    setShowDeleteConfirm(false);
+    onClose();
+    // Her ville vi normalt logge brugeren ud og omdirigere til login siden
   };
 
   const requestNotificationPermission = async () => {
@@ -487,6 +500,33 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
           </div>
         </div>
       </div>
+
+      {/* Delete Account Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold text-red-600 mb-4">Slet konto permanent</h3>
+            <p className="text-gray-700 mb-6">
+              Er du sikker på, at du vil slette din konto permanent? Denne handling kan ikke fortrydes.
+              Alle dine data, opslag og beskeder vil blive slettet.
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+              >
+                Annuller
+              </button>
+              <button
+                onClick={confirmDeleteAccount}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+              >
+                Slet konto
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
