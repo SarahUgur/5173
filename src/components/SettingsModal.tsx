@@ -715,8 +715,11 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                       <p>• Beløb: 29 kr/måned</p>
                       <p>• Status: Aktiv</p>
                     </div>
-                    <button className="mt-4 text-red-600 hover:text-red-700 text-sm font-medium">
-                      Opsig abonnement
+                    <button 
+                      onClick={() => window.location.href = 'mailto:support@privatrengoring.dk?subject=Opsigelse af Pro Abonnement&body=Hej Support Team,%0D%0A%0D%0AJeg ønsker at opsige mit Pro abonnement.%0D%0A%0D%0AKonto email: ' + encodeURIComponent(currentUser?.email || '') + '%0D%0A%0D%0AMed venlig hilsen'}
+                      className="mt-4 text-red-600 hover:text-red-700 text-sm font-medium underline"
+                    >
+                      📧 Opsig via Email Support
                     </button>
                   </div>
                 ) : (
