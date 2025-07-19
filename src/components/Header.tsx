@@ -39,6 +39,7 @@ export default function Header({
   const [showSearchResults, setShowSearchResults] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const [showLogoSelector, setShowLogoSelector] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
   
   // Auto-close dropdowns when clicking outside
   React.useEffect(() => {
