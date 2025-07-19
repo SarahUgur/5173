@@ -177,7 +177,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 onFocus={() => setIsExpanded(true)}
-                placeholder={postType === 'job' ? t('describeCleaningTask') : t('whatAreYouThinking')}
+                placeholder={postType === 'job' ? 'Skriv kort hvem du er, og hvad du tilbyder inden for rengøring...' : 'Hvad kan du hjælpe med i dag?'}
                 className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base transition-all duration-200"
                 rows={isExpanded ? 4 : 2}
               />

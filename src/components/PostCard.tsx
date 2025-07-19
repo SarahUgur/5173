@@ -366,9 +366,12 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
         <p className="text-gray-800 mb-4 leading-relaxed text-sm sm:text-base">{post.content}</p>
         
         {post.budget && (
-          <div className="flex items-center space-x-2 mb-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200 hover-lift">
+          <div className="flex items-center space-x-2 mb-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200 hover-lift relative group">
             <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0" />
             <span className="font-semibold text-green-800 text-sm sm:text-base animate-fadeIn">Budget: {post.budget}</span>
+            <div className="absolute top-full left-0 mt-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+              💰 Pris fastsat af {post.user.userType === 'private' || post.user.userType === 'small_business' || post.user.userType === 'large_business' ? 'kunde' : 'udbyder'}
+            </div>
           </div>
         )}
 

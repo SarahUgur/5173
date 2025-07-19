@@ -8,6 +8,19 @@ interface MyTasksPageProps {
 export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
   const [activeTab, setActiveTab] = useState<'active' | 'completed' | 'applications'>('active');
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Hjælpefunktion til at generere fremtidige datoer
+  const getFutureDate = (daysFromNow: number) => {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
+    return date.toISOString().split('T')[0];
+  };
+  
+  const getPastDate = (daysAgo: number) => {
+    const date = new Date();
+    date.setDate(date.getDate() - daysAgo);
+    return date.toISOString().split('T')[0];
+  };
 
   const activeTasks = [
     {
@@ -19,7 +32,7 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
       client: 'Maria Hansen',
       clientAvatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
       rating: 4.9,
-      nextDate: '2024-01-15',
+      nextDate: getFutureDate(3),
       status: 'ongoing'
     },
     {
@@ -31,7 +44,7 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
       client: 'Sofie Andersen',
       clientAvatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
       rating: 4.7,
-      nextDate: '2024-01-12',
+      nextDate: getFutureDate(1),
       status: 'ongoing'
     }
   ];
@@ -46,7 +59,7 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
       client: 'Peter Larsen',
       clientAvatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
       rating: 5.0,
-      completedDate: '2024-01-08',
+      completedDate: getPastDate(5),
       earnings: '2.500 kr'
     }
   ];
@@ -60,7 +73,7 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
       budget: '600 kr/gang',
       client: 'Anna Nielsen',
       clientAvatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      appliedDate: '2024-01-10',
+      appliedDate: getPastDate(2),
       status: 'pending'
     }
   ];
@@ -165,8 +178,8 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
     <div className="max-w-4xl mx-auto p-3 sm:p-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Mine Opgaver</h1>
-        <p className="text-gray-600">Administrer dine aktive opgaver, ansøgninger og afsluttede jobs</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Mine Rengøringsjobs</h1>
+        <p className="text-gray-600">Administrer dine aktive rengøringsjobs, ansøgninger og afsluttede opgaver</p>
       </div>
 
       {/* Tabs */}

@@ -43,7 +43,7 @@ const translations: Translations = {
     de: 'Netzwerk'
   },
   myTasks: {
-    da: 'Mine Opgaver',
+    da: 'Mine Rengøringsjobs',
     en: 'My Tasks',
     ar: 'مهامي',
     pl: 'Moje Zadania',
@@ -85,7 +85,7 @@ const translations: Translations = {
 
   // User actions
   createJob: {
-    da: 'Opret Job',
+    da: 'Opret Rengøringsjob',
     en: 'Create Job',
     ar: 'إنشاء وظيفة',
     pl: 'Utwórz Pracę',
@@ -93,7 +93,7 @@ const translations: Translations = {
     de: 'Job erstellen'
   },
   findExperts: {
-    da: 'Find Eksperter',
+    da: 'Find Rengøringseksperter',
     en: 'Find Experts',
     ar: 'العثور على خبراء',
     pl: 'Znajdź Ekspertów',
@@ -159,7 +159,7 @@ const translations: Translations = {
 
   // Post creation
   whatAreYouThinking: {
-    da: 'Hvad tænker du på?',
+    da: 'Hvad kan du hjælpe med i dag?',
     en: 'What are you thinking?',
     ar: 'بماذا تفكر؟',
     pl: 'O czym myślisz?',
@@ -167,7 +167,7 @@ const translations: Translations = {
     de: 'Woran denkst du?'
   },
   describeCleaningTask: {
-    da: 'Beskriv den rengøringsopgave du har brug for hjælp til...',
+    da: 'Skriv kort hvem du er, og hvad du tilbyder inden for rengøring...',
     en: 'Describe the cleaning task you need help with...',
     ar: 'صف مهمة التنظيف التي تحتاج مساعدة فيها...',
     pl: 'Opisz zadanie sprzątania, z którym potrzebujesz pomocy...',
@@ -749,6 +749,30 @@ const translations: Translations = {
     pl: 'i',
     tr: 've',
     de: 'und'
+  },
+  priceSetBy: {
+    da: 'Pris fastsat af',
+    en: 'Price set by',
+    ar: 'السعر محدد من قبل',
+    pl: 'Cena ustalona przez',
+    tr: 'Fiyat belirlenen',
+    de: 'Preis festgelegt von'
+  },
+  customer: {
+    da: 'kunde',
+    en: 'customer',
+    ar: 'العميل',
+    pl: 'klient',
+    tr: 'müşteri',
+    de: 'Kunde'
+  },
+  provider: {
+    da: 'udbyder',
+    en: 'provider',
+    ar: 'مقدم الخدمة',
+    pl: 'dostawca',
+    tr: 'sağlayıcı',
+    de: 'Anbieter'
   },
   or: {
     da: 'eller',

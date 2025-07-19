@@ -413,9 +413,12 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
                         ({userLocation ? `${job.distance}` : job.distance})
                       </span>
                     </div>
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-1 relative group">
                       <DollarSign className="w-4 h-4" />
                       <span className="font-semibold text-green-600">{job.budget}</span>
+                      <div className="absolute bottom-full left-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                        💰 Pris fastsat af kunde
+                      </div>
                     </div>
                     <div className="flex items-center space-x-1">
                       <Clock className="w-4 h-4" />
