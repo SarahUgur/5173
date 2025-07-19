@@ -260,7 +260,7 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
   };
 
   // Check if user is admin
-  const isAdmin = currentUser?.isAdmin === true || currentUser?.email === 'admin@privatrengoring.dk';
+  const isAdmin = currentUser?.email === 'admin@privatrengoring.dk';
 
   if (!isAdmin) {
     return (

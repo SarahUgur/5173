@@ -149,13 +149,14 @@ function App() {
             <NetworkPage currentUser={currentUser} />
           )}
           
-          {currentPage === 'admin' && (
+          {currentPage === 'local' && (
+            <LocalJobsPage currentUser={currentUser} />
+          )}
+          
+          {currentPage === 'admin' && currentUser?.email === 'admin@privatrengoring.dk' && (
             <AdminPage currentUser={currentUser} />
           )}
           
-          {currentPage === 'admin' && (
-            <AdminPage currentUser={currentUser} />
-          )}
         </main>
 
         {/* Right sidebar - Hidden on mobile and tablet */}

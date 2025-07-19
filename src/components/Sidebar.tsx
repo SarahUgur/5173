@@ -14,7 +14,7 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
   const { t } = useLanguage();
   
   // Check if user is admin
-  const isAdmin = currentUser?.isAdmin === true || currentUser?.email === 'admin@privatrengoring.dk';
+  const isAdmin = currentUser?.email === 'admin@privatrengoring.dk';
   
   const menuItems = [
     { icon: Home, label: t('home'), page: 'home' },
