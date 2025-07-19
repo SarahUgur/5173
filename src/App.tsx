@@ -13,6 +13,8 @@ import NetworkPage from './components/NetworkPage';
 import LocalJobsPage from './components/LocalJobsPage';
 import SettingsModal from './components/SettingsModal';
 import NotificationModal from './components/NotificationModal';
+import UserProfileModal from './components/UserProfileModal';
+import FriendRequestModal from './components/FriendRequestModal';
 import InstallPrompt from './components/InstallPrompt';
 import AdminPage from './components/AdminPage';
 import AdBanner from './components/AdBanner';
@@ -35,6 +37,9 @@ function App() {
   const [showProfile, setShowProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [posts, setPosts] = useState(() => getLocalizedPosts(language));
+  const [showUserProfile, setShowUserProfile] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [showFriendRequests, setShowFriendRequests] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState('home');
 
@@ -71,6 +76,36 @@ function App() {
     setIsMobileMenuOpen(false);
   };
 
+  const handleShowUserProfile = (user: any) => {
+    setSelectedUser(user);
+    setShowUserProfile(true);
+  };
+
+  const handleSendFriendRequest = (userId: string) => {
+    console.log('Sending friend request to:', userId);
+    alert('Venskabsanmodning sendt!');
+  };
+
+  const handleAcceptFriendRequest = (userId: string) => {
+    console.log('Accepting friend request from:', userId);
+    alert('Venskabsanmodning accepteret!');
+  };
+
+  const handleSendMessage = (userId: string) => {
+    console.log('Sending message to:', userId);
+    setShowMessages(true);
+  };
+
+  const handleBlockUser = (userId: string) => {
+    console.log('Blocking user:', userId);
+    alert('Bruger blokeret');
+  };
+
+  const handleReportUser = (userId: string, reason: string) => {
+    console.log('Reporting user:', userId, 'Reason:', reason);
+    alert('Bruger rapporteret til admin');
+  };
+
   const handleUpdateUser = (updates: any) => {
     setCurrentUser(updates);
     localStorage.setItem('currentUser', JSON.stringify(updates));
@@ -100,6 +135,7 @@ function App() {
         onShowNotifications={() => setShowNotifications(true)}
         onShowProfile={() => setShowProfile(true)}
         onShowSettings={() => setShowSettings(true)}
+        onShowFriendRequests={() => setShowFriendRequests(true)}
       />
       
       <div className="flex relative">
@@ -132,6 +168,7 @@ function App() {
                         console.log(`Rapport modtaget for post ${postId}: ${reason}`);
                         // I en rigtig app ville dette sendes til admin database
                       }}
+                      onShowUserProfile={handleShowUserProfile}
                     />
                     
                     {/* Reklame efter hver 3. post */}
@@ -286,6 +323,32 @@ function App() {
         isOpen={showNotifications}
         onClose={() => setShowNotifications(false)}
         onOpenSettings={() => setShowSettings(true)}
+      />
+      
+      <UserProfileModal
+        isOpen={showUserProfile}
+        onClose={() => setShowUserProfile(false)}
+        user={selectedUser}
+        currentUser={currentUser}
+        onSendFriendRequest={handleSendFriendRequest}
+        onAcceptFriendRequest={handleAcceptFriendRequest}
+        onSendMessage={handleSendMessage}
+        onBlockUser={handleBlockUser}
+        onReportUser={handleReportUser}
+      />
+
+      <FriendRequestModal
+        isOpen={showFriendRequests}
+        onClose={() => setShowFriendRequests(false)}
+        onAcceptRequest={(requestId) => {
+          console.log('Accepting request:', requestId);
+          alert('Venskabsanmodning accepteret!');
+        }}
+        onDeclineRequest={(requestId) => {
+          console.log('Declining request:', requestId);
+          alert('Venskabsanmodning afvist');
+        }}
+        onSendRequest={handleSendFriendRequest}
       />
       
       <InstallPrompt />

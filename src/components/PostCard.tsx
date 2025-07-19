@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import AdBanner from './AdBanner';
+import UserProfileModal from './UserProfileModal';
 import type { Post } from '../types';
 
 interface PostCardProps {
@@ -9,9 +10,10 @@ interface PostCardProps {
   currentUser: any;
   onShowSubscription: () => void;
   onReport?: (postId: string, reason: string) => void;
+  onShowUserProfile?: (user: any) => void;
 }
 
-export default function PostCard({ post, currentUser, onShowSubscription, onReport }: PostCardProps) {
+export default function PostCard({ post, currentUser, onShowSubscription, onReport, onShowUserProfile }: PostCardProps) {
   const { t, getJobTypeLabel, getUrgencyLabel } = useLanguage();
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -74,14 +76,24 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
       <div className="p-3 sm:p-4 border-b border-gray-100">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3 flex-1 min-w-0">
-            <img
-              src={post.user.avatar}
-              alt={post.user.name}
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex-shrink-0"
-            />
+            <button
+              onClick={() => onShowUserProfile?.(post.user)}
+              className="flex-shrink-0 hover:opacity-80 transition-opacity duration-200"
+            >
+              <img
+                src={post.user.avatar}
+                alt={post.user.name}
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full"
+              />
+            </button>
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-2">
-                <h3 className="font-semibold text-gray-900 truncate text-sm sm:text-base">{post.user.name}</h3>
+                <button
+                  onClick={() => onShowUserProfile?.(post.user)}
+                  className="font-semibold text-gray-900 truncate text-sm sm:text-base hover:text-blue-600 transition-colors duration-200"
+                >
+                  {post.user.name}
+                </button>
                 {post.user.verified && (
                   <div className="w-4 h-4 sm:w-5 sm:h-5 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="text-white text-xs">✓</span>

@@ -13,6 +13,7 @@ interface HeaderProps {
   onShowSettings?: () => void;
   currentPage?: string;
   onPageChange?: (page: string) => void;
+  onShowFriendRequests?: () => void;
 }
 
 export default function Header({ 
@@ -25,7 +26,8 @@ export default function Header({
   onShowProfile,
   onShowSettings,
   currentPage = 'home',
-  onPageChange
+  onPageChange,
+  onShowFriendRequests
 }: HeaderProps) {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
@@ -252,6 +254,17 @@ export default function Header({
                   )}
                 </button>
               ))}
+              
+              {/* Friend Requests Button */}
+              <button 
+                onClick={onShowFriendRequests}
+                className="flex items-center space-x-2 px-2 lg:px-3 py-2 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50 relative"
+                title="Venskabsanmodninger"
+              >
+                <Users className="w-4 h-4 lg:w-5 lg:h-5" />
+                <span className="hidden xl:inline font-medium text-sm">Venner</span>
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center">2</span>
+              </button>
             </nav>
 
             {/* Language Selector */}
