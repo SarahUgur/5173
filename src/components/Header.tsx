@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, MessageCircle, Bell, User, Home, Briefcase, Users, Settings, Menu, X, Globe, MapPin, Calendar, Star, TrendingUp } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
+import LogoSelector from './LogoSelector';
 
 interface HeaderProps {
   currentUser: any;
@@ -37,6 +38,12 @@ export default function Header({
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const { language, setLanguage, t } = useLanguage();
+  const [showLogoSelector, setShowLogoSelector] = useState(false);
+  const [currentLogoSvg, setCurrentLogoSvg] = useState(`<svg className="w-full h-full text-white" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
+    <path d="M19 15L19.5 17L21.5 17.5L19.5 18L19 20L18.5 18L16.5 17.5L18.5 17L19 15Z"/>
+    <path d="M5 15L5.5 17L7.5 17.5L5.5 18L5 20L4.5 18L2.5 17.5L4.5 17L5 15Z"/>
+  </svg>`);
 
   const languages = [
     { code: 'da', name: 'Dansk', flag: '🇩🇰' },
@@ -74,6 +81,20 @@ export default function Header({
     }
   };
 
+  const handleLogoSelect = (logoType: string, logoSvg: string) => {
+    setCurrentLogoSvg(logoSvg);
+    setShowLogoSelector(false);
+    localStorage.setItem('selectedLogo', logoType);
+    localStorage.setItem('selectedLogoSvg', logoSvg);
+  };
+
+  // Load saved logo on component mount
+  React.useEffect(() => {
+    const savedLogoSvg = localStorage.getItem('selectedLogoSvg');
+    if (savedLogoSvg) {
+      setCurrentLogoSvg(savedLogoSvg);
+    }
+  }, []);
   const quickActions = [
     { icon: Briefcase, label: t('createJob'), action: () => onPageChange?.('create-job') },
     { icon: Users, label: t('findExperts'), action: () => onPageChange?.('network') },
@@ -105,35 +126,38 @@ export default function Header({
 
             {/* Logo and Brand */}
             <div className="flex items-center min-w-0 flex-1">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 gradient-bg rounded-xl flex items-center justify-center shadow-strong flex-shrink-0 hover:scale-110 transition-transform duration-200">
-                <svg className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
-                  <path d="M19 15L19.5 17L21.5 17.5L19.5 18L19 20L18.5 18L16.5 17.5L18.5 17L19 15Z"/>
-                  <path d="M5 15L5.5 17L7.5 17.5L5.5 18L5 20L4.5 18L2.5 17.5L4.5 17L5 15Z"/>
-                </svg>
-              </div>
+              <button
+                onClick={() => setShowLogoSelector(true)}
+                className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 gradient-bg rounded-xl flex items-center justify-center shadow-strong flex-shrink-0 hover:scale-110 transition-transform duration-200 group"
+                title="Klik for at ændre logo"
+              >
+                <div 
+                  className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 group-hover:scale-110 transition-transform duration-200"
+                  dangerouslySetInnerHTML={{ __html: currentLogoSvg }}
+                />
+              </button>
               
               {/* Brand text - responsive */}
-              <div className="ml-4 sm:ml-6 lg:ml-8 min-w-0 flex-1">
+              <div className="ml-6 sm:ml-8 lg:ml-12 min-w-0 flex-1">
                 {/* Desktop brand */}
                 <div className="hidden lg:block">
-                  <h1 className="text-2xl xl:text-3xl font-bold gradient-text leading-tight">
+                  <h1 className="text-3xl xl:text-4xl font-bold gradient-text leading-tight">
                     Privat Rengøring
                   </h1>
-                  <p className="text-sm text-gray-500 mt-1">Social platform for rengøring</p>
+                  <p className="text-base text-gray-500 mt-2">Social platform for rengøring</p>
                 </div>
                 
                 {/* Tablet brand */}
                 <div className="hidden sm:block lg:hidden">
-                  <h1 className="text-xl font-bold gradient-text leading-tight">
+                  <h1 className="text-2xl font-bold gradient-text leading-tight">
                     Privat Rengøring
                   </h1>
-                  <p className="text-xs text-gray-500">Social platform</p>
+                  <p className="text-sm text-gray-500 mt-1">Social platform</p>
                 </div>
                 
                 {/* Mobile brand */}
                 <div className="sm:hidden">
-                  <h1 className="text-lg font-bold gradient-text truncate leading-tight">
+                  <h1 className="text-xl font-bold gradient-text truncate leading-tight">
                     Privat Rengøring
                   </h1>
                 </div>
@@ -421,6 +445,14 @@ export default function Header({
           </div>
         )}
       </div>
+
+      {/* Logo Selector Modal */}
+      {showLogoSelector && (
+        <LogoSelector
+          onSelectLogo={handleLogoSelect}
+          currentLogo={localStorage.getItem('selectedLogo') || 'sparkles'}
+        />
+      )}
     </header>
   );
 }
