@@ -122,7 +122,7 @@ function App() {
               
               {/* Posts Feed */}
               <div className="space-y-4 sm:space-y-6 pb-6">
-                {posts.map((post) => (
+                {posts.map((post, index) => (
                   <React.Fragment key={post.id}>
                     <PostCard
                       post={post}
