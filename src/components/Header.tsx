@@ -156,9 +156,9 @@ export default function Header({
             {/* Logo and Brand */}
             <div className="flex items-center min-w-0 flex-1">
               <button
-                onClick={() => setShowLogoSelector(true)}
+                onClick={() => onPageChange?.('home')}
                 className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-strong flex-shrink-0 hover:scale-110 transition-transform duration-200 group"
-                title="Klik for at ændre logo"
+                title="Gå til hjem"
               >
                 <div 
                   className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 group-hover:scale-110 transition-transform duration-200"
@@ -170,25 +170,40 @@ export default function Header({
               <div className="ml-6 sm:ml-8 lg:ml-12 min-w-0 flex-1">
                 {/* Desktop brand */}
                 <div className="hidden lg:block">
-                  <h1 className="text-3xl xl:text-4xl font-bold text-blue-600 leading-tight">
-                    Privat Rengøring
-                  </h1>
-                  <p className="text-base text-gray-500 mt-2">Social platform for rengøring</p>
+                  <button
+                    onClick={() => onPageChange?.('home')}
+                    className="text-left hover:opacity-80 transition-opacity duration-200"
+                  >
+                    <h1 className="text-3xl xl:text-4xl font-bold text-blue-600 leading-tight">
+                      Privat Rengøring
+                    </h1>
+                    <p className="text-base text-gray-500 mt-1">Social platform for rengøring</p>
+                  </button>
                 </div>
                 
                 {/* Tablet brand */}
                 <div className="hidden sm:block lg:hidden">
-                  <h1 className="text-2xl font-bold text-blue-600 leading-tight">
-                    Privat Rengøring
-                  </h1>
-                  <p className="text-sm text-gray-500 mt-1">Social platform</p>
+                  <button
+                    onClick={() => onPageChange?.('home')}
+                    className="text-left hover:opacity-80 transition-opacity duration-200"
+                  >
+                    <h1 className="text-2xl font-bold text-blue-600 leading-tight">
+                      Privat Rengøring
+                    </h1>
+                    <p className="text-sm text-gray-500 mt-0.5">Social platform</p>
+                  </button>
                 </div>
                 
                 {/* Mobile brand */}
                 <div className="sm:hidden">
-                  <h1 className="text-xl font-bold text-blue-600 truncate leading-tight">
-                    Privat Rengøring
-                  </h1>
+                  <button
+                    onClick={() => onPageChange?.('home')}
+                    className="text-left hover:opacity-80 transition-opacity duration-200"
+                  >
+                    <h1 className="text-xl font-bold text-blue-600 truncate leading-tight">
+                      Privat Rengøring
+                    </h1>
+                  </button>
                 </div>
               </div>
             </div>
