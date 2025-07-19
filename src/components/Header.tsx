@@ -98,15 +98,15 @@ export default function Header({
             {/* Mobile menu button */}
             <button
               onClick={onToggleMobileMenu}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 flex-shrink-0 hover:scale-110"
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 flex-shrink-0 hover:scale-110"
             >
               <Menu className="w-5 h-5 text-gray-600" />
             </button>
 
             {/* Logo and Brand */}
-            <div className="flex items-center min-w-0 flex-1 -ml-1 sm:-ml-2">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 gradient-bg rounded-xl flex items-center justify-center shadow-strong flex-shrink-0 hover:scale-110 transition-transform duration-200">
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-7 lg:h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center min-w-0 flex-1">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 gradient-bg rounded-xl flex items-center justify-center shadow-strong flex-shrink-0 hover:scale-110 transition-transform duration-200">
+                <svg className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
                   <path d="M19 15L19.5 17L21.5 17.5L19.5 18L19 20L18.5 18L16.5 17.5L18.5 17L19 15Z"/>
                   <path d="M5 15L5.5 17L7.5 17.5L5.5 18L5 20L4.5 18L2.5 17.5L4.5 17L5 15Z"/>
@@ -114,25 +114,26 @@ export default function Header({
               </div>
               
               {/* Brand text - responsive */}
-              <div className="ml-3 sm:ml-4 min-w-0 flex-1">
+              <div className="ml-4 sm:ml-6 lg:ml-8 min-w-0 flex-1">
                 {/* Desktop brand */}
                 <div className="hidden lg:block">
-                  <h1 className="text-xl xl:text-2xl font-bold gradient-text">
+                  <h1 className="text-2xl xl:text-3xl font-bold gradient-text leading-tight">
                     Privat Rengøring
                   </h1>
-                  <p className="text-xs text-gray-500 -mt-1">Social platform for rengøring</p>
+                  <p className="text-sm text-gray-500 mt-1">Social platform for rengøring</p>
                 </div>
                 
                 {/* Tablet brand */}
                 <div className="hidden sm:block lg:hidden">
-                  <h1 className="text-lg font-bold gradient-text">
+                  <h1 className="text-xl font-bold gradient-text leading-tight">
                     Privat Rengøring
                   </h1>
+                  <p className="text-xs text-gray-500">Social platform</p>
                 </div>
                 
                 {/* Mobile brand */}
                 <div className="sm:hidden">
-                  <h1 className="text-base font-bold gradient-text truncate leading-tight">
+                  <h1 className="text-lg font-bold gradient-text truncate leading-tight">
                     Privat Rengøring
                   </h1>
                 </div>
@@ -140,8 +141,8 @@ export default function Header({
             </div>
           </div>
 
-          {/* Center - Desktop Search */}
-          <div className="hidden lg:flex flex-1 max-w-2xl mx-8 relative">
+          {/* Center - Search */}
+          <div className="hidden md:flex flex-1 max-w-xl lg:max-w-2xl mx-4 lg:mx-8 relative">
             <div className="relative w-full">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -201,7 +202,7 @@ export default function Header({
             {/* Mobile Search Button */}
             <button
               onClick={() => setShowMobileSearch(!showMobileSearch)}
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 hover:scale-110"
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 hover:scale-110"
             >
               <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
             </button>
@@ -234,42 +235,11 @@ export default function Header({
                 </div>
               )}
             </div>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-1">
-              {navigationItems.map((item, index) => (
-                <button 
-                  key={index}
-                  onClick={() => onPageChange?.(item.page)}
-                  className={`flex items-center space-x-2 px-2 lg:px-3 py-2 rounded-xl transition-all duration-200 relative group hover:scale-105 ${
-                    item.active 
-                      ? 'text-blue-600 bg-blue-50' 
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                  title={item.label}
-                >
-                  <item.icon className="w-4 h-4 lg:w-5 lg:h-5" />
-                  <span className="hidden xl:inline font-medium text-sm">{item.label}</span>
-                  {item.active && (
-                    <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full xl:hidden"></span>
-                  )}
-                </button>
-              ))}
-              
-              {/* Friend Requests Button */}
-              <button 
-                onClick={onShowFriendRequests}
-                className="flex items-center space-x-2 px-2 lg:px-3 py-2 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50 relative hover:scale-105"
-                title="Venskabsanmodninger"
-              >
-                <Users className="w-4 h-4 lg:w-5 lg:h-5" />
-                <span className="hidden xl:inline font-medium text-sm">Venner</span>
-                <span className="absolute -top-1 -right-1 w-4 h-4 notification-badge text-white text-xs rounded-full flex items-center justify-center">2</span>
-              </button>
-            </nav>
-
-            {/* Language Selector */}
-            <div className="relative">
+            
+            {/* Right side actions */}
+            <div className="flex items-center space-x-2">
+              {/* Language Selector */}
+              <div className="relative">
               <button
                 onClick={() => setShowLanguageMenu(!showLanguageMenu)}
                 className="flex items-center space-x-1 p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 hover:scale-110"
@@ -298,9 +268,8 @@ export default function Header({
                 </div>
               )}
             </div>
-
-            {/* Notifications */}
-            <div className="flex items-center space-x-1">
+            
+              {/* Notifications */}
               <button 
                 onClick={onShowMessages}
                 className="p-1.5 sm:p-2 rounded-full hover:bg-gray-100 relative transition-all duration-200 hover:scale-110"
@@ -317,10 +286,9 @@ export default function Header({
                 <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
                 <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 notification-badge text-white text-xs rounded-full flex items-center justify-center">5</span>
               </button>
-            </div>
             
-            {/* Pro Upgrade Button */}
-            {!currentUser?.isSubscribed && (
+              {/* Pro Upgrade Button */}
+              {!currentUser?.isSubscribed && (
               <button 
                 onClick={onShowSubscription}
                 className="btn-primary text-white px-2 py-1.5 sm:px-4 sm:py-2 lg:px-6 lg:py-2 rounded-full text-xs sm:text-sm font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -329,8 +297,8 @@ export default function Header({
                 <span className="sm:hidden">Pro</span>
               </button>
             )}
-
-            {/* User Menu */}
+            
+              {/* User Menu */}
             <div className="flex items-center relative ml-1 sm:ml-2">
               <button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -396,12 +364,13 @@ export default function Header({
                 </div>
               )}
             </div>
+            </div>
           </div>
         </div>
 
         {/* Mobile Search Bar */}
         {showMobileSearch && (
-          <div className="lg:hidden pb-3 sm:pb-4 animate-slideUp">
+          <div className="md:hidden pb-3 sm:pb-4 animate-slideUp">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
               <input
