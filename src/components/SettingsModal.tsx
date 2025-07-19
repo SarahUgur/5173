@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Bell, Globe, Shield, CreditCard, Smartphone, Mail, MessageCircle, Calendar, Volume2, VolumeX, FileText, LogOut, HelpCircle } from 'lucide-react';
+import { X, User, Bell, Globe, Shield, CreditCard, Smartphone, Mail, MessageCircle, Calendar, Volume2, VolumeX, FileText, LogOut, HelpCircle, Activity, Ban, Heart, Star, Share2 } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 
 interface SettingsModalProps {
@@ -13,6 +13,42 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
   const { language, setLanguage, t } = useLanguage();
   const [activeTab, setActiveTab] = useState('profile');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [blockedUsers, setBlockedUsers] = useState([
+    {
+      id: '1',
+      name: 'Spam Bruger',
+      email: 'spam@example.com',
+      avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+      blockedDate: '2024-01-10'
+    },
+    {
+      id: '2', 
+      name: 'Upassende Bruger',
+      email: 'bad@example.com',
+      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+      blockedDate: '2024-01-08'
+    }
+  ]);
+  
+  const [userActivity] = useState({
+    likedPosts: [
+      { id: '1', title: 'Hjemmerengøring København', author: 'Maria Hansen', date: '2024-01-15' },
+      { id: '2', title: 'Kontorrengøring Aarhus', author: 'Lars Nielsen', date: '2024-01-14' },
+      { id: '3', title: 'Hovedrengøring Villa', author: 'Sofie Andersen', date: '2024-01-13' }
+    ],
+    comments: [
+      { id: '1', postTitle: 'Hjemmerengøring København', comment: 'Jeg har erfaring med denne type rengøring...', date: '2024-01-15' },
+      { id: '2', postTitle: 'Kontorrengøring Aarhus', comment: 'Hvad er timeprisen for dette job?', date: '2024-01-14' }
+    ],
+    savedPosts: [
+      { id: '1', title: 'Rengøringstips til køkkenet', author: 'Expert Cleaner', date: '2024-01-12' },
+      { id: '2', title: 'Bedste rengøringsprodukter 2024', author: 'Clean Pro', date: '2024-01-10' }
+    ],
+    sharedPosts: [
+      { id: '1', title: 'Hjemmerengøring København', sharedTo: 'Facebook', date: '2024-01-14' }
+    ]
+  });
+  
   const [settings, setSettings] = useState({
     // Profil indstillinger
     name: currentUser?.name || '',
@@ -34,7 +70,11 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
     profileVisibility: 'public',
     showPhone: false,
     showEmail: false,
+    showLocation: true,
+    showActivity: true,
+    showConnections: true,
     allowDirectMessages: true,
+    privateAccount: false,
     
     // App indstillinger
     theme: 'light',
@@ -62,16 +102,9 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
-  const handleDeleteAccount = () => {
-    setShowDeleteConfirm(true);
-  };
-
-  const confirmDeleteAccount = () => {
-    // I en rigtig app ville dette slette brugeren fra databasen
-    alert('Din konto er blevet slettet. Du vil blive logget ud.');
-    setShowDeleteConfirm(false);
-    onClose();
-    // Her ville vi normalt logge brugeren ud og omdirigere til login siden
+  const handleUnblockUser = (userId: string) => {
+    setBlockedUsers(prev => prev.filter(user => user.id !== userId));
+    alert('Bruger er blevet fjernet fra blokeret liste');
   };
 
   const requestNotificationPermission = async () => {
@@ -90,6 +123,8 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
 
   const tabs = [
     { id: 'profile', label: 'Profil', icon: User },
+    { id: 'activity', label: 'Min Aktivitet', icon: Activity },
+    { id: 'blocked', label: 'Blokerede Brugere', icon: Ban },
     { id: 'notifications', label: 'Notifikationer', icon: Bell },
     { id: 'privacy', label: 'Privatliv', icon: Shield },
     { id: 'app', label: 'App', icon: Smartphone },
@@ -206,6 +241,125 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
               </div>
             )}
 
+            {activeTab === 'activity' && (
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900">Min Aktivitet</h3>
+                
+                {/* Liked Posts */}
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <h4 className="font-semibold text-blue-900 mb-3 flex items-center">
+                    <Heart className="w-5 h-5 mr-2" />
+                    Likede Opslag ({userActivity.likedPosts.length})
+                  </h4>
+                  <div className="space-y-2">
+                    {userActivity.likedPosts.map((post) => (
+                      <div key={post.id} className="flex justify-between items-center p-2 bg-white rounded">
+                        <div>
+                          <p className="font-medium text-gray-900">{post.title}</p>
+                          <p className="text-sm text-gray-600">af {post.author}</p>
+                        </div>
+                        <span className="text-xs text-gray-500">{post.date}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Comments */}
+                <div className="bg-green-50 rounded-lg p-4">
+                  <h4 className="font-semibold text-green-900 mb-3 flex items-center">
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    Mine Kommentarer ({userActivity.comments.length})
+                  </h4>
+                  <div className="space-y-2">
+                    {userActivity.comments.map((comment) => (
+                      <div key={comment.id} className="p-2 bg-white rounded">
+                        <p className="font-medium text-gray-900">{comment.postTitle}</p>
+                        <p className="text-sm text-gray-700 italic">"{comment.comment}"</p>
+                        <span className="text-xs text-gray-500">{comment.date}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Saved Posts */}
+                <div className="bg-purple-50 rounded-lg p-4">
+                  <h4 className="font-semibold text-purple-900 mb-3 flex items-center">
+                    <Star className="w-5 h-5 mr-2" />
+                    Gemte Opslag ({userActivity.savedPosts.length})
+                  </h4>
+                  <div className="space-y-2">
+                    {userActivity.savedPosts.map((post) => (
+                      <div key={post.id} className="flex justify-between items-center p-2 bg-white rounded">
+                        <div>
+                          <p className="font-medium text-gray-900">{post.title}</p>
+                          <p className="text-sm text-gray-600">af {post.author}</p>
+                        </div>
+                        <span className="text-xs text-gray-500">{post.date}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Shared Posts */}
+                <div className="bg-orange-50 rounded-lg p-4">
+                  <h4 className="font-semibold text-orange-900 mb-3 flex items-center">
+                    <Share2 className="w-5 h-5 mr-2" />
+                    Delte Opslag ({userActivity.sharedPosts.length})
+                  </h4>
+                  <div className="space-y-2">
+                    {userActivity.sharedPosts.map((post) => (
+                      <div key={post.id} className="flex justify-between items-center p-2 bg-white rounded">
+                        <div>
+                          <p className="font-medium text-gray-900">{post.title}</p>
+                          <p className="text-sm text-gray-600">Delt til {post.sharedTo}</p>
+                        </div>
+                        <span className="text-xs text-gray-500">{post.date}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'blocked' && (
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900">Blokerede Brugere</h3>
+                
+                {blockedUsers.length > 0 ? (
+                  <div className="space-y-3">
+                    {blockedUsers.map((user) => (
+                      <div key={user.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <img
+                            src={user.avatar}
+                            alt={user.name}
+                            className="w-10 h-10 rounded-full"
+                          />
+                          <div>
+                            <p className="font-medium text-gray-900">{user.name}</p>
+                            <p className="text-sm text-gray-600">{user.email}</p>
+                            <p className="text-xs text-gray-500">Blokeret: {user.blockedDate}</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleUnblockUser(user.id)}
+                          className="px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-200 text-sm"
+                        >
+                          Fjern Blokering
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Ban className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <h4 className="text-lg font-medium text-gray-900 mb-2">Ingen blokerede brugere</h4>
+                    <p className="text-gray-600">Du har ikke blokeret nogen brugere endnu.</p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {activeTab === 'notifications' && (
               <div className="space-y-6">
                 <h3 className="text-lg font-semibold text-gray-900">Notifikation Indstillinger</h3>
@@ -301,6 +455,25 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                 <h3 className="text-lg font-semibold text-gray-900">Privatliv & Sikkerhed</h3>
                 
                 <div className="space-y-4">
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <p className="font-medium text-blue-900">Privat Konto</p>
+                        <p className="text-sm text-blue-700">Kun godkendte følgere kan se dine opslag</p>
+                      </div>
+                      <button
+                        onClick={() => updateSetting('privateAccount', !settings.privateAccount)}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                          settings.privateAccount ? 'bg-blue-600' : 'bg-gray-300'
+                        }`}
+                      >
+                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                          settings.privateAccount ? 'translate-x-6' : 'translate-x-1'
+                        }`} />
+                      </button>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Profil Synlighed</label>
                     <select
@@ -327,6 +500,74 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                     >
                       <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
                         settings.showPhone ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-gray-900">Vis email adresse</p>
+                      <p className="text-sm text-gray-600">Andre kan se din email adresse</p>
+                    </div>
+                    <button
+                      onClick={() => updateSetting('showEmail', !settings.showEmail)}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        settings.showEmail ? 'bg-blue-600' : 'bg-gray-300'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        settings.showEmail ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-gray-900">Vis lokation</p>
+                      <p className="text-sm text-gray-600">Andre kan se din lokation</p>
+                    </div>
+                    <button
+                      onClick={() => updateSetting('showLocation', !settings.showLocation)}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        settings.showLocation ? 'bg-blue-600' : 'bg-gray-300'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        settings.showLocation ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-gray-900">Vis aktivitet</p>
+                      <p className="text-sm text-gray-600">Andre kan se dine likes og kommentarer</p>
+                    </div>
+                    <button
+                      onClick={() => updateSetting('showActivity', !settings.showActivity)}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        settings.showActivity ? 'bg-blue-600' : 'bg-gray-300'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        settings.showActivity ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-gray-900">Vis forbindelser</p>
+                      <p className="text-sm text-gray-600">Andre kan se dine forbindelser</p>
+                    </div>
+                    <button
+                      onClick={() => updateSetting('showConnections', !settings.showConnections)}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        settings.showConnections ? 'bg-blue-600' : 'bg-gray-300'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        settings.showConnections ? 'translate-x-6' : 'translate-x-1'
                       }`} />
                     </button>
                   </div>
@@ -485,31 +726,6 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
 
         {/* Footer */}
         <div className="p-6 border-t border-gray-200 bg-gray-50">
-          {activeTab === 'profile' && (
-            <div className="mb-4">
-              <div className="text-center space-y-3">
-                <p className="text-sm text-gray-600">Konto handlinger</p>
-                <div className="flex flex-col space-y-2">
-                  <button
-                    onClick={handleDeleteAccount}
-                    className="w-full flex items-center justify-center space-x-2 p-3 text-left hover:bg-red-50 rounded-lg transition-colors duration-200 text-red-600 border border-red-300"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    <span className="font-medium">Slet min konto permanent</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {activeTab !== 'profile' && (
-            <div className="mb-4">
-              <div className="text-center">
-                <p className="text-sm text-gray-600">Vælg "Profil" for konto handlinger</p>
-              </div>
-            </div>
-          )}
-          
           <div className="flex justify-end space-x-3">
             <button
               onClick={onClose}
@@ -525,33 +741,6 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
             </button>
           </div>
         </div>
-
-        {/* Delete Account Confirmation Modal */}
-        {showDeleteConfirm && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-              <h3 className="text-lg font-semibold text-red-600 mb-4">Slet konto permanent</h3>
-              <p className="text-gray-700 mb-6">
-                Er du sikker på, at du vil slette din konto permanent? Denne handling kan ikke fortrydes.
-                Alle dine data, opslag og beskeder vil blive slettet.
-              </p>
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => setShowDeleteConfirm(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-                >
-                  Annuller
-                </button>
-                <button
-                  onClick={confirmDeleteAccount}
-                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-                >
-                  Slet konto
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
