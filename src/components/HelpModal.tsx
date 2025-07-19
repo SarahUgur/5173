@@ -34,7 +34,7 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
         },
         {
           question: 'Hvordan kontakter jeg en rengøringsekspert?',
-          answer: 'Med Pro abonnement kan du sende direkte beskeder til alle brugere. Klik på "Besked" knappen på deres profil eller opslag.'
+          answer: 'Med Pro abonnement kan du sende direkte beskeder til alle brugere. Klik på "Besked" knappen på deres profil eller opslag. Kun muligt hvis eksperten har tilladt direkte beskeder i sine indstillinger.'
         },
         {
           question: 'Er mine personlige oplysninger sikre?',
@@ -90,7 +90,11 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
         },
         {
           question: 'Hvordan sletter jeg min konto?',
-          answer: 'Under "Indstillinger" → "Konto" finder du "Slet konto" muligheden. Dette kan ikke fortrydes!'
+          answer: 'Under "Indstillinger" → "Konto" finder du både midlertidig og permanent sletning. Permanent sletning fjerner alle data og kan ikke fortrydes!'
+        },
+        {
+          question: 'Hvad er forskellen på midlertidig og permanent deaktivering?',
+          answer: 'Midlertidig deaktivering skjuler din profil, men gemmer alle data - du kan aktivere igen ved at logge ind. Permanent sletning fjerner alt og kan ikke fortrydes.'
         }
       ]
     },
@@ -162,7 +166,7 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
         },
         {
           question: 'Problemer med betaling',
-          answer: 'Kontakt vores support på support@privatrengoring.dk med detaljer om problemet.'
+          answer: 'Kontakt vores support på support@privatrengoring.dk med detaljer om problemet. Vi svarer inden for 24-48 timer.'
         }
       ]
     }
@@ -266,7 +270,7 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
                   className="w-full flex items-center space-x-3 p-3 text-left hover:bg-red-50 rounded-lg transition-colors duration-200 text-red-600"
                 >
                   <LogOut className="w-5 h-5" />
-                  <span className="font-medium">Slet min konto</span>
+                  <span className="font-medium">Deaktiver min konto</span>
                 </button>
                 <button className="w-full flex items-center space-x-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors duration-200 text-gray-700">
                   <FileText className="w-5 h-5" />
@@ -320,7 +324,7 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
                 className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >
                 <Mail className="w-4 h-4" />
-                <span>Send email</span>
+                <span>Få hjælp - kontakt os på mail</span>
               </button>
               <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200">
                 <MessageCircle className="w-4 h-4" />
@@ -330,7 +334,7 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
             <div className="text-xs text-gray-500 space-y-1">
               <p>📧 Email: support@privatrengoring.dk</p>
               <p>📞 Telefon: +45 70 20 30 40</p>
-              <p>🕒 Åbningstider: Man-Fre 9:00-17:00</p>
+              <p>🕒 Åbningstider: Man-Fre 9:00-17:00 • Vi svarer inden for 24-48 timer</p>
             </div>
           </div>
         </div>
@@ -338,30 +342,74 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
 
       {/* Delete Account Confirmation */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60 p-4 overflow-y-auto">
           <div className="bg-white rounded-xl max-w-md w-full p-6">
             <div className="text-center">
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <AlertTriangle className="w-8 h-8 text-red-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Slet konto</h3>
-              <p className="text-gray-600 mb-6">
-                Er du sikker på at du vil slette din konto? Denne handling kan ikke fortrydes og alle dine data vil blive permanent slettet.
-              </p>
-              <div className="flex space-x-3">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Deaktiver Konto</h3>
+              
+              {/* Midlertidig Deaktivering */}
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4 text-left">
+                <h4 className="font-semibold text-orange-900 mb-2">Midlertidig Deaktivering</h4>
+                <p className="text-orange-800 text-sm mb-3">
+                  Din konto vil blive skjult fra andre brugere, men alle dine data gemmes sikkert. 
+                  Du kan nemt genaktivere din konto ved blot at logge ind igen.
+                </p>
                 <button
-                  onClick={() => setShowDeleteConfirm(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                  onClick={() => {
+                    alert('Konto midlertidigt deaktiveret. Log ind igen for at genaktivere.');
+                    setShowDeleteConfirm(false);
+                  }}
+                  className="w-full px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-200"
                 >
-                  Annuller
-                </button>
-                <button
-                  onClick={confirmDeleteAccount}
-                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-                >
-                  Slet konto
+                  Deaktiver Midlertidigt
                 </button>
               </div>
+              
+              {/* Permanent Sletning */}
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-left">
+                <h4 className="font-semibold text-red-900 mb-2">Permanent Sletning</h4>
+                <p className="text-red-800 text-sm mb-3">
+                  Din konto og alle data slettes permanent og kan ikke gendannes. 
+                  Dette inkluderer alle dine opslag, beskeder og forbindelser.
+                </p>
+                <p className="text-red-700 text-xs mb-3 font-medium">
+                  ⚠️ Dette kan IKKE fortrydes!
+                </p>
+                <button
+                  onClick={() => {
+                    if (confirm('Er du helt sikker? Alle dine data slettes permanent og kan ikke gendannes.')) {
+                      confirmDeleteAccount();
+                    }
+                  }}
+                  className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+                >
+                  Slet Permanent
+                </button>
+              </div>
+              
+              {/* Support Info */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <h4 className="font-semibold text-blue-900 mb-2">Har du brug for hjælp?</h4>
+                <p className="text-blue-800 text-sm mb-3">
+                  Før du deaktiverer, kan vi måske hjælpe med dit problem.
+                </p>
+                <button
+                  onClick={() => window.location.href = 'mailto:support@privatrengoring.dk?subject=Hjælp før konto deaktivering'}
+                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                >
+                  Kontakt Support Først
+                </button>
+              </div>
+              
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+              >
+                Annuller - Behold Konto
+              </button>
             </div>
           </div>
         </div>
