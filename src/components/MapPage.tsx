@@ -34,6 +34,15 @@ export default function MapPage({ currentUser }: MapPageProps) {
   const [showGoogleMapsEmbed, setShowGoogleMapsEmbed] = useState(false);
   const [selectedArea, setSelectedArea] = useState('all');
 
+  // Store byer kategorier
+  const areas = [
+    { id: 'all', name: 'Alle områder', count: 156 },
+    { id: 'storkobenhavn', name: 'Storkøbenhavn', count: 89 },
+    { id: 'storaarhus', name: 'Storaarhus', count: 34 },
+    { id: 'storodense', name: 'Storodense', count: 18 },
+    { id: 'storaalborg', name: 'Storaalborg', count: 15 }
+  ];
+
   // Mock job locations med rigtige adresser
   const jobLocations: JobLocation[] = [
     {
