@@ -1,794 +1,855 @@
 import React, { useState } from 'react';
-import { X, Loader2 } from 'lucide-react';
-import AuthScreen from './components/AuthScreen';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import CreatePost from './components/CreatePost';
-import PostCard from './components/PostCard';
-import SubscriptionModal from './components/SubscriptionModal';
-import SuccessPage from './components/SuccessPage';
-import PlanningPage from './components/PlanningPage';
-import MyTasksPage from './components/MyTasksPage';
-import NetworkPage from './components/NetworkPage';
-import LocalJobsPage from './components/LocalJobsPage';
-import SettingsModal from './components/SettingsModal';
-import NotificationModal from './components/NotificationModal';
-import UserProfileModal from './components/UserProfileModal';
-import FriendRequestModal from './components/FriendRequestModal';
-import InstallPrompt from './components/InstallPrompt';
-import MessagesModal from './components/MessagesModal';
-import UserProfilePage from './components/UserProfilePage';
-import MapPage from './components/MapPage';
-import AdminPage from './components/AdminPage';
-import AboutPage from './components/AboutPage';
-import TermsPage from './components/TermsPage';
-import ContactPage from './components/ContactPage';
-import SupportPage from './components/SupportPage';
-import AdBanner from './components/AdBanner';
-import RecommendationWidget from './components/RecommendationWidget';
-import { mockUsers, getLocalizedPosts } from './data/mockData';
-import { useLanguage } from './hooks/useLanguage';
+import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Users, ExternalLink, Eye, EyeOff, Trash2, Edit } from 'lucide-react';
+import { useLanguage } from '../hooks/useLanguage';
+import AdBanner from './AdBanner';
+import type { Post } from '../types';
 
-function App() {
-  const { language } = useLanguage();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('isAuthenticated') === 'true';
-  });
-  const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem('currentUser');
-    return saved ? JSON.parse(saved) : mockUsers[0];
-  });
-  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
-  const [showSuccessPage, setShowSuccessPage] = useState(false);
-  const [showMessages, setShowMessages] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [posts, setPosts] = useState(() => getLocalizedPosts(language));
-  const [showUserProfile, setShowUserProfile] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [showFriendRequests, setShowFriendRequests] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState('home');
+interface PostCardProps {
+  post: Post;
+  currentUser: any;
+  onShowSubscription: () => void;
+  onReport?: (postId: string, reason: string) => void;
+  onShowUserProfile?: (user: any) => void;
+  onTagUser?: (userId: string, postId: string) => void;
+  onSharePost?: (postId: string, platform: string) => void;
+}
 
-  // Onboarding state
-  const [showOnboarding, setShowOnboarding] = useState(() => {
-    return !localStorage.getItem('onboardingCompleted');
-  });
-  const [onboardingStep, setOnboardingStep] = useState(1);
+export default function PostCard({ post, currentUser, onShowSubscription, onReport, onShowUserProfile, onTagUser, onSharePost }: PostCardProps) {
+  const { t, getJobTypeLabel, getUrgencyLabel } = useLanguage();
+  const [liked, setLiked] = useState(false);
+  const [reactionType, setReactionType] = useState<'like' | 'love' | 'laugh' | 'wow' | null>(null);
+  const [showReactions, setShowReactions] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [shareCount, setShareCount] = useState(Math.floor(Math.random() * 20) + 5);
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [taggedUsers, setTaggedUsers] = useState<string[]>([]);
+  const [commentText, setCommentText] = useState('');
+  const [showComments, setShowComments] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [showBlockModal, setShowBlockModal] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportDescription, setReportDescription] = useState('');
+  
+  // Auto-close dropdowns when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      
+      if (!target.closest('.more-menu-dropdown')) {
+        setShowMoreMenu(false);
+      }
+      if (!target.closest('.share-menu-dropdown')) {
+        setShowShareMenu(false);
+      }
+      if (!target.closest('.reactions-dropdown')) {
+        setShowReactions(false);
+      }
+    };
 
-  // Error boundary
-  const handleError = (error: Error) => {
-    console.error('App Error:', error);
-    setError(error.message);
-  };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-  const completeOnboarding = () => {
-    localStorage.setItem('onboardingCompleted', 'true');
-    setShowOnboarding(false);
-  };
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isPostHidden, setIsPostHidden] = useState(false);
 
-  // Loading states
-  const withLoading = async (fn: () => Promise<void> | void) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      await fn();
-    } catch (err) {
-      handleError(err as Error);
-    } finally {
-      setIsLoading(false);
+  const reactions = [
+    { type: 'like', emoji: '👍', label: 'Synes godt om', color: 'text-blue-600' },
+    { type: 'love', emoji: '❤️', label: 'Elsker', color: 'text-red-600' },
+    { type: 'laugh', emoji: '😂', label: 'Sjovt', color: 'text-yellow-600' },
+    { type: 'wow', emoji: '😮', label: 'Wow', color: 'text-purple-600' }
+  ];
+
+  const shareOptions = [
+    { platform: 'facebook', name: 'Facebook', icon: '📘', color: 'bg-blue-600' },
+    { platform: 'instagram', name: 'Instagram', icon: '📷', color: 'bg-pink-600' },
+    { platform: 'whatsapp', name: 'WhatsApp', icon: '💬', color: 'bg-green-600' },
+    { platform: 'messenger', name: 'Messenger', icon: '💬', color: 'bg-blue-500' },
+    { platform: 'twitter', name: 'Twitter', icon: '🐦', color: 'bg-blue-400' },
+    { platform: 'linkedin', name: 'LinkedIn', icon: '💼', color: 'bg-blue-700' },
+    { platform: 'copy', name: 'Kopier Link', icon: '🔗', color: 'bg-gray-600' }
+  ];
+
+  const mockUsers = [
+    { id: '1', name: 'Maria Hansen', avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' },
+    { id: '2', name: 'Lars Nielsen', avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' },
+    { id: '3', name: 'Sofie Andersen', avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' }
+  ];
+
+  const handleInteraction = (action: string) => {
+    if (!currentUser?.isSubscribed) {
+      onShowSubscription();
+      return;
+    }
+    
+    if (action === 'like') {
+      setLiked(!liked);
+    } else if (action === 'comment') {
+      setShowComments(!showComments);
     }
   };
 
-  // Update posts when language changes
-  React.useEffect(() => {
-    setPosts(getLocalizedPosts(language));
-  }, [language]);
-
-  // Auto-save user data
-  React.useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  const handleReaction = (type: string) => {
+    if (!currentUser?.isSubscribed) {
+      onShowSubscription();
+      return;
     }
-  }, [currentUser]);
-
-  const handleSubscribe = () => {
-    withLoading(() => {
-      const updatedUser = { ...currentUser, isSubscribed: true };
-      setCurrentUser(updatedUser);
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-      setShowSubscriptionModal(false);
-      setShowSuccessPage(true);
-    });
+    setReactionType(reactionType === type ? null : type as any);
+    setShowReactions(false);
   };
 
-  const handleLogin = (user: any) => {
-    withLoading(() => {
-      setIsAuthenticated(true);
-      setCurrentUser(user);
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('currentUser', JSON.stringify(user));
-    });
+  const handleShare = (platform: string) => {
+    const postUrl = `${window.location.origin}/post/${post.id}`;
+    const text = `Tjek dette opslag på Privat Rengøring: ${post.content.substring(0, 100)}...`;
+    
+    switch (platform) {
+      case 'facebook':
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`, '_blank');
+        break;
+      case 'instagram':
+        // Instagram doesn't support direct sharing, copy to clipboard
+        navigator.clipboard.writeText(`${text} ${postUrl}`);
+        alert('Link kopieret! Indsæt i Instagram Story eller post');
+        break;
+      case 'whatsapp':
+        window.open(`https://wa.me/?text=${encodeURIComponent(`${text} ${postUrl}`)}`, '_blank');
+        break;
+      case 'messenger':
+        window.open(`https://www.messenger.com/t/?link=${encodeURIComponent(postUrl)}`, '_blank');
+        break;
+      case 'twitter':
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(postUrl)}`, '_blank');
+        break;
+      case 'linkedin':
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}`, '_blank');
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(postUrl);
+        alert('Link kopieret til udklipsholder!');
+        break;
+    }
+    
+    setShareCount(prev => prev + 1);
+    onSharePost?.(post.id, platform);
+    setShowShareMenu(false);
   };
 
-  const handleLogout = () => {
-    withLoading(() => {
-      localStorage.removeItem('isAuthenticated');
-      localStorage.removeItem('currentUser');
-      setIsAuthenticated(false);
-    });
+  const handleTagUser = (userId: string) => {
+    if (!taggedUsers.includes(userId)) {
+      setTaggedUsers([...taggedUsers, userId]);
+      onTagUser?.(userId, post.id);
+    }
   };
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+  const handleCommentSubmit = () => {
+    if (commentText.trim()) {
+      // Process @mentions in comment
+      const mentions = commentText.match(/@(\w+)/g);
+      if (mentions) {
+        mentions.forEach(mention => {
+          const username = mention.substring(1);
+          const user = mockUsers.find(u => u.name.toLowerCase().includes(username.toLowerCase()));
+          if (user) {
+            handleTagUser(user.id);
+          }
+        });
+      }
+      
+      console.log('Posting comment:', commentText);
+      setCommentText('');
+    }
   };
 
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
+  const handleReport = () => {
+    if (reportReason && reportDescription.trim()) {
+      onReport?.(post.id, `${reportReason}: ${reportDescription}`);
+      setShowReportModal(false);
+      setReportReason('');
+      setReportDescription('');
+      alert('Tak for din rapport. Admin teamet vil gennemgå den inden for 24 timer.');
+    }
   };
 
-  const handleShowUserProfile = (user: any) => {
-    setSelectedUser(user);
-    setShowUserProfile(true);
+  const handleBlockUser = () => {
+    // I en rigtig app ville dette blokere brugeren i databasen
+    alert(`Du har blokeret ${post.user.name}. Du vil ikke længere se deres opslag.`);
+    setShowBlockModal(false);
+    setShowMoreMenu(false);
   };
 
-  const handleSendFriendRequest = (userId: string) => {
-    console.log('Sending friend request to:', userId);
-    alert('Venskabsanmodning sendt!');
+  const handleImageClick = (index: number) => {
+    setSelectedImageIndex(index);
+    setShowImageModal(true);
   };
 
-  const handleAcceptFriendRequest = (userId: string) => {
-    console.log('Accepting friend request from:', userId);
-    alert('Venskabsanmodning accepteret!');
+  const handleHidePost = () => {
+    setIsPostHidden(true);
+    setShowMoreMenu(false);
+    alert('Opslag skjult. Du kan vise det igen i dine indstillinger.');
   };
 
-  const handleSendMessage = (userId: string) => {
-    console.log('Sending message to:', userId);
-    setShowMessages(true);
+  const handleDeletePost = () => {
+    if (confirm('Er du sikker på at du vil slette dette opslag? Dette kan ikke fortrydes.')) {
+      alert('Opslag slettet permanent.');
+      setShowMoreMenu(false);
+    }
   };
 
-  const handleBlockUser = (userId: string) => {
-    console.log('Blocking user:', userId);
-    alert('Bruger blokeret');
+  const reportReasons = [
+    'Spam eller uønsket indhold',
+    'Upassende eller krænkende sprog',
+    'Falske oplysninger',
+    'Svindel eller bedrageri',
+    'Overtræder platformens regler',
+    'Andet'
+  ];
+  const getUrgencyColor = (urgency: string) => {
+    const colors = {
+      'immediate': 'bg-red-100 text-red-800',
+      'this_week': 'bg-yellow-100 text-yellow-800',
+      'flexible': 'bg-green-100 text-green-800'
+    };
+    return colors[urgency as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
-  const handleReportUser = (userId: string, reason: string) => {
-    console.log('Reporting user:', userId, 'Reason:', reason);
-    alert('Bruger rapporteret til admin');
-  };
-
-  const handleTagUser = (userId: string, postId: string) => {
-    console.log('Tagging user:', userId, 'in post:', postId);
-    // I en rigtig app ville dette sende en notifikation til den taggede bruger
-    alert('Bruger tagget i opslag!');
-  };
-
-  const handleSharePost = (postId: string, platform: string) => {
-    console.log('Sharing post:', postId, 'on:', platform);
-    // I en rigtig app ville dette tracke delinger for analytics
-  };
-  const handleUpdateUser = (updates: any) => {
-    withLoading(() => {
-      setCurrentUser(updates);
-      localStorage.setItem('currentUser', JSON.stringify(updates));
-    });
-  };
-
-  // Error display
-  if (error) {
+  // Skjul opslag hvis brugeren har valgt det
+  if (isPostHidden) {
     return (
-      <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <X className="w-8 h-8 text-red-600" />
-          </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Der opstod en fejl</h2>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <button
-            onClick={() => {
-              setError(null);
-              window.location.reload();
-            }}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-          >
-            Genindlæs App
-          </button>
-        </div>
+      <div className="bg-gray-100 rounded-xl p-4 mx-3 sm:mx-0 text-center">
+        <EyeOff className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+        <p className="text-gray-600">Opslag skjult</p>
+        <button
+          onClick={() => {
+            if (!currentUser?.isSubscribed) {
+              onShowSubscription();
+              return;
+            }
+            // Handle job application
+            alert('Ansøgning sendt! Kunden vil kontakte dig snart.');
+          }}
+          className="text-blue-600 hover:text-blue-700 text-sm mt-2"
+        >
+          Vis igen
+        </button>
       </div>
     );
   }
-
-  // Loading overlay
-  if (isLoading) {
-    return (
-      <div className="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Indlæser...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Vis login skærm hvis ikke autentificeret
-  if (!isAuthenticated) {
-    return <AuthScreen onLogin={handleLogin} />;
-  }
-
-  // Vis onboarding for nye brugere
-  if (showOnboarding) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8 text-center">
-          <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-3xl text-white">{onboardingStep}</span>
-          </div>
-          
-          {onboardingStep === 1 && (
-            <>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Velkommen til Privat Rengøring!</h2>
-              <p className="text-gray-600 mb-6">
-                Lad os hjælpe dig med at komme i gang. Hvad vil du bruge appen til?
-              </p>
-              <div className="space-y-3">
-                <button
-                  onClick={() => {
-                    setCurrentUser({...currentUser, primaryUse: 'hiring'});
-                    setOnboardingStep(2);
-                  }}
-                  className="w-full p-4 border-2 border-blue-500 bg-blue-50 text-blue-700 rounded-xl hover:bg-blue-100 transition-colors duration-200"
-                >
-                  <div className="text-center">
-                    <span className="text-2xl mb-2 block">🏠</span>
-                    <div className="font-medium">Jeg søger rengøringshjælp</div>
-                    <div className="text-sm opacity-75">Find pålidelige rengøringseksperter</div>
-                  </div>
-                </button>
-                <button
-                  onClick={() => {
-                    setCurrentUser({...currentUser, primaryUse: 'offering'});
-                    setOnboardingStep(2);
-                  }}
-                  className="w-full p-4 border-2 border-green-500 bg-green-50 text-green-700 rounded-xl hover:bg-green-100 transition-colors duration-200"
-                >
-                  <div className="text-center">
-                    <span className="text-2xl mb-2 block">💼</span>
-                    <div className="font-medium">Jeg tilbyder rengøring</div>
-                    <div className="text-sm opacity-75">Find kunder og byg dit netværk</div>
-                  </div>
-                </button>
-              </div>
-            </>
-          )}
-          
-          {onboardingStep === 2 && (
-            <>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Perfekt!</h2>
-              <p className="text-gray-600 mb-6">
-                {currentUser?.primaryUse === 'hiring' 
-                  ? 'Vi har tilpasset appen til at hjælpe dig med at finde den rette rengøringshjælp.'
-                  : 'Vi har tilpasset appen til at hjælpe dig med at finde kunder og vokse dit rengøringsbusiness.'
-                }
-              </p>
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6">
-                <h3 className="font-semibold text-gray-900 mb-2">Dine næste skridt:</h3>
-                <div className="text-left space-y-2 text-sm text-gray-700">
-                  {currentUser?.primaryUse === 'hiring' ? (
-                    <>
-                      <p>✅ Udfyld din profil (60% fuldført)</p>
-                      <p>📍 Aktiver lokation for bedre matches</p>
-                      <p>🔍 Søg efter rengøringseksperter i dit område</p>
-                      <p>💬 Opgrader til Pro for direkte beskeder</p>
-                    </>
-                  ) : (
-                    <>
-                      <p>✅ Udfyld din profil (60% fuldført)</p>
-                      <p>📝 Opret dit første jobopslag</p>
-                      <p>🌟 Byg dit netværk og få anmeldelser</p>
-                      <p>💎 Opgrader til Pro for prioriteret visning</p>
-                    </>
-                  )}
-                </div>
-              </div>
-              <button
-                onClick={completeOnboarding}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
-              >
-                Kom i gang!
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-    );
-  }
-  if (showSuccessPage) {
-    return (
-      <SuccessPage 
-        onContinue={() => setShowSuccessPage(false)}
-      />
-    );
-  }
-
-  // Next Steps Banner for new users
-  const showNextSteps = !currentUser?.profileCompleted && currentPage === 'home';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      <Header 
-        currentUser={currentUser} 
-        onShowSubscription={() => setShowSubscriptionModal(true)}
-        onLogout={handleLogout}
-        onToggleMobileMenu={toggleMobileMenu}
-        onShowMessages={() => {
-          if (!currentUser?.isSubscribed) {
-            setShowSubscriptionModal(true);
-          } else {
-            setShowMessages(true);
-          }
-        }}
-        onShowNotifications={() => setShowNotifications(true)}
-        onShowProfile={() => setCurrentPage('profile')}
-        onShowSettings={() => setShowSettings(true)}
-        onShowFriendRequests={() => setShowFriendRequests(true)}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-      />
-      
-      <div className="flex relative">
-        <Sidebar 
-          currentUser={currentUser} 
-          isOpen={isMobileMenuOpen}
-          onClose={closeMobileMenu}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        />
-        
-        {/* Main Content */}
-        <main className="flex-1 min-h-screen md:ml-0 transition-all duration-300">
-          {/* Next Steps Banner */}
-          {showNextSteps && (
-            <div className="mx-3 sm:mx-0 mt-3 sm:mt-6 mb-4 sm:mb-6">
-              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-4 sm:p-6">
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">🎯</span>
+    <div className="bg-white rounded-xl shadow-soft border border-gray-200 overflow-hidden hover:shadow-medium transition-all duration-300 mx-3 sm:mx-0 card hover-lift">
+      {/* Header */}
+      <div className="p-3 sm:p-4 border-b border-gray-100 bg-gradient-to-r from-white to-gray-50">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center space-x-3 flex-1 min-w-0">
+            <button
+              onClick={() => onShowUserProfile?.(post.user)}
+              className="flex-shrink-0 hover:opacity-80 transition-all duration-200 hover:scale-105"
+            >
+              <img
+                src={post.user.avatar}
+                alt={post.user.name}
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full ring-2 ring-transparent hover:ring-blue-300 transition-all duration-200"
+              />
+            </button>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => onShowUserProfile?.(post.user)}
+                  className="font-semibold text-gray-900 truncate text-sm sm:text-base hover:text-blue-600 transition-all duration-200 hover:scale-105"
+                >
+                  {post.user.name}
+                </button>
+                {post.user.verified && (
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                    <span className="text-white text-xs">✓</span>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-yellow-900 mb-2">Dine næste skridt</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                )}
+              </div>
+              <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-500">
+                <span>{post.createdAt}</span>
+                <span>•</span>
+                <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="truncate">{post.location}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-2 ml-2">
+            {post.isJobPost && (
+              <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getUrgencyColor(post.urgency)}`}>
+                  {getUrgencyLabel(post.urgency)}
+                </span>
+                <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hidden sm:inline">
+                  {getJobTypeLabel(post.jobType)}
+                </span>
+              </div>
+            )}
+            <div className="relative">
+              <button 
+                className="more-menu-dropdown"
+                onClick={() => setShowMoreMenu(!showMoreMenu)}
+                className="p-1 rounded-full hover:bg-gray-100 transition-all duration-200 hover:scale-110"
+              >
+              <MoreHorizontal className="w-5 h-5 text-gray-400" />
+            </button>
+              
+              {/* More Menu Dropdown */}
+              {showMoreMenu && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 more-menu-dropdown">
+                  {post.userId === currentUser?.id && (
+                    <>
                       <button
-                        onClick={() => setCurrentPage('profile')}
-                        className="flex items-center space-x-2 p-3 bg-white rounded-lg hover:bg-yellow-50 transition-colors duration-200"
+                        onClick={handleHidePost}
+                        className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200 text-gray-700"
                       >
-                        <span className="text-lg">📝</span>
-                        <div className="text-left">
-                          <p className="font-medium text-yellow-900">Fuldfør profil</p>
-                          <p className="text-sm text-yellow-700">60% fuldført</p>
-                        </div>
+                        <EyeOff className="w-4 h-4" />
+                        <span className="text-sm">Skjul opslag</span>
                       </button>
-                      {currentUser?.primaryUse === 'hiring' ? (
-                        <button
-                          onClick={() => setCurrentPage('local')}
-                          className="flex items-center space-x-2 p-3 bg-white rounded-lg hover:bg-yellow-50 transition-colors duration-200"
-                        >
-                          <span className="text-lg">🔍</span>
-                          <div className="text-left">
-                            <p className="font-medium text-yellow-900">Find eksperter</p>
-                            <p className="text-sm text-yellow-700">Se lokale jobs</p>
-                          </div>
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            // Scroll to create post
-                            document.querySelector('.create-post')?.scrollIntoView({ behavior: 'smooth' });
-                          }}
-                          className="flex items-center space-x-2 p-3 bg-white rounded-lg hover:bg-yellow-50 transition-colors duration-200"
-                        >
-                          <span className="text-lg">💼</span>
-                          <div className="text-left">
-                            <p className="font-medium text-yellow-900">Opret første job</p>
-                            <p className="text-sm text-yellow-700">Få kunder</p>
-                          </div>
-                        </button>
-                      )}
-                    </div>
+                      <button
+                        onClick={handleDeletePost}
+                        className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200 text-red-600"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span className="text-sm">Slet opslag</span>
+                      </button>
+                      <hr className="my-2" />
+                    </>
+                  )}
+                  <button
+                    onClick={() => {
+                      setShowBlockModal(true);
+                      setShowMoreMenu(false);
+                    }}
+                    className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200 text-orange-600"
+                  >
+                    <Ban className="w-4 h-4" />
+                    <span className="text-sm">Blokér {post.user.name}</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowReportModal(true);
+                      setShowMoreMenu(false);
+                    }}
+                    className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200 text-red-600"
+                  >
+                    <Flag className="w-4 h-4" />
+                    <span className="text-sm">Rapportér opslag</span>
+                  </button>
+                  <button
+                    onClick={() => setShowMoreMenu(false)}
+                    className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200 text-gray-700"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    <span className="text-sm">Del opslag</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        {/* Mobile job type badge */}
+        {post.isJobPost && (
+          <div className="mt-2 sm:hidden">
+            <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              {getJobTypeLabel(post.jobType)}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="p-3 sm:p-4 bg-gradient-to-b from-white to-gray-50">
+        <p className="text-gray-800 mb-4 leading-relaxed text-sm sm:text-base">{post.content}</p>
+        
+        {post.budget && (
+          <div className="flex items-center space-x-2 mb-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200 hover-lift relative group">
+            <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0" />
+            <span className="font-semibold text-green-800 text-sm sm:text-base animate-fadeIn">Budget: {post.budget}</span>
+            <div className="absolute top-full left-0 mt-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+              💰 Pris fastsat af {post.user.userType === 'private' || post.user.userType === 'small_business' || post.user.userType === 'large_business' ? 'kunde' : 'udbyder'}
+            </div>
+          </div>
+        )}
+
+        {post.images && post.images.length > 0 && (
+          <div className={`grid gap-2 mb-4 ${post.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+            {post.images.map((image, index) => (
+              <React.Fragment key={index}>
+                <div className="relative">
+                  <img
+                    src={image}
+                    alt={`Post image ${index + 1}`}
+                    className="rounded-lg object-cover h-32 sm:h-48 w-full hover:scale-105 transition-transform duration-300 cursor-pointer"
+                    onClick={() => handleImageClick(index)}
+                  />
+                  <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
+                    {index + 1}/{post.images.length}
+                  </div>
+                </div>
+                {/* Reklame mellem billeder (hver 2. billede) */}
+                {index === 1 && post.images.length > 2 && (
+                  <div className="col-span-full my-2">
+                    <AdBanner type="banner" position="middle" className="w-full" />
+                  </div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Actions */}
+      <div className="px-3 sm:px-4 py-3 border-t border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="relative">
+              <button
+                onClick={() => reactionType ? setReactionType(null) : handleReaction('like')}
+                onMouseEnter={() => setShowReactions(true)}
+                onMouseLeave={() => setTimeout(() => setShowReactions(false), 300)}
+                className={`reactions-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                  reactionType ? 'text-blue-600 bg-blue-50' : 
+                  !currentUser?.isSubscribed ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'
+                }`}
+                disabled={!currentUser?.isSubscribed}
+              >
+                {reactionType ? (
+                  <span className="text-lg">{reactions.find(r => r.type === reactionType)?.emoji}</span>
+                ) : (
+                  <ThumbsUp className="w-4 h-4 sm:w-5 sm:h-5" />
+                )}
+                <span className="font-medium text-sm sm:text-base">{post.likes + (reactionType ? 1 : 0)}</span>
+                {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />}
+              </button>
+              
+              {/* Reaction Menu */}
+              {showReactions && (
+                <div 
+                  className="absolute bottom-full left-0 mb-2 bg-white rounded-full shadow-strong border border-gray-200 p-2 flex space-x-2 z-50 animate-fadeIn reactions-dropdown"
+                  onMouseEnter={() => setShowReactions(true)}
+                  onMouseLeave={() => setShowReactions(false)}
+                >
+                  {reactions.map((reaction) => (
                     <button
-                      onClick={() => {
-                        setCurrentUser({...currentUser, profileCompleted: true});
-                        localStorage.setItem('currentUser', JSON.stringify({...currentUser, profileCompleted: true}));
-                      }}
-                      className="text-sm text-yellow-700 hover:text-yellow-800 underline"
+                      key={reaction.type}
+                      onClick={() => handleReaction(reaction.type)}
+                      className="hover:scale-125 transition-transform duration-200 p-1 hover:bg-gray-50 rounded-full"
+                      title={reaction.label}
                     >
-                      Skjul denne besked
+                      <span className="text-xl">{reaction.emoji}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <button
+              onClick={() => handleInteraction('comment')}
+              className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                !currentUser?.isSubscribed ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'
+              }`}
+              disabled={!currentUser?.isSubscribed}
+            >
+              <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="font-medium text-sm sm:text-base">{post.comments.length}</span>
+              {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />}
+            </button>
+            
+            <div className="relative">
+              <button 
+                onClick={() => setShowShareMenu(!showShareMenu)}
+                className={`share-menu-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                  !currentUser?.isSubscribed ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'
+                }`}
+                disabled={!currentUser?.isSubscribed}
+              >
+                <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="font-medium text-sm sm:text-base">{shareCount}</span>
+                <span className="font-medium text-sm sm:text-base hidden sm:inline ml-1">{t('share')}</span>
+              </button>
+              
+              {/* Share Menu */}
+              {showShareMenu && (
+                <div className="absolute bottom-full left-0 mb-2 w-64 bg-white rounded-xl shadow-strong border border-gray-200 p-3 z-50 animate-fadeIn share-menu-dropdown">
+                  <h4 className="font-semibold text-gray-900 mb-3 text-sm">Del opslag</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    {shareOptions.map((option) => (
+                      <button
+                        key={option.platform}
+                        onClick={() => handleShare(option.platform)}
+                        className={`flex items-center space-x-2 p-2 rounded-lg text-white hover:opacity-90 transition-all duration-200 hover:scale-105 ${option.color}`}
+                      >
+                        <span>{option.icon}</span>
+                        <span className="text-xs font-medium">{option.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {post.isJobPost && (
+            <button
+              onClick={() => handleInteraction('apply')}
+              className={`px-3 sm:px-6 py-2 rounded-lg font-medium flex items-center space-x-2 text-sm sm:text-base transition-all duration-200 ${
+                currentUser?.isSubscribed 
+                  ? 'btn-primary text-white hover:scale-105' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+              disabled={!currentUser?.isSubscribed}
+            >
+              <span>{currentUser?.isSubscribed ? t('apply') : 'Kun Pro'}</span>
+              {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4" />}
+            </button>
+          )}
+        </div>
+
+        {!currentUser?.isSubscribed && (
+          <div className="mt-3 p-3 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <p className="text-xs sm:text-sm text-blue-800 font-medium mb-1">
+                  🔒 Denne funktion er kun for Pro-medlemmer
+                </p>
+                <p className="text-xs text-blue-700">
+                  Som Pro-medlem kan du like, kommentere, ansøge om jobs og sende beskeder
+                </p>
+              </div>
+              <button
+                onClick={onShowSubscription}
+                className="ml-3 px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-xs font-medium"
+              >
+                Opgrader
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Pro Comparison for non-subscribers */}
+        {!currentUser?.isSubscribed && post.isJobPost && (
+          <div className="mt-3 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg">
+            <h4 className="font-semibold text-yellow-900 mb-3">💎 Hvad får du med Pro?</h4>
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <span className="text-green-600">✅</span>
+                  <span className="text-yellow-800">Ansøg om jobs</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-green-600">✅</span>
+                  <span className="text-yellow-800">Send beskeder</span>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <span className="text-green-600">✅</span>
+                  <span className="text-yellow-800">Like og gem opslag</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-green-600">✅</span>
+                  <span className="text-yellow-800">Verificeret profil</span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 pt-3 border-t border-yellow-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-lg font-bold text-yellow-900">29 kr/måned</span>
+                  <span className="text-xs text-yellow-700 ml-2">Opsig når som helst</span>
+                </div>
+                <button
+                  onClick={onShowSubscription}
+                  className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-200 text-sm font-medium"
+                >
+                  Opgrader Nu
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Admin has access to everything */}
+        {currentUser?.email === 'admin@privatrengoring.dk' && (
+          <div className="mt-3 p-3 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg">
+            <p className="text-xs text-red-800 flex items-center space-x-2">
+              <Lock className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1" />
+              <span>🛡️ Admin har fuld adgang til alle funktioner</span>
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Comments Section */}
+      {showComments && currentUser?.isSubscribed && (
+        <div className="border-t border-gray-100 p-3 sm:p-4 bg-gradient-to-b from-gray-50 to-white animate-slideUp">
+          <div className="space-y-3">
+            {post.comments.map((comment) => (
+              <div key={comment.id} className="flex space-x-3 animate-fadeIn">
+                <img
+                  src={comment.user.avatar}
+                  alt={comment.user.name}
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex-shrink-0 ring-2 ring-transparent hover:ring-blue-300 transition-all duration-200"
+                />
+                <div className="flex-1 bg-white rounded-lg p-3 shadow-soft hover:shadow-medium transition-shadow duration-200">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <span className="font-semibold text-sm">{comment.user.name}</span>
+                    <span className="text-xs text-gray-500">{comment.createdAt}</span>
+                  </div>
+                  <p className="text-sm text-gray-800">
+                    {comment.content.split(' ').map((word, index) => {
+                      if (word.startsWith('@')) {
+                        return (
+                          <span key={index} className="text-blue-600 font-medium cursor-pointer hover:underline">
+                            {word}{' '}
+                          </span>
+                        );
+                      }
+                      return word + ' ';
+                    })}
+                  </p>
+                </div>
+              </div>
+            ))}
+            
+            <div className="flex space-x-3 mt-4">
+              <img
+                src={currentUser?.avatar}
+                alt="Your avatar"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex-shrink-0"
+              />
+              <div className="flex-1">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleCommentSubmit()}
+                    placeholder={`${t('writeComment')} (brug @ for at tagge)`}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm pr-20 transition-all duration-200"
+                  />
+                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                    <button
+                      onClick={() => setShowTagModal(true)}
+                      className="p-1 rounded hover:bg-gray-100 transition-all duration-200 hover:scale-110"
+                      title="Tag brugere"
+                    >
+                      <Users className="w-4 h-4 text-gray-500" />
+                    </button>
+                    <button
+                      onClick={handleCommentSubmit}
+                      disabled={!commentText.trim()}
+                      className="text-blue-600 hover:text-blue-700 disabled:text-gray-400 text-sm font-medium transition-all duration-200 hover:scale-105"
+                    >
+                      Send
                     </button>
                   </div>
                 </div>
               </div>
             </div>
-          )}
+          </div>
+        </div>
+      )}
 
-          {currentPage === 'home' && (
-            <div className="max-w-2xl mx-auto animate-fadeIn">
-              {/* Create Post - Mobile optimized */}
-              <div className="sticky top-16 z-30 bg-gradient-to-br from-gray-50 to-blue-50 pt-3 sm:pt-6 backdrop-blur-sm create-post">
-                <CreatePost currentUser={currentUser} />
-              </div>
-              
-              {/* Posts Feed */}
-              <div className="space-y-4 sm:space-y-6 pb-6 animate-slideUp">
-                {posts.map((post, index) => (
-                  <React.Fragment key={post.id}>
-                    <PostCard
-                      post={post}
-                      currentUser={currentUser}
-                      onShowSubscription={() => setShowSubscriptionModal(true)}
-                      onReport={(postId, reason) => {
-                        console.log(`Rapport modtaget for post ${postId}: ${reason}`);
-                        // I en rigtig app ville dette sendes til admin database
-                      }}
-                      onShowUserProfile={handleShowUserProfile}
-                      onTagUser={handleTagUser}
-                      onSharePost={handleSharePost}
-                    />
-                    
-                    {/* Reklame efter hver 3. post */}
-                    {(index + 1) % 3 === 0 && (
-                      <div className="mx-3 sm:mx-0">
-                        {index % 6 === 2 ? (
-                          <AdBanner type="video" position="middle" className="w-full" />
-                        ) : (
-                          <AdBanner type="native" position="middle" className="w-full" />
-                        )}
-                      </div>
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          {currentPage === 'planning' && (
-            <div className="animate-fadeIn">
-              <PlanningPage currentUser={currentUser} />
-            </div>
-          )}
-          
-          {currentPage === 'tasks' && (
-            <div className="animate-fadeIn">
-              <MyTasksPage currentUser={currentUser} />
-            </div>
-          )}
-          
-          {currentPage === 'network' && (
-            <div className="animate-fadeIn">
-              <NetworkPage currentUser={currentUser} />
-            </div>
-          )}
-          
-          {currentPage === 'local' && (
-            <div className="animate-fadeIn">
-              <LocalJobsPage currentUser={currentUser} />
-            </div>
-          )}
-          
-          {currentPage === 'profile' && (
-            <div className="animate-fadeIn">
-              <UserProfilePage 
-                currentUser={currentUser} 
-                onUpdateUser={handleUpdateUser}
-                onShowSettings={() => setShowSettings(true)}
-              />
-            </div>
-          )}
-          
-          {currentPage === 'map' && (
-            <div className="animate-fadeIn">
-              <MapPage currentUser={currentUser} />
-            </div>
-          )}
-          
-          {currentPage === 'admin' && currentUser?.email === 'admin@privatrengoring.dk' && (
-            <div className="animate-fadeIn">
-              <AdminPage currentUser={currentUser} />
-            </div>
-          )}
-          
-          {currentPage === 'about' && (
-            <div className="animate-fadeIn">
-              <AboutPage />
-            </div>
-          )}
-          
-          {currentPage === 'terms' && (
-            <div className="animate-fadeIn">
-              <TermsPage />
-            </div>
-          )}
-          
-          {currentPage === 'contact' && (
-            <div className="animate-fadeIn">
-              <ContactPage />
-            </div>
-          )}
-          
-          {currentPage === 'support' && (
-            <div className="animate-fadeIn">
-              <SupportPage />
-            </div>
-          )}
-          
-        </main>
-
-        {/* Right sidebar - Hidden on mobile and tablet */}
-        <div className="w-80 p-6 hidden xl:block animate-slideInRight">
-          <RecommendationWidget 
-            currentUser={currentUser}
-            onShowUserProfile={handleShowUserProfile}
-            onPageChange={setCurrentPage}
-          />
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mt-6 hover:shadow-md transition-shadow duration-300">
-            <h3 className="font-semibold text-gray-900 mb-3">Foreslåede Kontakter</h3>
-            <div className="space-y-3">
-              {mockUsers.slice(1).map((user) => (
+      {/* Tag Users Modal */}
+      {showTagModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Tag Brugere</h3>
+            <div className="space-y-3 mb-6">
+              {mockUsers.map((user) => (
                 <div key={user.id} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <img
-                      src={user.avatar}
-                      alt={user.name}
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                      <p className="text-xs text-gray-500">{user.location}</p>
-                    </div>
+                  <div className="flex items-center space-x-3">
+                    <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full" />
+                    <span className="font-medium text-gray-900">{user.name}</span>
                   </div>
-                  <button className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200 transition-colors duration-200">
-                    Følg
+                  <button
+                    onClick={() => {
+                      setCommentText(prev => prev + `@${user.name} `);
+                      handleTagUser(user.id);
+                    }}
+                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors duration-200 text-sm"
+                  >
+                    Tag
                   </button>
                 </div>
               ))}
             </div>
+            <button
+              onClick={() => setShowTagModal(false)}
+              className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+            >
+              Luk
+            </button>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Footer - kun på desktop og større skærme */}
-      <footer className="hidden lg:block bg-white border-t border-gray-200 mt-12">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Om Privat Rengøring */}
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
-                  </svg>
-                </div>
-                <span className="font-bold text-gray-900">Privat Rengøring</span>
+      {/* Share Menu Overlay */}
+      {showShareMenu && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowShareMenu(false)}
+        />
+      )}
+
+      {/* Reactions Overlay */}
+      {showReactions && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowReactions(false)}
+        />
+      )}
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-red-600" />
               </div>
-              <p className="text-gray-600 text-sm mb-4">
-                Social platform der forbinder kunder med dygtige rengøringseksperter i hele Danmark.
-              </p>
-              <div className="flex space-x-3">
-                <a href="#" className="text-gray-400 hover:text-blue-600 transition-colors duration-200">
-                  <span className="sr-only">Facebook</span>
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                  </svg>
-                </a>
-                <a href="#" className="text-gray-400 hover:text-blue-600 transition-colors duration-200">
-                  <span className="sr-only">Instagram</span>
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987s11.987-5.367 11.987-11.987C24.004 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.895 3.708 13.744 3.708 12.447s.49-2.448 1.418-3.323c.875-.807 2.026-1.297 3.323-1.297s2.448.49 3.323 1.297c.928.875 1.418 2.026 1.418 3.323s-.49 2.448-1.418 3.244c-.875.807-2.026 1.297-3.323 1.297z"/>
-                  </svg>
-                </a>
-                <a href="#" className="text-gray-400 hover:text-blue-600 transition-colors duration-200">
-                  <span className="sr-only">LinkedIn</span>
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                  </svg>
-                </a>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Rapportér opslag</h3>
+                <p className="text-sm text-gray-600">Hjælp os med at holde platformen sikker</p>
               </div>
             </div>
 
-            {/* Platform */}
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Platform</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <button
-                    onClick={() => setCurrentPage('about')}
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Om os
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => setCurrentPage('local')}
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Find jobs
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => setCurrentPage('network')}
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Netværk
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => setShowSubscriptionModal(true)}
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Pro medlemskab
-                  </button>
-                </li>
-              </ul>
-            </div>
-
-            {/* Support */}
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Support</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <button
-                    onClick={() => setCurrentPage('support')}
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Hjælp & Support
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => setCurrentPage('contact')}
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Kontakt & Klager
-                  </button>
-                </li>
-                <li>
-                  <a
-                    href="mailto:support@privatrengoring.dk"
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Email support
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="tel:+4570203040"
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Ring til os
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Juridisk */}
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Juridisk</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <button
-                    onClick={() => setCurrentPage('terms')}
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Vilkår & GDPR
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => setCurrentPage('terms')}
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Privatlivspolitik
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => setShowSettings(true)}
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Slet konto
-                  </button>
-                </li>
-                <li>
-                  <a
-                    href="/widget.js"
-                    target="_blank"
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Widget til hjemmeside
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom */}
-          <div className="border-t border-gray-200 pt-6 mt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <p className="text-gray-500 text-sm">
-                © 2025 Privat Rengøring. Alle rettigheder forbeholdes.
-              </p>
-              <div className="flex items-center space-x-4 mt-4 md:mt-0">
-                <span className="text-gray-500 text-sm">Udviklet med ❤️ i Danmark</span>
-                <div className="flex items-center space-x-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-gray-500 text-sm">Alle systemer kører</span>
-                </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Årsag til rapport</label>
+                <select
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Vælg en årsag...</option>
+                  {reportReasons.map((reason, index) => (
+                    <option key={index} value={reason}>{reason}</option>
+                  ))}
+                </select>
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Beskrivelse (valgfrit)</label>
+                <textarea
+                  value={reportDescription}
+                  onChange={(e) => setReportDescription(e.target.value)}
+                  placeholder="Beskriv problemet mere detaljeret..."
+                  rows={3}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex space-x-3 mt-6">
+              <button
+                onClick={() => {
+                  setShowReportModal(false);
+                  setReportReason('');
+                  setReportDescription('');
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+              >
+                Annuller
+              </button>
+              <button
+                onClick={handleReport}
+                disabled={!reportReason}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Send rapport
+              </button>
             </div>
           </div>
         </div>
-      </footer>
+      )}
 
-      <SubscriptionModal
-        isOpen={showSubscriptionModal}
-        onClose={() => setShowSubscriptionModal(false)}
-        onSubscribe={handleSubscribe}
-        userEmail={currentUser.email}
-      />
-      
-      <MessagesModal
-        isOpen={showMessages}
-        onClose={() => setShowMessages(false)}
-        currentUser={currentUser}
-      />
-      
-      <SettingsModal
-        isOpen={showSettings}
-        onClose={() => setShowSettings(false)}
-        currentUser={currentUser}
-        onUpdateUser={handleUpdateUser}
-        onPageChange={setCurrentPage}
-      />
-      
-      <NotificationModal
-        isOpen={showNotifications}
-        onClose={() => setShowNotifications(false)}
-        onOpenSettings={() => setShowSettings(true)}
-      />
-      
-      <UserProfileModal
-        isOpen={showUserProfile}
-        onClose={() => setShowUserProfile(false)}
-        user={selectedUser}
-        currentUser={currentUser}
-        onSendFriendRequest={handleSendFriendRequest}
-        onAcceptFriendRequest={handleAcceptFriendRequest}
-        onSendMessage={handleSendMessage}
-        onBlockUser={handleBlockUser}
-        onReportUser={handleReportUser}
-      />
+      {/* Block User Modal */}
+      {showBlockModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                <Ban className="w-5 h-5 text-orange-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Blokér {post.user.name}</h3>
+                <p className="text-sm text-gray-600">Denne handling kan fortrydes senere</p>
+              </div>
+            </div>
 
-      <FriendRequestModal
-        isOpen={showFriendRequests}
-        onClose={() => setShowFriendRequests(false)}
-        onAcceptRequest={(requestId) => {
-          console.log('Accepting request:', requestId);
-          alert('Venskabsanmodning accepteret!');
-        }}
-        onDeclineRequest={(requestId) => {
-          console.log('Declining request:', requestId);
-          alert('Venskabsanmodning afvist');
-        }}
-        onSendRequest={handleSendFriendRequest}
-      />
-      
-      <InstallPrompt />
+            <div className="mb-6">
+              <p className="text-gray-700 mb-4">
+                Når du blokerer {post.user.name}:
+              </p>
+              <ul className="text-sm text-gray-600 space-y-2">
+                <li>• Du vil ikke se deres opslag eller kommentarer</li>
+                <li>• De kan ikke sende dig beskeder</li>
+                <li>• De kan ikke se din profil</li>
+                <li>• Du kan fjerne blokeringen senere i indstillinger</li>
+              </ul>
+            </div>
+
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowBlockModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+              >
+                Annuller
+              </button>
+              <button
+                onClick={handleBlockUser}
+                className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-200"
+              >
+                Blokér Bruger
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Modal */}
+      {showImageModal && post.images && (
+        <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
+          <div className="relative max-w-4xl w-full">
+            <button
+              onClick={() => setShowImageModal(false)}
+              className="absolute top-4 right-4 p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-75 z-10"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            
+            <img
+              src={post.images[selectedImageIndex]}
+              alt={`Post image ${selectedImageIndex + 1}`}
+              className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
+            />
+            
+            {post.images.length > 1 && (
+              <div className="flex justify-center space-x-2 mt-4">
+                {post.images.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImageIndex(index)}
+                    className={`w-3 h-3 rounded-full ${
+                      index === selectedImageIndex ? 'bg-white' : 'bg-white bg-opacity-50'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+            
+            <div className="absolute bottom-4 left-4 bg-black bg-opacity-75 text-white px-3 py-2 rounded">
+              {selectedImageIndex + 1} af {post.images.length}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
-export default App;
