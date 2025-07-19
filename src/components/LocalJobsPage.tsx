@@ -347,15 +347,7 @@ export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
           ) : (
             <Navigation className="w-4 h-4" />
           )}
-          <span className="text-sm font-medium">
-        <button 
-          onClick={() => {
-            // Simuler indlæsning af flere jobs
-            alert('Indlæser flere jobs...');
-          }}
-          className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-        >
-          </span>
+          <span className="text-sm font-medium">{t('useMyLocation')}</span>
         </button>
       </div>
 

@@ -150,23 +150,19 @@ export default function RecommendationWidget({ currentUser, onShowUserProfile, o
             {recommendedUsers.map((user) => (
               <div key={user.id} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200">
                 <div className="relative">
-                  <img
-                    src={user.avatar}
-                    alt={user.name}
-                    className="w-12 h-12 rounded-full cursor-pointer"
-                      className="w-8 h-8 rounded-full cursor-pointer hover:scale-110 transition-transform duration-200"
+                  <>
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
+                      className="w-12 h-12 rounded-full cursor-pointer hover:scale-110 transition-transform duration-200"
                       onClick={() => onShowUserProfile?.(user)}
-                  />
-                  {user.verified && (
-                      <button
-                        onClick={() => onShowUserProfile?.(user)}
-                        className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200"
-                      >
-                        {user.name}
-                      </button>
-                      <span className="text-white text-xs">✓</span>
-                    </div>
-                  )}
+                    />
+                    {user.verified && (
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                    )}
+                  </>
                 </div>
                 <div className="flex-1 min-w-0">
                   <button
