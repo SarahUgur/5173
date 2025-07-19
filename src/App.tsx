@@ -48,10 +48,21 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState('home');
 
+  // Onboarding state
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return !localStorage.getItem('onboardingCompleted');
+  });
+  const [onboardingStep, setOnboardingStep] = useState(1);
+
   // Error boundary
   const handleError = (error: Error) => {
     console.error('App Error:', error);
     setError(error.message);
+  };
+
+  const completeOnboarding = () => {
+    localStorage.setItem('onboardingCompleted', 'true');
+    setShowOnboarding(false);
   };
 
   // Loading states
@@ -202,6 +213,93 @@ function App() {
     return <AuthScreen onLogin={handleLogin} />;
   }
 
+  // Vis onboarding for nye brugere
+  if (showOnboarding) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8 text-center">
+          <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span className="text-3xl text-white">{onboardingStep}</span>
+          </div>
+          
+          {onboardingStep === 1 && (
+            <>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Velkommen til Privat Rengøring!</h2>
+              <p className="text-gray-600 mb-6">
+                Lad os hjælpe dig med at komme i gang. Hvad vil du bruge appen til?
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => {
+                    setCurrentUser({...currentUser, primaryUse: 'hiring'});
+                    setOnboardingStep(2);
+                  }}
+                  className="w-full p-4 border-2 border-blue-500 bg-blue-50 text-blue-700 rounded-xl hover:bg-blue-100 transition-colors duration-200"
+                >
+                  <div className="text-center">
+                    <span className="text-2xl mb-2 block">🏠</span>
+                    <div className="font-medium">Jeg søger rengøringshjælp</div>
+                    <div className="text-sm opacity-75">Find pålidelige rengøringseksperter</div>
+                  </div>
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentUser({...currentUser, primaryUse: 'offering'});
+                    setOnboardingStep(2);
+                  }}
+                  className="w-full p-4 border-2 border-green-500 bg-green-50 text-green-700 rounded-xl hover:bg-green-100 transition-colors duration-200"
+                >
+                  <div className="text-center">
+                    <span className="text-2xl mb-2 block">💼</span>
+                    <div className="font-medium">Jeg tilbyder rengøring</div>
+                    <div className="text-sm opacity-75">Find kunder og byg dit netværk</div>
+                  </div>
+                </button>
+              </div>
+            </>
+          )}
+          
+          {onboardingStep === 2 && (
+            <>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Perfekt!</h2>
+              <p className="text-gray-600 mb-6">
+                {currentUser?.primaryUse === 'hiring' 
+                  ? 'Vi har tilpasset appen til at hjælpe dig med at finde den rette rengøringshjælp.'
+                  : 'Vi har tilpasset appen til at hjælpe dig med at finde kunder og vokse dit rengøringsbusiness.'
+                }
+              </p>
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6">
+                <h3 className="font-semibold text-gray-900 mb-2">Dine næste skridt:</h3>
+                <div className="text-left space-y-2 text-sm text-gray-700">
+                  {currentUser?.primaryUse === 'hiring' ? (
+                    <>
+                      <p>✅ Udfyld din profil (60% fuldført)</p>
+                      <p>📍 Aktiver lokation for bedre matches</p>
+                      <p>🔍 Søg efter rengøringseksperter i dit område</p>
+                      <p>💬 Opgrader til Pro for direkte beskeder</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>✅ Udfyld din profil (60% fuldført)</p>
+                      <p>📝 Opret dit første jobopslag</p>
+                      <p>🌟 Byg dit netværk og få anmeldelser</p>
+                      <p>💎 Opgrader til Pro for prioriteret visning</p>
+                    </>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={completeOnboarding}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
+              >
+                Kom i gang!
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
   if (showSuccessPage) {
     return (
       <SuccessPage 
@@ -209,6 +307,9 @@ function App() {
       />
     );
   }
+
+  // Next Steps Banner for new users
+  const showNextSteps = !currentUser?.profileCompleted && currentPage === 'home';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
@@ -243,10 +344,73 @@ function App() {
         
         {/* Main Content */}
         <main className="flex-1 min-h-screen md:ml-0 transition-all duration-300">
+          {/* Next Steps Banner */}
+          {showNextSteps && (
+            <div className="mx-3 sm:mx-0 mt-3 sm:mt-6 mb-4 sm:mb-6">
+              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-4 sm:p-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-2xl">🎯</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-yellow-900 mb-2">Dine næste skridt</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                      <button
+                        onClick={() => setCurrentPage('profile')}
+                        className="flex items-center space-x-2 p-3 bg-white rounded-lg hover:bg-yellow-50 transition-colors duration-200"
+                      >
+                        <span className="text-lg">📝</span>
+                        <div className="text-left">
+                          <p className="font-medium text-yellow-900">Fuldfør profil</p>
+                          <p className="text-sm text-yellow-700">60% fuldført</p>
+                        </div>
+                      </button>
+                      {currentUser?.primaryUse === 'hiring' ? (
+                        <button
+                          onClick={() => setCurrentPage('local')}
+                          className="flex items-center space-x-2 p-3 bg-white rounded-lg hover:bg-yellow-50 transition-colors duration-200"
+                        >
+                          <span className="text-lg">🔍</span>
+                          <div className="text-left">
+                            <p className="font-medium text-yellow-900">Find eksperter</p>
+                            <p className="text-sm text-yellow-700">Se lokale jobs</p>
+                          </div>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            // Scroll to create post
+                            document.querySelector('.create-post')?.scrollIntoView({ behavior: 'smooth' });
+                          }}
+                          className="flex items-center space-x-2 p-3 bg-white rounded-lg hover:bg-yellow-50 transition-colors duration-200"
+                        >
+                          <span className="text-lg">💼</span>
+                          <div className="text-left">
+                            <p className="font-medium text-yellow-900">Opret første job</p>
+                            <p className="text-sm text-yellow-700">Få kunder</p>
+                          </div>
+                        </button>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => {
+                        setCurrentUser({...currentUser, profileCompleted: true});
+                        localStorage.setItem('currentUser', JSON.stringify({...currentUser, profileCompleted: true}));
+                      }}
+                      className="text-sm text-yellow-700 hover:text-yellow-800 underline"
+                    >
+                      Skjul denne besked
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {currentPage === 'home' && (
             <div className="max-w-2xl mx-auto animate-fadeIn">
               {/* Create Post - Mobile optimized */}
-              <div className="sticky top-16 z-30 bg-gradient-to-br from-gray-50 to-blue-50 pt-3 sm:pt-6 backdrop-blur-sm">
+              <div className="sticky top-16 z-30 bg-gradient-to-br from-gray-50 to-blue-50 pt-3 sm:pt-6 backdrop-blur-sm create-post">
                 <CreatePost currentUser={currentUser} />
               </div>
               

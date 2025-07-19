@@ -106,7 +106,7 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
           <div className="w-full bg-yellow-200 rounded-full h-2 mb-3">
             <div className="bg-yellow-600 h-2 rounded-full" style={{ width: '75%' }}></div>
           </div>
-          <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className="space-y-2 text-sm">
             <div className="flex items-center space-x-2">
               <span className="text-green-600">✅</span>
               <span className="text-yellow-800">Profilbillede</span>

@@ -276,17 +276,17 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                 <div className="flex items-center justify-center space-x-4 mb-6">
                   <div className={`flex items-center space-x-2 ${currentStep >= 1 ? 'text-blue-600' : 'text-gray-400'}`}>
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>1</div>
-                    <span className="text-sm font-medium">Grundinfo</span>
+                    <span className="text-sm font-medium hidden sm:inline">Grundinfo</span>
                   </div>
                   <div className={`w-8 h-1 ${currentStep >= 2 ? 'bg-blue-600' : 'bg-gray-200'} rounded`}></div>
                   <div className={`flex items-center space-x-2 ${currentStep >= 2 ? 'text-blue-600' : 'text-gray-400'}`}>
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>2</div>
-                    <span className="text-sm font-medium">Detaljer</span>
+                    <span className="text-sm font-medium hidden sm:inline">Detaljer</span>
                   </div>
                   <div className={`w-8 h-1 ${currentStep >= 3 ? 'bg-blue-600' : 'bg-gray-200'} rounded`}></div>
                   <div className={`flex items-center space-x-2 ${currentStep >= 3 ? 'text-blue-600' : 'text-gray-400'}`}>
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 3 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>3</div>
-                    <span className="text-sm font-medium">Billeder</span>
+                    <span className="text-sm font-medium hidden sm:inline">Billeder</span>
                   </div>
                 </div>
 
@@ -305,61 +305,102 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                 {/* Step 1: Grundinfo */}
                 {currentStep === 1 && (
                   <div className="space-y-4">
+                    {/* Mobile Step Title */}
+                    <div className="sm:hidden text-center mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Trin 1: Grundinfo</h3>
+                      <p className="text-sm text-gray-600">Hvad søger du hjælp til?</p>
+                    </div>
+
                     {/* Target Audience */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">{t('targetAudience')}</label>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <button
                           type="button"
                           onClick={() => setTargetAudience('hiring_cleaner')}
-                          className={`p-3 rounded-lg border-2 transition-all duration-200 hover:scale-105 ${
+                          className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
                             targetAudience === 'hiring_cleaner'
                               ? 'border-blue-500 bg-blue-50 text-blue-700'
                               : 'border-gray-300 hover:border-gray-400'
                           }`}
                         >
                           <div className="text-center">
-                            <Users className="w-6 h-6 mx-auto mb-1" />
-                            <div className="text-sm font-medium">{t('hiringCleaner')}</div>
-                            <div className="text-xs text-gray-500">{t('lookingForHelp')}</div>
+                            <Users className="w-8 h-8 mx-auto mb-2" />
+                            <div className="font-medium">{t('hiringCleaner')}</div>
+                            <div className="text-sm text-gray-500 mt-1">{t('lookingForHelp')}</div>
                           </div>
                         </button>
                         <button
                           type="button"
                           onClick={() => setTargetAudience('looking_for_work')}
-                          className={`p-3 rounded-lg border-2 transition-all duration-200 hover:scale-105 ${
+                          className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
                             targetAudience === 'looking_for_work'
                               ? 'border-green-500 bg-green-50 text-green-700'
                               : 'border-gray-300 hover:border-gray-400'
                           }`}
                         >
                           <div className="text-center">
-                            <Briefcase className="w-6 h-6 mx-auto mb-1" />
-                            <div className="text-sm font-medium">{t('lookingForWork')}</div>
-                            <div className="text-xs text-gray-500">{t('offeringServices')}</div>
+                            <Briefcase className="w-8 h-8 mx-auto mb-2" />
+                            <div className="font-medium">{t('lookingForWork')}</div>
+                            <div className="text-sm text-gray-500 mt-1">{t('offeringServices')}</div>
                           </div>
                         </button>
                       </div>
                     </div>
 
+                    {/* Navigation Buttons */}
+                    <div className="flex justify-between pt-4">
+                      <button
+                        type="button"
+                        disabled
+                        className="px-6 py-3 border border-gray-300 text-gray-400 rounded-lg cursor-not-allowed"
+                      >
+                        Tilbage
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!targetAudience) {
+                            setFormErrors(['Vælg hvad du vil bruge appen til']);
+                            return;
+                          }
+                          setCurrentStep(2);
+                          setFormErrors([]);
+                        }}
+                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                      >
+                        Næste
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 2: Detaljer */}
+                {currentStep === 2 && (
+                  <div className="space-y-4">
+                    {/* Mobile Step Title */}
+                    <div className="sm:hidden text-center mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Trin 2: Detaljer</h3>
+                      <p className="text-sm text-gray-600">Fortæl mere om opgaven</p>
+                    </div>
                     {/* User Category */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">{t('userCategory')}</label>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {userTypes.map((type) => (
                           <button
                             key={type.id}
                             type="button"
                             onClick={() => setJobCategory(type.id)}
-                            className={`p-3 rounded-lg border-2 transition-all duration-200 hover:scale-105 ${
+                            className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
                               jobCategory === type.id
                                 ? 'border-purple-500 bg-purple-50 text-purple-700'
                                 : 'border-gray-300 hover:border-gray-400'
                             }`}
                           >
-                            <div className="flex items-center space-x-2">
-                              <type.icon className="w-5 h-5" />
-                              <span className="text-sm font-medium">{type.label}</span>
+                            <div className="flex items-center space-x-3">
+                              <type.icon className="w-6 h-6" />
+                              <span className="font-medium">{type.label}</span>
                             </div>
                           </button>
                         ))}
@@ -369,20 +410,20 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                     {/* Job Categories */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">{t('cleaningCategory')}</label>
-                      <div className="space-y-3 max-h-[40vh] overflow-y-auto">
+                      <div className="space-y-3 max-h-[30vh] overflow-y-auto">
                         {jobCategories.map((category) => (
-                          <div key={category.id} className="border border-gray-200 rounded-lg p-3">
+                          <div key={category.id} className="border border-gray-200 rounded-xl p-4">
                             <div className="flex items-center space-x-2 mb-2">
                               <category.icon className="w-5 h-5 text-gray-600" />
                               <span className="font-medium text-gray-900">{category.label}</span>
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div className="grid grid-cols-1 gap-2">
                               {category.subcategories.map((sub) => (
                                 <button
                                   key={sub.id}
                                   type="button"
                                   onClick={() => setJobType(sub.id)}
-                                  className={`p-2 rounded-md text-sm transition-all duration-200 hover:scale-105 ${
+                                  className={`p-3 rounded-lg text-sm transition-all duration-200 hover:scale-105 ${
                                     jobType === sub.id
                                       ? 'bg-blue-100 text-blue-700 border border-blue-300'
                                       : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
@@ -398,26 +439,28 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                     </div>
 
                     {/* Location and Budget */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-3">
                       <div className="relative">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Lokation</label>
                         <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                         <input
                           type="text"
                           value={location}
                           onChange={(e) => setLocation(e.target.value)}
                           placeholder={t('location')}
-                          className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                         />
                       </div>
                       
                       <div className="relative">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Budget (valgfrit)</label>
                         <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                         <input
                           type="text"
                           value={budget}
                           onChange={(e) => setBudget(e.target.value)}
                           placeholder={t('budget')}
-                          className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                         />
                       </div>
                     </div>
@@ -428,12 +471,112 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                       <select
                         value={urgency}
                         onChange={(e) => setUrgency(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                       >
                         <option value="flexible">{t('flexible')}</option>
                         <option value="this_week">{t('thisWeek')}</option>
                         <option value="immediate">{t('immediate')}</option>
                       </select>
+                    </div>
+
+                    {/* Navigation Buttons */}
+                    <div className="flex justify-between pt-4">
+                      <button
+                        type="button"
+                        onClick={() => setCurrentStep(1)}
+                        className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                      >
+                        Tilbage
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const errors = [];
+                          if (!jobCategory) errors.push('Vælg brugerkategori');
+                          if (!jobType) errors.push('Vælg rengøringstype');
+                          if (!location.trim()) errors.push('Indtast lokation');
+                          
+                          if (errors.length > 0) {
+                            setFormErrors(errors);
+                            return;
+                          }
+                          setCurrentStep(3);
+                          setFormErrors([]);
+                        }}
+                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                      >
+                        Næste
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 3: Billeder og Afslut */}
+                {currentStep === 3 && (
+                  <div className="space-y-4">
+                    {/* Mobile Step Title */}
+                    <div className="sm:hidden text-center mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Trin 3: Billeder</h3>
+                      <p className="text-sm text-gray-600">Tilføj billeder (valgfrit)</p>
+                    </div>
+
+                    {/* Image Upload */}
+                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
+                      <label className="cursor-pointer">
+                        <Camera className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                        <p className="text-gray-600 mb-2">Tilføj billeder af opgaven</p>
+                        <p className="text-sm text-gray-500">Klik for at vælge billeder</p>
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+
+                    {/* Preview */}
+                    <div className="bg-gray-50 rounded-xl p-4">
+                      <h4 className="font-medium text-gray-900 mb-3">Preview af dit opslag:</h4>
+                      <div className="bg-white rounded-lg p-4 border border-gray-200">
+                        <div className="flex items-center space-x-3 mb-3">
+                          <img
+                            src={currentUser?.avatar}
+                            alt="Din avatar"
+                            className="w-10 h-10 rounded-full"
+                          />
+                          <div>
+                            <p className="font-medium text-gray-900">{currentUser?.name}</p>
+                            <p className="text-sm text-gray-600">{location}</p>
+                          </div>
+                        </div>
+                        <p className="text-gray-800 mb-3">{content || 'Din beskrivelse kommer her...'}</p>
+                        {budget && (
+                          <div className="flex items-center space-x-2 text-green-600">
+                            <DollarSign className="w-4 h-4" />
+                            <span className="font-medium">Budget: {budget}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Navigation Buttons */}
+                    <div className="flex justify-between pt-4">
+                      <button
+                        type="button"
+                        onClick={() => setCurrentStep(2)}
+                        className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                      >
+                        Tilbage
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={!content.trim()}
+                        className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                      >
+                        Opret Job
+                      </button>
                     </div>
                   </div>
                 )}
@@ -442,7 +585,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
 
             {isExpanded && (
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-4 space-y-3 sm:space-y-0">
-                <div className="flex items-center space-x-3 sm:space-x-4">
+                <div className="flex items-center space-x-3 sm:space-x-4 w-full sm:w-auto">
                   <label className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105 cursor-pointer">
                     <Image className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>Billeder</span>
@@ -475,7 +618,8 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                   </button>
                 </div>
 
-                <button
+                {postType !== 'job' && (
+                  <button
                   type="submit"
                   disabled={!content.trim()}
                   className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:scale-105 ${
@@ -486,6 +630,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                 >
                   {postType === 'job' ? t('createJob') : t('share')}
                 </button>
+                )}
               </div>
             )}
           </form>
