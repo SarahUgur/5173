@@ -255,7 +255,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
             )}
 
             {isExpanded && postType === 'job' && (
-              <div className="mt-4 space-y-4">
+              <div className="mt-4 space-y-4 max-h-[60vh] overflow-y-auto">
                 {/* Target Audience */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">{t('targetAudience')}</label>
@@ -320,7 +320,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                 {/* Job Categories */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">{t('cleaningCategory')}</label>
-                  <div className="space-y-3">
+                  <div className="space-y-3 max-h-[40vh] overflow-y-auto">
                     {jobCategories.map((category) => (
                       <div key={category.id} className="border border-gray-200 rounded-lg p-3">
                         <div className="flex items-center space-x-2 mb-2">
@@ -443,7 +443,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
 
       {/* Media Editor Modal */}
       {showMediaEditor && selectedVideo && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 overflow-y-auto">
           <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -472,7 +472,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
               </div>
 
               {/* Editing Tools */}
-              <div className="space-y-4">
+              <div className="space-y-4 max-h-[50vh] overflow-y-auto">
                 {/* Filters */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
