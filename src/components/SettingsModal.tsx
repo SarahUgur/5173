@@ -432,6 +432,45 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
 
         {/* Footer */}
         <div className="p-6 border-t border-gray-200 bg-gray-50">
+          <div className="mb-4">
+            <div className="text-center space-y-3">
+              <p className="text-sm text-gray-600">Yderligere handlinger</p>
+              <div className="flex flex-col space-y-2">
+                <button
+                  onClick={() => {
+                    // I en rigtig app ville dette downloade brugerdata
+                    const userData = {
+                      name: currentUser?.name,
+                      email: currentUser?.email,
+                      joinDate: new Date().toISOString(),
+                      posts: 'Alle dine opslag og kommentarer',
+                      connections: 'Dine netværksforbindelser'
+                    };
+                    const dataStr = JSON.stringify(userData, null, 2);
+                    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'mine-data.json';
+                    link.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="w-full flex items-center justify-center space-x-2 p-3 text-left hover:bg-gray-100 rounded-lg transition-colors duration-200 text-gray-700 border border-gray-300"
+                >
+                  <FileText className="w-5 h-5" />
+                  <span className="font-medium">Download mine data (GDPR)</span>
+                </button>
+                <button
+                  onClick={handleDeleteAccount}
+                  className="w-full flex items-center justify-center space-x-2 p-3 text-left hover:bg-red-50 rounded-lg transition-colors duration-200 text-red-600 border border-red-300"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="font-medium">Slet min konto permanent</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          
           <div className="flex justify-end space-x-3">
             <button
               onClick={onClose}

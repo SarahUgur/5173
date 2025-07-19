@@ -1,34 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Users, Briefcase, TrendingUp, AlertTriangle, Eye, Ban, CheckCircle, XCircle, Search, Filter, BarChart3, DollarSign, Activity, Clock, Globe, MessageCircle } from 'lucide-react';
+import { Shield, Users, Briefcase, TrendingUp, AlertTriangle, Eye, Ban, CheckCircle, XCircle, Search, Filter, BarChart3, DollarSign, Activity, Clock, Globe, MessageCircle, Star, MapPin, Calendar, Bell, Zap, Target, UserCheck, FileText, Settings } from 'lucide-react';
 
 interface AdminPageProps {
   currentUser: any;
 }
 
 export default function AdminPage({ currentUser }: AdminPageProps) {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'users' | 'jobs' | 'reports' | 'monitoring'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'users' | 'jobs' | 'reports' | 'monitoring' | 'analytics' | 'settings'>('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
   const [onlineUsers, setOnlineUsers] = useState(0);
   const [systemAlerts, setSystemAlerts] = useState<any[]>([]);
+  const [realTimeStats, setRealTimeStats] = useState({
+    totalUsers: 1247,
+    onlineNow: 0,
+    activeJobs: 89,
+    completedJobs: 456,
+    reportedContent: 12,
+    newUsersToday: 23,
+    revenueThisMonth: 45600,
+    proSubscribers: 234,
+    avgResponseTime: '2.3 min',
+    systemUptime: '99.9%',
+    totalPosts: 3456,
+    totalComments: 8901,
+    suspendedUsers: 5,
+    bannedUsers: 2
+  });
 
   // Simuler real-time data
   useEffect(() => {
     const interval = setInterval(() => {
-      setOnlineUsers(Math.floor(Math.random() * 50) + 20);
+      const newOnlineCount = Math.floor(Math.random() * 50) + 20;
+      setOnlineUsers(newOnlineCount);
+      
+      setRealTimeStats(prev => ({
+        ...prev,
+        onlineNow: newOnlineCount,
+        totalUsers: prev.totalUsers + Math.floor(Math.random() * 3),
+        activeJobs: prev.activeJobs + Math.floor(Math.random() * 5) - 2,
+        reportedContent: prev.reportedContent + Math.floor(Math.random() * 2)
+      }));
       
       // Simuler system alerts
       const alerts = [
         {
           id: '1',
           type: 'warning',
-          message: 'Høj aktivitet: 5+ rapporter i den sidste time',
+          message: `Høj aktivitet: ${Math.floor(Math.random() * 10) + 5} rapporter i den sidste time`,
           time: new Date().toLocaleTimeString('da-DK'),
           severity: 'medium'
         },
         {
           id: '2',
           type: 'info',
-          message: 'Ny bruger registrering: +12 i dag',
+          message: `Ny bruger registrering: +${Math.floor(Math.random() * 20) + 5} i dag`,
           time: new Date().toLocaleTimeString('da-DK'),
           severity: 'low'
         },
@@ -38,6 +63,13 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
           message: 'Mistænkelig aktivitet: Bruger forsøger at sælge udenfor platform',
           time: new Date().toLocaleTimeString('da-DK'),
           severity: 'high'
+        },
+        {
+          id: '4',
+          type: 'success',
+          message: `${Math.floor(Math.random() * 15) + 10} nye Pro abonnementer i dag`,
+          time: new Date().toLocaleTimeString('da-DK'),
+          severity: 'low'
         }
       ];
       setSystemAlerts(alerts);
@@ -47,19 +79,6 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
   }, []);
 
   // Mock admin data
-  const stats = {
-    totalUsers: 1247,
-    activeJobs: 89,
-    completedJobs: 456,
-    reportedContent: 12,
-    newUsersToday: 23,
-    revenueThisMonth: 45600,
-    proSubscribers: 234,
-    onlineNow: onlineUsers,
-    avgResponseTime: '2.3 min',
-    systemUptime: '99.9%'
-  };
-
   const recentUsers = [
     {
       id: '1',
@@ -71,7 +90,9 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
       isSubscribed: false,
       lastActive: '2 min siden',
       ipAddress: '192.168.1.1',
-      location: 'København'
+      location: 'København',
+      postsCount: 12,
+      reportsReceived: 0
     },
     {
       id: '2',
@@ -83,7 +104,9 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
       isSubscribed: true,
       lastActive: '5 min siden',
       ipAddress: '192.168.1.2',
-      location: 'Aarhus'
+      location: 'Aarhus',
+      postsCount: 45,
+      reportsReceived: 1
     },
     {
       id: '3',
@@ -95,7 +118,9 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
       isSubscribed: false,
       lastActive: '1 time siden',
       ipAddress: '192.168.1.3',
-      location: 'Odense'
+      location: 'Odense',
+      postsCount: 8,
+      reportsReceived: 3
     }
   ];
 
@@ -103,34 +128,35 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
     {
       id: '1',
       type: 'post',
-      content: 'Bruger forsøger at sælge rengøringsservice udenfor platformen med direkte betaling',
+      content: 'Bruger forsøger at sælge rengøringsservice udenfor platformen med direkte betaling via MobilePay',
       reporter: 'Anna Petersen',
       reported: 'Michael Sørensen',
       reason: 'Omgåelse af platform',
       date: '2024-01-15',
       status: 'pending',
       severity: 'high',
-      postId: 'post_123'
+      postId: 'post_123',
+      evidence: 'Screenshot af besked med MobilePay nummer'
     },
     {
       id: '2',
       type: 'user',
-      content: 'Bruger sender upassende beskeder og chikanerer andre brugere',
+      content: 'Bruger sender upassende beskeder og chikanerer andre brugere med trusler',
       reporter: 'Emma Larsen',
       reported: 'John Doe',
-      reason: 'Chikane',
+      reason: 'Chikane og trusler',
       date: '2024-01-14',
       status: 'resolved',
       severity: 'medium',
-      action: 'Bruger suspenderet i 7 dage'
+      action: 'Bruger suspenderet i 7 dage og advaret'
     },
     {
       id: '3',
       type: 'comment',
-      content: 'Kommentar indeholder spam links til eksterne hjemmesider',
+      content: 'Kommentar indeholder spam links til eksterne hjemmesider og falske tilbud',
       reporter: 'Peter Hansen',
       reported: 'Spam Bot',
-      reason: 'Spam',
+      reason: 'Spam og falske tilbud',
       date: '2024-01-15',
       status: 'pending',
       severity: 'low',
@@ -143,25 +169,43 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
       metric: 'Server Response Time',
       value: '145ms',
       status: 'good',
-      trend: 'stable'
+      trend: 'stable',
+      target: '< 200ms'
     },
     {
       metric: 'Database Queries/sec',
       value: '1,234',
       status: 'good',
-      trend: 'up'
+      trend: 'up',
+      target: '< 2,000'
     },
     {
       metric: 'Error Rate',
       value: '0.02%',
       status: 'good',
-      trend: 'down'
+      trend: 'down',
+      target: '< 0.1%'
     },
     {
       metric: 'Memory Usage',
       value: '67%',
       status: 'warning',
-      trend: 'up'
+      trend: 'up',
+      target: '< 80%'
+    },
+    {
+      metric: 'Active Connections',
+      value: '456',
+      status: 'good',
+      trend: 'stable',
+      target: '< 1,000'
+    },
+    {
+      metric: 'Disk Usage',
+      value: '34%',
+      status: 'good',
+      trend: 'stable',
+      target: '< 70%'
     }
   ];
 
@@ -181,6 +225,7 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
       case 'suspended': return 'bg-red-100 text-red-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'resolved': return 'bg-blue-100 text-blue-800';
+      case 'banned': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -194,10 +239,24 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
     }
   };
 
+  const getSystemStatusColor = (status: string) => {
+    switch (status) {
+      case 'good': return 'text-green-600';
+      case 'warning': return 'text-yellow-600';
+      case 'critical': return 'text-red-600';
+      default: return 'text-gray-600';
+    }
+  };
+
   const handleReportAction = (reportId: string, action: 'approve' | 'reject' | 'suspend') => {
     console.log(`Admin action: ${action} on report ${reportId}`);
     // I en rigtig app ville dette opdatere databasen
     alert(`Rapport ${reportId} blev ${action === 'approve' ? 'godkendt' : action === 'reject' ? 'afvist' : 'bruger suspenderet'}`);
+  };
+
+  const handleUserAction = (userId: string, action: 'suspend' | 'activate' | 'ban' | 'message') => {
+    console.log(`Admin action: ${action} on user ${userId}`);
+    alert(`Bruger ${userId} - handling: ${action}`);
   };
 
   // Check if user is admin
@@ -226,8 +285,8 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
               <Shield className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Panel</h1>
-              <p className="text-gray-600">Administrer Privat Rengøring platformen</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+              <p className="text-gray-600">Komplet administrationspanel for Privat Rengøring</p>
             </div>
           </div>
           
@@ -235,35 +294,82 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-gray-600">Live</span>
+              <span className="text-sm text-gray-600">Live Dashboard</span>
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-600">Online nu</p>
-              <p className="text-xl font-bold text-green-600">{onlineUsers}</p>
+              <p className="text-xl font-bold text-green-600">{realTimeStats.onlineNow}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* System Alerts */}
-      {systemAlerts.length > 0 && (
-        <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+      {/* Critical System Alerts */}
+      {systemAlerts.filter(alert => alert.severity === 'high').length > 0 && (
+        <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
           <div className="flex items-center space-x-2 mb-3">
-            <AlertTriangle className="w-5 h-5 text-yellow-600" />
-            <h3 className="font-semibold text-yellow-900">System Advarsler</h3>
+            <AlertTriangle className="w-5 h-5 text-red-600" />
+            <h3 className="font-semibold text-red-900">Kritiske Advarsler</h3>
           </div>
           <div className="space-y-2">
-            {systemAlerts.map((alert) => (
-              <div key={alert.id} className={`p-3 rounded-lg border ${getSeverityColor(alert.severity)}`}>
+            {systemAlerts.filter(alert => alert.severity === 'high').map((alert) => (
+              <div key={alert.id} className="p-3 rounded-lg border bg-red-100 border-red-200">
                 <div className="flex justify-between items-start">
-                  <p className="text-sm font-medium">{alert.message}</p>
-                  <span className="text-xs">{alert.time}</span>
+                  <p className="text-sm font-medium text-red-900">{alert.message}</p>
+                  <span className="text-xs text-red-700">{alert.time}</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
       )}
+
+      {/* Quick Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Total Brugere</p>
+              <p className="text-2xl font-bold text-gray-900">{realTimeStats.totalUsers.toLocaleString()}</p>
+              <p className="text-sm text-green-600">+{realTimeStats.newUsersToday} i dag</p>
+            </div>
+            <Users className="w-8 h-8 text-blue-600" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Online Nu</p>
+              <p className="text-2xl font-bold text-green-600">{realTimeStats.onlineNow}</p>
+              <p className="text-sm text-blue-600">Live opdatering</p>
+            </div>
+            <Activity className="w-8 h-8 text-green-600" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Aktive Jobs</p>
+              <p className="text-2xl font-bold text-gray-900">{realTimeStats.activeJobs}</p>
+              <p className="text-sm text-blue-600">{realTimeStats.completedJobs} afsluttet</p>
+            </div>
+            <Briefcase className="w-8 h-8 text-green-600" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Rapporter</p>
+              <p className="text-2xl font-bold text-red-600">{realTimeStats.reportedContent}</p>
+              <p className="text-sm text-red-600">Kræver handling</p>
+            </div>
+            <AlertTriangle className="w-8 h-8 text-red-600" />
+          </div>
+        </div>
+      </div>
 
       {/* Tabs */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
@@ -274,7 +380,7 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
               activeTab === 'dashboard' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            Dashboard
+            📊 Dashboard
           </button>
           <button
             onClick={() => setActiveTab('users')}
@@ -282,7 +388,7 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
               activeTab === 'users' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            Brugere ({stats.totalUsers})
+            👥 Brugere ({realTimeStats.totalUsers})
           </button>
           <button
             onClick={() => setActiveTab('jobs')}
@@ -290,7 +396,7 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
               activeTab === 'jobs' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            Jobs ({stats.activeJobs})
+            💼 Jobs ({realTimeStats.activeJobs})
           </button>
           <button
             onClick={() => setActiveTab('reports')}
@@ -298,7 +404,7 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
               activeTab === 'reports' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            Rapporter ({stats.reportedContent})
+            🚨 Rapporter ({realTimeStats.reportedContent})
           </button>
           <button
             onClick={() => setActiveTab('monitoring')}
@@ -306,7 +412,15 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
               activeTab === 'monitoring' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            Overvågning
+            📈 Overvågning
+          </button>
+          <button
+            onClick={() => setActiveTab('analytics')}
+            className={`px-4 py-2 rounded-md font-medium transition-colors duration-200 whitespace-nowrap ${
+              activeTab === 'analytics' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            📊 Analytics
           </button>
         </div>
       </div>
@@ -314,67 +428,77 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
       {/* Dashboard */}
       {activeTab === 'dashboard' && (
         <div className="space-y-6">
-          {/* Stats Grid */}
+          {/* Extended Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total Brugere</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.totalUsers.toLocaleString()}</p>
-                  <p className="text-sm text-green-600">+{stats.newUsersToday} i dag</p>
+                  <p className="text-sm text-gray-600">Pro Abonnenter</p>
+                  <p className="text-2xl font-bold text-purple-600">{realTimeStats.proSubscribers}</p>
+                  <p className="text-sm text-green-600">+12 i dag</p>
                 </div>
-                <Users className="w-8 h-8 text-blue-600" />
+                <Star className="w-8 h-8 text-purple-600" />
               </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Online Nu</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.onlineNow}</p>
-                  <p className="text-sm text-blue-600">Live opdatering</p>
+                  <p className="text-sm text-gray-600">Total Opslag</p>
+                  <p className="text-2xl font-bold text-blue-600">{realTimeStats.totalPosts.toLocaleString()}</p>
+                  <p className="text-sm text-blue-600">+45 i dag</p>
                 </div>
-                <Activity className="w-8 h-8 text-green-600" />
+                <FileText className="w-8 h-8 text-blue-600" />
               </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Aktive Jobs</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.activeJobs}</p>
-                  <p className="text-sm text-blue-600">{stats.completedJobs} afsluttet</p>
+                  <p className="text-sm text-gray-600">Kommentarer</p>
+                  <p className="text-2xl font-bold text-green-600">{realTimeStats.totalComments.toLocaleString()}</p>
+                  <p className="text-sm text-green-600">+123 i dag</p>
                 </div>
-                <Briefcase className="w-8 h-8 text-green-600" />
+                <MessageCircle className="w-8 h-8 text-green-600" />
               </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Rapporter</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.reportedContent}</p>
-                  <p className="text-sm text-red-600">Kræver handling</p>
+                  <p className="text-sm text-gray-600">Månedlig Omsætning</p>
+                  <p className="text-2xl font-bold text-green-600">{realTimeStats.revenueThisMonth.toLocaleString()} kr</p>
+                  <p className="text-sm text-green-600">+15% vs sidste måned</p>
                 </div>
-                <AlertTriangle className="w-8 h-8 text-red-600" />
+                <DollarSign className="w-8 h-8 text-green-600" />
               </div>
             </div>
           </div>
 
-          {/* System Health */}
+          {/* System Health og Recent Activity */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">System Sundhed</h3>
               <div className="space-y-4">
                 {systemMonitoring.map((metric, index) => (
                   <div key={index} className="flex items-center justify-between">
-                    <span className="text-gray-700">{metric.metric}</span>
-                    <div className="flex items-center space-x-2">
-                      <span className="font-semibold">{metric.value}</span>
-                      <div className={`w-3 h-3 rounded-full ${
-                        metric.status === 'good' ? 'bg-green-500' : 
-                        metric.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
-                      }`}></div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-700 font-medium">{metric.metric}</span>
+                        <div className="flex items-center space-x-2">
+                          <span className="font-semibold">{metric.value}</span>
+                          <div className={`w-3 h-3 rounded-full ${
+                            metric.status === 'good' ? 'bg-green-500' : 
+                            metric.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}></div>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between mt-1">
+                        <span className="text-xs text-gray-500">Mål: {metric.target}</span>
+                        <span className={`text-xs ${getSystemStatusColor(metric.status)}`}>
+                          {metric.trend === 'up' ? '↗️' : metric.trend === 'down' ? '↘️' : '➡️'} {metric.trend}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -384,7 +508,7 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Seneste Aktivitet</h3>
               <div className="space-y-4">
-                {recentUsers.slice(0, 3).map((user) => (
+                {recentUsers.slice(0, 4).map((user) => (
                   <div key={user.id} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
@@ -392,15 +516,38 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">{user.name}</p>
-                        <p className="text-sm text-gray-600">{user.lastActive}</p>
+                        <p className="text-sm text-gray-600">{user.lastActive} • {user.location}</p>
                       </div>
                     </div>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(user.status)}`}>
-                      {user.status === 'active' ? 'Aktiv' : 'Suspenderet'}
-                    </span>
+                    <div className="text-right">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(user.status)}`}>
+                        {user.status === 'active' ? 'Aktiv' : user.status === 'suspended' ? 'Suspenderet' : user.status}
+                      </span>
+                      {user.reportsReceived > 0 && (
+                        <p className="text-xs text-red-600 mt-1">{user.reportsReceived} rapporter</p>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+
+          {/* System Alerts */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Live System Advarsler</h3>
+            <div className="space-y-3">
+              {systemAlerts.map((alert) => (
+                <div key={alert.id} className={`p-4 rounded-lg border ${getSeverityColor(alert.severity)}`}>
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{alert.message}</p>
+                      <p className="text-xs mt-1 opacity-75">Type: {alert.type} • Prioritet: {alert.severity}</p>
+                    </div>
+                    <span className="text-xs">{alert.time}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -435,8 +582,8 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Bruger</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Type</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Status</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Sidste Aktiv</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Lokation</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">Aktivitet</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">Rapporter</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Handlinger</th>
                 </tr>
               </thead>
@@ -447,6 +594,7 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
                       <div>
                         <p className="font-medium text-gray-900">{user.name}</p>
                         <p className="text-sm text-gray-600">{user.email}</p>
+                        <p className="text-xs text-gray-500">IP: {user.ipAddress}</p>
                       </div>
                     </td>
                     <td className="py-3 px-4">
@@ -460,22 +608,44 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
                         {user.status === 'active' ? 'Aktiv' : 'Suspenderet'}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-600">
-                      {user.lastActive}
+                    <td className="py-3 px-4">
+                      <div className="text-sm">
+                        <p className="text-gray-600">{user.lastActive}</p>
+                        <p className="text-gray-500">{user.postsCount} opslag</p>
+                      </div>
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-600">
-                      {user.location}
+                    <td className="py-3 px-4">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        user.reportsReceived > 0 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                      }`}>
+                        {user.reportsReceived} rapporter
+                      </span>
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center space-x-2">
-                        <button className="p-1 rounded hover:bg-gray-100 transition-colors duration-200" title="Se profil">
-                          <Eye className="w-4 h-4 text-gray-600" />
-                        </button>
-                        <button className="p-1 rounded hover:bg-gray-100 transition-colors duration-200" title="Suspender">
-                          <Ban className="w-4 h-4 text-red-600" />
-                        </button>
-                        <button className="p-1 rounded hover:bg-gray-100 transition-colors duration-200" title="Send besked">
+                        <button 
+                          onClick={() => handleUserAction(user.id, 'message')}
+                          className="p-1 rounded hover:bg-gray-100 transition-colors duration-200" 
+                          title="Send besked"
+                        >
                           <MessageCircle className="w-4 h-4 text-blue-600" />
+                        </button>
+                        <button 
+                          onClick={() => handleUserAction(user.id, user.status === 'active' ? 'suspend' : 'activate')}
+                          className="p-1 rounded hover:bg-gray-100 transition-colors duration-200" 
+                          title={user.status === 'active' ? 'Suspender' : 'Aktiver'}
+                        >
+                          {user.status === 'active' ? 
+                            <Ban className="w-4 h-4 text-red-600" /> : 
+                            <CheckCircle className="w-4 h-4 text-green-600" />
+                          }
+                        </button>
+                        <button 
+                          onClick={() => handleUserAction(user.id, 'ban')}
+                          className="p-1 rounded hover:bg-gray-100 transition-colors duration-200" 
+                          title="Permanent ban"
+                        >
+                          <XCircle className="w-4 h-4 text-gray-600" />
                         </button>
                       </div>
                     </td>
@@ -511,6 +681,7 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
                       <p>Rapporteret af: <span className="font-medium">{report.reporter}</span></p>
                       <p>Rapporteret bruger: <span className="font-medium">{report.reported}</span></p>
                       <p>Dato: {new Date(report.date).toLocaleDateString('da-DK')}</p>
+                      {report.evidence && <p>Bevis: <span className="font-medium text-blue-600">{report.evidence}</span></p>}
                       {report.action && <p>Handling: <span className="font-medium text-blue-600">{report.action}</span></p>}
                     </div>
                   </div>
@@ -556,19 +727,23 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-700">Brugere online</span>
-                  <span className="text-2xl font-bold text-green-600">{onlineUsers}</span>
+                  <span className="text-2xl font-bold text-green-600">{realTimeStats.onlineNow}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-700">Aktive sessioner</span>
-                  <span className="text-xl font-semibold text-blue-600">{Math.floor(onlineUsers * 1.2)}</span>
+                  <span className="text-xl font-semibold text-blue-600">{Math.floor(realTimeStats.onlineNow * 1.2)}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-700">Gennemsnitlig responstid</span>
-                  <span className="text-lg font-medium text-gray-900">{stats.avgResponseTime}</span>
+                  <span className="text-lg font-medium text-gray-900">{realTimeStats.avgResponseTime}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-700">System oppetid</span>
-                  <span className="text-lg font-medium text-green-600">{stats.systemUptime}</span>
+                  <span className="text-lg font-medium text-green-600">{realTimeStats.systemUptime}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700">Suspenderede brugere</span>
+                  <span className="text-lg font-medium text-red-600">{realTimeStats.suspendedUsers}</span>
                 </div>
               </div>
             </div>
@@ -582,11 +757,118 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
                 </div>
                 <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                   <p className="text-sm font-medium text-yellow-900">Høj rapport aktivitet</p>
-                  <p className="text-xs text-yellow-700">5+ rapporter i den sidste time</p>
+                  <p className="text-xs text-yellow-700">{realTimeStats.reportedContent} rapporter i den sidste time</p>
                 </div>
                 <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                   <p className="text-sm font-medium text-green-900">System sikkerhed OK</p>
                   <p className="text-xs text-green-700">Alle sikkerhedstjek bestået</p>
+                </div>
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm font-medium text-blue-900">Backup status</p>
+                  <p className="text-xs text-blue-700">Sidste backup: {new Date().toLocaleString('da-DK')}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Detailed System Metrics */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Detaljerede System Metrics</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {systemMonitoring.map((metric, index) => (
+                <div key={index} className="p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium text-gray-900">{metric.metric}</h4>
+                    <div className={`w-3 h-3 rounded-full ${
+                      metric.status === 'good' ? 'bg-green-500' : 
+                      metric.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
+                    }`}></div>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900 mb-1">{metric.value}</p>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">Mål: {metric.target}</span>
+                    <span className={getSystemStatusColor(metric.status)}>
+                      {metric.trend === 'up' ? '↗️' : metric.trend === 'down' ? '↘️' : '➡️'} {metric.trend}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Analytics Tab */}
+      {activeTab === 'analytics' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Platform Analytics</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <p className="text-2xl font-bold text-blue-600">{realTimeStats.totalPosts.toLocaleString()}</p>
+                <p className="text-sm text-blue-700">Total Opslag</p>
+                <p className="text-xs text-blue-600">+45 i dag</p>
+              </div>
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <p className="text-2xl font-bold text-green-600">{realTimeStats.totalComments.toLocaleString()}</p>
+                <p className="text-sm text-green-700">Total Kommentarer</p>
+                <p className="text-xs text-green-600">+123 i dag</p>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <p className="text-2xl font-bold text-purple-600">{realTimeStats.proSubscribers}</p>
+                <p className="text-sm text-purple-700">Pro Abonnenter</p>
+                <p className="text-xs text-purple-600">18.8% conversion</p>
+              </div>
+              <div className="text-center p-4 bg-orange-50 rounded-lg">
+                <p className="text-2xl font-bold text-orange-600">{realTimeStats.revenueThisMonth.toLocaleString()} kr</p>
+                <p className="text-sm text-orange-700">Månedlig Omsætning</p>
+                <p className="text-xs text-orange-600">+15% vs sidste måned</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="p-4 border border-gray-200 rounded-lg">
+                <h4 className="font-semibold text-gray-900 mb-3">Bruger Fordeling</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Privat kunder</span>
+                    <span className="text-sm font-medium">65% (810)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Rengøringseksperter</span>
+                    <span className="text-sm font-medium">20% (249)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Små virksomheder</span>
+                    <span className="text-sm font-medium">12% (150)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Store virksomheder</span>
+                    <span className="text-sm font-medium">3% (38)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 border border-gray-200 rounded-lg">
+                <h4 className="font-semibold text-gray-900 mb-3">Job Kategorier</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Hjemmerengøring</span>
+                    <span className="text-sm font-medium">45% (40 jobs)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Kontorrengøring</span>
+                    <span className="text-sm font-medium">30% (27 jobs)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Hovedrengøring</span>
+                    <span className="text-sm font-medium">15% (13 jobs)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Specialrengøring</span>
+                    <span className="text-sm font-medium">10% (9 jobs)</span>
+                  </div>
                 </div>
               </div>
             </div>
