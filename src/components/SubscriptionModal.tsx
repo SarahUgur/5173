@@ -101,8 +101,8 @@ export default function SubscriptionModal({ isOpen, onClose, onSubscribe, userEm
         <div className="p-4 sm:p-6 border-t border-gray-200">
           <button
             onClick={onSubscribe}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-[1.02] shadow-lg flex items-center justify-center space-x-2"
             className="w-full btn-primary text-white py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg shadow-strong flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none hover:scale-105"
+          >
             <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
             <span>Opgrader til Pro (Demo)</span>
           </button>
