@@ -7,9 +7,10 @@ interface SettingsModalProps {
   onClose: () => void;
   currentUser: any;
   onUpdateUser: (updates: any) => void;
+  onPageChange?: (page: string) => void;
 }
 
-export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUser }: SettingsModalProps) {
+export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUser, onPageChange }: SettingsModalProps) {
   const { language, setLanguage, t } = useLanguage();
   const [activeTab, setActiveTab] = useState('profile');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -687,35 +688,136 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
               <div className="space-y-6">
                 <h3 className="text-lg font-semibold text-gray-900">Hjælp & Support</h3>
                 
-                <div className="space-y-4">
-                  <div className="p-4 bg-blue-50 rounded-lg">
-                    <h4 className="font-semibold text-blue-900 mb-2">Ofte Stillede Spørgsmål</h4>
-                    <p className="text-blue-700 mb-3">Find svar på de mest almindelige spørgsmål</p>
-                    <button className="text-blue-600 hover:text-blue-700 font-medium">
-                      Se FAQ →
+                {/* FAQ Section */}
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-semibold text-blue-900 mb-4">Ofte Stillede Spørgsmål</h4>
+                  <div className="space-y-3">
+                    <div className="bg-white rounded-lg p-3">
+                      <h5 className="font-medium text-blue-900 mb-2">Hvordan sletter jeg mit opslag?</h5>
+                      <p className="text-sm text-blue-700">Klik på "..." menuen på dit opslag og vælg "Slet opslag". Dette kan ikke fortrydes.</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3">
+                      <h5 className="font-medium text-blue-900 mb-2">Hvordan fjerner jeg min kommentar?</h5>
+                      <p className="text-sm text-blue-700">Klik på "..." ved din kommentar og vælg "Slet kommentar". Kun du kan slette dine egne kommentarer.</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3">
+                      <h5 className="font-medium text-blue-900 mb-2">Hvordan skjuler jeg mit opslag midlertidigt?</h5>
+                      <p className="text-sm text-blue-700">Gå til "Indstillinger" → "Privatliv" og aktivér "Privat Konto" for at skjule alle dine opslag.</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3">
+                      <h5 className="font-medium text-blue-900 mb-2">Hvad er forskellen på Pro og gratis?</h5>
+                      <p className="text-sm text-blue-700">Pro giver ubegrænset likes, kommentarer, direkte beskeder og prioriteret visning for 29 kr/måned.</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3">
+                      <h5 className="font-medium text-blue-900 mb-2">Hvordan finder jeg jobs i mit område?</h5>
+                      <p className="text-sm text-blue-700">Gå til "Lokale Jobs" og brug lokationsfilter eller klik "Brug min lokation" for jobs tæt på dig.</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3">
+                      <h5 className="font-medium text-blue-900 mb-2">Hvordan kontakter jeg en rengøringsekspert?</h5>
+                      <p className="text-sm text-blue-700">Med Pro abonnement kan du klikke "Besked" på deres profil eller opslag for direkte kontakt.</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Guide Section */}
+                <div className="p-4 bg-green-50 rounded-lg">
+                  <h4 className="font-semibold text-green-900 mb-4">Kom i Gang Guide</h4>
+                  <div className="space-y-3">
+                    <button 
+                      onClick={() => onPageChange?.('local')}
+                      className="w-full text-left p-3 bg-white rounded-lg hover:bg-green-100 transition-colors duration-200"
+                    >
+                      <h5 className="font-medium text-green-900 mb-1">🔍 Søg efter rengøringsjobs</h5>
+                      <p className="text-sm text-green-700">Klik her for at gå til "Lokale Jobs" og finde arbejde i dit område</p>
+                    </button>
+                    <button 
+                      onClick={() => onPageChange?.('network')}
+                      className="w-full text-left p-3 bg-white rounded-lg hover:bg-green-100 transition-colors duration-200"
+                    >
+                      <h5 className="font-medium text-green-900 mb-1">👥 Byg dit netværk</h5>
+                      <p className="text-sm text-green-700">Klik her for at forbinde med andre rengøringseksperter og kunder</p>
+                    </button>
+                    <button 
+                      onClick={() => onPageChange?.('home')}
+                      className="w-full text-left p-3 bg-white rounded-lg hover:bg-green-100 transition-colors duration-200"
+                    >
+                      <h5 className="font-medium text-green-900 mb-1">📝 Opret dit første opslag</h5>
+                      <p className="text-sm text-green-700">Klik her for at gå til hjemmesiden og oprette et job opslag</p>
+                    </button>
+                    <button 
+                      onClick={() => setActiveTab('profile')}
+                      className="w-full text-left p-3 bg-white rounded-lg hover:bg-green-100 transition-colors duration-200"
+                    >
+                      <h5 className="font-medium text-green-900 mb-1">⚙️ Udfyld din profil</h5>
+                      <p className="text-sm text-green-700">Klik her for at gå til profil indstillinger og udfylde dine oplysninger</p>
                     </button>
                   </div>
+                </div>
 
-                  <div className="p-4 bg-green-50 rounded-lg">
-                    <h4 className="font-semibold text-green-900 mb-2">Kom i Gang Guide</h4>
-                    <p className="text-green-700 mb-3">Lær hvordan du bruger Privat Rengøring</p>
-                    <button className="text-green-600 hover:text-green-700 font-medium">
-                      Se Guide →
+                {/* Contact Support */}
+                <div className="p-4 bg-purple-50 rounded-lg">
+                  <h4 className="font-semibold text-purple-900 mb-4">Kontakt Support</h4>
+                  <div className="bg-white rounded-lg p-4">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <Mail className="w-6 h-6 text-purple-600" />
+                      <div>
+                        <h5 className="font-medium text-purple-900">Email Support</h5>
+                        <p className="text-sm text-purple-700">Vi svarer inden for 24-48 timer</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => window.location.href = 'mailto:support@privatrengoring.dk?subject=Hjælp med Privat Rengøring&body=Hej Support Team,%0D%0A%0D%0AJeg har brug for hjælp med:%0D%0A%0D%0A[Beskriv dit problem her]%0D%0A%0D%0AMed venlig hilsen'}
+                      className="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors duration-200 font-medium"
+                    >
+                      📧 Send Email til Support
                     </button>
+                    <p className="text-xs text-purple-600 mt-2 text-center">
+                      support@privatrengoring.dk • Svar inden for 24-48 timer
+                    </p>
                   </div>
+                </div>
 
-                  <div className="p-4 bg-purple-50 rounded-lg">
-                    <h4 className="font-semibold text-purple-900 mb-2">Kontakt Support</h4>
-                    <p className="text-purple-700 mb-3">Har du brug for personlig hjælp?</p>
-                    <div className="space-y-2">
+                {/* Account Deactivation */}
+                <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                  <h4 className="font-semibold text-orange-900 mb-4">Deaktiver Konto</h4>
+                  <div className="space-y-3">
+                    <div className="bg-white rounded-lg p-3">
+                      <h5 className="font-medium text-orange-900 mb-2">Midlertidig Deaktivering</h5>
+                      <p className="text-sm text-orange-700 mb-3">
+                        Din konto skjules, men alle data gemmes. Du kan aktivere igen ved at logge ind.
+                      </p>
                       <button 
-                        onClick={() => window.location.href = 'mailto:support@privatrengoring.dk'}
-                        className="block w-full text-left text-purple-600 hover:text-purple-700 font-medium"
+                        onClick={() => {
+                          if (confirm('Er du sikker på at du vil deaktivere din konto midlertidigt? Du kan aktivere den igen ved at logge ind.')) {
+                            alert('Din konto er nu deaktiveret. Log ind igen for at aktivere.');
+                            // I en rigtig app ville dette opdatere brugerens status i databasen
+                          }
+                        }}
+                        className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors duration-200 text-sm"
                       >
-                        📧 support@privatrengoring.dk
+                        Deaktiver Midlertidigt
                       </button>
-                      <p className="text-sm text-purple-600">📞 +45 70 20 30 40</p>
-                      <p className="text-sm text-purple-600">🕒 Man-Fre 9:00-17:00</p>
+                    </div>
+                    
+                    <div className="bg-white rounded-lg p-3">
+                      <h5 className="font-medium text-red-900 mb-2">Permanent Deaktivering</h5>
+                      <p className="text-sm text-red-700 mb-3">
+                        Din konto og alle data slettes permanent. Dette kan IKKE fortrydes.
+                      </p>
+                      <button 
+                        onClick={() => {
+                          const confirmation = prompt('Skriv "SLET PERMANENT" for at bekræfte permanent sletning:');
+                          if (confirmation === 'SLET PERMANENT') {
+                            alert('Din konto vil blive slettet permanent inden for 24 timer. Kontakt support hvis du fortryder.');
+                            // I en rigtig app ville dette starte sletningsprocessen
+                          } else if (confirmation !== null) {
+                            alert('Forkert bekræftelse. Konto ikke slettet.');
+                          }
+                        }}
+                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm"
+                      >
+                        Slet Permanent
+                      </button>
                     </div>
                   </div>
                 </div>

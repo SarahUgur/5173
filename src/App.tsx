@@ -266,6 +266,7 @@ function App() {
         onClose={() => setShowSettings(false)}
         currentUser={currentUser}
         onUpdateUser={handleUpdateUser}
+        onPageChange={setCurrentPage}
       />
       
       <NotificationModal
