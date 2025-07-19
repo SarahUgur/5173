@@ -10,11 +10,11 @@ import SuccessPage from './components/SuccessPage';
 import PlanningPage from './components/PlanningPage';
 import MyTasksPage from './components/MyTasksPage';
 import NetworkPage from './components/NetworkPage';
-import WebsiteIntegration from './components/WebsiteIntegration';
 import LocalJobsPage from './components/LocalJobsPage';
 import SettingsModal from './components/SettingsModal';
 import NotificationModal from './components/NotificationModal';
 import InstallPrompt from './components/InstallPrompt';
+import AdminPage from './components/AdminPage';
 import { mockUsers, getLocalizedPosts } from './data/mockData';
 import { useLanguage } from './hooks/useLanguage';
 
@@ -143,6 +143,10 @@ function App() {
           
           {currentPage === 'network' && (
             <NetworkPage currentUser={currentUser} />
+          )}
+          
+          {currentPage === 'admin' && (
+            <AdminPage currentUser={currentUser} />
           )}
         </main>
 

@@ -249,6 +249,172 @@ const translations: Translations = {
     de: 'Einmaliger Job'
   },
 
+  // New cleaning categories
+  specializedCleaning: {
+    da: 'Specialrengøring',
+    en: 'Specialized Cleaning',
+    ar: 'تنظيف متخصص',
+    pl: 'Specjalistyczne Sprzątanie',
+    tr: 'Özel Temizlik',
+    de: 'Spezialreinigung'
+  },
+  carpetSofaCleaning: {
+    da: 'Tæppe/Sofa Rengøring',
+    en: 'Carpet/Sofa Cleaning',
+    ar: 'تنظيف السجاد/الأريكة',
+    pl: 'Czyszczenie Dywanów/Sof',
+    tr: 'Halı/Koltuk Temizliği',
+    de: 'Teppich/Sofa Reinigung'
+  },
+  carCleaning: {
+    da: 'Bilrengøring',
+    en: 'Car Cleaning',
+    ar: 'تنظيف السيارات',
+    pl: 'Mycie Samochodów',
+    tr: 'Araba Temizliği',
+    de: 'Autoreinigung'
+  },
+  gardenCleaning: {
+    da: 'Haverengøring',
+    en: 'Garden Cleaning',
+    ar: 'تنظيف الحديقة',
+    pl: 'Sprzątanie Ogrodu',
+    tr: 'Bahçe Temizliği',
+    de: 'Gartenreinigung'
+  },
+  laundryService: {
+    da: 'Vasketøjsservice',
+    en: 'Laundry Service',
+    ar: 'خدمة الغسيل',
+    pl: 'Usługa Prania',
+    tr: 'Çamaşır Servisi',
+    de: 'Wäscheservice'
+  },
+  dryCleaning: {
+    da: 'Kemisk Rens',
+    en: 'Dry Cleaning',
+    ar: 'التنظيف الجاف',
+    pl: 'Pralnia Chemiczna',
+    tr: 'Kuru Temizleme',
+    de: 'Chemische Reinigung'
+  },
+  windowCleaning: {
+    da: 'Vinduesrengøring',
+    en: 'Window Cleaning',
+    ar: 'تنظيف النوافذ',
+    pl: 'Mycie Okien',
+    tr: 'Cam Temizliği',
+    de: 'Fensterreinigung'
+  },
+  moveCleaning: {
+    da: 'Fraflytningsrengøring',
+    en: 'Move-out Cleaning',
+    ar: 'تنظيف الانتقال',
+    pl: 'Sprzątanie po Przeprowadzce',
+    tr: 'Taşınma Temizliği',
+    de: 'Auszugsreinigung'
+  },
+  constructionCleaning: {
+    da: 'Byggerengøring',
+    en: 'Construction Cleaning',
+    ar: 'تنظيف البناء',
+    pl: 'Sprzątanie po Budowie',
+    tr: 'İnşaat Temizliği',
+    de: 'Baureinigung'
+  },
+  dailyOfficeCleaning: {
+    da: 'Daglig Kontorrengøring',
+    en: 'Daily Office Cleaning',
+    ar: 'تنظيف المكتب اليومي',
+    pl: 'Codzienne Sprzątanie Biura',
+    tr: 'Günlük Ofis Temizliği',
+    de: 'Tägliche Büroreinigung'
+  },
+  industrialCleaning: {
+    da: 'Industrirengøring',
+    en: 'Industrial Cleaning',
+    ar: 'التنظيف الصناعي',
+    pl: 'Sprzątanie Przemysłowe',
+    tr: 'Endüstriyel Temizlik',
+    de: 'Industriereinigung'
+  },
+
+  // User categories
+  businessCustomer: {
+    da: 'Erhvervskunde',
+    en: 'Business Customer',
+    ar: 'عميل تجاري',
+    pl: 'Klient Biznesowy',
+    tr: 'İş Müşterisi',
+    de: 'Geschäftskunde'
+  },
+  subcontractor: {
+    da: 'Underleverandør',
+    en: 'Subcontractor',
+    ar: 'مقاول فرعي',
+    pl: 'Podwykonawca',
+    tr: 'Alt Yüklenici',
+    de: 'Subunternehmer'
+  },
+
+  // Target audience
+  targetAudience: {
+    da: 'Målgruppe',
+    en: 'Target Audience',
+    ar: 'الجمهور المستهدف',
+    pl: 'Grupa Docelowa',
+    tr: 'Hedef Kitle',
+    de: 'Zielgruppe'
+  },
+  hiringCleaner: {
+    da: 'Ansætter Rengøringshjælp',
+    en: 'Hiring Cleaner',
+    ar: 'توظيف منظف',
+    pl: 'Zatrudnianie Sprzątacza',
+    tr: 'Temizlikçi Arıyor',
+    de: 'Reinigungskraft suchen'
+  },
+  lookingForWork: {
+    da: 'Søger Arbejde',
+    en: 'Looking for Work',
+    ar: 'يبحث عن عمل',
+    pl: 'Szuka Pracy',
+    tr: 'İş Arıyor',
+    de: 'Arbeit suchen'
+  },
+  lookingForHelp: {
+    da: 'Søger hjælp',
+    en: 'Looking for help',
+    ar: 'يبحث عن مساعدة',
+    pl: 'Szuka pomocy',
+    tr: 'Yardım arıyor',
+    de: 'Sucht Hilfe'
+  },
+  offeringServices: {
+    da: 'Tilbyder tjenester',
+    en: 'Offering services',
+    ar: 'يقدم خدمات',
+    pl: 'Oferuje usługi',
+    tr: 'Hizmet sunuyor',
+    de: 'Bietet Dienstleistungen'
+  },
+  userCategory: {
+    da: 'Brugerkategori',
+    en: 'User Category',
+    ar: 'فئة المستخدم',
+    pl: 'Kategoria Użytkownika',
+    tr: 'Kullanıcı Kategorisi',
+    de: 'Benutzerkategorie'
+  },
+  cleaningCategory: {
+    da: 'Rengøringskategori',
+    en: 'Cleaning Category',
+    ar: 'فئة التنظيف',
+    pl: 'Kategoria Sprzątania',
+    tr: 'Temizlik Kategorisi',
+    de: 'Reinigungskategorie'
+  },
+
   // Urgency levels
   flexible: {
     da: 'Fleksibel',

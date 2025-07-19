@@ -16,7 +16,8 @@ export interface Post {
   user: User;
   content: string;
   images?: string[];
-  jobType: 'home_cleaning' | 'office_cleaning' | 'deep_cleaning' | 'regular_cleaning' | 'one_time';
+  jobType: 'home_cleaning' | 'office_cleaning' | 'deep_cleaning' | 'regular_cleaning' | 'one_time' | 'garden_cleaning' | 'carpet_sofa_cleaning' | 'car_cleaning' | 'laundry_service' | 'dry_cleaning' | 'window_cleaning' | 'move_cleaning' | 'construction_cleaning';
+  jobCategory: 'private_customer' | 'business_customer' | 'cleaning_expert' | 'subcontractor';
   location: string;
   budget?: string;
   urgency: 'immediate' | 'this_week' | 'flexible';
@@ -24,6 +25,7 @@ export interface Post {
   comments: Comment[];
   createdAt: string;
   isJobPost: boolean;
+  targetAudience?: 'looking_for_work' | 'hiring_cleaner';
 }
 
 export interface Comment {
