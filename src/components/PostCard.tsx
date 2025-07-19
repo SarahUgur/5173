@@ -174,31 +174,31 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200 mx-3 sm:mx-0">
+    <div className="bg-white rounded-xl shadow-soft border border-gray-200 overflow-hidden hover:shadow-medium transition-all duration-300 mx-3 sm:mx-0 card hover-lift">
       {/* Header */}
-      <div className="p-3 sm:p-4 border-b border-gray-100">
+      <div className="p-3 sm:p-4 border-b border-gray-100 bg-gradient-to-r from-white to-gray-50">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3 flex-1 min-w-0">
             <button
               onClick={() => onShowUserProfile?.(post.user)}
-              className="flex-shrink-0 hover:opacity-80 transition-opacity duration-200"
+              className="flex-shrink-0 hover:opacity-80 transition-all duration-200 hover:scale-105"
             >
               <img
                 src={post.user.avatar}
                 alt={post.user.name}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full ring-2 ring-transparent hover:ring-blue-300 transition-all duration-200"
               />
             </button>
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => onShowUserProfile?.(post.user)}
-                  className="font-semibold text-gray-900 truncate text-sm sm:text-base hover:text-blue-600 transition-colors duration-200"
+                  className="font-semibold text-gray-900 truncate text-sm sm:text-base hover:text-blue-600 transition-all duration-200 hover:scale-105"
                 >
                   {post.user.name}
                 </button>
                 {post.user.verified && (
-                  <div className="w-4 h-4 sm:w-5 sm:h-5 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
                     <span className="text-white text-xs">✓</span>
                   </div>
                 )}
@@ -226,7 +226,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             <div className="relative">
               <button 
                 onClick={() => setShowMoreMenu(!showMoreMenu)}
-                className="p-1 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                className="p-1 rounded-full hover:bg-gray-100 transition-all duration-200 hover:scale-110"
               >
               <MoreHorizontal className="w-5 h-5 text-gray-400" />
             </button>
@@ -278,13 +278,13 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
       </div>
 
       {/* Content */}
-      <div className="p-3 sm:p-4">
+      <div className="p-3 sm:p-4 bg-gradient-to-b from-white to-gray-50">
         <p className="text-gray-800 mb-4 leading-relaxed text-sm sm:text-base">{post.content}</p>
         
         {post.budget && (
-          <div className="flex items-center space-x-2 mb-4 p-3 bg-green-50 rounded-lg">
+          <div className="flex items-center space-x-2 mb-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200 hover-lift">
             <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0" />
-            <span className="font-semibold text-green-800 text-sm sm:text-base">Budget: {post.budget}</span>
+            <span className="font-semibold text-green-800 text-sm sm:text-base animate-fadeIn">Budget: {post.budget}</span>
           </div>
         )}
 
@@ -295,7 +295,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                 <img
                   src={image}
                   alt={`Post image ${index + 1}`}
-                  className="rounded-lg object-cover h-32 sm:h-48 w-full"
+                  className="rounded-lg object-cover h-32 sm:h-48 w-full hover:scale-105 transition-transform duration-300 cursor-pointer"
                 />
                 {/* Reklame mellem billeder (hver 2. billede) */}
                 {index === 1 && post.images.length > 2 && (
@@ -310,7 +310,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
       </div>
 
       {/* Actions */}
-      <div className="px-3 sm:px-4 py-3 border-t border-gray-100">
+      <div className="px-3 sm:px-4 py-3 border-t border-gray-100 bg-gradient-to-r from-gray-50 to-white">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 sm:space-x-4">
             <div className="relative">
@@ -318,7 +318,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                 onClick={() => reactionType ? setReactionType(null) : handleReaction('like')}
                 onMouseEnter={() => setShowReactions(true)}
                 onMouseLeave={() => setTimeout(() => setShowReactions(false), 300)}
-                className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-colors duration-200 ${
+                className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
                   reactionType ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -334,7 +334,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               {/* Reaction Menu */}
               {showReactions && (
                 <div 
-                  className="absolute bottom-full left-0 mb-2 bg-white rounded-full shadow-lg border border-gray-200 p-2 flex space-x-2 z-50"
+                  className="absolute bottom-full left-0 mb-2 bg-white rounded-full shadow-strong border border-gray-200 p-2 flex space-x-2 z-50 animate-fadeIn"
                   onMouseEnter={() => setShowReactions(true)}
                   onMouseLeave={() => setShowReactions(false)}
                 >
@@ -342,7 +342,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                     <button
                       key={reaction.type}
                       onClick={() => handleReaction(reaction.type)}
-                      className="hover:scale-125 transition-transform duration-200 p-1"
+                      className="hover:scale-125 transition-transform duration-200 p-1 hover:bg-gray-50 rounded-full"
                       title={reaction.label}
                     >
                       <span className="text-xl">{reaction.emoji}</span>
@@ -354,7 +354,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             
             <button
               onClick={() => handleInteraction('comment')}
-              className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors duration-200"
+              className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-all duration-200 hover:scale-105"
             >
               <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="font-medium text-sm sm:text-base">{post.comments.length}</span>
@@ -364,7 +364,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             <div className="relative">
               <button 
                 onClick={() => setShowShareMenu(!showShareMenu)}
-                className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors duration-200"
+                className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-all duration-200 hover:scale-105"
               >
                 <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="font-medium text-sm sm:text-base">{shareCount}</span>
@@ -373,14 +373,14 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               
               {/* Share Menu */}
               {showShareMenu && (
-                <div className="absolute bottom-full left-0 mb-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 p-3 z-50">
+                <div className="absolute bottom-full left-0 mb-2 w-64 bg-white rounded-xl shadow-strong border border-gray-200 p-3 z-50 animate-fadeIn">
                   <h4 className="font-semibold text-gray-900 mb-3 text-sm">Del opslag</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {shareOptions.map((option) => (
                       <button
                         key={option.platform}
                         onClick={() => handleShare(option.platform)}
-                        className={`flex items-center space-x-2 p-2 rounded-lg text-white hover:opacity-90 transition-opacity duration-200 ${option.color}`}
+                        className={`flex items-center space-x-2 p-2 rounded-lg text-white hover:opacity-90 transition-all duration-200 hover:scale-105 ${option.color}`}
                       >
                         <span>{option.icon}</span>
                         <span className="text-xs font-medium">{option.name}</span>
@@ -395,7 +395,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
           {post.isJobPost && (
             <button
               onClick={() => handleInteraction('apply')}
-              className="bg-blue-600 text-white px-3 sm:px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2 text-sm sm:text-base"
+              className="btn-primary text-white px-3 sm:px-6 py-2 rounded-lg font-medium flex items-center space-x-2 text-sm sm:text-base hover:scale-105"
             >
               <span>{t('apply')}</span>
               {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4" />}
@@ -404,7 +404,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
         </div>
 
         {!currentUser?.isSubscribed && (
-          <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="mt-3 p-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg animate-pulse">
             <p className="text-xs sm:text-sm text-amber-800">
               <Lock className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1" />
               {t('upgradeToPro')} for at interagere med opslag og kontakte andre brugere
@@ -415,16 +415,16 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
 
       {/* Comments Section */}
       {showComments && currentUser?.isSubscribed && (
-        <div className="border-t border-gray-100 p-3 sm:p-4 bg-gray-50">
+        <div className="border-t border-gray-100 p-3 sm:p-4 bg-gradient-to-b from-gray-50 to-white animate-slideUp">
           <div className="space-y-3">
             {post.comments.map((comment) => (
-              <div key={comment.id} className="flex space-x-3">
+              <div key={comment.id} className="flex space-x-3 animate-fadeIn">
                 <img
                   src={comment.user.avatar}
                   alt={comment.user.name}
-                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex-shrink-0"
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex-shrink-0 ring-2 ring-transparent hover:ring-blue-300 transition-all duration-200"
                 />
-                <div className="flex-1 bg-white rounded-lg p-3">
+                <div className="flex-1 bg-white rounded-lg p-3 shadow-soft hover:shadow-medium transition-shadow duration-200">
                   <div className="flex items-center space-x-2 mb-1">
                     <span className="font-semibold text-sm">{comment.user.name}</span>
                     <span className="text-xs text-gray-500">{comment.createdAt}</span>
@@ -459,12 +459,12 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                     onChange={(e) => setCommentText(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleCommentSubmit()}
                     placeholder={`${t('writeComment')} (brug @ for at tagge)`}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm pr-20"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm pr-20 transition-all duration-200"
                   />
                   <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
                     <button
                       onClick={() => setShowTagModal(true)}
-                      className="p-1 rounded hover:bg-gray-100 transition-colors duration-200"
+                      className="p-1 rounded hover:bg-gray-100 transition-all duration-200 hover:scale-110"
                       title="Tag brugere"
                     >
                       <Users className="w-4 h-4 text-gray-500" />
@@ -472,7 +472,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                     <button
                       onClick={handleCommentSubmit}
                       disabled={!commentText.trim()}
-                      className="text-blue-600 hover:text-blue-700 disabled:text-gray-400 text-sm font-medium"
+                      className="text-blue-600 hover:text-blue-700 disabled:text-gray-400 text-sm font-medium transition-all duration-200 hover:scale-105"
                     >
                       Send
                     </button>

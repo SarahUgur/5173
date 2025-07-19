@@ -81,12 +81,12 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 mb-4 sm:mb-6 mx-3 sm:mx-0">
+    <div className="bg-white rounded-xl shadow-soft border border-gray-200 p-3 sm:p-4 mb-4 sm:mb-6 mx-3 sm:mx-0 hover:shadow-medium transition-all duration-300 card">
       <div className="flex items-start space-x-3">
         <img
           src={currentUser?.avatar || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop"}
           alt="Your avatar"
-          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex-shrink-0"
+          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex-shrink-0 ring-2 ring-transparent hover:ring-blue-300 transition-all duration-200"
         />
         <div className="flex-1 min-w-0">
           {/* Post Type Selector */}
@@ -94,7 +94,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mb-3">
               <button
                 onClick={() => setPostType('regular')}
-                className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
                   postType === 'regular'
                     ? 'bg-blue-100 text-blue-700'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -104,7 +104,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
               </button>
               <button
                 onClick={() => setPostType('job')}
-                className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2 ${
+                className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center space-x-2 hover:scale-105 ${
                   postType === 'job'
                     ? 'bg-green-100 text-green-700'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -123,7 +123,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                 onChange={(e) => setContent(e.target.value)}
                 onFocus={() => setIsExpanded(true)}
                 placeholder={postType === 'job' ? t('describeCleaningTask') : t('whatAreYouThinking')}
-                className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base transition-all duration-200"
                 rows={isExpanded ? 4 : 2}
               />
               {isExpanded && (
@@ -134,7 +134,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                     setContent('');
                     setPostType('regular');
                   }}
-                  className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                  className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 transition-all duration-200 hover:scale-110"
                 >
                   <X className="w-4 h-4 text-gray-400" />
                 </button>
@@ -150,7 +150,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                     <button
                       type="button"
                       onClick={() => setTargetAudience('hiring_cleaner')}
-                      className={`p-3 rounded-lg border-2 transition-colors duration-200 ${
+                      className={`p-3 rounded-lg border-2 transition-all duration-200 hover:scale-105 ${
                         targetAudience === 'hiring_cleaner'
                           ? 'border-blue-500 bg-blue-50 text-blue-700'
                           : 'border-gray-300 hover:border-gray-400'
@@ -165,7 +165,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                     <button
                       type="button"
                       onClick={() => setTargetAudience('looking_for_work')}
-                      className={`p-3 rounded-lg border-2 transition-colors duration-200 ${
+                      className={`p-3 rounded-lg border-2 transition-all duration-200 hover:scale-105 ${
                         targetAudience === 'looking_for_work'
                           ? 'border-green-500 bg-green-50 text-green-700'
                           : 'border-gray-300 hover:border-gray-400'
@@ -189,7 +189,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                         key={type.id}
                         type="button"
                         onClick={() => setJobCategory(type.id)}
-                        className={`p-3 rounded-lg border-2 transition-colors duration-200 ${
+                        className={`p-3 rounded-lg border-2 transition-all duration-200 hover:scale-105 ${
                           jobCategory === type.id
                             ? 'border-purple-500 bg-purple-50 text-purple-700'
                             : 'border-gray-300 hover:border-gray-400'
@@ -220,7 +220,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                               key={sub.id}
                               type="button"
                               onClick={() => setJobType(sub.id)}
-                              className={`p-2 rounded-md text-sm transition-colors duration-200 ${
+                              className={`p-2 rounded-md text-sm transition-all duration-200 hover:scale-105 ${
                                 jobType === sub.id
                                   ? 'bg-blue-100 text-blue-700 border border-blue-300'
                                   : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
@@ -244,7 +244,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
                       placeholder={t('location')}
-                      className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200"
                     />
                   </div>
                   
@@ -255,7 +255,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                       value={budget}
                       onChange={(e) => setBudget(e.target.value)}
                       placeholder={t('budget')}
-                      className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200"
                     />
                   </div>
                 </div>
@@ -266,7 +266,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                   <select
                     value={urgency}
                     onChange={(e) => setUrgency(e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200"
                   >
                     <option value="flexible">{t('flexible')}</option>
                     <option value="this_week">{t('thisWeek')}</option>
@@ -281,14 +281,14 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                 <div className="flex items-center space-x-3 sm:space-x-4">
                   <button
                     type="button"
-                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 text-sm"
+                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105"
                   >
                     <Image className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>{t('image')}</span>
                   </button>
                   <button
                     type="button"
-                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 text-sm"
+                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105"
                   >
                     <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>{t('location')}</span>
@@ -298,9 +298,9 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                 <button
                   type="submit"
                   disabled={!content.trim()}
-                  className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors duration-200 text-sm ${
+                  className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:scale-105 ${
                     content.trim()
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      ? 'btn-primary text-white'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >

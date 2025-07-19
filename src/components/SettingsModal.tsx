@@ -143,101 +143,101 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
   ];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-4xl w-full h-[95vh] sm:max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-2xl max-w-4xl w-full h-[98vh] sm:h-[95vh] lg:max-h-[90vh] overflow-hidden shadow-strong animate-fadeIn">
         {/* Header */}
-        <div className="relative p-6 border-b border-gray-200">
+        <div className="relative p-3 sm:p-6 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+            className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-110"
           >
             <X className="w-6 h-6 text-gray-500" />
           </button>
           
-          <h2 className="text-2xl font-bold text-gray-900">Indstillinger</h2>
-          <p className="text-gray-600">Administrer dine konto- og app-indstillinger</p>
+          <h2 className="text-xl sm:text-2xl font-bold gradient-text pr-12">Indstillinger</h2>
+          <p className="text-sm sm:text-base text-gray-600">Administrer dine konto- og app-indstillinger</p>
         </div>
 
         <div className="flex">
           {/* Sidebar */}
-          <div className="w-20 sm:w-64 border-r border-gray-200 p-2 sm:p-4 overflow-y-auto">
+          <div className="w-16 sm:w-20 lg:w-64 border-r border-gray-200 p-1 sm:p-2 lg:p-4 overflow-y-auto bg-gradient-to-b from-gray-50 to-white">
             <nav className="space-y-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex flex-col sm:flex-row items-center sm:space-x-3 space-y-1 sm:space-y-0 px-1 sm:px-3 py-2 rounded-lg text-left transition-colors duration-200 ${
+                  className={`w-full flex flex-col sm:flex-row lg:flex-row items-center lg:space-x-3 space-y-1 sm:space-y-0 lg:space-y-0 px-1 sm:px-2 lg:px-3 py-2 rounded-lg text-left transition-all duration-200 hover:scale-105 ${
                     activeTab === tab.id
                       ? 'bg-blue-50 text-blue-700'
                       : 'text-gray-700 hover:bg-gray-50'
                   }`}
                 >
-                  <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm font-medium hidden sm:block">{tab.label}</span>
-                  <span className="text-xs font-medium sm:hidden text-center">{tab.label.split(' ')[0]}</span>
+                  <tab.icon className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 flex-shrink-0" />
+                  <span className="text-xs sm:text-sm font-medium hidden lg:block">{tab.label}</span>
+                  <span className="text-xs font-medium lg:hidden text-center leading-tight">{tab.label.split(' ')[0]}</span>
                 </button>
               ))}
             </nav>
           </div>
 
           {/* Content */}
-          <div className="flex-1 p-3 sm:p-6 overflow-y-auto h-[70vh] sm:max-h-[70vh]">
+          <div className="flex-1 p-2 sm:p-3 lg:p-6 overflow-y-auto" style={{ height: 'calc(98vh - 120px)' }}>
             {activeTab === 'profile' && (
-              <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900">Profil Information</h3>
+              <div className="space-y-4 sm:space-y-6 animate-fadeIn">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">Profil Information</h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Navn</label>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Navn</label>
                     <input
                       type="text"
                       value={settings.name}
                       onChange={(e) => updateSetting('name', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base transition-all duration-200"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Email</label>
                     <input
                       type="email"
                       value={settings.email}
                       onChange={(e) => updateSetting('email', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base transition-all duration-200"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Telefon</label>
                     <input
                       type="tel"
                       value={settings.phone}
                       onChange={(e) => updateSetting('phone', e.target.value)}
                       placeholder="+45 12 34 56 78"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base transition-all duration-200"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Lokation</label>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Lokation</label>
                     <input
                       type="text"
                       value={settings.location}
                       onChange={(e) => updateSetting('location', e.target.value)}
                       placeholder="København, Danmark"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base transition-all duration-200"
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Bio</label>
                   <textarea
                     value={settings.bio}
                     onChange={(e) => updateSetting('bio', e.target.value)}
-                    rows={3}
+                    rows={2}
                     placeholder="Fortæl lidt om dig selv..."
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base transition-all duration-200"
                   />
                 </div>
               </div>
@@ -828,17 +828,17 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
         </div>
 
         {/* Footer */}
-        <div className="p-3 sm:p-6 border-t border-gray-200 bg-gray-50 flex-shrink-0">
-          <div className="flex justify-end space-x-3">
+        <div className="p-2 sm:p-3 lg:p-6 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white flex-shrink-0">
+          <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
             <button
               onClick={onClose}
-              className="px-3 sm:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-sm sm:text-base"
+              className="w-full sm:w-auto px-3 sm:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200 text-sm sm:text-base hover:scale-105"
             >
               Annuller
             </button>
             <button
               onClick={handleSave}
-              className="px-3 sm:px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm sm:text-base"
+              className="w-full sm:w-auto btn-primary text-white px-3 sm:px-6 py-2 rounded-lg text-sm sm:text-base hover:scale-105"
             >
               Gem Ændringer
             </button>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Loader2 } from 'lucide-react';
 import AuthScreen from './components/AuthScreen';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -24,6 +24,8 @@ import { useLanguage } from './hooks/useLanguage';
 
 function App() {
   const { language } = useLanguage();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem('isAuthenticated') === 'true';
   });
@@ -44,29 +46,62 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState('home');
 
+  // Error boundary
+  const handleError = (error: Error) => {
+    console.error('App Error:', error);
+    setError(error.message);
+  };
+
+  // Loading states
+  const withLoading = async (fn: () => Promise<void> | void) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await fn();
+    } catch (err) {
+      handleError(err as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Update posts when language changes
   React.useEffect(() => {
     setPosts(getLocalizedPosts(language));
   }, [language]);
+
+  // Auto-save user data
+  React.useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    }
+  }, [currentUser]);
+
   const handleSubscribe = () => {
-    const updatedUser = { ...currentUser, isSubscribed: true };
-    setCurrentUser(updatedUser);
-    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-    setShowSubscriptionModal(false);
-    setShowSuccessPage(true);
+    withLoading(() => {
+      const updatedUser = { ...currentUser, isSubscribed: true };
+      setCurrentUser(updatedUser);
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      setShowSubscriptionModal(false);
+      setShowSuccessPage(true);
+    });
   };
 
   const handleLogin = (user: any) => {
-    setIsAuthenticated(true);
-    setCurrentUser(user);
-    localStorage.setItem('isAuthenticated', 'true');
-    localStorage.setItem('currentUser', JSON.stringify(user));
+    withLoading(() => {
+      setIsAuthenticated(true);
+      setCurrentUser(user);
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    });
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('currentUser');
-    setIsAuthenticated(false);
+    withLoading(() => {
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('currentUser');
+      setIsAuthenticated(false);
+    });
   };
 
   const toggleMobileMenu = () => {
@@ -118,9 +153,47 @@ function App() {
     // I en rigtig app ville dette tracke delinger for analytics
   };
   const handleUpdateUser = (updates: any) => {
-    setCurrentUser(updates);
-    localStorage.setItem('currentUser', JSON.stringify(updates));
+    withLoading(() => {
+      setCurrentUser(updates);
+      localStorage.setItem('currentUser', JSON.stringify(updates));
+    });
   };
+
+  // Error display
+  if (error) {
+    return (
+      <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <X className="w-8 h-8 text-red-600" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Der opstod en fejl</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={() => {
+              setError(null);
+              window.location.reload();
+            }}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+          >
+            Genindlæs App
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Loading overlay
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Indlæser...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Vis login skærm hvis ikke autentificeret
   if (!isAuthenticated) {
@@ -136,7 +209,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <Header 
         currentUser={currentUser} 
         onShowSubscription={() => setShowSubscriptionModal(true)}
@@ -147,6 +220,8 @@ function App() {
         onShowProfile={() => setShowProfile(true)}
         onShowSettings={() => setShowSettings(true)}
         onShowFriendRequests={() => setShowFriendRequests(true)}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
       />
       
       <div className="flex relative">
@@ -159,16 +234,16 @@ function App() {
         />
         
         {/* Main Content */}
-        <main className="flex-1 min-h-screen md:ml-0">
+        <main className="flex-1 min-h-screen md:ml-0 transition-all duration-300">
           {currentPage === 'home' && (
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto animate-fadeIn">
               {/* Create Post - Mobile optimized */}
-              <div className="sticky top-16 z-30 bg-gray-50 pt-3 sm:pt-6">
+              <div className="sticky top-16 z-30 bg-gradient-to-br from-gray-50 to-blue-50 pt-3 sm:pt-6 backdrop-blur-sm">
                 <CreatePost currentUser={currentUser} />
               </div>
               
               {/* Posts Feed */}
-              <div className="space-y-4 sm:space-y-6 pb-6">
+              <div className="space-y-4 sm:space-y-6 pb-6 animate-slideUp">
                 {posts.map((post, index) => (
                   <React.Fragment key={post.id}>
                     <PostCard
@@ -201,36 +276,46 @@ function App() {
           )}
           
           {currentPage === 'planning' && (
-            <PlanningPage currentUser={currentUser} />
+            <div className="animate-fadeIn">
+              <PlanningPage currentUser={currentUser} />
+            </div>
           )}
           
           {currentPage === 'tasks' && (
-            <MyTasksPage currentUser={currentUser} />
+            <div className="animate-fadeIn">
+              <MyTasksPage currentUser={currentUser} />
+            </div>
           )}
           
           {currentPage === 'network' && (
-            <NetworkPage currentUser={currentUser} />
+            <div className="animate-fadeIn">
+              <NetworkPage currentUser={currentUser} />
+            </div>
           )}
           
           {currentPage === 'local' && (
-            <LocalJobsPage currentUser={currentUser} />
+            <div className="animate-fadeIn">
+              <LocalJobsPage currentUser={currentUser} />
+            </div>
           )}
           
           {currentPage === 'admin' && currentUser?.email === 'admin@privatrengoring.dk' && (
-            <AdminPage currentUser={currentUser} />
+            <div className="animate-fadeIn">
+              <AdminPage currentUser={currentUser} />
+            </div>
           )}
           
         </main>
 
         {/* Right sidebar - Hidden on mobile and tablet */}
-        <div className="w-80 p-6 hidden xl:block">
+        <div className="w-80 p-6 hidden xl:block animate-slideInRight">
           <RecommendationWidget 
             currentUser={currentUser}
             onShowUserProfile={handleShowUserProfile}
             onPageChange={setCurrentPage}
           />
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mt-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mt-6 hover:shadow-md transition-shadow duration-300">
             <h3 className="font-semibold text-gray-900 mb-3">Foreslåede Kontakter</h3>
             <div className="space-y-3">
               {mockUsers.slice(1).map((user) => (
@@ -264,54 +349,6 @@ function App() {
       />
       
       {/* Messages Modal */}
-      {showMessages && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Beskeder</h2>
-              <button onClick={() => setShowMessages(false)} className="p-2 hover:bg-gray-100 rounded-full">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <p className="text-gray-600">Du har 3 nye beskeder...</p>
-          </div>
-        </div>
-      )}
-      
-      {/* Notifications Modal */}
-      {showNotifications && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Notifikationer</h2>
-              <button onClick={() => setShowNotifications(false)} className="p-2 hover:bg-gray-100 rounded-full">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <p className="text-gray-600">Du har 5 nye notifikationer...</p>
-          </div>
-        </div>
-      )}
-      
-      {/* Profile Modal */}
-      {showProfile && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Min Profil</h2>
-              <button onClick={() => setShowProfile(false)} className="p-2 hover:bg-gray-100 rounded-full">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="text-center">
-              <img src={currentUser.avatar} alt="Profile" className="w-20 h-20 rounded-full mx-auto mb-4" />
-              <h3 className="text-lg font-semibold">{currentUser.name}</h3>
-              <p className="text-gray-600">{currentUser.email}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
       <SettingsModal
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
