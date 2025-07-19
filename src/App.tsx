@@ -152,6 +152,10 @@ function App() {
           {currentPage === 'admin' && (
             <AdminPage currentUser={currentUser} />
           )}
+          
+          {currentPage === 'admin' && (
+            <AdminPage currentUser={currentUser} />
+          )}
         </main>
 
         {/* Right sidebar - Hidden on mobile and tablet */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Briefcase, Users, Star, MapPin, Calendar, TrendingUp, X, Globe } from 'lucide-react';
+import { Home, Briefcase, Users, Star, MapPin, Calendar, TrendingUp, X, Globe, Shield } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 
 interface SidebarProps {
@@ -13,6 +13,9 @@ interface SidebarProps {
 export default function Sidebar({ currentUser, isOpen = true, onClose, currentPage = 'home', onPageChange }: SidebarProps) {
   const { t } = useLanguage();
   
+  // Check if user is admin
+  const isAdmin = currentUser?.isAdmin === true || currentUser?.email === 'admin@privatrengoring.dk';
+  
   const menuItems = [
     { icon: Home, label: t('home'), page: 'home' },
     { icon: Briefcase, label: t('myTasks'), page: 'tasks', count: 3 },
@@ -21,6 +24,7 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
     { icon: MapPin, label: t('localJobs'), page: 'local' },
     { icon: Calendar, label: t('planning'), page: 'planning' },
     { icon: TrendingUp, label: t('trending'), page: 'trending' },
+    ...(isAdmin ? [{ icon: Shield, label: 'Admin', page: 'admin', adminOnly: true }] : []),
   ];
 
   const handleMenuClick = (page: string) => {
