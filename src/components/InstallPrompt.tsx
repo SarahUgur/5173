@@ -52,9 +52,9 @@ export default function InstallPrompt() {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80 bg-white rounded-xl shadow-lg border border-gray-200 p-4 z-50">
+    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80 bg-white rounded-xl shadow-strong border border-gray-200 p-4 z-50 animate-slideUp hover:shadow-medium transition-shadow duration-300">
       <div className="flex items-start space-x-3">
-        <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center flex-shrink-0 shadow-soft animate-pulse">
           <Smartphone className="w-5 h-5 text-white" />
         </div>
         
@@ -67,13 +67,13 @@ export default function InstallPrompt() {
           <div className="flex space-x-2">
             <button
               onClick={handleInstall}
-              className="flex items-center space-x-2 bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200"
+              className="flex-1 flex items-center justify-center space-x-2 btn-primary text-white px-4 py-2 rounded-lg hover:scale-105 transition-all duration-200"
             >
               <Download className="w-4 h-4" />
               <span>Installer</span>
             </button>
             <button
-              onClick={handleDismiss}
+              className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200 hover:scale-105"
               className="px-3 py-2 text-gray-600 hover:text-gray-800 text-sm"
             >
               Ikke nu
@@ -83,7 +83,7 @@ export default function InstallPrompt() {
         
         <button
           onClick={handleDismiss}
-          className="p-1 rounded-full hover:bg-gray-100 transition-colors duration-200 flex-shrink-0"
+          className="p-1 rounded-full hover:bg-gray-100 transition-all duration-200 flex-shrink-0 hover:scale-110"
         >
           <X className="w-4 h-4 text-gray-400" />
         </button>

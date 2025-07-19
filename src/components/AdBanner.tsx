@@ -103,32 +103,32 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
   // Banner reklame
   if (type === 'banner') {
     return (
-      <div className={`relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm ${className}`}>
+      <div className={`relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-soft hover:shadow-medium transition-all duration-300 ${className} card`}>
         <div className="absolute top-2 left-2 bg-gray-800 bg-opacity-75 text-white text-xs px-2 py-1 rounded">
           Reklame
         </div>
         <button
           onClick={() => setIsVisible(false)}
-          className="absolute top-2 right-2 p-1 bg-gray-800 bg-opacity-75 text-white rounded-full hover:bg-opacity-100 transition-opacity duration-200"
+          className="absolute top-2 right-2 p-1 bg-gray-800 bg-opacity-75 text-white rounded-full hover:bg-opacity-100 transition-all duration-200 hover:scale-110"
         >
           <X className="w-3 h-3" />
         </button>
         
         <div 
           onClick={handleAdClick}
-          className="cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+          className="cursor-pointer hover:bg-gray-50 transition-all duration-200 hover:scale-105"
         >
           <img 
             src={adData.image} 
             alt={adData.title}
-            className="w-full h-24 sm:h-32 object-cover"
+            className="w-full h-24 sm:h-32 object-cover hover:scale-105 transition-transform duration-300"
           />
           <div className="p-3">
             <h3 className="font-semibold text-gray-900 text-sm mb-1">{adData.title}</h3>
             <p className="text-gray-600 text-xs mb-2">{adData.description}</p>
             <div className="flex items-center justify-between">
               <span className="text-xs text-gray-500">Sponsoreret af {adData.sponsor}</span>
-              <span className="bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-blue-700 transition-colors duration-200">
+              <span className="btn-primary text-white px-3 py-1 rounded text-xs font-medium hover:scale-105 transition-all duration-200">
                 {adData.cta}
               </span>
             </div>
@@ -141,13 +141,13 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
   // Video reklame
   if (type === 'video') {
     return (
-      <div className={`relative bg-black rounded-lg overflow-hidden ${className}`}>
+      <div className={`relative bg-black rounded-lg overflow-hidden shadow-soft hover:shadow-medium transition-shadow duration-300 ${className}`}>
         <div className="absolute top-2 left-2 bg-gray-800 bg-opacity-75 text-white text-xs px-2 py-1 rounded z-10">
           Video Reklame
         </div>
         <button
           onClick={() => setIsVisible(false)}
-          className="absolute top-2 right-2 p-1 bg-gray-800 bg-opacity-75 text-white rounded-full hover:bg-opacity-100 transition-opacity duration-200 z-10"
+          className="absolute top-2 right-2 p-1 bg-gray-800 bg-opacity-75 text-white rounded-full hover:bg-opacity-100 transition-all duration-200 z-10 hover:scale-110"
         >
           <X className="w-3 h-3" />
         </button>
@@ -156,14 +156,14 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
           <img 
             src={adData.thumbnail} 
             alt={adData.title}
-            className="w-full h-48 object-cover"
+            className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
           />
           
           {!isVideoPlaying && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <button
                 onClick={handleVideoPlay}
-                className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center hover:bg-opacity-100 transition-all duration-200"
+                className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center hover:bg-opacity-100 transition-all duration-200 hover:scale-110"
               >
                 <Play className="w-8 h-8 text-gray-800 ml-1" />
               </button>
@@ -176,7 +176,7 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
           
           <button
             onClick={() => setIsMuted(!isMuted)}
-            className="absolute bottom-2 right-2 p-1 bg-black bg-opacity-75 text-white rounded"
+            className="absolute bottom-2 right-2 p-1 bg-black bg-opacity-75 text-white rounded hover:scale-110 transition-transform duration-200"
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </button>
@@ -189,7 +189,7 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
             <span className="text-xs text-gray-500">Sponsoreret af {adData.sponsor}</span>
             <button 
               onClick={handleAdClick}
-              className="bg-red-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-red-700 transition-colors duration-200"
+              className="bg-red-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-red-700 transition-all duration-200 hover:scale-105"
             >
               {adData.cta}
             </button>
@@ -202,20 +202,20 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
   // Native reklame (ser ud som almindeligt indhold)
   if (type === 'native') {
     return (
-      <div className={`bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm ${className}`}>
+      <div className={`bg-white border border-gray-200 rounded-lg overflow-hidden shadow-soft hover:shadow-medium transition-all duration-300 ${className} card`}>
         <div className="absolute top-2 right-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">
           Sponsoreret
         </div>
         
         <div 
           onClick={handleAdClick}
-          className="cursor-pointer hover:bg-gray-50 transition-colors duration-200 p-4"
+          className="cursor-pointer hover:bg-gray-50 transition-all duration-200 p-4 hover:scale-105"
         >
           <div className="flex space-x-3">
             <img 
               src={adData.image} 
               alt={adData.title}
-              className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+              className="w-20 h-20 object-cover rounded-lg flex-shrink-0 hover:scale-105 transition-transform duration-300"
             />
             <div className="flex-1">
               <h3 className="font-semibold text-gray-900 text-sm mb-1">{adData.title}</h3>

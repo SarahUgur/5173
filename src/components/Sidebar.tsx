@@ -49,15 +49,15 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
       {/* Sidebar */}
       <div className={`
         fixed md:static inset-y-0 left-0 z-50 md:z-auto
-        w-64 bg-white h-full border-r border-gray-200 md:shadow-sm
-        transform transition-transform duration-300 ease-in-out
+        w-64 bg-gradient-to-b from-white to-gray-50 h-full border-r border-gray-200 md:shadow-soft
+        transform transition-all duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         md:block
       `}>
         {/* Mobile Header */}
-        <div className="md:hidden flex items-center justify-between p-3 sm:p-4 border-b border-gray-200">
+        <div className="md:hidden flex items-center justify-between p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50">
           <div className="flex items-center space-x-3">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 gradient-bg rounded-lg flex items-center justify-center shadow-soft">
               <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
                 <path d="M19 15L19.5 17L21.5 17.5L19.5 18L19 20L18.5 18L16.5 17.5L18.5 17L19 15Z"/>
@@ -68,7 +68,7 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+            className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 hover:scale-110"
           >
             <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500" />
           </button>
@@ -76,12 +76,12 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
 
         <div className="p-3 sm:p-4">
           {/* User Profile Card */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 hidden md:block">
+          <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-xl p-4 mb-6 hidden md:block shadow-soft hover:shadow-medium transition-shadow duration-300">
             <div className="flex items-center space-x-3">
               <img
                 src={currentUser?.avatar || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop"}
                 alt="Profile"
-                className="w-12 h-12 rounded-full border-2 border-white shadow-sm"
+                className="w-12 h-12 rounded-full border-2 border-white shadow-soft hover:scale-110 transition-transform duration-200"
               />
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-gray-900 truncate">{currentUser?.name || 'Bruger'}</h3>
@@ -89,7 +89,7 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
                   {currentUser?.userType === 'cleaner' ? 'Rengøringsekspert' : 'Kunde'}
                 </p>
                 {currentUser?.isSubscribed && (
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mt-1">
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 mt-1 animate-pulse">
                     Pro Medlem
                   </span>
                 )}
@@ -98,17 +98,17 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
           </div>
 
           {/* Mobile User Info */}
-          <div className="md:hidden mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 rounded-xl">
+          <div className="md:hidden mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl shadow-soft">
             <div className="flex items-center space-x-3">
               <img
                 src={currentUser?.avatar || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop"}
                 alt="Profile"
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full hover:scale-110 transition-transform duration-200"
               />
               <div>
                 <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{currentUser?.name || 'Bruger'}</h3>
                 {currentUser?.isSubscribed && (
-                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Pro</span>
+                  <span className="text-xs bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 px-2 py-0.5 rounded-full animate-pulse">Pro</span>
                 )}
               </div>
             </div>
@@ -120,7 +120,7 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
               <button
                 key={index}
                 onClick={() => handleMenuClick(item.page)}
-                className={`w-full flex items-center justify-between px-3 py-3 rounded-lg text-left transition-colors duration-200 ${
+                className={`w-full flex items-center justify-between px-3 py-3 rounded-lg text-left transition-all duration-200 hover:scale-105 ${
                   currentPage === item.page
                     ? 'bg-blue-50 text-blue-700 shadow-sm' 
                     : 'text-gray-700 hover:bg-gray-50'
@@ -131,7 +131,7 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
                   <span className="font-medium text-sm sm:text-base">{item.label}</span>
                 </div>
                 {item.count && (
-                  <span className="bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 sm:px-2 sm:py-1 min-w-[18px] sm:min-w-[20px] text-center">
+                  <span className="notification-badge text-white text-xs rounded-full px-1.5 py-0.5 sm:px-2 sm:py-1 min-w-[18px] sm:min-w-[20px] text-center">
                     {item.count}
                   </span>
                 )}
@@ -140,20 +140,20 @@ export default function Sidebar({ currentUser, isOpen = true, onClose, currentPa
           </nav>
 
           {/* Quick Stats */}
-          <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-gray-50 rounded-xl">
+          <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl shadow-soft hover:shadow-medium transition-shadow duration-300">
             <h4 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">Denne Uge</h4>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Nye Jobs</span>
-                <span className="font-semibold text-green-600">+24</span>
+                <span className="font-semibold text-green-600 animate-pulse">+24</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Ansøgninger</span>
-                <span className="font-semibold text-blue-600">8</span>
+                <span className="font-semibold text-blue-600 animate-pulse">8</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Gennemført</span>
-                <span className="font-semibold text-purple-600">12</span>
+                <span className="font-semibold text-purple-600 animate-pulse">12</span>
               </div>
             </div>
           </div>
