@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Bell, Globe, Shield, CreditCard, Smartphone, Mail, MessageCircle, Calendar, Volume2, VolumeX, FileText, LogOut } from 'lucide-react';
+import { X, User, Bell, Globe, Shield, CreditCard, Smartphone, Mail, MessageCircle, Calendar, Volume2, VolumeX, FileText, LogOut, HelpCircle } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 
 interface SettingsModalProps {
@@ -93,7 +93,8 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
     { id: 'notifications', label: 'Notifikationer', icon: Bell },
     { id: 'privacy', label: 'Privatliv', icon: Shield },
     { id: 'app', label: 'App', icon: Smartphone },
-    { id: 'subscription', label: 'Abonnement', icon: CreditCard }
+    { id: 'subscription', label: 'Abonnement', icon: CreditCard },
+    { id: 'help', label: 'Hjælp', icon: HelpCircle }
   ];
 
   const languages = [
@@ -440,49 +441,74 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                 )}
               </div>
             )}
+
+            {activeTab === 'help' && (
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900">Hjælp & Support</h3>
+                
+                <div className="space-y-4">
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <h4 className="font-semibold text-blue-900 mb-2">Ofte Stillede Spørgsmål</h4>
+                    <p className="text-blue-700 mb-3">Find svar på de mest almindelige spørgsmål</p>
+                    <button className="text-blue-600 hover:text-blue-700 font-medium">
+                      Se FAQ →
+                    </button>
+                  </div>
+
+                  <div className="p-4 bg-green-50 rounded-lg">
+                    <h4 className="font-semibold text-green-900 mb-2">Kom i Gang Guide</h4>
+                    <p className="text-green-700 mb-3">Lær hvordan du bruger Privat Rengøring</p>
+                    <button className="text-green-600 hover:text-green-700 font-medium">
+                      Se Guide →
+                    </button>
+                  </div>
+
+                  <div className="p-4 bg-purple-50 rounded-lg">
+                    <h4 className="font-semibold text-purple-900 mb-2">Kontakt Support</h4>
+                    <p className="text-purple-700 mb-3">Har du brug for personlig hjælp?</p>
+                    <div className="space-y-2">
+                      <button 
+                        onClick={() => window.location.href = 'mailto:support@privatrengoring.dk'}
+                        className="block w-full text-left text-purple-600 hover:text-purple-700 font-medium"
+                      >
+                        📧 support@privatrengoring.dk
+                      </button>
+                      <p className="text-sm text-purple-600">📞 +45 70 20 30 40</p>
+                      <p className="text-sm text-purple-600">🕒 Man-Fre 9:00-17:00</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Footer */}
         <div className="p-6 border-t border-gray-200 bg-gray-50">
-          <div className="mb-4">
-            <div className="text-center space-y-3">
-              <p className="text-sm text-gray-600">Yderligere handlinger</p>
-              <div className="flex flex-col space-y-2">
-                <button
-                  onClick={() => {
-                    // I en rigtig app ville dette downloade brugerdata
-                    const userData = {
-                      name: currentUser?.name,
-                      email: currentUser?.email,
-                      joinDate: new Date().toISOString(),
-                      posts: 'Alle dine opslag og kommentarer',
-                      connections: 'Dine netværksforbindelser'
-                    };
-                    const dataStr = JSON.stringify(userData, null, 2);
-                    const dataBlob = new Blob([dataStr], {type: 'application/json'});
-                    const url = URL.createObjectURL(dataBlob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = 'mine-data.json';
-                    link.click();
-                    URL.revokeObjectURL(url);
-                  }}
-                  className="w-full flex items-center justify-center space-x-2 p-3 text-left hover:bg-gray-100 rounded-lg transition-colors duration-200 text-gray-700 border border-gray-300"
-                >
-                  <FileText className="w-5 h-5" />
-                  <span className="font-medium">Download mine data (GDPR)</span>
-                </button>
-                <button
-                  onClick={handleDeleteAccount}
-                  className="w-full flex items-center justify-center space-x-2 p-3 text-left hover:bg-red-50 rounded-lg transition-colors duration-200 text-red-600 border border-red-300"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span className="font-medium">Slet min konto permanent</span>
-                </button>
+          {activeTab === 'profile' && (
+            <div className="mb-4">
+              <div className="text-center space-y-3">
+                <p className="text-sm text-gray-600">Konto handlinger</p>
+                <div className="flex flex-col space-y-2">
+                  <button
+                    onClick={handleDeleteAccount}
+                    className="w-full flex items-center justify-center space-x-2 p-3 text-left hover:bg-red-50 rounded-lg transition-colors duration-200 text-red-600 border border-red-300"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span className="font-medium">Slet min konto permanent</span>
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+          
+          {activeTab !== 'profile' && (
+            <div className="mb-4">
+              <div className="text-center">
+                <p className="text-sm text-gray-600">Vælg "Profil" for konto handlinger</p>
+              </div>
+            </div>
+          )}
           
           <div className="flex justify-end space-x-3">
             <button
@@ -499,34 +525,34 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Delete Account Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold text-red-600 mb-4">Slet konto permanent</h3>
-            <p className="text-gray-700 mb-6">
-              Er du sikker på, at du vil slette din konto permanent? Denne handling kan ikke fortrydes.
-              Alle dine data, opslag og beskeder vil blive slettet.
-            </p>
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-              >
-                Annuller
-              </button>
-              <button
-                onClick={confirmDeleteAccount}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-              >
-                Slet konto
-              </button>
+        {/* Delete Account Confirmation Modal */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-lg font-semibold text-red-600 mb-4">Slet konto permanent</h3>
+              <p className="text-gray-700 mb-6">
+                Er du sikker på, at du vil slette din konto permanent? Denne handling kan ikke fortrydes.
+                Alle dine data, opslag og beskeder vil blive slettet.
+              </p>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                >
+                  Annuller
+                </button>
+                <button
+                  onClick={confirmDeleteAccount}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+                >
+                  Slet konto
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
