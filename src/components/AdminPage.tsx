@@ -1,13 +1,50 @@
-import React, { useState } from 'react';
-import { Shield, Users, Briefcase, TrendingUp, AlertTriangle, Eye, Ban, CheckCircle, XCircle, Search, Filter, BarChart3, DollarSign } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Shield, Users, Briefcase, TrendingUp, AlertTriangle, Eye, Ban, CheckCircle, XCircle, Search, Filter, BarChart3, DollarSign, Activity, Clock, Globe, MessageCircle } from 'lucide-react';
 
 interface AdminPageProps {
   currentUser: any;
 }
 
 export default function AdminPage({ currentUser }: AdminPageProps) {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'users' | 'jobs' | 'reports'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'users' | 'jobs' | 'reports' | 'monitoring'>('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
+  const [onlineUsers, setOnlineUsers] = useState(0);
+  const [systemAlerts, setSystemAlerts] = useState<any[]>([]);
+
+  // Simuler real-time data
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOnlineUsers(Math.floor(Math.random() * 50) + 20);
+      
+      // Simuler system alerts
+      const alerts = [
+        {
+          id: '1',
+          type: 'warning',
+          message: 'Høj aktivitet: 5+ rapporter i den sidste time',
+          time: new Date().toLocaleTimeString('da-DK'),
+          severity: 'medium'
+        },
+        {
+          id: '2',
+          type: 'info',
+          message: 'Ny bruger registrering: +12 i dag',
+          time: new Date().toLocaleTimeString('da-DK'),
+          severity: 'low'
+        },
+        {
+          id: '3',
+          type: 'alert',
+          message: 'Mistænkelig aktivitet: Bruger forsøger at sælge udenfor platform',
+          time: new Date().toLocaleTimeString('da-DK'),
+          severity: 'high'
+        }
+      ];
+      setSystemAlerts(alerts);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Mock admin data
   const stats = {
@@ -17,7 +54,10 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
     reportedContent: 12,
     newUsersToday: 23,
     revenueThisMonth: 45600,
-    proSubscribers: 234
+    proSubscribers: 234,
+    onlineNow: onlineUsers,
+    avgResponseTime: '2.3 min',
+    systemUptime: '99.9%'
   };
 
   const recentUsers = [
@@ -28,7 +68,10 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
       userType: 'private',
       joinDate: '2024-01-15',
       status: 'active',
-      isSubscribed: false
+      isSubscribed: false,
+      lastActive: '2 min siden',
+      ipAddress: '192.168.1.1',
+      location: 'København'
     },
     {
       id: '2',
@@ -37,7 +80,10 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
       userType: 'cleaner',
       joinDate: '2024-01-14',
       status: 'active',
-      isSubscribed: true
+      isSubscribed: true,
+      lastActive: '5 min siden',
+      ipAddress: '192.168.1.2',
+      location: 'Aarhus'
     },
     {
       id: '3',
@@ -46,7 +92,10 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
       userType: 'small_business',
       joinDate: '2024-01-13',
       status: 'suspended',
-      isSubscribed: false
+      isSubscribed: false,
+      lastActive: '1 time siden',
+      ipAddress: '192.168.1.3',
+      location: 'Odense'
     }
   ];
 
@@ -54,22 +103,65 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
     {
       id: '1',
       type: 'post',
-      content: 'Upassende opslag om rengøring...',
+      content: 'Bruger forsøger at sælge rengøringsservice udenfor platformen med direkte betaling',
       reporter: 'Anna Petersen',
       reported: 'Michael Sørensen',
-      reason: 'Spam',
+      reason: 'Omgåelse af platform',
       date: '2024-01-15',
-      status: 'pending'
+      status: 'pending',
+      severity: 'high',
+      postId: 'post_123'
     },
     {
       id: '2',
       type: 'user',
-      content: 'Bruger sender upassende beskeder',
+      content: 'Bruger sender upassende beskeder og chikanerer andre brugere',
       reporter: 'Emma Larsen',
       reported: 'John Doe',
       reason: 'Chikane',
       date: '2024-01-14',
-      status: 'resolved'
+      status: 'resolved',
+      severity: 'medium',
+      action: 'Bruger suspenderet i 7 dage'
+    },
+    {
+      id: '3',
+      type: 'comment',
+      content: 'Kommentar indeholder spam links til eksterne hjemmesider',
+      reporter: 'Peter Hansen',
+      reported: 'Spam Bot',
+      reason: 'Spam',
+      date: '2024-01-15',
+      status: 'pending',
+      severity: 'low',
+      commentId: 'comment_456'
+    }
+  ];
+
+  const systemMonitoring = [
+    {
+      metric: 'Server Response Time',
+      value: '145ms',
+      status: 'good',
+      trend: 'stable'
+    },
+    {
+      metric: 'Database Queries/sec',
+      value: '1,234',
+      status: 'good',
+      trend: 'up'
+    },
+    {
+      metric: 'Error Rate',
+      value: '0.02%',
+      status: 'good',
+      trend: 'down'
+    },
+    {
+      metric: 'Memory Usage',
+      value: '67%',
+      status: 'warning',
+      trend: 'up'
     }
   ];
 
@@ -93,6 +185,21 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
     }
   };
 
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'high': return 'bg-red-100 text-red-800 border-red-200';
+      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low': return 'bg-blue-100 text-blue-800 border-blue-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const handleReportAction = (reportId: string, action: 'approve' | 'reject' | 'suspend') => {
+    console.log(`Admin action: ${action} on report ${reportId}`);
+    // I en rigtig app ville dette opdatere databasen
+    alert(`Rapport ${reportId} blev ${action === 'approve' ? 'godkendt' : action === 'reject' ? 'afvist' : 'bruger suspenderet'}`);
+  };
+
   // Check if user is admin
   const isAdmin = currentUser?.isAdmin === true || currentUser?.email === 'admin@privatrengoring.dk';
 
@@ -113,23 +220,57 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
     <div className="max-w-7xl mx-auto p-3 sm:p-6">
       {/* Header */}
       <div className="mb-6">
-        <div className="flex items-center space-x-3 mb-2">
-          <div className="w-10 h-10 bg-gradient-to-r from-red-600 to-orange-600 rounded-xl flex items-center justify-center">
-            <Shield className="w-6 h-6 text-white" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-red-600 to-orange-600 rounded-xl flex items-center justify-center">
+              <Shield className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Panel</h1>
+              <p className="text-gray-600">Administrer Privat Rengøring platformen</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Panel</h1>
-            <p className="text-gray-600">Administrer Privat Rengøring platformen</p>
+          
+          {/* Live Status */}
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm text-gray-600">Live</span>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-gray-600">Online nu</p>
+              <p className="text-xl font-bold text-green-600">{onlineUsers}</p>
+            </div>
           </div>
         </div>
       </div>
 
+      {/* System Alerts */}
+      {systemAlerts.length > 0 && (
+        <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+          <div className="flex items-center space-x-2 mb-3">
+            <AlertTriangle className="w-5 h-5 text-yellow-600" />
+            <h3 className="font-semibold text-yellow-900">System Advarsler</h3>
+          </div>
+          <div className="space-y-2">
+            {systemAlerts.map((alert) => (
+              <div key={alert.id} className={`p-3 rounded-lg border ${getSeverityColor(alert.severity)}`}>
+                <div className="flex justify-between items-start">
+                  <p className="text-sm font-medium">{alert.message}</p>
+                  <span className="text-xs">{alert.time}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Tabs */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
-        <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
+        <div className="flex space-x-1 bg-gray-100 rounded-lg p-1 overflow-x-auto">
           <button
             onClick={() => setActiveTab('dashboard')}
-            className={`px-4 py-2 rounded-md font-medium transition-colors duration-200 ${
+            className={`px-4 py-2 rounded-md font-medium transition-colors duration-200 whitespace-nowrap ${
               activeTab === 'dashboard' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -137,7 +278,7 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
           </button>
           <button
             onClick={() => setActiveTab('users')}
-            className={`px-4 py-2 rounded-md font-medium transition-colors duration-200 ${
+            className={`px-4 py-2 rounded-md font-medium transition-colors duration-200 whitespace-nowrap ${
               activeTab === 'users' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -145,7 +286,7 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
           </button>
           <button
             onClick={() => setActiveTab('jobs')}
-            className={`px-4 py-2 rounded-md font-medium transition-colors duration-200 ${
+            className={`px-4 py-2 rounded-md font-medium transition-colors duration-200 whitespace-nowrap ${
               activeTab === 'jobs' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -153,11 +294,19 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
           </button>
           <button
             onClick={() => setActiveTab('reports')}
-            className={`px-4 py-2 rounded-md font-medium transition-colors duration-200 ${
+            className={`px-4 py-2 rounded-md font-medium transition-colors duration-200 whitespace-nowrap ${
               activeTab === 'reports' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             Rapporter ({stats.reportedContent})
+          </button>
+          <button
+            onClick={() => setActiveTab('monitoring')}
+            className={`px-4 py-2 rounded-md font-medium transition-colors duration-200 whitespace-nowrap ${
+              activeTab === 'monitoring' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            Overvågning
           </button>
         </div>
       </div>
@@ -181,6 +330,17 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <div>
+                  <p className="text-sm text-gray-600">Online Nu</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.onlineNow}</p>
+                  <p className="text-sm text-blue-600">Live opdatering</p>
+                </div>
+                <Activity className="w-8 h-8 text-green-600" />
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between">
+                <div>
                   <p className="text-sm text-gray-600">Aktive Jobs</p>
                   <p className="text-2xl font-bold text-gray-900">{stats.activeJobs}</p>
                   <p className="text-sm text-blue-600">{stats.completedJobs} afsluttet</p>
@@ -192,44 +352,29 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Pro Abonnenter</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.proSubscribers}</p>
-                  <p className="text-sm text-purple-600">{Math.round((stats.proSubscribers / stats.totalUsers) * 100)}% conversion</p>
+                  <p className="text-sm text-gray-600">Rapporter</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.reportedContent}</p>
+                  <p className="text-sm text-red-600">Kræver handling</p>
                 </div>
-                <BarChart3 className="w-8 h-8 text-purple-600" />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Månedlig Omsætning</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.revenueThisMonth.toLocaleString()} kr</p>
-                  <p className="text-sm text-green-600">+12% fra sidste måned</p>
-                </div>
-                <DollarSign className="w-8 h-8 text-green-600" />
+                <AlertTriangle className="w-8 h-8 text-red-600" />
               </div>
             </div>
           </div>
 
-          {/* Recent Activity */}
+          {/* System Health */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Nye Brugere</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">System Sundhed</h3>
               <div className="space-y-4">
-                {recentUsers.map((user) => (
-                  <div key={user.id} className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900">{user.name}</p>
-                      <p className="text-sm text-gray-600">{getUserTypeLabel(user.userType)}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(user.status)}`}>
-                        {user.status === 'active' ? 'Aktiv' : 'Suspenderet'}
-                      </span>
-                      {user.isSubscribed && (
-                        <p className="text-xs text-purple-600 mt-1">Pro</p>
-                      )}
+                {systemMonitoring.map((metric, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <span className="text-gray-700">{metric.metric}</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-semibold">{metric.value}</span>
+                      <div className={`w-3 h-3 rounded-full ${
+                        metric.status === 'good' ? 'bg-green-500' : 
+                        metric.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
+                      }`}></div>
                     </div>
                   </div>
                 ))}
@@ -237,20 +382,22 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Rapporteret Indhold</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Seneste Aktivitet</h3>
               <div className="space-y-4">
-                {reportedContent.slice(0, 3).map((report) => (
-                  <div key={report.id} className="border-l-4 border-red-400 pl-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-medium text-gray-900">{report.reason}</p>
-                        <p className="text-sm text-gray-600 truncate">{report.content}</p>
-                        <p className="text-xs text-gray-500">Rapporteret af {report.reporter}</p>
+                {recentUsers.slice(0, 3).map((user) => (
+                  <div key={user.id} className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <Users className="w-4 h-4 text-blue-600" />
                       </div>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(report.status)}`}>
-                        {report.status === 'pending' ? 'Afventer' : 'Løst'}
-                      </span>
+                      <div>
+                        <p className="font-medium text-gray-900">{user.name}</p>
+                        <p className="text-sm text-gray-600">{user.lastActive}</p>
+                      </div>
                     </div>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(user.status)}`}>
+                      {user.status === 'active' ? 'Aktiv' : 'Suspenderet'}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -288,7 +435,8 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Bruger</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Type</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Status</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Tilmeldt</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">Sidste Aktiv</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-900">Lokation</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Handlinger</th>
                 </tr>
               </thead>
@@ -313,7 +461,10 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-600">
-                      {new Date(user.joinDate).toLocaleDateString('da-DK')}
+                      {user.lastActive}
+                    </td>
+                    <td className="py-3 px-4 text-sm text-gray-600">
+                      {user.location}
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center space-x-2">
@@ -322,6 +473,9 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
                         </button>
                         <button className="p-1 rounded hover:bg-gray-100 transition-colors duration-200" title="Suspender">
                           <Ban className="w-4 h-4 text-red-600" />
+                        </button>
+                        <button className="p-1 rounded hover:bg-gray-100 transition-colors duration-200" title="Send besked">
+                          <MessageCircle className="w-4 h-4 text-blue-600" />
                         </button>
                       </div>
                     </td>
@@ -333,14 +487,6 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
         </div>
       )}
 
-      {/* Jobs Tab */}
-      {activeTab === 'jobs' && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Job Administration</h3>
-          <p className="text-gray-600">Job administration funktioner kommer snart...</p>
-        </div>
-      )}
-
       {/* Reports Tab */}
       {activeTab === 'reports' && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -348,13 +494,16 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
           
           <div className="space-y-4">
             {reportedContent.map((report) => (
-              <div key={report.id} className="border border-gray-200 rounded-lg p-4">
+              <div key={report.id} className={`border rounded-lg p-4 ${getSeverityColor(report.severity)}`}>
                 <div className="flex justify-between items-start mb-3">
-                  <div>
+                  <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
                       <span className="font-medium text-gray-900">{report.reason}</span>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(report.status)}`}>
                         {report.status === 'pending' ? 'Afventer' : 'Løst'}
+                      </span>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getSeverityColor(report.severity)}`}>
+                        {report.severity === 'high' ? 'Høj' : report.severity === 'medium' ? 'Medium' : 'Lav'} prioritet
                       </span>
                     </div>
                     <p className="text-gray-700 mb-2">{report.content}</p>
@@ -362,21 +511,31 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
                       <p>Rapporteret af: <span className="font-medium">{report.reporter}</span></p>
                       <p>Rapporteret bruger: <span className="font-medium">{report.reported}</span></p>
                       <p>Dato: {new Date(report.date).toLocaleDateString('da-DK')}</p>
+                      {report.action && <p>Handling: <span className="font-medium text-blue-600">{report.action}</span></p>}
                     </div>
                   </div>
                 </div>
                 
                 {report.status === 'pending' && (
                   <div className="flex items-center space-x-2 pt-3 border-t border-gray-200">
-                    <button className="flex items-center space-x-1 px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors duration-200">
+                    <button 
+                      onClick={() => handleReportAction(report.id, 'approve')}
+                      className="flex items-center space-x-1 px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors duration-200"
+                    >
                       <CheckCircle className="w-4 h-4" />
                       <span className="text-sm">Godkend</span>
                     </button>
-                    <button className="flex items-center space-x-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-200">
+                    <button 
+                      onClick={() => handleReportAction(report.id, 'reject')}
+                      className="flex items-center space-x-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-200"
+                    >
                       <XCircle className="w-4 h-4" />
                       <span className="text-sm">Afvis</span>
                     </button>
-                    <button className="flex items-center space-x-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors duration-200">
+                    <button 
+                      onClick={() => handleReportAction(report.id, 'suspend')}
+                      className="flex items-center space-x-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors duration-200"
+                    >
                       <Ban className="w-4 h-4" />
                       <span className="text-sm">Suspender Bruger</span>
                     </button>
@@ -384,6 +543,53 @@ export default function AdminPage({ currentUser }: AdminPageProps) {
                 )}
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Monitoring Tab */}
+      {activeTab === 'monitoring' && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Real-time Overvågning</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700">Brugere online</span>
+                  <span className="text-2xl font-bold text-green-600">{onlineUsers}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700">Aktive sessioner</span>
+                  <span className="text-xl font-semibold text-blue-600">{Math.floor(onlineUsers * 1.2)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700">Gennemsnitlig responstid</span>
+                  <span className="text-lg font-medium text-gray-900">{stats.avgResponseTime}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700">System oppetid</span>
+                  <span className="text-lg font-medium text-green-600">{stats.systemUptime}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Sikkerhedsovervågning</h3>
+              <div className="space-y-3">
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm font-medium text-red-900">Mistænkelig aktivitet opdaget</p>
+                  <p className="text-xs text-red-700">Bruger forsøger at omgå betalingssystem</p>
+                </div>
+                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-sm font-medium text-yellow-900">Høj rapport aktivitet</p>
+                  <p className="text-xs text-yellow-700">5+ rapporter i den sidste time</p>
+                </div>
+                <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <p className="text-sm font-medium text-green-900">System sikkerhed OK</p>
+                  <p className="text-xs text-green-700">Alle sikkerhedstjek bestået</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

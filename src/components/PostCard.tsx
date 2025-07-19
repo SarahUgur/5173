@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import type { Post } from '../types';
 
@@ -7,12 +7,17 @@ interface PostCardProps {
   post: Post;
   currentUser: any;
   onShowSubscription: () => void;
+  onReport?: (postId: string, reason: string) => void;
 }
 
-export default function PostCard({ post, currentUser, onShowSubscription }: PostCardProps) {
+export default function PostCard({ post, currentUser, onShowSubscription, onReport }: PostCardProps) {
   const { t, getJobTypeLabel, getUrgencyLabel } = useLanguage();
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportDescription, setReportDescription] = useState('');
 
   const handleInteraction = (action: string) => {
     if (!currentUser?.isSubscribed) {
@@ -27,6 +32,24 @@ export default function PostCard({ post, currentUser, onShowSubscription }: Post
     }
   };
 
+  const handleReport = () => {
+    if (reportReason && reportDescription.trim()) {
+      onReport?.(post.id, `${reportReason}: ${reportDescription}`);
+      setShowReportModal(false);
+      setReportReason('');
+      setReportDescription('');
+      alert('Tak for din rapport. Admin teamet vil gennemgå den inden for 24 timer.');
+    }
+  };
+
+  const reportReasons = [
+    'Spam eller uønsket indhold',
+    'Upassende eller krænkende sprog',
+    'Falske oplysninger',
+    'Svindel eller bedrageri',
+    'Overtræder platformens regler',
+    'Andet'
+  ];
   const getUrgencyColor = (urgency: string) => {
     const colors = {
       'immediate': 'bg-red-100 text-red-800',
@@ -76,7 +99,11 @@ export default function PostCard({ post, currentUser, onShowSubscription }: Post
                 </span>
               </div>
             )}
-            <button className="p-1 rounded-full hover:bg-gray-100 transition-colors duration-200">
+            <div className="relative">
+              <button 
+                onClick={() => setShowMoreMenu(!showMoreMenu)}
+                className="p-1 rounded-full hover:bg-gray-100 transition-colors duration-200"
+              >
               <MoreHorizontal className="w-5 h-5 text-gray-400" />
             </button>
           </div>
@@ -155,6 +182,30 @@ export default function PostCard({ post, currentUser, onShowSubscription }: Post
               <span>{t('apply')}</span>
               {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4" />}
             </button>
+              
+              {/* More Menu Dropdown */}
+              {showMoreMenu && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                  <button
+                    onClick={() => {
+                      setShowReportModal(true);
+                      setShowMoreMenu(false);
+                    }}
+                    className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200 text-red-600"
+                  >
+                    <Flag className="w-4 h-4" />
+                    <span className="text-sm">Rapportér opslag</span>
+                  </button>
+                  <button
+                    onClick={() => setShowMoreMenu(false)}
+                    className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200 text-gray-700"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    <span className="text-sm">Del opslag</span>
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
 
@@ -202,6 +253,70 @@ export default function PostCard({ post, currentUser, onShowSubscription }: Post
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 />
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Rapportér opslag</h3>
+                <p className="text-sm text-gray-600">Hjælp os med at holde platformen sikker</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Årsag til rapport</label>
+                <select
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Vælg en årsag...</option>
+                  {reportReasons.map((reason, index) => (
+                    <option key={index} value={reason}>{reason}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Beskrivelse (valgfrit)</label>
+                <textarea
+                  value={reportDescription}
+                  onChange={(e) => setReportDescription(e.target.value)}
+                  placeholder="Beskriv problemet mere detaljeret..."
+                  rows={3}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex space-x-3 mt-6">
+              <button
+                onClick={() => {
+                  setShowReportModal(false);
+                  setReportReason('');
+                  setReportDescription('');
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+              >
+                Annuller
+              </button>
+              <button
+                onClick={handleReport}
+                disabled={!reportReason}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Send rapport
+              </button>
             </div>
           </div>
         </div>

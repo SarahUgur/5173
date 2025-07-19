@@ -127,6 +127,10 @@ function App() {
                     post={post}
                     currentUser={currentUser}
                     onShowSubscription={() => setShowSubscriptionModal(true)}
+                    onReport={(postId, reason) => {
+                      console.log(`Rapport modtaget for post ${postId}: ${reason}`);
+                      // I en rigtig app ville dette sendes til admin database
+                    }}
                   />
                 ))}
               </div>
