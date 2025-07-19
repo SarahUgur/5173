@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Bell, Globe, Shield, CreditCard, Smartphone, Mail, MessageCircle, Calendar, Volume2, VolumeX } from 'lucide-react';
+import { X, User, Bell, Globe, Shield, CreditCard, Smartphone, Mail, MessageCircle, Calendar, Volume2, VolumeX, FileText, LogOut } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 
 interface SettingsModalProps {
