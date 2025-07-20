@@ -326,14 +326,9 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
                 <Mail className="w-4 h-4" />
                 <span>Få hjælp - kontakt os på mail</span>
               </button>
-              <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                <MessageCircle className="w-4 h-4" />
-                <span>Live chat</span>
-              </button>
             </div>
             <div className="text-xs text-gray-500 space-y-1">
               <p>📧 Email: support@privatrengoring.dk</p>
-              <p>📞 Telefon: +45 70 20 30 40</p>
               <p>🕒 Åbningstider: Man-Fre 9:00-17:00 • Vi svarer inden for 24-48 timer</p>
             </div>
           </div>
