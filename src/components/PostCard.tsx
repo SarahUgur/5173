@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Users, ExternalLink, Eye, EyeOff, Trash2, Edit } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Users, ExternalLink, Eye, EyeOff, Trash2, Edit, X } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import AdBanner from './AdBanner';
 import type { Post } from '../types';
@@ -108,6 +108,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
       onShowSubscription();
       return;
     }
+    
     const postUrl = `${window.location.origin}/post/${post.id}`;
     const text = `Tjek dette opslag på Privat Rengøring: ${post.content.substring(0, 100)}...`;
     
@@ -233,8 +234,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               onShowSubscription();
               return;
             }
-            // Handle job application
-            alert('Ansøgning sendt! Kunden vil kontakte dig snart.');
+            setIsPostHidden(false);
           }}
           className="text-blue-600 hover:text-blue-700 text-sm mt-2"
         >
@@ -298,10 +298,9 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               <button 
                 className="more-menu-dropdown"
                 onClick={() => setShowMoreMenu(!showMoreMenu)}
-                className="p-1 rounded-full hover:bg-gray-100 transition-all duration-200 hover:scale-110"
               >
-              <MoreHorizontal className="w-5 h-5 text-gray-400" />
-            </button>
+                <MoreHorizontal className="w-5 h-5 text-gray-400 p-1 rounded-full hover:bg-gray-100 transition-all duration-200 hover:scale-110" />
+              </button>
               
               {/* More Menu Dropdown */}
               {showMoreMenu && (
