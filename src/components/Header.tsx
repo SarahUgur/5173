@@ -24,7 +24,7 @@ export default function Header({
   onLogout,
   onShowSettings,
   onShowHelp,
-  setCurrentPage
+ setCurrentPage,
   onShowSubscription
 }: HeaderProps) {
   const { language, setLanguage, t } = useLanguage();
