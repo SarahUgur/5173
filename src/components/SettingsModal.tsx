@@ -118,6 +118,15 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                 <span>Abonnement</span>
               </button>
               
+              <button
+                onClick={() => setActiveTab('account')}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
+                  activeTab === 'account' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Shield className="w-5 h-5" />
+                <span>Konto</span>
+              </button>
             </nav>
           </div>
 
@@ -285,6 +294,57 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                       }`} />
                     </button>
                   </div>
+                  
+                  <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                    <div>
+                      <h4 className="font-medium text-gray-900">Skjul email adresse</h4>
+                      <p className="text-sm text-gray-600">Andre kan ikke se din email på din profil</p>
+                    </div>
+                    <button
+                      onClick={() => setPrivacy({...privacy, showEmail: !privacy.showEmail})}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        !privacy.showEmail ? 'bg-blue-600' : 'bg-gray-200'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        !privacy.showEmail ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                    <div>
+                      <h4 className="font-medium text-gray-900">Skjul telefonnummer</h4>
+                      <p className="text-sm text-gray-600">Andre kan ikke se dit telefonnummer på din profil</p>
+                    </div>
+                    <button
+                      onClick={() => setPrivacy({...privacy, showPhone: !privacy.showPhone})}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        !privacy.showPhone ? 'bg-blue-600' : 'bg-gray-200'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        !privacy.showPhone ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                    <div>
+                      <h4 className="font-medium text-gray-900">Tillad venskabsanmodninger</h4>
+                      <p className="text-sm text-gray-600">Andre kan sende dig venskabsanmodninger</p>
+                    </div>
+                    <button
+                      onClick={() => setPrivacy({...privacy, allowFriendRequests: !privacy.allowFriendRequests})}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        privacy.allowFriendRequests ? 'bg-blue-600' : 'bg-gray-200'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        privacy.allowFriendRequests ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -424,40 +484,6 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                   <button className="w-full flex items-center space-x-3 p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200">
                     <Download className="w-5 h-5 text-gray-600" />
                     <div className="text-left">
-                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                  <div>
-                    <h4 className="font-medium text-gray-900">Skjul email adresse</h4>
-                    <p className="text-sm text-gray-600">Andre kan ikke se din email på din profil</p>
-                  </div>
-                  <button
-                    onClick={() => setPrivacy({...privacy, showEmail: !privacy.showEmail})}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      !privacy.showEmail ? 'bg-blue-600' : 'bg-gray-200'
-                    }`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      !privacy.showEmail ? 'translate-x-6' : 'translate-x-1'
-                    }`} />
-                  </button>
-                </div>
-                
-                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                  <div>
-                    <h4 className="font-medium text-gray-900">Skjul telefonnummer</h4>
-                    <p className="text-sm text-gray-600">Andre kan ikke se dit telefonnummer på din profil</p>
-                  </div>
-                  <button
-                    onClick={() => setPrivacy({...privacy, showPhone: !privacy.showPhone})}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      !privacy.showPhone ? 'bg-blue-600' : 'bg-gray-200'
-                    }`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      !privacy.showPhone ? 'translate-x-6' : 'translate-x-1'
-                    }`} />
-                  </button>
-                </div>
-                
                       <div className="font-medium text-gray-900">Download mine data</div>
                       <div className="text-sm text-gray-600">Få en kopi af alle dine data</div>
                     </div>
@@ -492,15 +518,8 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                     </div>
                   </div>
                 </div>
-                
-                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                  <div>
-                    <h4 className="font-medium text-gray-900">Tillad venskabsanmodninger</h4>
-                    <p className="text-sm text-gray-600">Andre kan sende dig venskabsanmodninger</p>
-                  </div>
-                  <button
-                    onClick={() => setPrivacy({...privacy, allowFriendRequests: !privacy.allowFriendRequests})}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+              </div>
+            )}
           </div>
         </div>
       </div>
