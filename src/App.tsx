@@ -66,7 +66,10 @@ function App() {
   // Handle subscription
   const handleSubscribe = () => {
     setShowSubscription(false);
-    setShowPayment(true);
+    // Simuler Stripe checkout for månedligt abonnement
+    if (confirm('Start Pro abonnement for 29 kr/måned via Stripe? Du vil blive omdirigeret til sikker betaling.')) {
+      setShowPayment(true);
+    }
   };
 
   // Handle payment success
@@ -77,6 +80,16 @@ function App() {
       setCurrentUser({ ...currentUser, isSubscribed: true });
     }
   };
+  
+  // Listen for Pro upgrade events from header
+  React.useEffect(() => {
+    const handleShowSubscription = () => {
+      setShowSubscription(true);
+    };
+    
+    window.addEventListener('showSubscription', handleShowSubscription);
+    return () => window.removeEventListener('showSubscription', handleShowSubscription);
+  }, []);
 
   // Handle success continue
   const handleSuccessContinue = () => {
@@ -177,7 +190,10 @@ function App() {
 
   const renderHomePage = () => (
     <div className="max-w-2xl mx-auto">
-      <CreatePost currentUser={currentUser} />
+      <CreatePost 
+        currentUser={currentUser} 
+        onShowSubscription={() => setShowSubscription(true)}
+      />
       
       {/* Ad Banner */}
       <div className="mb-6">
@@ -488,6 +504,7 @@ function App() {
         isOpen={showMessages}
         onClose={() => setShowMessages(false)}
         currentUser={currentUser}
+        onShowSubscription={() => setShowSubscription(true)}
       />
 
       <NotificationModal

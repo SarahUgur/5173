@@ -75,7 +75,8 @@ export default function SubscriptionModal({ isOpen, onClose, onSubscribe, userEm
                 <div className="text-xs sm:text-sm text-gray-600">per måned</div>
               </div>
             </div>
-            <p className="text-xs sm:text-sm text-gray-600">Ingen binding • Opsig når som helst</p>
+            <p className="text-xs sm:text-sm text-gray-600">Månedligt abonnement • Opsig når som helst ved at skrive til support</p>
+            <p className="text-xs text-blue-600 mt-1">📧 support@privatrengoring.dk</p>
           </div>
         </div>
 
@@ -170,13 +171,13 @@ export default function SubscriptionModal({ isOpen, onClose, onSubscribe, userEm
             className="w-full btn-primary text-white py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg shadow-strong flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none hover:scale-105"
           >
             <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span>Opgrader til Pro (Demo)</span>
+            <span>Start Pro Abonnement via Stripe</span>
           </button>
           
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 mt-4 text-xs sm:text-sm text-gray-500">
             <div className="flex items-center space-x-1">
               <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 animate-bounce" />
-              <span>Sikker betaling</span>
+              <span>Sikker månedlig betaling via Stripe</span>
             </div>
             <div className="flex items-center space-x-1">
               <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 animate-bounce" />
@@ -184,8 +185,15 @@ export default function SubscriptionModal({ isOpen, onClose, onSubscribe, userEm
             </div>
             <div className="flex items-center space-x-1">
               <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 animate-bounce" />
-              <span>Opsig når som helst</span>
+              <span>Opsig via support email</span>
             </div>
+          </div>
+          
+          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-xs text-blue-800 text-center">
+              💳 <strong>Månedligt abonnement:</strong> 29 kr trækkes automatisk hver måned via Stripe<br/>
+              📧 <strong>Opsigelse:</strong> Skriv til support@privatrengoring.dk for at opsige
+            </p>
           </div>
         </div>
       </div>

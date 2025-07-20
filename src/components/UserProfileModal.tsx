@@ -74,6 +74,11 @@ export default function UserProfileModal({
   ];
 
   const handleFriendAction = () => {
+    if (!currentUser?.isSubscribed) {
+      alert('Kun Pro medlemmer kan tilføje venner. Opgrader til Pro for kun 29 kr/måned!');
+      return;
+    }
+    
     if (friendshipStatus === 'none') {
       setFriendshipStatus('pending');
       onSendFriendRequest(user.id);

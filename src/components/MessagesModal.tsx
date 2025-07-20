@@ -30,9 +30,10 @@ interface MessagesModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentUser: any;
+  onShowSubscription?: () => void;
 }
 
-export default function MessagesModal({ isOpen, onClose, currentUser }: MessagesModalProps) {
+export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubscription }: MessagesModalProps) {
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messageText, setMessageText] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -119,6 +120,11 @@ export default function MessagesModal({ isOpen, onClose, currentUser }: Messages
   const selectedConv = conversations.find(c => c.id === selectedConversation);
 
   const handleSendMessage = () => {
+    if (!currentUser?.isSubscribed) {
+      onShowSubscription?.();
+      return;
+    }
+    
     if (!messageText.trim() || !selectedConversation) return;
 
     const newMessage: Message = {
