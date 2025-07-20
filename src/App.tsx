@@ -31,11 +31,14 @@ import SettingsModal from './components/SettingsModal';
 import InstallPrompt from './components/InstallPrompt';
 import AdBanner from './components/AdBanner';
 import RecommendationWidget from './components/RecommendationWidget';
+import { useNotifications } from './hooks/useNotifications';
+import { notificationManager } from './lib/notifications';
 import type { User } from './types';
 
 function App() {
   const { language, t } = useLanguage();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const notifications = useNotifications(currentUser);
   const [currentPage, setCurrentPage] = useState<'home' | 'jobs' | 'network' | 'tasks' | 'planning' | 'favorites' | 'local-jobs' | 'trending' | 'map' | 'profile' | 'admin' | 'about' | 'contact' | 'support' | 'terms'>('home');
   const [showSidebar, setShowSidebar] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState<any>(null);
@@ -60,6 +63,14 @@ function App() {
   // Handle login
   const handleLogin = (user: User) => {
     setCurrentUser(user);
+    
+    // Trigger welcome notification for new users
+    setTimeout(() => {
+      notifications.triggerMessageNotification(
+        'Privat Rengøring',
+        'Velkommen til Danmarks største platform for rengøring! 🎉'
+      );
+    }, 2000);
   };
 
   // Handle logout
@@ -83,6 +94,14 @@ function App() {
     setShowSuccess(true);
     if (currentUser) {
       setCurrentUser({ ...currentUser, isSubscribed: true });
+      
+      // Trigger Pro upgrade notification
+      setTimeout(() => {
+        notifications.triggerMessageNotification(
+          'Privat Rengøring',
+          'Tillykke! Du er nu Pro medlem med fuld adgang til alle funktioner! 🌟'
+        );
+      }, 1000);
     }
   };
   
@@ -517,7 +536,7 @@ function App() {
       <NotificationModal
         isOpen={showNotifications}
         onClose={() => setShowNotifications(false)}
-        onOpenSettings={() => setShowSettings(true)}
+        currentUser={currentUser}
       />
 
       <SubscriptionModal

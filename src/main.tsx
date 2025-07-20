@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
+import { notificationManager } from './lib/notifications';
 
 // Register Service Worker for PWA
 if ('serviceWorker' in navigator) {
@@ -9,12 +10,30 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
         console.log('SW registered: ', registration);
+        
+        // Initialize push notifications
+        notificationManager.initialize().then((initialized) => {
+          if (initialized) {
+            console.log('Push notifications initialized');
+          }
+        });
       })
       .catch((registrationError) => {
         console.log('SW registration failed: ', registrationError);
       });
   });
 }
+
+// Request notification permission on app start
+window.addEventListener('load', async () => {
+  // Wait a bit before asking for permission to not overwhelm user
+  setTimeout(async () => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      const permission = await notificationManager.requestPermission();
+      console.log('Initial notification permission:', permission);
+    }
+  }, 3000); // Ask after 3 seconds
+});
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

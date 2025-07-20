@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { X, Bell, MessageCircle, Briefcase, Users, Calendar, Check, Trash2, Settings } from 'lucide-react';
+import NotificationSettings from './NotificationSettings';
 
 interface NotificationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onOpenSettings: () => void;
+  currentUser: any;
 }
 
 interface Notification {
@@ -18,7 +19,8 @@ interface Notification {
   actionUrl?: string;
 }
 
-export default function NotificationModal({ isOpen, onClose, onOpenSettings }: NotificationModalProps) {
+export default function NotificationModal({ isOpen, onClose, currentUser }: NotificationModalProps) {
+  const [showSettings, setShowSettings] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: '1',
@@ -162,8 +164,7 @@ export default function NotificationModal({ isOpen, onClose, onOpenSettings }: N
             </div>
             <button
               onClick={() => {
-                onOpenSettings();
-                onClose();
+                setShowSettings(true);
               }}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
               title="Notifikation indstillinger"
@@ -294,14 +295,20 @@ export default function NotificationModal({ isOpen, onClose, onOpenSettings }: N
         <div className="p-4 border-t border-gray-200 bg-gray-50">
           <button
             onClick={() => {
-              onOpenSettings();
-              onClose();
+              setShowSettings(true);
             }}
             className="w-full text-center text-blue-600 hover:text-blue-700 text-sm font-medium"
           >
             Administrer notifikation indstillinger
           </button>
         </div>
+
+        {/* Notification Settings Modal */}
+        <NotificationSettings
+          isOpen={showSettings}
+          onClose={() => setShowSettings(false)}
+          currentUser={currentUser}
+        />
       </div>
     </div>
   );
