@@ -259,6 +259,7 @@ export default function ContactPage() {
               <div>💰 Svindel eller bedrageri</div>
               <div>📸 Deling af private billeder</div>
               <div>🔞 Upassende indhold</div>
+            </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Email svartid</span>
               <span className="font-medium text-green-600">24-48 timer</span>
@@ -268,7 +269,6 @@ export default function ContactPage() {
       </div>
     </div>
   );
-}
 }
   )
 }
