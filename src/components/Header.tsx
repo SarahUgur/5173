@@ -11,6 +11,7 @@ interface HeaderProps {
   onLogout: () => void;
   onShowSettings: () => void;
   onShowHelp: () => void;
+  setCurrentPage: (page: string) => void;
 }
 
 export default function Header({ 
@@ -19,7 +20,10 @@ export default function Header({
   onShowNotifications, 
   onShowProfile, 
   onToggleSidebar,
-  onLogout 
+  onLogout,
+  onShowSettings,
+  onShowHelp,
+  setCurrentPage
 }: HeaderProps) {
   const { language, setLanguage, t } = useLanguage();
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);

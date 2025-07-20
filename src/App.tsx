@@ -226,6 +226,7 @@ function App() {
         onLogout={handleLogout}
         onShowSettings={() => setShowSettings(true)}
         onShowHelp={() => setShowHelp(true)}
+        setCurrentPage={setCurrentPage}
       />
 
       <div className="flex">
