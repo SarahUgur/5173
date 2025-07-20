@@ -74,18 +74,6 @@ export default function ContactPage() {
                 <div>• Misbrug eller chikane</div>
                 <div>• Betalingskonflikt</div>
                 <div>• Andre brud på vores vilkår</div>
-              </div>
-            </div>
-            <div className="mt-4 p-4 bg-white rounded-lg">
-              <p className="text-red-900 font-medium mb-2">
-                👉 Kontakt os direkte på <strong>support@privatrengoring.dk</strong>
-              </p>
-              <p className="text-red-700 text-sm">
-                Beskriv kort hvad der er sket, og vedhæft evt. screenshots. 
-                Vi behandler alle henvendelser seriøst og svarer inden for <strong>24-48 timer</strong>.
-              </p>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -266,15 +254,10 @@ export default function ContactPage() {
             <p className="text-red-800 text-sm mb-4">
               Ved grove overtrædelser kan brugere blive <strong>advaret, midlertidigt lukket eller permanent blokeret</strong>.
             </p>
-            <div className="space-y-2 text-red-700 text-sm">
-              <div>🚨 Trusler eller vold</div>
-              <div>💰 Svindel eller bedrageri</div>
-              <div>📸 Deling af private billeder</div>
               <div>🔞 Upassende indhold</div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Email svartid</span>
             </div>
-            <p className="text-red-800 text-sm mt-4 font-medium">
-              Din tryghed er vores prioritet.
-            </p>
           </div>
         </div>
       </div>

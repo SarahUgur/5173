@@ -177,23 +177,12 @@ export default function SupportPage() {
             <div className="text-sm text-blue-700">support@privatrengoring.dk</div>
           </div>
         </a>
-        
-        <a
-          href="tel:+4570203040"
-          className="flex items-center space-x-3 p-4 bg-green-50 border border-green-200 rounded-xl hover:bg-green-100 transition-colors duration-200"
-        >
-          <Phone className="w-6 h-6 text-green-600" />
+
+        <div className="flex items-center space-x-3 p-4 bg-green-50 border border-green-200 rounded-xl">
+          <MessageCircle className="w-6 h-6 text-green-600" />
           <div>
-            <div className="font-medium text-green-900">Ring til os</div>
-            <div className="text-sm text-green-700">+45 70 20 30 40</div>
-          </div>
-        </a>
-        
-        <div className="flex items-center space-x-3 p-4 bg-purple-50 border border-purple-200 rounded-xl">
-          <MessageCircle className="w-6 h-6 text-purple-600" />
-          <div>
-            <div className="font-medium text-purple-900">Live chat</div>
-            <div className="text-sm text-purple-700">Kommer snart</div>
+            <div className="font-medium text-green-900">Live chat</div>
+            <div className="text-sm text-green-700">Kommer snart</div>
           </div>
         </div>
       </div>
@@ -309,13 +298,6 @@ export default function SupportPage() {
           >
             <Mail className="w-4 h-4" />
             <span>Send email</span>
-          </a>
-          <a
-            href="tel:+4570203040"
-            className="inline-flex items-center space-x-2 bg-blue-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-800 transition-colors duration-200"
-          >
-            <Phone className="w-4 h-4" />
-            <span>Ring til os</span>
           </a>
         </div>
       </div>
