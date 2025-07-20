@@ -82,8 +82,21 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
   };
 
   const handleAvatarChange = () => {
-    // I en rigtig app ville dette åbne fil vælger
-    alert('Åbn kamera/galleri for at vælge nyt profilbillede');
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageUrl = e.target?.result as string;
+          onUpdateUser({ ...currentUser, avatar: imageUrl });
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
   };
 
   return (
@@ -99,47 +112,65 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
       {/* Profile Header */}
       <div className="bg-white rounded-b-2xl shadow-sm border border-gray-200 p-4 sm:p-6 -mt-16 relative z-10">
         {/* Profile Completion */}
-        <div className="mb-6 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-yellow-900">Fuldfør din profil</h3>
-            <span className="text-2xl font-bold text-yellow-700">75%</span>
-          </div>
-          <div className="w-full bg-yellow-200 rounded-full h-2 mb-3">
-            <div className="bg-yellow-600 h-2 rounded-full" style={{ width: '75%' }}></div>
-          </div>
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center space-x-2">
-              <span className="text-green-600">✅</span>
-              <span className="text-yellow-800">Profilbillede</span>
+        {(() => {
+          const hasAvatar = currentUser?.avatar && currentUser.avatar !== '';
+          const hasName = currentUser?.name && currentUser.name.trim() !== '';
+          const hasLocation = currentUser?.location && currentUser.location.trim() !== '' && currentUser.location !== 'Danmark';
+          const hasBio = currentUser?.bio && currentUser.bio.trim() !== '';
+          const hasPhone = currentUser?.phone && currentUser.phone.trim() !== '';
+          const hasEmail = currentUser?.email && currentUser.email.trim() !== '';
+          
+          const completedItems = [hasAvatar, hasName, hasLocation, hasBio, hasPhone, hasEmail].filter(Boolean).length;
+          const totalItems = 6;
+          const completionPercentage = Math.round((completedItems / totalItems) * 100);
+          
+          // Only show if profile is less than 100% complete
+          if (completionPercentage >= 100) return null;
+          
+          return (
+            <div className="mb-6 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-yellow-900">Fuldfør din profil</h3>
+                <span className="text-2xl font-bold text-yellow-700">{completionPercentage}%</span>
+              </div>
+              <div className="w-full bg-yellow-200 rounded-full h-2 mb-3">
+                <div className="bg-yellow-600 h-2 rounded-full" style={{ width: `${completionPercentage}%` }}></div>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center space-x-2">
+                  <span className={hasAvatar ? "text-green-600" : "text-red-600"}>{hasAvatar ? "✅" : "❌"}</span>
+                  <span className="text-yellow-800">Profilbillede</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className={hasName ? "text-green-600" : "text-red-600"}>{hasName ? "✅" : "❌"}</span>
+                  <span className="text-yellow-800">Navn</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className={hasLocation ? "text-green-600" : "text-red-600"}>{hasLocation ? "✅" : "❌"}</span>
+                  <span className="text-yellow-800">Lokation</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className={hasBio ? "text-green-600" : "text-red-600"}>{hasBio ? "✅" : "❌"}</span>
+                  <span className="text-yellow-800">Bio beskrivelse</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className={hasPhone ? "text-green-600" : "text-red-600"}>{hasPhone ? "✅" : "❌"}</span>
+                  <span className="text-yellow-800">Telefonnummer</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className={hasEmail ? "text-green-600" : "text-red-600"}>{hasEmail ? "✅" : "❌"}</span>
+                  <span className="text-yellow-800">Email</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsEditing(true)}
+                className="mt-3 w-full bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors duration-200 font-medium"
+              >
+                Fuldfør Profil Nu
+              </button>
             </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-green-600">✅</span>
-              <span className="text-yellow-800">Navn & lokation</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-red-600">❌</span>
-              <span className="text-yellow-800">Bio beskrivelse</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-green-600">✅</span>
-              <span className="text-yellow-800">Kontaktinfo</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-red-600">❌</span>
-              <span className="text-yellow-800">Arbejdsområder</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-green-600">✅</span>
-              <span className="text-yellow-800">Erfaring</span>
-            </div>
-          </div>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="mt-3 w-full bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors duration-200 font-medium"
-          >
-            Fuldfør Profil Nu
-          </button>
-        </div>
+          );
+        })()}
 
         {/* Pro Member Button */}
         {!currentUser?.isSubscribed && (
@@ -167,7 +198,7 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
           {/* Avatar */}
           <div className="relative -mt-16 sm:-mt-20">
             <img
-              src={currentUser?.avatar || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop"}
+              src={currentUser?.avatar || "/api/placeholder/150/150"}
               alt="Profile"
               className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg"
             />

@@ -124,14 +124,17 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
         id: Date.now().toString(),
         name,
         email,
-        avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+        avatar: '',
         userType,
         verified: false,
         isSubscribed: false,
         location: 'Danmark',
         rating: 0,
         completedJobs: 0,
-        joinedDate: 'Nu'
+        joinedDate: new Date().toISOString().split('T')[0],
+        bio: '',
+        phone: '',
+        website: ''
       };
       onLogin(newUser);
     }

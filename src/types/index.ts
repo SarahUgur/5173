@@ -11,6 +11,8 @@ export interface User {
   completedJobs?: number;
   joinedDate?: string;
   bio?: string;
+  phone?: string;
+  website?: string;
   skills?: string[];
   hourlyRate?: string;
   availability?: string[];

@@ -166,7 +166,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
     <div className="bg-white rounded-xl shadow-soft border border-gray-200 p-3 sm:p-4 mb-4 sm:mb-6 mx-3 sm:mx-0 hover:shadow-medium transition-all duration-300 card">
       <div className="flex items-start space-x-3">
         <img
-          src={currentUser?.avatar || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop"}
+          src={currentUser?.avatar || "/api/placeholder/48/48"}
           alt="Your avatar"
           className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex-shrink-0 ring-2 ring-transparent hover:ring-blue-300 transition-all duration-200"
         />

@@ -167,7 +167,7 @@ export default function Header({
                 className="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-100 transition-colors duration-200"
               >
                 <img
-                  src={currentUser?.avatar || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop"}
+                  src={currentUser?.avatar || "/api/placeholder/32/32"}
                   alt="Profile"
                   className="w-8 h-8 rounded-full border-2 border-transparent hover:border-blue-300 transition-all duration-200"
                 />
