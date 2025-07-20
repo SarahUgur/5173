@@ -47,6 +47,68 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
         return;
       }
 
+      // Check for test users
+      const testUsers = [
+        {
+          email: 'pro@example.com',
+          password: 'password',
+          user: {
+            id: 'pro-user',
+            name: 'Maria Pro Hansen',
+            email: 'pro@example.com',
+            avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            userType: 'private',
+            verified: true,
+            isSubscribed: true,
+            location: 'København',
+            rating: 4.8,
+            completedJobs: 15,
+            joinedDate: 'December 2024'
+          }
+        },
+        {
+          email: 'gratis@example.com',
+          password: 'password',
+          user: {
+            id: 'free-user',
+            name: 'Lars Gratis Nielsen',
+            email: 'gratis@example.com',
+            avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            userType: 'private',
+            verified: false,
+            isSubscribed: false,
+            location: 'Aarhus',
+            rating: 0,
+            completedJobs: 0,
+            joinedDate: 'Januar 2025'
+          }
+        },
+        {
+          email: 'ekspert@example.com',
+          password: 'password',
+          user: {
+            id: 'expert-user',
+            name: 'Sofie Rengøringsekspert',
+            email: 'ekspert@example.com',
+            avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            userType: 'cleaner',
+            verified: true,
+            isSubscribed: false,
+            location: 'Odense',
+            rating: 4.9,
+            completedJobs: 89,
+            joinedDate: 'Oktober 2024'
+          }
+        }
+      ];
+
+      const testUser = testUsers.find(user => user.email === email && user.password === password);
+      if (testUser) {
+        onLogin(testUser.user);
+        setLoading(false);
+        return;
+      }
+
       // Find existing user
       const existingUser = mockUsers.find(user => user.email === email);
       if (existingUser) {
