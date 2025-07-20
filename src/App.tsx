@@ -224,6 +224,8 @@ function App() {
         onShowProfile={() => setCurrentPage('profile')}
         onToggleSidebar={() => setShowSidebar(!showSidebar)}
         onLogout={handleLogout}
+        onShowSettings={() => setShowSettings(true)}
+        onShowHelp={() => setShowHelp(true)}
       />
 
       <div className="flex">

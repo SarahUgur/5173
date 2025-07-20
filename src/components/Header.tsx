@@ -9,6 +9,8 @@ interface HeaderProps {
   onShowProfile: () => void;
   onToggleSidebar: () => void;
   onLogout: () => void;
+  onShowSettings: () => void;
+  onShowHelp: () => void;
 }
 
 export default function Header({ 
@@ -179,7 +181,7 @@ export default function Header({
                   
                   <button
                     onClick={() => {
-                      onShowProfile();
+                      setCurrentPage('profile');
                       setShowProfileMenu(false);
                     }}
                     className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200"
@@ -189,7 +191,10 @@ export default function Header({
                   </button>
                   
                   <button
-                    onClick={() => setShowProfileMenu(false)}
+                    onClick={() => {
+                      onShowSettings();
+                      setShowProfileMenu(false);
+                    }}
                     className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200"
                   >
                     <Settings className="w-4 h-4 text-gray-500" />
@@ -197,7 +202,10 @@ export default function Header({
                   </button>
                   
                   <button
-                    onClick={() => setShowProfileMenu(false)}
+                    onClick={() => {
+                      onShowHelp();
+                      setShowProfileMenu(false);
+                    }}
                     className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200"
                   >
                     <HelpCircle className="w-4 h-4 text-gray-500" />
