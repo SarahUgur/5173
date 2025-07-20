@@ -435,7 +435,6 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
                   Kun Pro kan blokere
                 </button>
               </div>
-            </div>
 
             {/* Account Deactivation - Small text at bottom */}
             <div className="mt-8 pt-6 border-t border-gray-200">
@@ -465,6 +464,7 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
                 </button>
               </div>
             </div>
+          )}
           )}
 
           {activeTab === 'posts' && (
