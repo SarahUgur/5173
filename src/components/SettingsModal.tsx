@@ -481,14 +481,6 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                 <h3 className="text-xl font-semibold text-gray-900">Konto Administration</h3>
                 
                 <div className="space-y-4">
-                  <button className="w-full flex items-center space-x-3 p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                    <Download className="w-5 h-5 text-gray-600" />
-                    <div className="text-left">
-                      <div className="font-medium text-gray-900">Download mine data</div>
-                      <div className="text-sm text-gray-600">Få en kopi af alle dine data</div>
-                    </div>
-                  </button>
-                  
                   {/* Account Deactivation - Small text at bottom */}
                   <div className="mt-8 pt-6 border-t border-gray-200">
                     <div className="text-center space-y-2">

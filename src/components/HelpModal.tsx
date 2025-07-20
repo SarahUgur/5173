@@ -272,10 +272,6 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
                   <LogOut className="w-5 h-5" />
                   <span className="font-medium">Deaktiver min konto</span>
                 </button>
-                <button className="w-full flex items-center space-x-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors duration-200 text-gray-700">
-                  <FileText className="w-5 h-5" />
-                  <span className="font-medium">Download mine data</span>
-                </button>
               </div>
             </div>
           </div>
