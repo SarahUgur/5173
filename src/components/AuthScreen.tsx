@@ -343,7 +343,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
       {/* Terms Modal */}
       {showTerms && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900">Vilkår & Betingelser</h2>
@@ -356,39 +356,66 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
               </div>
             </div>
             
-            <div className="p-6 overflow-y-auto max-h-[70vh]">
-              <div className="space-y-4">
+            <div className="p-6 overflow-y-auto flex-1">
+              <div className="space-y-4 text-sm">
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">1. Brug af platformen</h3>
-                  <div className="space-y-2 text-gray-700">
+                  <h3 className="text-base font-semibold text-gray-900 mb-3">1. Brug af platformen</h3>
+                  <div className="space-y-2 text-gray-700 text-sm">
                     <p>• Du må ikke misbruge platformen, sende spam eller dele falske oplysninger</p>
                     <p>• Alle brugere skal tale pænt og respektfuldt til hinanden</p>
                     <p>• Chikane, mobning eller krænkende adfærd tolereres ikke</p>
                     <p>• Giv altid korrekte og ærlige oplysninger i dine opslag</p>
+                    <p>• Professionel adfærd forventes i alle arbejdsrelaterede samtaler</p>
+                    <p>• Undgå gentagne eller irrelevante opslag (spam)</p>
                   </div>
                 </section>
                 
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">2. Pro abonnement</h3>
-                  <div className="space-y-2 text-gray-700">
+                  <h3 className="text-base font-semibold text-gray-900 mb-3">2. Pro abonnement og betaling</h3>
+                  <div className="space-y-2 text-gray-700 text-sm">
                     <p>• Pro koster 29 kr/måned og kan opsiges når som helst</p>
                     <p>• Automatisk fornyelse via Stripe</p>
                     <p>• Opsigelse via email til support@privatrengoring.dk</p>
+                    <p>• Ingen refund for allerede betalte perioder</p>
+                    <p>• Sikker betaling håndteres af Stripe (PCI DSS certificeret)</p>
+                    <p>• Faktura sendes på email efter betaling</p>
                   </div>
                 </section>
                 
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">3. Ansvar</h3>
-                  <div className="space-y-2 text-gray-700">
+                  <h3 className="text-base font-semibold text-gray-900 mb-3">3. Ansvar og garanti</h3>
+                  <div className="space-y-2 text-gray-700 text-sm">
                     <p>• Vi er kun en platform der forbinder brugere</p>
                     <p>• Brugere er selv ansvarlige for deres aftaler</p>
                     <p>• Vi garanterer ikke kvaliteten af udførte services</p>
+                    <p>• Sørg selv for passende forsikring ved arbejde</p>
+                    <p>• Tvister løses mellem de involverede parter</p>
+                    <p>• Dokumenter altid aftaler skriftligt</p>
+                  </div>
+                </section>
+                
+                <section>
+                  <h3 className="text-base font-semibold text-gray-900 mb-3">4. Persondata (GDPR)</h3>
+                  <div className="space-y-2 text-gray-700 text-sm">
+                    <p>• Vi indsamler kun oplysninger du selv oplyser</p>
+                    <p>• Dine data deles ikke med tredjeparter uden samtykke</p>
+                    <p>• Du kan altid ændre eller slette dine oplysninger</p>
+                    <p>• Kontakt support@privatrengoring.dk for dataindsigt</p>
+                  </div>
+                </section>
+                
+                <section>
+                  <h3 className="text-base font-semibold text-gray-900 mb-3">5. Kontakt og support</h3>
+                  <div className="space-y-2 text-gray-700 text-sm">
+                    <p>• Email: support@privatrengoring.dk</p>
+                    <p>• Svartid: 24-48 timer på hverdage</p>
+                    <p>• Rapporter problemer via app eller email</p>
                   </div>
                 </section>
               </div>
             </div>
             
-            <div className="p-6 border-t border-gray-200">
+            <div className="p-6 border-t border-gray-200 flex-shrink-0">
               <div className="flex space-x-3">
                 <button
                   onClick={() => setShowTerms(false)}
@@ -414,7 +441,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
       {/* Privacy Policy Modal */}
       {showPrivacy && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900">Privatlivspolitik</h2>
@@ -427,50 +454,77 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
               </div>
             </div>
             
-            <div className="p-6 overflow-y-auto max-h-[70vh]">
-              <div className="space-y-4">
+            <div className="p-6 overflow-y-auto flex-1">
+              <div className="space-y-4 text-sm">
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Hvilke data indsamler vi?</h3>
-                  <div className="space-y-2 text-gray-700">
+                  <h3 className="text-base font-semibold text-gray-900 mb-3">1. Hvilke data indsamler vi?</h3>
+                  <div className="space-y-2 text-gray-700 text-sm">
                     <p>• Navn, email og telefonnummer (som du selv oplyser)</p>
                     <p>• Profilbillede og beskrivelse (valgfrit)</p>
                     <p>• Lokation (kun by/område, ikke præcis adresse)</p>
                     <p>• Dine opslag og kommentarer på platformen</p>
+                    <p>• Brugsstatistikker (anonymiseret)</p>
+                    <p>• IP-adresse og browser information (teknisk nødvendigt)</p>
                   </div>
                 </section>
                 
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Hvordan bruger vi dine data?</h3>
-                  <div className="space-y-2 text-gray-700">
+                  <h3 className="text-base font-semibold text-gray-900 mb-3">2. Hvordan bruger vi dine data?</h3>
+                  <div className="space-y-2 text-gray-700 text-sm">
                     <p>• At vise din profil til andre brugere</p>
                     <p>• At matche dig med relevante jobs i dit område</p>
                     <p>• At sende dig notifikationer (hvis du tillader det)</p>
                     <p>• At forbedre platformen og brugeroplevelsen</p>
+                    <p>• At forhindre misbrug og spam</p>
+                    <p>• At levere kundeservice og support</p>
                   </div>
                 </section>
                 
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Dine rettigheder (GDPR)</h3>
-                  <div className="space-y-2 text-gray-700">
+                  <h3 className="text-base font-semibold text-gray-900 mb-3">3. Dine rettigheder (GDPR)</h3>
+                  <div className="space-y-2 text-gray-700 text-sm">
                     <p>• Du kan altid ændre eller slette dine oplysninger</p>
                     <p>• Du kan anmode om indsigt i alle data vi har om dig</p>
                     <p>• Du kan slette din konto og alle data når som helst</p>
                     <p>• Vi deler aldrig dine data med tredjeparter uden samtykke</p>
+                    <p>• Du kan trække samtykke tilbage når som helst</p>
+                    <p>• Du kan klage til Datatilsynet hvis du er utilfreds</p>
                   </div>
                 </section>
                 
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Cookies og tracking</h3>
-                  <div className="space-y-2 text-gray-700">
+                  <h3 className="text-base font-semibold text-gray-900 mb-3">4. Cookies og tracking</h3>
+                  <div className="space-y-2 text-gray-700 text-sm">
                     <p>• Vi bruger kun nødvendige cookies til login og indstillinger</p>
                     <p>• Ingen tracking eller reklame cookies</p>
                     <p>• Du kan slå cookies fra i din browser</p>
+                    <p>• Session cookies slettes når du lukker browseren</p>
+                    <p>• Præference cookies husker dine indstillinger</p>
+                  </div>
+                </section>
+                
+                <section>
+                  <h3 className="text-base font-semibold text-gray-900 mb-3">5. Datasikkerhed</h3>
+                  <div className="space-y-2 text-gray-700 text-sm">
+                    <p>• SSL kryptering af alle data</p>
+                    <p>• Sikre servere i EU (GDPR compliance)</p>
+                    <p>• Regelmæssige sikkerhedsopdateringer</p>
+                    <p>• Begrænset adgang til persondata</p>
+                  </div>
+                </section>
+                
+                <section>
+                  <h3 className="text-base font-semibold text-gray-900 mb-3">6. Kontakt vedrørende persondata</h3>
+                  <div className="space-y-2 text-gray-700 text-sm">
+                    <p>• Email: privacy@privatrengoring.dk</p>
+                    <p>• Eller: support@privatrengoring.dk</p>
+                    <p>• Vi svarer inden for 30 dage (GDPR krav)</p>
                   </div>
                 </section>
               </div>
             </div>
             
-            <div className="p-6 border-t border-gray-200">
+            <div className="p-6 border-t border-gray-200 flex-shrink-0">
               <div className="flex space-x-3">
                 <button
                   onClick={() => setShowPrivacy(false)}
