@@ -47,68 +47,6 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
         return;
       }
 
-      // Check for test users
-      const testUsers = [
-        {
-          email: 'pro@example.com',
-          password: 'password',
-          user: {
-            id: 'pro-user',
-            name: 'Maria Pro Hansen',
-            email: 'pro@example.com',
-            avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-            userType: 'private',
-            verified: true,
-            isSubscribed: true,
-            location: 'København',
-            rating: 4.8,
-            completedJobs: 15,
-            joinedDate: 'December 2024'
-          }
-        },
-        {
-          email: 'gratis@example.com',
-          password: 'password',
-          user: {
-            id: 'free-user',
-            name: 'Lars Gratis Nielsen',
-            email: 'gratis@example.com',
-            avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-            userType: 'private',
-            verified: false,
-            isSubscribed: false,
-            location: 'Aarhus',
-            rating: 0,
-            completedJobs: 0,
-            joinedDate: 'Januar 2025'
-          }
-        },
-        {
-          email: 'ekspert@example.com',
-          password: 'password',
-          user: {
-            id: 'expert-user',
-            name: 'Sofie Rengøringsekspert',
-            email: 'ekspert@example.com',
-            avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-            userType: 'cleaner',
-            verified: true,
-            isSubscribed: false,
-            location: 'Odense',
-            rating: 4.9,
-            completedJobs: 89,
-            joinedDate: 'Oktober 2024'
-          }
-        }
-      ];
-
-      const testUser = testUsers.find(user => user.email === email && user.password === password);
-      if (testUser) {
-        onLogin(testUser.user);
-        setLoading(false);
-        return;
-      }
-
       // Find existing user
       const existingUser = mockUsers.find(user => user.email === email);
       if (existingUser) {
@@ -170,10 +108,8 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
                   !isLogin ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-              <div><strong>Admin:</strong> admin@privatrengoring.dk / admin123</div>
-              <div><strong>Pro Bruger:</strong> pro@example.com / password</div>
-              <div><strong>Gratis Bruger:</strong> gratis@example.com / password</div>
-              <div><strong>Rengøringsekspert:</strong> ekspert@example.com / password</div>
+                Opret konto
+              </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -308,8 +244,10 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
               <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                 <h3 className="font-medium text-gray-900 mb-2">Test konti:</h3>
                 <div className="space-y-1 text-sm text-gray-600">
-                  <div>Admin: admin@privatrengoring.dk / admin123</div>
-                  <div>Bruger: test@example.com / password</div>
+                  <div><strong>Admin:</strong> admin@privatrengoring.dk / admin123</div>
+                  <div><strong>Pro Bruger:</strong> pro@example.com / password</div>
+                  <div><strong>Gratis Bruger:</strong> gratis@example.com / password</div>
+                  <div><strong>Rengøringsekspert:</strong> ekspert@example.com / password</div>
                 </div>
               </div>
             )}
