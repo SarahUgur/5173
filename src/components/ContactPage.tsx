@@ -74,6 +74,10 @@ export default function ContactPage() {
                 <div>• Misbrug eller chikane</div>
                 <div>• Betalingskonflikt</div>
                 <div>• Andre brud på vores vilkår</div>
+              </div>
+            </div>
+          </div>
+        </div>
         </div>
       </div>
 
@@ -269,7 +273,6 @@ export default function ContactPage() {
       </div>
     </div>
   );
-}
 }
   )
 }
