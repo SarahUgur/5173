@@ -436,35 +436,35 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
                 </button>
               </div>
 
-            {/* Account Deactivation - Small text at bottom */}
-            <div className="mt-8 pt-6 border-t border-gray-200">
-              <div className="text-center space-y-2">
-                <button
-                  onClick={() => {
-                    if (confirm('Vil du midlertidigt deaktivere din konto? Du kan aktivere den igen ved at logge ind.')) {
-                      alert('Konto midlertidigt deaktiveret. Log ind igen for at genaktivere.');
-                    }
-                  }}
-                  className="text-xs text-orange-600 hover:text-orange-700 underline"
-                >
-                  Deaktiver konto midlertidigt
-                </button>
-                <span className="text-xs text-gray-400 mx-2">•</span>
-                <button
-                  onClick={() => {
-                    if (confirm('Er du sikker på at du vil slette din konto permanent? Dette kan ikke fortrydes og alle dine data vil blive slettet.')) {
-                      if (confirm('SIDSTE ADVARSEL: Alle dine data slettes permanent. Er du helt sikker?')) {
-                        alert('Konto slettet permanent (demo)');
+              {/* Account Deactivation - Small text at bottom */}
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <div className="text-center space-y-2">
+                  <button
+                    onClick={() => {
+                      if (confirm('Vil du midlertidigt deaktivere din konto? Du kan aktivere den igen ved at logge ind.')) {
+                        alert('Konto midlertidigt deaktiveret. Log ind igen for at genaktivere.');
                       }
-                    }
-                  }}
-                  className="text-xs text-red-600 hover:text-red-700 underline"
-                >
-                  Deaktiver konto permanent
-                </button>
+                    }}
+                    className="text-xs text-orange-600 hover:text-orange-700 underline"
+                  >
+                    Deaktiver konto midlertidigt
+                  </button>
+                  <span className="text-xs text-gray-400 mx-2">•</span>
+                  <button
+                    onClick={() => {
+                      if (confirm('Er du sikker på at du vil slette din konto permanent? Dette kan ikke fortrydes og alle dine data vil blive slettet.')) {
+                        if (confirm('SIDSTE ADVARSEL: Alle dine data slettes permanent. Er du helt sikker?')) {
+                          alert('Konto slettet permanent (demo)');
+                        }
+                      }
+                    }}
+                    className="text-xs text-red-600 hover:text-red-700 underline"
+                  >
+                    Deaktiver konto permanent
+                  </button>
+                </div>
               </div>
             </div>
-          )}
           )}
 
           {activeTab === 'posts' && (
