@@ -265,14 +265,14 @@ function App() {
 
               <button
                 onClick={() => {
-                  setCurrentPage('local-jobs');
+                  setCurrentPage('jobs');
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'local-jobs' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'jobs' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                <MapPin className="w-5 h-5" />
+                <Briefcase className="w-5 h-5" />
                 <span className="font-medium">{t('localJobs')}</span>
               </button>
 

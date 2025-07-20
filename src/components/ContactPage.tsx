@@ -221,9 +221,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">Telefon</p>
-                  <a href="tel:+4570203040" className="text-green-600 hover:text-green-700">
-                    +45 70 20 30 40
-                  </a>
+                  <p className="text-gray-600">Kun email support</p>
                 </div>
               </div>
             </div>

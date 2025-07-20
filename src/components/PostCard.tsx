@@ -88,6 +88,9 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
       setLiked(!liked);
     } else if (action === 'comment') {
       setShowComments(!showComments);
+    } else if (action === 'apply') {
+      // Handle job application
+      alert('Ansøgning sendt! Kunden vil kontakte dig snart.');
     }
   };
 
@@ -514,10 +517,10 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             <div className="flex items-center justify-between">
               <div className="flex-1">
                 <p className="text-xs sm:text-sm text-blue-800 font-medium mb-1">
-                  🔒 Denne funktion er kun for Pro-medlemmer
+                  🔒 Kun Pro medlemmer kan interagere
                 </p>
                 <p className="text-xs text-blue-700">
-                  Som Pro-medlem kan du like, kommentere, ansøge om jobs og sende beskeder
+                  Opgrader til Pro for at like, kommentere, dele og ansøge om jobs
                 </p>
               </div>
               <button
@@ -533,26 +536,26 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
         {/* Pro Comparison for non-subscribers */}
         {!currentUser?.isSubscribed && post.isJobPost && (
           <div className="mt-3 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg">
-            <h4 className="font-semibold text-yellow-900 mb-3">💎 Hvad får du med Pro?</h4>
+            <h4 className="font-semibold text-yellow-900 mb-3">💎 Kun Pro medlemmer kan ansøge om jobs</h4>
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="space-y-1">
                 <div className="flex items-center space-x-2">
                   <span className="text-green-600">✅</span>
-                  <span className="text-yellow-800">Ansøg om jobs</span>
+                  <span className="text-yellow-800">Ansøg om alle jobs</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="text-green-600">✅</span>
-                  <span className="text-yellow-800">Send beskeder</span>
+                  <span className="text-yellow-800">Kontakt kunder direkte</span>
                 </div>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center space-x-2">
                   <span className="text-green-600">✅</span>
-                  <span className="text-yellow-800">Like og gem opslag</span>
+                  <span className="text-yellow-800">Like, gem og del opslag</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="text-green-600">✅</span>
-                  <span className="text-yellow-800">Verificeret profil</span>
+                  <span className="text-yellow-800">Opret egne job opslag</span>
                 </div>
               </div>
             </div>
@@ -573,15 +576,6 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
           </div>
         )}
 
-        {/* Admin has access to everything */}
-        {currentUser?.email === 'admin@privatrengoring.dk' && (
-          <div className="mt-3 p-3 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg">
-            <p className="text-xs text-red-800 flex items-center space-x-2">
-              <Lock className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1" />
-              <span>🛡️ Admin har fuld adgang til alle funktioner</span>
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Comments Section */}

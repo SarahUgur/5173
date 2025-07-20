@@ -6,9 +6,10 @@ interface UserProfilePageProps {
   currentUser: any;
   onUpdateUser: (updates: any) => void;
   onShowSettings: () => void;
+  onShowSubscription: () => void;
 }
 
-export default function UserProfilePage({ currentUser, onUpdateUser, onShowSettings }: UserProfilePageProps) {
+export default function UserProfilePage({ currentUser, onUpdateUser, onShowSettings, onShowSubscription }: UserProfilePageProps) {
   const { t, getUserTypeLabel } = useLanguage();
   const [activeTab, setActiveTab] = useState<'posts' | 'about' | 'friends' | 'activity'>('about');
   const [isEditing, setIsEditing] = useState(false);
@@ -139,6 +140,28 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
             Fuldfør Profil Nu
           </button>
         </div>
+
+        {/* Pro Member Button */}
+        {!currentUser?.isSubscribed && (
+          <div className="mt-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <p className="text-sm text-purple-800 font-medium mb-1">
+                  🌟 Bliv Pro Medlem
+                </p>
+                <p className="text-xs text-purple-700">
+                  Få adgang til alle funktioner - like, kommentere, dele og meget mere
+                </p>
+              </div>
+              <button
+                onClick={onShowSubscription}
+                className="ml-3 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 text-sm font-medium"
+              >
+                Opgrader Nu
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col sm:flex-row items-start sm:items-end space-y-4 sm:space-y-0 sm:space-x-6">
           {/* Avatar */}
@@ -396,6 +419,50 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
                     <p className="text-sm text-purple-600">Bekræftet profil</p>
                   </div>
                 </div>
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => {
+                    if (!currentUser?.isSubscribed) {
+                      onShowSubscription();
+                      return;
+                    }
+                    alert('Kun Pro medlemmer kan blokere brugere');
+                  }}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                >
+                  Kun Pro kan blokere
+                </button>
+              </div>
+            </div>
+
+            {/* Account Deactivation - Small text at bottom */}
+            <div className="mt-8 pt-6 border-t border-gray-200">
+              <div className="text-center space-y-2">
+                <button
+                  onClick={() => {
+                    if (confirm('Vil du midlertidigt deaktivere din konto? Du kan aktivere den igen ved at logge ind.')) {
+                      alert('Konto midlertidigt deaktiveret. Log ind igen for at genaktivere.');
+                    }
+                  }}
+                  className="text-xs text-orange-600 hover:text-orange-700 underline"
+                >
+                  Deaktiver konto midlertidigt
+                </button>
+                <span className="text-xs text-gray-400 mx-2">•</span>
+                <button
+                  onClick={() => {
+                    if (confirm('Er du sikker på at du vil slette din konto permanent? Dette kan ikke fortrydes og alle dine data vil blive slettet.')) {
+                      if (confirm('SIDSTE ADVARSEL: Alle dine data slettes permanent. Er du helt sikker?')) {
+                        alert('Konto slettet permanent (demo)');
+                      }
+                    }
+                  }}
+                  className="text-xs text-red-600 hover:text-red-700 underline"
+                >
+                  Deaktiver konto permanent
+                </button>
               </div>
             </div>
           )}

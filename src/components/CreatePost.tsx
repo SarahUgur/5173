@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, MapPin, DollarSign, Clock, Briefcase, X, Users, Building, Home, Car, Shirt, Video, Camera, Upload, Filter, Music, Type, Smile, Trash2 } from 'lucide-react';
+import { Image, MapPin, DollarSign, Clock, Briefcase, X, Users, Building, Home, Car, Shirt, Video, Camera, Upload, Filter, Music, Type, Smile, Trash2, Lock } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 
 interface CreatePostProps {

@@ -303,16 +303,119 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                 {currentUser?.isSubscribed ? (
                   <div className="bg-green-50 border border-green-200 rounded-lg p-6">
                     <h4 className="font-semibold text-green-900 mb-2">Pro Medlem</h4>
-                    <p className="text-green-800 mb-4">Du har fuld adgang til alle funktioner</p>
-                    <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                      Opsig Abonnement
-                    </button>
+                    <p className="text-green-800 mb-4">Du har fuld adgang til alle Pro funktioner</p>
+                    
+                    <div className="bg-white rounded-lg p-4 mb-4">
+                      <h5 className="font-semibold text-green-900 mb-3">Dine Pro fordele:</h5>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-green-800">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Opret job opslag</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Ansøg om alle jobs</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Send direkte beskeder</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Like og gem opslag</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Del opslag på sociale medier</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Tilføj venner og netværk</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Kommentere på opslag</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Verificeret profil badge</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Prioriteret visning</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Ingen reklamer</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <h5 className="font-semibold text-blue-900 mb-2">Vil du opsige dit abonnement?</h5>
+                      <p className="text-blue-800 text-sm mb-3">
+                        Kontakt vores support team for at opsige dit Pro abonnement.
+                      </p>
+                      <a
+                        href="mailto:support@privatrengoring.dk?subject=Opsigelse af Pro abonnement&body=Hej,%0A%0AJeg vil gerne opsige mit Pro abonnement.%0A%0AMit navn: [Dit navn]%0AMin email: [Din email]%0A%0ATak!"
+                        className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm"
+                      >
+                        📧 Kontakt Support for Opsigelse
+                      </a>
+                    </div>
                   </div>
                 ) : (
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
                     <h4 className="font-semibold text-blue-900 mb-2">Gratis Medlem</h4>
-                    <p className="text-blue-800 mb-4">Opgrader til Pro for fuld adgang</p>
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <p className="text-blue-800 mb-4">Du kan kun se opslag, men ikke interagere</p>
+                    
+                    <div className="bg-white rounded-lg p-4 mb-4">
+                      <h5 className="font-semibold text-blue-900 mb-3">Hvad får du med Pro?</h5>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-blue-800">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Opret job opslag</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Ansøg om alle jobs</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Send direkte beskeder</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Like og gem opslag</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Del opslag på sociale medier</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Tilføj venner og netværk</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Kommentere på opslag</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Verificeret profil badge</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Prioriteret visning</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-green-600">✅</span>
+                          <span>Ingen reklamer</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <button className="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 font-medium">
                       Opgrader til Pro - 29 kr/måned
                     </button>
                   </div>
