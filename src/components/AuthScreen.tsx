@@ -325,18 +325,6 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
               </button>
             </form>
 
-            {isLogin && (
-              <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-medium text-gray-900 mb-2">Test konti:</h3>
-                <div className="space-y-1 text-sm text-gray-600">
-                  <div><strong>Admin:</strong> admin@privatrengoring.dk / admin123</div>
-                  <div><strong>Pro Bruger:</strong> pro@example.com / password</div>
-                  <div><strong>Gratis Bruger:</strong> gratis@example.com / password</div>
-                  <div><strong>Rengøringsekspert:</strong> ekspert@example.com / password</div>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
