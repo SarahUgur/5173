@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, User, Building, Users, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Building, Users, CheckCircle, X } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import { mockUsers } from '../data/mockData';
 import type { User as UserType } from '../types';
@@ -18,6 +18,8 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
   const [userType, setUserType] = useState<'private' | 'professional' | 'small_business' | 'large_business'>('private');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -271,7 +273,8 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
               )}
 
               {!isLogin && (
-                <div className="flex items-start space-x-2">
+                <div className="space-y-3">
+                  <div className="flex items-start space-x-2">
                   <input
                     type="checkbox"
                     id="terms"
@@ -282,14 +285,31 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
                   />
                   <label htmlFor="terms" className="text-sm text-gray-600">
                     Jeg accepterer{' '}
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <button
+                      type="button"
+                      onClick={() => setShowTerms(true)}
+                      className="text-blue-600 hover:underline font-medium"
+                    >
                       vilkår og betingelser
-                    </a>{' '}
+                    </button>{' '}
                     og{' '}
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <button
+                      type="button"
+                      onClick={() => setShowPrivacy(true)}
+                      className="text-blue-600 hover:underline font-medium"
+                    >
                       privatlivspolitik
-                    </a>
+                    </button>
                   </label>
+                  </div>
+                  
+                  {!acceptedTerms && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                      <p className="text-yellow-800 text-sm">
+                        ⚠️ Du skal acceptere vilkår og betingelser for at oprette en konto
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -316,6 +336,159 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           </div>
         </div>
       </div>
+
+      {/* Terms Modal */}
+      {showTerms && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900">Vilkår & Betingelser</h2>
+                <button
+                  onClick={() => setShowTerms(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6 overflow-y-auto max-h-[70vh]">
+              <div className="space-y-4">
+                <section>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">1. Brug af platformen</h3>
+                  <div className="space-y-2 text-gray-700">
+                    <p>• Du må ikke misbruge platformen, sende spam eller dele falske oplysninger</p>
+                    <p>• Alle brugere skal tale pænt og respektfuldt til hinanden</p>
+                    <p>• Chikane, mobning eller krænkende adfærd tolereres ikke</p>
+                    <p>• Giv altid korrekte og ærlige oplysninger i dine opslag</p>
+                  </div>
+                </section>
+                
+                <section>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">2. Pro abonnement</h3>
+                  <div className="space-y-2 text-gray-700">
+                    <p>• Pro koster 29 kr/måned og kan opsiges når som helst</p>
+                    <p>• Automatisk fornyelse via Stripe</p>
+                    <p>• Opsigelse via email til support@privatrengoring.dk</p>
+                  </div>
+                </section>
+                
+                <section>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">3. Ansvar</h3>
+                  <div className="space-y-2 text-gray-700">
+                    <p>• Vi er kun en platform der forbinder brugere</p>
+                    <p>• Brugere er selv ansvarlige for deres aftaler</p>
+                    <p>• Vi garanterer ikke kvaliteten af udførte services</p>
+                  </div>
+                </section>
+              </div>
+            </div>
+            
+            <div className="p-6 border-t border-gray-200">
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setShowTerms(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                >
+                  Luk
+                </button>
+                <button
+                  onClick={() => {
+                    setAcceptedTerms(true);
+                    setShowTerms(false);
+                  }}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Accepter & Luk
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Privacy Policy Modal */}
+      {showPrivacy && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900">Privatlivspolitik</h2>
+                <button
+                  onClick={() => setShowPrivacy(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6 overflow-y-auto max-h-[70vh]">
+              <div className="space-y-4">
+                <section>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Hvilke data indsamler vi?</h3>
+                  <div className="space-y-2 text-gray-700">
+                    <p>• Navn, email og telefonnummer (som du selv oplyser)</p>
+                    <p>• Profilbillede og beskrivelse (valgfrit)</p>
+                    <p>• Lokation (kun by/område, ikke præcis adresse)</p>
+                    <p>• Dine opslag og kommentarer på platformen</p>
+                  </div>
+                </section>
+                
+                <section>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Hvordan bruger vi dine data?</h3>
+                  <div className="space-y-2 text-gray-700">
+                    <p>• At vise din profil til andre brugere</p>
+                    <p>• At matche dig med relevante jobs i dit område</p>
+                    <p>• At sende dig notifikationer (hvis du tillader det)</p>
+                    <p>• At forbedre platformen og brugeroplevelsen</p>
+                  </div>
+                </section>
+                
+                <section>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Dine rettigheder (GDPR)</h3>
+                  <div className="space-y-2 text-gray-700">
+                    <p>• Du kan altid ændre eller slette dine oplysninger</p>
+                    <p>• Du kan anmode om indsigt i alle data vi har om dig</p>
+                    <p>• Du kan slette din konto og alle data når som helst</p>
+                    <p>• Vi deler aldrig dine data med tredjeparter uden samtykke</p>
+                  </div>
+                </section>
+                
+                <section>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Cookies og tracking</h3>
+                  <div className="space-y-2 text-gray-700">
+                    <p>• Vi bruger kun nødvendige cookies til login og indstillinger</p>
+                    <p>• Ingen tracking eller reklame cookies</p>
+                    <p>• Du kan slå cookies fra i din browser</p>
+                  </div>
+                </section>
+              </div>
+            </div>
+            
+            <div className="p-6 border-t border-gray-200">
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setShowPrivacy(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                >
+                  Luk
+                </button>
+                <button
+                  onClick={() => {
+                    setAcceptedTerms(true);
+                    setShowPrivacy(false);
+                  }}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Accepter & Luk
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
