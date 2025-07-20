@@ -24,7 +24,7 @@ export default function Header({
   onLogout,
   onShowSettings,
   onShowHelp,
- setCurrentPage,
+  setCurrentPage,
   onShowSubscription
 }: HeaderProps) {
   const { language, setLanguage, t } = useLanguage();
@@ -131,7 +131,7 @@ export default function Header({
                 className="hidden sm:flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 text-sm font-medium"
               >
                 <Star className="w-4 h-4" />
-                <span>Bliv Pro Medlem</span>
+                <span>Bliv Pro</span>
               </button>
             )}
 

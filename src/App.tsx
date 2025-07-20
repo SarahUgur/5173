@@ -159,15 +159,15 @@ function App() {
   const renderMainContent = () => {
     switch (currentPage) {
       case 'jobs':
-        return <LocalJobsPage currentUser={currentUser} />;
+        return <LocalJobsPage currentUser={currentUser} onShowSubscription={() => setShowSubscription(true)} />;
       case 'network':
-        return <NetworkPage />;
+        return <NetworkPage currentUser={currentUser} onShowSubscription={() => setShowSubscription(true)} />;
       case 'tasks':
         return <MyTasksPage currentUser={currentUser} />;
       case 'planning':
         return <PlanningPage currentUser={currentUser} />;
       case 'local-jobs':
-        return <LocalJobsPage currentUser={currentUser} />;
+        return <LocalJobsPage currentUser={currentUser} onShowSubscription={() => setShowSubscription(true)} />;
       case 'map':
         return <MapPage currentUser={currentUser} />;
       case 'profile':
@@ -176,6 +176,7 @@ function App() {
             currentUser={currentUser} 
             onUpdateUser={handleUpdateUser}
             onShowSettings={() => setShowSettings(true)}
+            onShowSubscription={() => setShowSubscription(true)}
           />
         );
       case 'admin':
@@ -557,6 +558,7 @@ function App() {
         onClose={() => setShowSettings(false)}
         currentUser={currentUser}
         onUpdateUser={handleUpdateUser}
+        onShowSubscription={() => setShowSubscription(true)}
       />
 
       {/* Install Prompt */}

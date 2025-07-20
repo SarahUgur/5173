@@ -49,6 +49,19 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
       return;
     }
     
+    // Validate required fields for job posts
+    if (postType === 'job') {
+      const errors = [];
+      if (!content.trim()) errors.push('Beskrivelse er påkrævet');
+      if (!location.trim()) errors.push('Lokation er påkrævet');
+      if (!jobType) errors.push('Vælg rengøringstype');
+      
+      if (errors.length > 0) {
+        setFormErrors(errors);
+        return;
+      }
+    }
+    
     console.log('Creating post:', { 
       postType, 
       content, 
@@ -59,6 +72,9 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
       urgency, 
       location 
     });
+    
+    alert(`${postType === 'job' ? 'Job opslag' : 'Opslag'} oprettet succesfuldt!`);
+    
     // Reset form
     setContent('');
     setBudget('');
@@ -66,6 +82,8 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
     setIsExpanded(false);
     setSelectedImages([]);
     setSelectedVideo(null);
+    setCurrentStep(1);
+    setFormErrors([]);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

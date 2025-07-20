@@ -7,9 +7,10 @@ interface SettingsModalProps {
   onClose: () => void;
   currentUser: any;
   onUpdateUser: (updates: any) => void;
+  onShowSubscription?: () => void;
 }
 
-export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUser }: SettingsModalProps) {
+export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUser, onShowSubscription }: SettingsModalProps) {
   const { language, setLanguage, t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'privacy' | 'subscription' | 'account'>('profile');
   const [formData, setFormData] = useState({
@@ -407,7 +408,7 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <h5 className="font-semibold text-blue-900 mb-2">Vil du opsige dit abonnement?</h5>
                       <p className="text-blue-800 text-sm mb-3">
-                        Kontakt vores support team for at opsige dit Pro abonnement.
+                        Send en email til support for at opsige dit månedlige Pro abonnement på 29 kr/måned.
                       </p>
                       <a
                         href="mailto:support@privatrengoring.dk?subject=Opsigelse af Pro abonnement&body=Hej,%0A%0AJeg vil gerne opsige mit Pro abonnement.%0A%0AMit navn: [Dit navn]%0AMin email: [Din email]%0A%0ATak!"
@@ -468,7 +469,10 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                       </div>
                     </div>
                     
-                    <button className="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 font-medium">
+                    <button 
+                      onClick={onShowSubscription}
+                      className="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 font-medium"
+                    >
                       Opgrader til Pro - 29 kr/måned
                     </button>
                   </div>
