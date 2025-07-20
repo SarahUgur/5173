@@ -254,13 +254,20 @@ export default function ContactPage() {
             <p className="text-red-800 text-sm mb-4">
               Ved grove overtrædelser kan brugere blive <strong>advaret, midlertidigt lukket eller permanent blokeret</strong>.
             </p>
+            <div className="space-y-2 text-red-700 text-sm">
+              <div>🚨 Trusler eller vold</div>
+              <div>💰 Svindel eller bedrageri</div>
+              <div>📸 Deling af private billeder</div>
               <div>🔞 Upassende indhold</div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Email svartid</span>
             </div>
+            <p className="text-red-800 text-sm mt-4 font-medium">
+              Din tryghed er vores prioritet.
+            </p>
           </div>
         </div>
       </div>
     </div>
   );
+}
+  )
 }
