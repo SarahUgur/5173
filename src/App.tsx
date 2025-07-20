@@ -27,6 +27,7 @@ import TermsPage from './components/TermsPage';
 import HelpModal from './components/HelpModal';
 import TermsModal from './components/TermsModal';
 import FriendRequestModal from './components/FriendRequestModal';
+import SettingsModal from './components/SettingsModal';
 import InstallPrompt from './components/InstallPrompt';
 import AdBanner from './components/AdBanner';
 import RecommendationWidget from './components/RecommendationWidget';
@@ -46,8 +47,8 @@ function App() {
   const [showHelp, setShowHelp] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showFriendRequests, setShowFriendRequests] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const posts = getLocalizedPosts(language);
 
@@ -523,6 +524,13 @@ function App() {
         onAcceptRequest={handleAcceptFriendRequest}
         onDeclineRequest={handleDeclineFriendRequest}
         onSendRequest={handleSendFriendRequest}
+      />
+
+      <SettingsModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        currentUser={currentUser}
+        onUpdateUser={handleUpdateUser}
       />
 
       {/* Install Prompt */}
