@@ -78,7 +78,6 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -264,19 +263,9 @@ export default function ContactPage() {
               <div>📸 Deling af private billeder</div>
               <div>🔞 Upassende indhold</div>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Email svartid</span>
-              <span className="font-medium text-green-600">24-48 timer</span>
-            </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
-  )
-}
-  )
-}
-  )
 }
