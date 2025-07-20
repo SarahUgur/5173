@@ -58,7 +58,10 @@ export default function Header({
             </button>
 
             {/* Logo */}
-            <div className="flex items-center space-x-2 sm:space-x-3">
+            <button 
+              onClick={() => setCurrentPage('home')}
+              className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity duration-200"
+            >
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                 <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
@@ -72,7 +75,7 @@ export default function Header({
                 </h1>
                 <p className="text-xs text-gray-500 -mt-1">Social platform</p>
               </div>
-            </div>
+            </button>
           </div>
 
           {/* Center - Search */}
