@@ -50,6 +50,11 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
+  // Handle Pro upgrade from header
+  const handleShowSubscription = () => {
+    setShowSubscription(true);
+  };
+
   const posts = getLocalizedPosts(language);
 
   // Handle login
@@ -243,6 +248,7 @@ function App() {
         onShowSettings={() => setShowSettings(true)}
         onShowHelp={() => setShowHelp(true)}
         setCurrentPage={setCurrentPage}
+        onShowSubscription={handleShowSubscription}
       />
 
       <div className="flex">

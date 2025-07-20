@@ -12,6 +12,7 @@ interface HeaderProps {
   onShowSettings: () => void;
   onShowHelp: () => void;
   setCurrentPage: (page: string) => void;
+  onShowSubscription: () => void;
 }
 
 export default function Header({ 
@@ -24,6 +25,7 @@ export default function Header({
   onShowSettings,
   onShowHelp,
   setCurrentPage
+  onShowSubscription
 }: HeaderProps) {
   const { language, setLanguage, t } = useLanguage();
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
@@ -125,11 +127,7 @@ export default function Header({
             {/* Pro Upgrade Button */}
             {!currentUser?.isSubscribed && (
               <button 
-                onClick={() => {
-                  // Åbn subscription modal i stedet for direkte Stripe
-                  const showSubscriptionEvent = new CustomEvent('showSubscription');
-                  window.dispatchEvent(showSubscriptionEvent);
-                }}
+                onClick={onShowSubscription}
                 className="hidden sm:flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 text-sm font-medium"
               >
                 <Star className="w-4 h-4" />
