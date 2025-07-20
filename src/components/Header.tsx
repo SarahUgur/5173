@@ -124,7 +124,16 @@ export default function Header({
 
             {/* Pro Upgrade Button */}
             {!currentUser?.isSubscribed && (
-              <button className="hidden sm:flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 text-sm font-medium">
+              <button 
+                onClick={() => {
+                  // Simuler Stripe checkout
+                  if (confirm('Vil du opgradere til Pro for 29 kr/måned? Du vil blive omdirigeret til Stripe.')) {
+                    // I virkeligheden ville dette åbne Stripe Checkout
+                    alert('Demo: Du ville blive omdirigeret til Stripe betalingsside');
+                  }
+                }}
+                className="hidden sm:flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 text-sm font-medium"
+              >
                 <Star className="w-4 h-4" />
                 <span>Opgrader til Pro</span>
               </button>

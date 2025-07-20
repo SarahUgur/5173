@@ -28,9 +28,11 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
   });
   const [privacy, setPrivacy] = useState({
     profileVisible: true,
-    showEmail: false,
-    showPhone: false,
-    allowMessages: true
+    showEmail: true,
+    showPhone: true,
+    allowMessages: true,
+    allowFriendRequests: true,
+    hideOnlineStatus: false
   });
 
   if (!isOpen) return null;
@@ -116,15 +118,6 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                 <span>Abonnement</span>
               </button>
               
-              <button
-                onClick={() => setActiveTab('account')}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  activeTab === 'account' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Trash2 className="w-5 h-5" />
-                <span>Konto</span>
-              </button>
             </nav>
           </div>
 
@@ -431,24 +424,83 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                   <button className="w-full flex items-center space-x-3 p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200">
                     <Download className="w-5 h-5 text-gray-600" />
                     <div className="text-left">
+                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div>
+                    <h4 className="font-medium text-gray-900">Skjul email adresse</h4>
+                    <p className="text-sm text-gray-600">Andre kan ikke se din email på din profil</p>
+                  </div>
+                  <button
+                    onClick={() => setPrivacy({...privacy, showEmail: !privacy.showEmail})}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      !privacy.showEmail ? 'bg-blue-600' : 'bg-gray-200'
+                    }`}
+                  >
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      !privacy.showEmail ? 'translate-x-6' : 'translate-x-1'
+                    }`} />
+                  </button>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div>
+                    <h4 className="font-medium text-gray-900">Skjul telefonnummer</h4>
+                    <p className="text-sm text-gray-600">Andre kan ikke se dit telefonnummer på din profil</p>
+                  </div>
+                  <button
+                    onClick={() => setPrivacy({...privacy, showPhone: !privacy.showPhone})}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      !privacy.showPhone ? 'bg-blue-600' : 'bg-gray-200'
+                    }`}
+                  >
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      !privacy.showPhone ? 'translate-x-6' : 'translate-x-1'
+                    }`} />
+                  </button>
+                </div>
+                
                       <div className="font-medium text-gray-900">Download mine data</div>
                       <div className="text-sm text-gray-600">Få en kopi af alle dine data</div>
                     </div>
                   </button>
                   
-                  <button
-                    onClick={handleDeleteAccount}
-                    className="w-full flex items-center space-x-3 p-4 border border-red-300 rounded-lg hover:bg-red-50 transition-colors duration-200 text-red-600"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                    <div className="text-left">
-                      <div className="font-medium">Slet konto</div>
-                      <div className="text-sm">Permanent sletning af din konto</div>
+                  {/* Account Deactivation - Small text at bottom */}
+                  <div className="mt-8 pt-6 border-t border-gray-200">
+                    <div className="text-center space-y-2">
+                      <button
+                        onClick={() => {
+                          if (confirm('Vil du midlertidigt deaktivere din konto? Du kan aktivere den igen ved at logge ind.')) {
+                            alert('Konto midlertidigt deaktiveret. Log ind igen for at genaktivere.');
+                          }
+                        }}
+                        className="text-xs text-orange-600 hover:text-orange-700 underline"
+                      >
+                        Deaktiver konto midlertidigt
+                      </button>
+                      <span className="text-xs text-gray-400 mx-2">•</span>
+                      <button
+                        onClick={() => {
+                          if (confirm('Er du sikker på at du vil slette din konto permanent? Dette kan ikke fortrydes og alle dine data vil blive slettet.')) {
+                            if (confirm('SIDSTE ADVARSEL: Alle dine data slettes permanent. Er du helt sikker?')) {
+                              alert('Konto slettet permanent (demo)');
+                            }
+                          }
+                        }}
+                        className="text-xs text-red-600 hover:text-red-700 underline"
+                      >
+                        Deaktiver konto permanent
+                      </button>
                     </div>
-                  </button>
+                  </div>
                 </div>
-              </div>
-            )}
+                
+                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div>
+                    <h4 className="font-medium text-gray-900">Tillad venskabsanmodninger</h4>
+                    <p className="text-sm text-gray-600">Andre kan sende dig venskabsanmodninger</p>
+                  </div>
+                  <button
+                    onClick={() => setPrivacy({...privacy, allowFriendRequests: !privacy.allowFriendRequests})}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
           </div>
         </div>
       </div>
