@@ -325,6 +325,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
               </button>
             </form>
 
+          </div>
         </div>
       </div>
 
