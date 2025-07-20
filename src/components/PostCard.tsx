@@ -750,10 +750,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                   setReportReason('');
                   setReportDescription('');
                 }}
-                  // Handle block user functionality
-                  if (confirm(`Er du sikker på at du vil blokere ${post.user.name}?`)) {
-                    alert(`${post.user.name} er nu blokeret. Du kan fjerne blokeringen i indstillinger.`);
-                  }
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
               >
                 Annuller
               </button>
