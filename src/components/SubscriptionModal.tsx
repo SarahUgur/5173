@@ -28,25 +28,6 @@ export default function SubscriptionModal({ isOpen, onClose, onSubscribe, userEm
       description: 'Byg dit professionelle netværk inden for rengøring'
     },
     {
-      // Create checkout session with user data
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: JSON.stringify({
-          userEmail,
-          successUrl: `${window.location.origin}/success`,
-          cancelUrl: `${window.location.origin}/cancel`,
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error('Kunne ikke oprette betalingssession');
-      }
-      
-      const session = await response.json();
       icon: Star,
       title: 'Prioriteret Visning',
       description: 'Dine opslag vises højere i søgeresultaterne'
