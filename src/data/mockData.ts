@@ -1,7 +1,56 @@
 import type { User, Post } from '../types';
 
-// Demo users for development only - remove in production
-export const mockUsers: User[] = [];
+// Demo users for development only
+export const mockUsers: User[] = [
+  {
+    id: '1',
+    name: 'Maria Hansen',
+    email: 'maria@example.com',
+    avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop&crop=face',
+    location: 'København NV',
+    rating: 4.8,
+    reviewCount: 24,
+    isVerified: true,
+    isSubscribed: false,
+    joinedDate: '2023-01-15',
+    bio: 'Søger pålidelig rengøringshjælp til mit hjem. Mor til 2 børn og elsker et rent hjem.',
+    skills: ['Familierengøring', 'Kæledyrsvenlighed'],
+    hourlyRate: 200,
+    availability: 'Weekends'
+  },
+  {
+    id: '2',
+    name: 'Lars Nielsen',
+    email: 'lars@example.com',
+    avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop&crop=face',
+    location: 'Aarhus C',
+    rating: 4.9,
+    reviewCount: 47,
+    isVerified: true,
+    isSubscribed: true,
+    joinedDate: '2022-08-20',
+    bio: 'Professionel rengøringsekspert med 5+ års erfaring. Specialiseret i hovedrengøring og familier.',
+    skills: ['Hovedrengøring', 'Kontorrengøring', 'Familierengøring'],
+    hourlyRate: 250,
+    availability: 'Alle dage'
+  },
+  {
+    id: '3',
+    name: 'Anna Sørensen',
+    email: 'anna@example.com',
+    avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop&crop=face',
+    location: 'Odense C',
+    rating: 4.7,
+    reviewCount: 18,
+    isVerified: true,
+    isSubscribed: false,
+    joinedDate: '2023-03-10',
+    bio: 'Erfaren kontorrengøring specialist. Hurtig og effektiv service.',
+    skills: ['Kontorrengøring', 'Erhvervsrengøring'],
+    hourlyRate: 220,
+    availability: 'Hverdage'
+  }
+];
 
 // Load users from API instead
 export const loadUsers = async (): Promise<User[]> => {
