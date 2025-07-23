@@ -25,36 +25,75 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    let response;
 
     try {
-     // Demo admin login - bypass API for admin
-     if (email === 'admin@privatrengoring.dk' && password === 'admin123') {
-       const adminUser = {
-         id: 'admin',
-         name: 'Administrator',
-         email: 'admin@privatrengoring.dk',
-         userType: 'admin',
-         verified: true,
-         isSubscribed: true,
-         location: 'Danmark',
-         avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-         rating: 5.0,
-         completedJobs: 0,
-         bio: 'Platform Administrator',
-         phone: '+45 12 34 56 78',
-         website: 'https://privatrengoring.dk',
-         joinedDate: '2024-01-01'
-       };
-       
-       localStorage.setItem('authToken', 'admin-token');
-       onLogin(adminUser);
-       setLoading(false);
-       return;
-     }
+      // Demo admin login - bypass API for admin
+      if (email === 'admin@privatrengoring.dk' && password === 'admin123') {
+        const adminUser = {
+          id: 'admin',
+          name: 'Administrator',
+          email: 'admin@privatrengoring.dk',
+          userType: 'admin',
+          verified: true,
+          isSubscribed: true,
+          location: 'Danmark',
+          avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          rating: 5.0,
+          completedJobs: 0,
+          bio: 'Platform Administrator',
+          phone: '+45 12 34 56 78',
+          website: 'https://privatrengoring.dk',
+          joinedDate: '2024-01-01'
+        };
+        
+        localStorage.setItem('authToken', 'admin-token');
+        onLogin(adminUser);
+        setLoading(false);
+        return;
+      }
 
-      // Real authentication API call
-      response = await fetch('/api/auth', {
+      // Demo login for development - use mock users
+      const mockUser = mockUsers.find(user => user.email === email);
+      
+      if (mockUser && password === 'demo123') {
+        // Successful demo login
+        localStorage.setItem('authToken', 'demo-token');
+        onLogin({
+          ...mockUser,
+          isSubscribed: true, // All users get full access during launch period
+          verified: true
+        });
+        setLoading(false);
+        return;
+      }
+      
+      // For new registrations, create demo user
+      if (!isLogin && name && email && password && acceptedTerms) {
+        const newUser = {
+          id: Date.now().toString(),
+          name,
+          email,
+          userType,
+          verified: true,
+          isSubscribed: true, // All users get full access during launch period
+          location: 'Danmark',
+          avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          rating: 0,
+          completedJobs: 0,
+          bio: '',
+          phone: '',
+          website: '',
+          joinedDate: new Date().toISOString().split('T')[0]
+        };
+        
+        localStorage.setItem('authToken', 'demo-token');
+        onLogin(newUser);
+        setLoading(false);
+        return;
+      }
+      
+      // Try real API call as fallback
+      const response = await fetch('/api/auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,14 +101,15 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
         body: JSON.stringify({
           email,
           password,
+          name: isLogin ? undefined : name,
           userType: isLogin ? undefined : userType,
           acceptedTerms: isLogin ? undefined : acceptedTerms
         }),
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Login fejlede');
+        // If API fails, show helpful error message
+        throw new Error('Login fejlede. Prøv admin@privatrengoring.dk med admin123 eller en af demo brugerne.');
       }
 
       const userData = await response.json();
@@ -81,22 +121,8 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
       onLogin(userData.user);
       
     } catch (error) {
-      let errorMessage = 'Der opstod en fejl. Prøv igen.';
-      
-      if (response && !response.ok) {
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || `Server fejl: ${response.status}`;
-        } catch (jsonError) {
-          // If JSON parsing fails, use status text or generic message
-          errorMessage = response.statusText || `Server fejl: ${response.status}`;
-        }
-      } else {
-        errorMessage = error instanceof Error ? error.message : 'Der opstod en fejl. Prøv igen.';
-      }
-      
       console.error('Authentication error:', error);
-      alert(errorMessage);
+      alert(error instanceof Error ? error.message : 'Der opstod en fejl. Prøv igen.');
     }
     
     setLoading(false);
