@@ -54,8 +54,22 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
       onLogin(userData.user);
       
     } catch (error) {
+      let errorMessage = 'Der opstod en fejl. Prøv igen.';
+      
+      if (!response.ok) {
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || `Server fejl: ${response.status}`;
+        } catch (jsonError) {
+          // If JSON parsing fails, use status text or generic message
+          errorMessage = response.statusText || `Server fejl: ${response.status}`;
+        }
+      } else {
+        errorMessage = error instanceof Error ? error.message : 'Der opstod en fejl. Prøv igen.';
+      }
+      
       console.error('Authentication error:', error);
-      alert(error instanceof Error ? error.message : 'Der opstod en fejl. Prøv igen.');
+      alert(errorMessage);
     }
     
     setLoading(false);
