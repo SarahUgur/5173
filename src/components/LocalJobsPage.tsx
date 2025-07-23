@@ -279,23 +279,6 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
         </button>
       </div>
 
-      {/* Pro Upgrade for non-subscribers */}
-      {!currentUser?.isSubscribed && (
-        <div className="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-6">
-          <div className="text-center">
-            <h3 className="text-lg font-semibold text-blue-900 mb-2">🔒 Opgrader til Pro for at ansøge om jobs</h3>
-            <p className="text-blue-800 mb-4">
-              Som Pro medlem kan du ansøge om alle jobs og kontakte kunder direkte
-            </p>
-            <button
-              onClick={onShowSubscription}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
-            >
-              Bliv Pro Medlem - 29 kr/måned
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

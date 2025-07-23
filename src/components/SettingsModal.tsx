@@ -469,12 +469,12 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
                       </div>
                     </div>
                     
-                    <button 
-                      onClick={onShowSubscription}
-                      className="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 font-medium"
-                    >
-                      Opgrader til Pro - 29 kr/måned
-                    </button>
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <h5 className="font-semibold text-green-900 mb-2">🎉 Lanceringsperiode</h5>
+                      <p className="text-green-800 text-sm">
+                        Alle funktioner er gratis under vores lanceringsperiode. Nyd den fulde oplevelse!
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>

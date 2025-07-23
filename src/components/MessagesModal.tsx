@@ -120,10 +120,7 @@ export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubs
   const selectedConv = conversations.find(c => c.id === selectedConversation);
 
   const handleSendMessage = () => {
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription?.();
-      return;
-    }
+    // Alle funktioner er gratis under lanceringsperioden
     
     if (!messageText.trim() || !selectedConversation) return;
 

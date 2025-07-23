@@ -104,7 +104,10 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
   };
 
   const handleShare = (platform: string) => {
-    // Alle funktioner er gratis under lanceringsperioden
+    if (!currentUser?.isSubscribed) {
+      onShowSubscription();
+      return;
+    }
     
     const postUrl = `${window.location.origin}/post/${post.id}`;
     const text = `Tjek dette opslag på Privat Rengøring: ${post.content.substring(0, 100)}...`;
@@ -522,74 +525,11 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
           )}
         </div>
 
-        {!currentUser?.isSubscribed && (
-          <div className="mt-3 p-3 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <p className="text-xs sm:text-sm text-blue-800 font-medium mb-1">
-                  🔒 Kun Pro medlemmer kan interagere
-                </p>
-                <p className="text-xs text-blue-700">
-                  Opgrader til Pro for at like, kommentere, dele og ansøge om jobs
-                </p>
-              </div>
-              <button
-                onClick={onShowSubscription}
-                className="ml-3 px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-xs font-medium"
-              >
-                Opgrader
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Pro Comparison for non-subscribers */}
-        {!currentUser?.isSubscribed && post.isJobPost && (
-          <div className="mt-3 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg">
-            <h4 className="font-semibold text-yellow-900 mb-3">💎 Kun Pro medlemmer kan ansøge om jobs</h4>
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <span className="text-green-600">✅</span>
-                  <span className="text-yellow-800">Ansøg om alle jobs</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-green-600">✅</span>
-                  <span className="text-yellow-800">Kontakt kunder direkte</span>
-                </div>
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <span className="text-green-600">✅</span>
-                  <span className="text-yellow-800">Like, gem og del opslag</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-green-600">✅</span>
-                  <span className="text-yellow-800">Opret egne job opslag</span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-3 pt-3 border-t border-yellow-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-lg font-bold text-yellow-900">29 kr/måned</span>
-                  <span className="text-xs text-yellow-700 ml-2">Opsig når som helst</span>
-                </div>
-                <button
-                  onClick={onShowSubscription}
-                  className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-200 text-sm font-medium"
-                >
-                  Opgrader Nu
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
       </div>
 
       {/* Comments Section */}
-      {showComments && currentUser?.isSubscribed && (
+      {showComments && (
         <div className="border-t border-gray-100 p-3 sm:p-4 bg-gradient-to-b from-gray-50 to-white animate-slideUp">
           <div className="space-y-3">
             {post.comments.map((comment) => (

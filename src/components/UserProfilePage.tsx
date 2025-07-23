@@ -324,7 +324,7 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
                 {currentUser?.isSubscribed && (
                   <span className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 rounded-full text-sm font-medium">
                     <Star className="w-4 h-4 mr-1" />
-                    Pro Medlem
+                    Verificeret Medlem
                   </span>
                 )}
               </div>

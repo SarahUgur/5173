@@ -253,23 +253,6 @@ export default function NetworkPage({ currentUser, onShowSubscription }: Network
         )}
       </div>
 
-      {/* Pro Upgrade for non-subscribers */}
-      {!currentUser?.isSubscribed && (
-        <div className="mt-8 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6">
-          <div className="text-center">
-            <h3 className="text-lg font-semibold text-purple-900 mb-2">🌟 Opgrader til Pro for at bygge dit netværk</h3>
-            <p className="text-purple-800 mb-4">
-              Som Pro medlem kan du sende venskabsanmodninger, beskeder og bygge professionelle forbindelser
-            </p>
-            <button
-              onClick={onShowSubscription}
-              className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 font-medium"
-            >
-              Bliv Pro Medlem - 29 kr/måned
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

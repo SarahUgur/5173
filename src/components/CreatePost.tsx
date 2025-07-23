@@ -44,10 +44,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription?.();
-      return;
-    }
+    // Alle funktioner er gratis under lanceringsperioden
     
     // Validate required fields for job posts
     if (postType === 'job') {
