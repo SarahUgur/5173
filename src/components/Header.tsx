@@ -361,12 +361,6 @@ export default function Header({
                   <div className="px-4 py-3 border-b border-gray-100">
                     <p className="font-medium text-gray-900">{currentUser?.name}</p>
                     <p className="text-sm text-gray-500">{currentUser?.email}</p>
-                    {currentUser?.isSubscribed && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 mt-1">
-                        <Star className="w-3 h-3 mr-1" />
-                        Pro Medlem
-                      </span>
-                    )}
                   </div>
                   
                   <button

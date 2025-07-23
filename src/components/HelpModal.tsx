@@ -26,7 +26,7 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
         },
         {
           question: 'Hvad koster det at bruge Privat Rengøring?',
-          answer: 'Grundlæggende brug er gratis. Pro abonnement koster 29 kr/måned og giver ubegrænset adgang til alle funktioner som likes, kommentarer og direkte beskeder.'
+          answer: 'Privat Rengøring er helt gratis at bruge! Alle funktioner er inkluderet uden omkostninger under vores lanceringsperiode.'
         },
         {
           question: 'Hvordan finder jeg jobs i mit område?',
@@ -95,30 +95,6 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
         {
           question: 'Hvad er forskellen på midlertidig og permanent deaktivering?',
           answer: 'Midlertidig deaktivering skjuler din profil, men gemmer alle data - du kan aktivere igen ved at logge ind. Permanent sletning fjerner alt og kan ikke fortrydes.'
-        }
-      ]
-    },
-    {
-      id: 'subscription',
-      title: 'Pro abonnement',
-      icon: Video,
-      color: 'orange',
-      items: [
-        {
-          question: 'Hvad får jeg med Pro?',
-          answer: 'Pro giver ubegrænset likes, kommentarer, direkte beskeder, prioriteret visning af opslag og verificeret profil badge.'
-        },
-        {
-          question: 'Hvordan opgraderer jeg til Pro?',
-          answer: 'Klik på "Opgrader til Pro" knappen i toppen eller gå til "Indstillinger" → "Abonnement".'
-        },
-        {
-          question: 'Hvordan opsiger jeg mit abonnement?',
-          answer: 'Gå til "Indstillinger" → "Abonnement" og klik "Opsig abonnement". Dit abonnement fortsætter til næste faktureringsperiode.'
-        },
-        {
-          question: 'Kan jeg få refund?',
-          answer: 'Vi tilbyder ikke refund for allerede betalte perioder, men du kan opsige når som helst.'
         }
       ]
     },

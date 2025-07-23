@@ -391,7 +391,7 @@ function App() {
         onShowSettings={() => setShowSettings(true)}
         onShowHelp={() => setShowHelp(true)}
         setCurrentPage={setCurrentPage}
-        onShowSubscription={handleShowSubscription}
+        onShowSubscription={() => {}}
       />
 
       <div className="flex">
