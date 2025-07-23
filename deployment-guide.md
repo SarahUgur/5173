@@ -52,6 +52,9 @@ git push -u origin main
 1. I Netlify dashboard, gå til "Site settings" → "Environment variables"
 2. Tilføj:
    - `VITE_STRIPE_PUBLISHABLE_KEY` = dit Stripe publishable key
+   - `DATABASE_URL` = din PostgreSQL database connection string
+   - `JWT_SECRET` = en sikker random string til JWT tokens (mindst 32 karakterer)
+   - `NODE_ENV` = production
 
 ## Step 7: SSL Certificate
 1. Netlify aktiverer automatisk HTTPS

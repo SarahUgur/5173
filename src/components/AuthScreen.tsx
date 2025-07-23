@@ -35,7 +35,20 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
         body: JSON.stringify({
           email,
           password,
-          name: isLogin ? undefined : name,
+      let data;
+      try {
+        const responseText = await response.text();
+        if (responseText) {
+          data = JSON.parse(responseText);
+        } else {
+          throw new Error('Empty response from server');
+        }
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError);
+        setError('Server fejl - kunne ikke forbinde til database. Kontakt support.');
+        setLoading(false);
+        return;
+      }
           userType: isLogin ? undefined : userType,
           acceptedTerms: isLogin ? undefined : acceptedTerms
         }),
