@@ -27,6 +27,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubscribe, userEm
       title: 'Netværk & Kontakter',
       description: 'Byg dit professionelle netværk inden for rengøring'
     },
+    {
       // Create checkout session with user data
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
@@ -46,6 +47,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubscribe, userEm
       }
       
       const session = await response.json();
+      icon: Star,
       title: 'Prioriteret Visning',
       description: 'Dine opslag vises højere i søgeresultaterne'
     },
