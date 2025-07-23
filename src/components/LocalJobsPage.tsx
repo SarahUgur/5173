@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { MapPin, Search, Filter, Briefcase, DollarSign, Clock, Star, Users, Eye, Navigation } from 'lucide-react';
 
+import JobApplicationModal from './JobApplicationModal';
+
 interface LocalJobsPageProps {
   currentUser?: any;
   onShowSubscription?: () => void;
@@ -10,6 +12,8 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
   const [selectedArea, setSelectedArea] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
+  const [showApplicationModal, setShowApplicationModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<any>(null);
 
   // Mock job data
   const jobs = [
@@ -90,13 +94,23 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
   };
 
   const handleApply = (jobId: string) => {
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription?.();
-      return;
+    const job = jobs.find(j => j.id === jobId);
+    if (job) {
+      // Convert job to post format for modal
+      const jobAsPost = {
+        id: job.id,
+        content: job.title,
+        location: job.location,
+        budget: job.budget,
+        createdAt: job.postedTime,
+        user: job.client,
+        isJobPost: true,
+        jobType: job.jobType,
+        urgency: job.urgency
+      };
+      setSelectedJob(jobAsPost);
+      setShowApplicationModal(true);
     }
-    
-    // Real job application
-    applyForJob(jobId);
   };
 
   const handleViewDetails = (jobId: string) => {
@@ -109,16 +123,19 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
     window.location.href = `/job/${jobId}`;
   };
 
-  const applyForJob = async (jobId: string) => {
+  const handleSendApplication = async (postId: string, message: string, contactMethod: string) => {
     try {
-      const response = await fetch(`/api/jobs/${jobId}/apply`, {
+      const response = await fetch('/api/job-applications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         },
         body: JSON.stringify({
-          message: 'Jeg er interesseret i dette job og vil gerne høre mere.'
+          postId,
+          message,
+          contactMethod,
+          applicantId: currentUser?.id
         })
       });
       
@@ -126,11 +143,9 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
         throw new Error('Kunne ikke sende ansøgning');
       }
       
-      alert('Ansøgning sendt! Kunden vil kontakte dig snart.');
-      
     } catch (error) {
       console.error('Error applying for job:', error);
-      alert('Der opstod en fejl ved ansøgning. Prøv igen.');
+      throw error;
     }
   };
 
@@ -274,6 +289,15 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
           Indlæs flere jobs
         </button>
       </div>
+
+      {/* Job Application Modal */}
+      <JobApplicationModal
+        isOpen={showApplicationModal}
+        onClose={() => setShowApplicationModal(false)}
+        post={selectedJob}
+        currentUser={currentUser}
+        onSendApplication={handleSendApplication}
+      />
 
     </div>
   );

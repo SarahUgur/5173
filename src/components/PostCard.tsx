@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Users, ExternalLink, Eye, EyeOff, Trash2, Edit, X } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import AdBanner from './AdBanner';
+import JobApplicationModal from './JobApplicationModal';
 import type { Post } from '../types';
 
 interface PostCardProps {
@@ -30,6 +31,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [reportReason, setReportReason] = useState('');
   const [reportDescription, setReportDescription] = useState('');
+  const [showApplicationModal, setShowApplicationModal] = useState(false);
   
   // Auto-close dropdowns when clicking outside
   React.useEffect(() => {
@@ -54,6 +56,36 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isPostHidden, setIsPostHidden] = useState(false);
+
+  const handleSendApplication = async (postId: string, message: string, contactMethod: string) => {
+    try {
+      // Send application to API
+      const response = await fetch('/api/job-applications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          postId,
+          message,
+          contactMethod,
+          applicantId: currentUser?.id
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Kunne ikke sende ansøgning');
+      }
+      
+      // Success - in real app this would trigger notification to job owner
+      console.log('Job application sent:', { postId, message, contactMethod });
+      
+    } catch (error) {
+      console.error('Error sending application:', error);
+      throw error;
+    }
+  };
 
   const reactions = [
     { type: 'like', emoji: '👍', label: 'Synes godt om', color: 'text-blue-600' },
@@ -84,8 +116,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
     } else if (action === 'comment') {
       setShowComments(!showComments);
     } else if (action === 'apply') {
-      // Handle job application
-      alert('Ansøgning sendt! Kunden vil kontakte dig snart.');
+      setShowApplicationModal(true);
     }
   };
 
@@ -487,10 +518,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
 
           {post.isJobPost && (
             <button
-              onClick={() => {
-                // Handle job application - alle kan ansøge under lanceringsperioden
-                alert('Ansøgning sendt! Kunden vil kontakte dig snart.');
-              }}
+              onClick={() => handleInteraction('apply')}
               className="px-3 sm:px-6 py-2 rounded-lg font-medium flex items-center space-x-2 text-sm sm:text-base transition-all duration-200 btn-primary text-white hover:scale-105"
             >
               <span>{t('apply')}</span>
@@ -765,6 +793,15 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
           </div>
         </div>
       )}
+
+      {/* Job Application Modal */}
+      <JobApplicationModal
+        isOpen={showApplicationModal}
+        onClose={() => setShowApplicationModal(false)}
+        post={post}
+        currentUser={currentUser}
+        onSendApplication={handleSendApplication}
+      />
     </div>
   );
 }
