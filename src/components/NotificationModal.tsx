@@ -145,9 +145,9 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-md w-full max-h-[80vh] overflow-hidden">
+      <div className="bg-white rounded-2xl max-w-md w-full max-h-[85vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="relative p-4 border-b border-gray-200">
+        <div className="relative p-4 border-b border-gray-200 flex-shrink-0">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
@@ -204,7 +204,7 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
 
         {/* Actions */}
         {unreadCount > 0 && (
-          <div className="p-4 border-b border-gray-100">
+          <div className="p-3 border-b border-gray-100 flex-shrink-0">
             <button
               onClick={markAllAsRead}
               className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center space-x-1"
@@ -216,7 +216,7 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
         )}
 
         {/* Notifications List */}
-        <div className="overflow-y-auto max-h-[50vh] lg:max-h-[60vh]">
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
           {filteredNotifications.length === 0 ? (
             <div className="p-8 text-center">
               <Bell className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -224,63 +224,63 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
               <p className="text-gray-600">Du har ingen notifikationer at vise.</p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-gray-100 pb-4">
               {filteredNotifications.map((notification) => {
                 const Icon = getIcon(notification.type);
                 return (
                   <div
                     key={notification.id}
-                    className={`p-4 hover:bg-gray-50 transition-colors duration-200 ${
+                    className={`p-3 hover:bg-gray-50 transition-colors duration-200 ${
                       !notification.read ? 'bg-blue-50' : ''
                     }`}
                   >
-                    <div className="flex items-start space-x-3">
+                    <div className="flex items-start space-x-2">
                       {notification.avatar ? (
                         <img
                           src={notification.avatar}
                           alt=""
-                          className="w-10 h-10 rounded-full flex-shrink-0"
+                          className="w-8 h-8 rounded-full flex-shrink-0"
                         />
                       ) : (
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${getIconColor(notification.type)}`}>
-                          <Icon className="w-5 h-5" />
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${getIconColor(notification.type)}`}>
+                          <Icon className="w-4 h-4" />
                         </div>
                       )}
                       
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <p className={`text-sm font-medium ${!notification.read ? 'text-gray-900' : 'text-gray-700'}`}>
+                            <p className={`text-xs font-medium ${!notification.read ? 'text-gray-900' : 'text-gray-700'}`}>
                               {notification.title}
                             </p>
-                            <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                            <p className="text-xs text-gray-600 mt-1 line-clamp-2">
                               {notification.message}
                             </p>
                             <p className="text-xs text-gray-500 mt-2">{notification.time}</p>
                           </div>
                           
-                          <div className="flex items-center space-x-1 ml-2">
+                          <div className="flex items-center space-x-1 ml-1">
                             {!notification.read && (
                               <button
                                 onClick={() => markAsRead(notification.id)}
-                                className="p-1 hover:bg-gray-200 rounded-full transition-colors duration-200"
+                                className="p-0.5 hover:bg-gray-200 rounded-full transition-colors duration-200"
                                 title="Marker som læst"
                               >
-                                <Check className="w-4 h-4 text-gray-600" />
+                                <Check className="w-3 h-3 text-gray-600" />
                               </button>
                             )}
                             <button
                               onClick={() => deleteNotification(notification.id)}
-                              className="p-1 hover:bg-gray-200 rounded-full transition-colors duration-200"
+                              className="p-0.5 hover:bg-gray-200 rounded-full transition-colors duration-200"
                               title="Slet notifikation"
                             >
-                              <Trash2 className="w-4 h-4 text-gray-600" />
+                              <Trash2 className="w-3 h-3 text-gray-600" />
                             </button>
                           </div>
                         </div>
                         
                         {!notification.read && (
-                          <div className="w-2 h-2 bg-blue-600 rounded-full absolute right-4 top-6"></div>
+                          <div className="w-2 h-2 bg-blue-600 rounded-full absolute right-3 top-4"></div>
                         )}
                       </div>
                     </div>
@@ -292,7 +292,7 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-gray-200 bg-gray-50">
+        <div className="p-4 border-t border-gray-200 bg-gray-50 flex-shrink-0">
           <button
             onClick={() => {
               setShowSettings(true);
