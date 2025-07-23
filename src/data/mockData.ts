@@ -11,7 +11,7 @@ export const mockUsers: User[] = [
     rating: 4.8,
     reviewCount: 24,
     isVerified: true,
-    isSubscribed: false,
+    isSubscribed: false, // No subscription needed
     joinedDate: '2023-01-15',
     bio: 'Søger pålidelig rengøringshjælp til mit hjem. Mor til 2 børn og elsker et rent hjem.',
     skills: ['Familierengøring', 'Kæledyrsvenlighed'],
@@ -27,7 +27,7 @@ export const mockUsers: User[] = [
     rating: 4.9,
     reviewCount: 47,
     isVerified: true,
-    isSubscribed: true,
+    isSubscribed: false, // No subscription needed
     joinedDate: '2022-08-20',
     bio: 'Professionel rengøringsekspert med 5+ års erfaring. Specialiseret i hovedrengøring og familier.',
     skills: ['Hovedrengøring', 'Kontorrengøring', 'Familierengøring'],

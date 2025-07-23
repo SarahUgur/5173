@@ -74,6 +74,15 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
   ];
 
   const handleSaveProfile = () => {
+    // Update current user immediately for instant feedback
+    onUpdateUser({
+      ...currentUser,
+      ...editData
+    });
+    setIsEditing(false);
+    alert('✅ Profil opdateret succesfuldt!');
+    
+    // Also save to API in background
     saveProfileChanges();
   };
 

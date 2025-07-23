@@ -75,7 +75,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           email,
           userType,
           verified: true,
-          isSubscribed: true, // All users get full access during launch period
+          isSubscribed: false, // No subscription needed - all features free
           location: 'Danmark',
           avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
           rating: 0,

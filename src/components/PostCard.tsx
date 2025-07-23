@@ -463,7 +463,19 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                   onMouseEnter={() => setShowReactions(true)}
                   onMouseLeave={() => setShowReactions(false)}
                 >
-                  {reactions.map((reaction) => (
+                  <button
+                    onClick={() => {
+                      setLiked(!liked);
+                      setReactionType(null);
+                      setShowReactions(false);
+                      console.log('Simple like from reactions');
+                    }}
+                    className="hover:scale-125 transition-transform duration-200 p-1 hover:bg-gray-50 rounded-full"
+                    title="Like"
+                  >
+                    <span className="text-xl">👍</span>
+                  </button>
+                  {reactions.slice(1).map((reaction) => (
                     <button
                       key={reaction.type}
                       onClick={() => handleReaction(reaction.type)}
