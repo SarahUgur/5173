@@ -24,10 +24,11 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    let response;
 
     try {
       // Real authentication API call
-      const response = await fetch('/api/auth', {
+      response = await fetch('/api/auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +57,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
     } catch (error) {
       let errorMessage = 'Der opstod en fejl. Prøv igen.';
       
-      if (!response.ok) {
+      if (response && !response.ok) {
         try {
           const errorData = await response.json();
           errorMessage = errorData.message || `Server fejl: ${response.status}`;
