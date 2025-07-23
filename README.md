@@ -41,10 +41,7 @@ npm run preview
 
 ## 🔐 Admin Login
 
-- **Email:** admin@privatrengoring.dk
-- **Password:** admin123
-
-## 🌍 Supported Languages
+Kontakt support@privatrengoring.dk for admin adgang.
 
 - 🇩🇰 Dansk (Danish)
 - 🇬🇧 English

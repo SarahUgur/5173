@@ -74,11 +74,33 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
   ];
 
   const handleSaveProfile = () => {
-    onUpdateUser({
-      ...currentUser,
-      ...editData
-    });
-    setIsEditing(false);
+    saveProfileChanges();
+  };
+
+  const saveProfileChanges = async () => {
+    try {
+      const response = await fetch('/api/user/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify(editData)
+      });
+      
+      if (!response.ok) {
+        throw new Error('Kunne ikke gemme profil');
+      }
+      
+      const updatedUser = await response.json();
+      onUpdateUser(updatedUser);
+      setIsEditing(false);
+      alert('Profil opdateret succesfuldt!');
+      
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      alert('Kunne ikke gemme profil. Prøv igen.');
+    }
   };
 
   const handleAvatarChange = () => {
@@ -88,15 +110,36 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const imageUrl = e.target?.result as string;
-          onUpdateUser({ ...currentUser, avatar: imageUrl });
-        };
-        reader.readAsDataURL(file);
+        uploadAvatar(file);
       }
     };
     input.click();
+  };
+
+  const uploadAvatar = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('avatar', file);
+      
+      const response = await fetch('/api/user/avatar', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error('Kunne ikke uploade billede');
+      }
+      
+      const result = await response.json();
+      onUpdateUser({ ...currentUser, avatar: result.avatarUrl });
+      
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      alert('Kunne ikke uploade profilbillede. Prøv igen.');
+    }
   };
 
   return (

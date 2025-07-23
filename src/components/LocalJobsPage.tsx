@@ -94,7 +94,9 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
       onShowSubscription?.();
       return;
     }
-    alert('Ansøgning sendt! Kunden vil kontakte dig snart.');
+    
+    // Real job application
+    applyForJob(jobId);
   };
 
   const handleViewDetails = (jobId: string) => {
@@ -102,7 +104,34 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
       onShowSubscription?.();
       return;
     }
-    alert('Åbner job detaljer...');
+    
+    // Open job details modal or navigate to job page
+    window.location.href = `/job/${jobId}`;
+  };
+
+  const applyForJob = async (jobId: string) => {
+    try {
+      const response = await fetch(`/api/jobs/${jobId}/apply`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          message: 'Jeg er interesseret i dette job og vil gerne høre mere.'
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Kunne ikke sende ansøgning');
+      }
+      
+      alert('Ansøgning sendt! Kunden vil kontakte dig snart.');
+      
+    } catch (error) {
+      console.error('Error applying for job:', error);
+      alert('Der opstod en fejl ved ansøgning. Prøv igen.');
+    }
   };
 
   return (

@@ -1,38 +1,27 @@
 import type { User, Post } from '../types';
 
-export const mockUsers: User[] = [
-  {
-    id: '1',
-    name: 'Maria Hansen',
-    email: 'maria@example.com',
-    avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-    userType: 'private',
-    isSubscribed: false,
-    location: 'København',
-    verified: true
-  },
-  {
-    id: '2',
-    name: 'Lars Nielsen',
-    email: 'lars@cleanpro.dk',
-    avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-    userType: 'cleaner',
-    isSubscribed: true,
-    location: 'Aarhus',
-    rating: 4.8,
-    verified: true
-  },
-  {
-    id: '3',
-    name: 'Sofie Andersen',
-    email: 'sofie@example.com',
-    avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-    userType: 'small_business',
-    isSubscribed: true,
-    location: 'Odense',
-    verified: false
+// Demo users for development only - remove in production
+export const mockUsers: User[] = [];
+
+// Load users from API instead
+export const loadUsers = async (): Promise<User[]> => {
+  try {
+    const response = await fetch('/api/users', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      }
+    });
+    
+    if (response.ok) {
+      return await response.json();
+    }
+    
+    return [];
+  } catch (error) {
+    console.error('Error loading users:', error);
+    return [];
   }
-];
+};
 
 // Multilingual post content
 export const getLocalizedPosts = (language: string): Post[] => {

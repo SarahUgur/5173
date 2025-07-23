@@ -62,28 +62,70 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
       }
     }
     
-    console.log('Creating post:', { 
-      postType, 
-      content, 
-      jobType, 
-      jobCategory, 
-      targetAudience, 
-      budget, 
-      urgency, 
-      location 
-    });
-    
-    alert(`${postType === 'job' ? 'Job opslag' : 'Opslag'} oprettet succesfuldt!`);
-    
-    // Reset form
-    setContent('');
-    setBudget('');
-    setLocation('');
-    setIsExpanded(false);
-    setSelectedImages([]);
-    setSelectedVideo(null);
-    setCurrentStep(1);
-    setFormErrors([]);
+    // Submit to real API
+    submitPost();
+  };
+
+  const submitPost = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('type', postType);
+      formData.append('content', content);
+      formData.append('location', location);
+      
+      if (postType === 'job') {
+        formData.append('jobType', jobType);
+        formData.append('jobCategory', jobCategory);
+        formData.append('targetAudience', targetAudience);
+        formData.append('urgency', urgency);
+        if (budget) formData.append('budget', budget);
+      }
+      
+      // Add images
+      selectedImages.forEach((image, index) => {
+        formData.append(`image_${index}`, image);
+      });
+      
+      // Add video
+      if (selectedVideo) {
+        formData.append('video', selectedVideo);
+        if (videoText) formData.append('videoText', videoText);
+        if (currentFilter !== 'none') formData.append('videoFilter', currentFilter);
+      }
+      
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error('Kunne ikke oprette opslag');
+      }
+      
+      const result = await response.json();
+      
+      // Success - reset form
+      setContent('');
+      setBudget('');
+      setLocation('');
+      setIsExpanded(false);
+      setSelectedImages([]);
+      setSelectedVideo(null);
+      setCurrentStep(1);
+      setFormErrors([]);
+      
+      alert(`${postType === 'job' ? 'Job opslag' : 'Opslag'} oprettet succesfuldt!`);
+      
+      // Refresh page to show new post
+      window.location.reload();
+      
+    } catch (error) {
+      console.error('Error creating post:', error);
+      alert('Der opstod en fejl ved oprettelse af opslag. Prøv igen.');
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -25,119 +25,40 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    if (isLogin) {
-      // Check for admin login
-      if (email === 'admin@privatrengoring.dk' && password === 'admin123') {
-        const adminUser: UserType = {
-          id: 'admin',
-          name: 'Admin',
-          email: 'admin@privatrengoring.dk',
-          avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-          userType: 'professional',
-          verified: true,
-          isSubscribed: true,
-          location: 'København',
-          rating: 5.0,
-          completedJobs: 0,
-          joinedDate: 'Januar 2024'
-        };
-        onLogin(adminUser);
-        setLoading(false);
-        return;
-      }
-
-      // Check for test users
-      const testUsers = [
-        {
-          email: 'pro@example.com',
-          password: 'password',
-          user: {
-            id: 'pro-user',
-            name: 'Maria Pro Hansen',
-            email: 'pro@example.com',
-            avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-            userType: 'private',
-            verified: true,
-            isSubscribed: true,
-            location: 'København',
-            rating: 4.8,
-            completedJobs: 15,
-            joinedDate: 'December 2024'
-          }
+    try {
+      // Real authentication API call
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        {
-          email: 'gratis@example.com',
-          password: 'password',
-          user: {
-            id: 'free-user',
-            name: 'Lars Gratis Nielsen',
-            email: 'gratis@example.com',
-            avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-            userType: 'private',
-            verified: false,
-            isSubscribed: false,
-            location: 'Aarhus',
-            rating: 0,
-            completedJobs: 0,
-            joinedDate: 'Januar 2025'
-          }
-        },
-        {
-          email: 'ekspert@example.com',
-          password: 'password',
-          user: {
-            id: 'expert-user',
-            name: 'Sofie Rengøringsekspert',
-            email: 'ekspert@example.com',
-            avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-            userType: 'cleaner',
-            verified: true,
-            isSubscribed: false,
-            location: 'Odense',
-            rating: 4.9,
-            completedJobs: 89,
-            joinedDate: 'Oktober 2024'
-          }
-        }
-      ];
+        body: JSON.stringify({
+          email,
+          password,
+          name: isLogin ? undefined : name,
+          userType: isLogin ? undefined : userType,
+          acceptedTerms: isLogin ? undefined : acceptedTerms
+        }),
+      });
 
-      const testUser = testUsers.find(user => user.email === email && user.password === password);
-      if (testUser) {
-        onLogin(testUser.user);
-        setLoading(false);
-        return;
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Login fejlede');
       }
 
-      // Find existing user
-      const existingUser = mockUsers.find(user => user.email === email);
-      if (existingUser) {
-        onLogin(existingUser);
-      } else {
-        alert('Bruger ikke fundet. Prøv at oprette en konto.');
-      }
-    } else {
-      // Create new user
-      const newUser: UserType = {
-        id: Date.now().toString(),
-        name,
-        email,
-        avatar: '',
-        userType,
-        verified: false,
-        isSubscribed: false,
-        location: 'Danmark',
-        rating: 0,
-        completedJobs: 0,
-        joinedDate: new Date().toISOString().split('T')[0],
-        bio: '',
-        phone: '',
-        website: ''
-      };
-      onLogin(newUser);
+      const userData = await response.json();
+      
+      // Store authentication token
+      localStorage.setItem('authToken', userData.token);
+      
+      // Login user
+      onLogin(userData.user);
+      
+    } catch (error) {
+      console.error('Authentication error:', error);
+      alert(error instanceof Error ? error.message : 'Der opstod en fejl. Prøv igen.');
     }
+    
     setLoading(false);
   };
 

@@ -64,17 +64,33 @@ function App() {
   const handleLogin = (user: User) => {
     setCurrentUser(user);
     
-    // Trigger welcome notification for new users
-    setTimeout(() => {
-      notifications.triggerMessageNotification(
-        'Privat Rengøring',
-        'Velkommen til Danmarks største platform for rengøring! 🎉'
-      );
-    }, 2000);
+    // Load user data from API
+    loadUserData(user.id);
+  };
+
+  const loadUserData = async (userId: string) => {
+    try {
+      const response = await fetch(`/api/user/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        setCurrentUser(userData);
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
   };
 
   // Handle logout
   const handleLogout = () => {
+    // Clear authentication
+    localStorage.removeItem('authToken');
+    
+    // Reset state
     setCurrentUser(null);
     setCurrentPage('home');
   };

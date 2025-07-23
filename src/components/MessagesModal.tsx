@@ -127,28 +127,48 @@ export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubs
     
     if (!messageText.trim() || !selectedConversation) return;
 
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      senderId: currentUser?.id,
-      receiverId: selectedConv?.user.id || '',
-      content: messageText,
-      timestamp: new Date().toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' }),
-      read: false,
-      type: 'text'
-    };
-
-    setConversations(prev => prev.map(conv => {
-      if (conv.id === selectedConversation) {
-        return {
-          ...conv,
-          messages: [...conv.messages, newMessage],
-          lastMessage: newMessage
-        };
-      }
-      return conv;
-    }));
-
+    // Send real message
+    sendMessage(messageText);
     setMessageText('');
+  };
+
+  const sendMessage = async (content: string) => {
+    try {
+      const response = await fetch('/api/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          receiverId: selectedConv?.user.id,
+          content,
+          type: 'text'
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Kunne ikke sende besked');
+      }
+      
+      const newMessage = await response.json();
+      
+      // Update local state
+      setConversations(prev => prev.map(conv => {
+        if (conv.id === selectedConversation) {
+          return {
+            ...conv,
+            messages: [...conv.messages, newMessage],
+            lastMessage: newMessage
+          };
+        }
+        return conv;
+      }));
+      
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Kunne ikke sende besked. Prøv igen.');
+    }
   };
 
   const handleDeleteMessage = (messageId: string) => {

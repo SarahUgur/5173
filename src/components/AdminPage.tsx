@@ -4,75 +4,42 @@ import AdRevenue from './AdRevenue';
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'posts' | 'reports' | 'revenue'>('overview');
+  const [adminStats, setAdminStats] = useState({
+    totalUsers: 0,
+    activeUsers: 0,
+    totalPosts: 0,
+    totalJobs: 0,
+    reportsToday: 0,
+    revenue: 0,
+    newUsersToday: 0,
+    onlineNow: 0
+  });
+  const [recentUsers, setRecentUsers] = useState([]);
+  const [recentReports, setRecentReports] = useState([]);
 
-  // Mock admin data
-  const adminStats = {
-    totalUsers: 1247,
-    activeUsers: 892,
-    totalPosts: 3456,
-    totalJobs: 1234,
-    reportsToday: 5,
-    revenue: 45670,
-    newUsersToday: 23,
-    onlineNow: 156
+  React.useEffect(() => {
+    loadAdminData();
+  }, []);
+
+  const loadAdminData = async () => {
+    try {
+      const response = await fetch('/api/admin/dashboard', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setAdminStats(data.stats);
+        setRecentUsers(data.recentUsers);
+        setRecentReports(data.recentReports);
+      }
+    } catch (error) {
+      console.error('Error loading admin data:', error);
+    }
   };
 
-  const recentUsers = [
-    {
-      id: '1',
-      name: 'Maria Hansen',
-      email: 'maria@example.com',
-      avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      userType: 'private',
-      isSubscribed: false,
-      joinedDate: '2024-01-15',
-      lastActive: '2 min siden',
-      status: 'online'
-    },
-    {
-      id: '2',
-      name: 'Lars Nielsen',
-      email: 'lars@cleanpro.dk',
-      avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      userType: 'cleaner',
-      isSubscribed: true,
-      joinedDate: '2024-01-10',
-      lastActive: '5 min siden',
-      status: 'online'
-    },
-    {
-      id: '3',
-      name: 'Sofie Andersen',
-      email: 'sofie@example.com',
-      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      userType: 'small_business',
-      isSubscribed: true,
-      joinedDate: '2024-01-08',
-      lastActive: '1 time siden',
-      status: 'away'
-    }
-  ];
-
-  const recentReports = [
-    {
-      id: '1',
-      type: 'user',
-      reporter: 'Maria Hansen',
-      reported: 'Spam bruger',
-      reason: 'Sender uønsket reklame',
-      status: 'pending',
-      createdAt: '10 min siden'
-    },
-    {
-      id: '2',
-      type: 'post',
-      reporter: 'Lars Nielsen',
-      reported: 'Upassende opslag',
-      reason: 'Krænkende sprog',
-      status: 'resolved',
-      createdAt: '1 time siden'
-    }
-  ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
