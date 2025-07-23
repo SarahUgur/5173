@@ -42,36 +42,13 @@ export default function SupportPage() {
         },
         {
           title: 'Hvordan ændrer jeg mit abonnement?',
-          content: 'Gå til "Indstillinger" → "Abonnement" for at opgradere til Pro eller opsige dit abonnement.',
+          content: 'Alle funktioner er gratis under lanceringsperioden. Ingen abonnement nødvendigt.',
           views: 621
         },
         {
           title: 'Hvordan sletter jeg min konto?',
           content: 'Under "Indstillinger" → "Konto" finder du både midlertidig og permanent sletning. Permanent sletning fjerner alle data!',
           views: 445
-        }
-      ]
-    },
-    {
-      id: 'pro',
-      title: 'Pro medlemskab',
-      icon: Zap,
-      color: 'purple',
-      articles: [
-        {
-          title: 'Hvad får jeg med Pro?',
-          content: 'Pro giver ubegrænset likes, kommentarer, direkte beskeder, prioriteret visning og verificeret profil badge.',
-          views: 1567
-        },
-        {
-          title: 'Hvordan opgraderer jeg til Pro?',
-          content: 'Klik på "Opgrader til Pro" knappen i toppen eller gå til "Indstillinger" → "Abonnement".',
-          views: 892
-        },
-        {
-          title: 'Hvordan opsiger jeg mit abonnement?',
-          content: 'Gå til "Indstillinger" → "Abonnement" og klik "Opsig abonnement". Dit abonnement fortsætter til næste periode.',
-          views: 334
         }
       ]
     },
