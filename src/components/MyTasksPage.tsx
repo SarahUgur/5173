@@ -140,15 +140,7 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
             )}
             {type === 'completed' && (
               <p className="text-xs text-gray-500">Afsluttet: {new Date(task.completedDate).toLocaleDateString('da-DK')}</p>
-                <button 
-                  onClick={() => {
-                    if (confirm('Marker denne opgave som færdig?')) {
-                      alert('Opgave markeret som færdig! Kunden vil blive notificeret.');
-                    }
-                  }}
-                  className="p-2 rounded-lg hover:bg-green-100 transition-colors duration-200" 
-                  title="Marker som færdig"
-                >
+            )}
             {type === 'application' && (
               <p className="text-xs text-gray-500">Ansøgt: {new Date(task.appliedDate).toLocaleDateString('da-DK')}</p>
             )}
@@ -161,7 +153,15 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
               <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200" title="Se detaljer">
                 <Eye className="w-4 h-4 text-gray-600" />
               </button>
-              <button className="p-2 rounded-lg hover:bg-green-100 transition-colors duration-200" title="Marker som færdig">
+              <button 
+                onClick={() => {
+                  if (confirm('Marker denne opgave som færdig?')) {
+                    alert('Opgave markeret som færdig! Kunden vil blive notificeret.');
+                  }
+                }}
+                className="p-2 rounded-lg hover:bg-green-100 transition-colors duration-200" 
+                title="Marker som færdig"
+              >
                 <CheckCircle className="w-4 h-4 text-green-600" />
               </button>
             </>
