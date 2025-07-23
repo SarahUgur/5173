@@ -487,7 +487,10 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
 
           {post.isJobPost && (
             <button
-              onClick={() => handleInteraction('apply')}
+              onClick={() => {
+                // Handle job application - alle kan ansøge under lanceringsperioden
+                alert('Ansøgning sendt! Kunden vil kontakte dig snart.');
+              }}
               className="px-3 sm:px-6 py-2 rounded-lg font-medium flex items-center space-x-2 text-sm sm:text-base transition-all duration-200 btn-primary text-white hover:scale-105"
             >
               <span>{t('apply')}</span>

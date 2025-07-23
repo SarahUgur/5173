@@ -258,13 +258,9 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
                 </button>
                 <button
                   onClick={() => handleApply(job.id)}
-                  className={`flex items-center space-x-1 px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
-                    currentUser?.isSubscribed
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
+                  className="flex items-center space-x-1 px-4 py-2 rounded-lg font-medium transition-colors duration-200 bg-blue-600 text-white hover:bg-blue-700"
                 >
-                  <span>{currentUser?.isSubscribed ? 'Ansøg nu' : 'Kun Pro'}</span>
+                  <span>Ansøg nu</span>
                 </button>
               </div>
             </div>

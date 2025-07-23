@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, MessageCircle, Bell, User, Menu, Globe, Star, Settings, LogOut, HelpCircle } from 'lucide-react';
+import { Search, MessageCircle, Bell, User, Menu, Globe, Star, Settings, LogOut, HelpCircle, X, MapPin, Briefcase, Users, FileText } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 
 interface HeaderProps {
@@ -31,6 +31,8 @@ export default function Header({
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
 
   const languages = [
     { code: 'da', name: 'Dansk', flag: '🇩🇰' },
@@ -43,6 +45,107 @@ export default function Header({
 
   const currentLanguage = languages.find(lang => lang.code === language);
 
+  // Mock search data
+  const searchData = {
+    posts: [
+      { id: '1', type: 'post', title: 'Hjemmerengøring i København', content: 'Søger pålidelig rengøringshjælp...', location: 'København NV', user: 'Maria Hansen' },
+      { id: '2', type: 'post', title: 'Kontorrengøring tilbud', content: 'Professionel kontorrengøring...', location: 'Aarhus C', user: 'Lars Nielsen' },
+      { id: '3', type: 'job', title: 'Hovedrengøring villa', content: 'AKUT: Stor villa har brug for...', location: 'Odense', user: 'Sofie Andersen' }
+    ],
+    users: [
+      { id: '1', type: 'user', name: 'Maria Hansen', location: 'København NV', userType: 'Privat kunde', avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' },
+      { id: '2', type: 'user', name: 'Lars Nielsen', location: 'Aarhus C', userType: 'Rengøringsekspert', avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' },
+      { id: '3', type: 'user', name: 'Sofie Andersen', location: 'Odense', userType: 'Lille virksomhed', avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' }
+    ],
+    pages: [
+      { id: '1', type: 'page', title: 'Hjælp & Support', description: 'Find svar på dine spørgsmål', page: 'support' },
+      { id: '2', type: 'page', title: 'Om os', description: 'Læs om Privat Rengøring', page: 'about' },
+      { id: '3', type: 'page', title: 'Kontakt & Klager', description: 'Kontakt vores support team', page: 'contact' },
+      { id: '4', type: 'page', title: 'Lokale Jobs', description: 'Find rengøringsjobs i dit område', page: 'jobs' },
+      { id: '5', type: 'page', title: 'Netværk', description: 'Byg dit professionelle netværk', page: 'network' },
+      { id: '6', type: 'page', title: 'Mine Opgaver', description: 'Administrer dine rengøringsjobs', page: 'tasks' },
+      { id: '7', type: 'page', title: 'Planlægning', description: 'Planlæg dine rengøringsaftaler', page: 'planning' },
+      { id: '8', type: 'page', title: 'Jobs på Kort', description: 'Se jobs på interaktivt kort', page: 'map' }
+    ]
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchTerm(query);
+    
+    if (query.trim().length < 2) {
+      setShowSearchResults(false);
+      setSearchResults([]);
+      return;
+    }
+
+    const results: any[] = [];
+    const searchQuery = query.toLowerCase();
+
+    // Search posts
+    searchData.posts.forEach(post => {
+      if (post.title.toLowerCase().includes(searchQuery) || 
+          post.content.toLowerCase().includes(searchQuery) ||
+          post.location.toLowerCase().includes(searchQuery) ||
+          post.user.toLowerCase().includes(searchQuery)) {
+        results.push(post);
+      }
+    });
+
+    // Search users
+    searchData.users.forEach(user => {
+      if (user.name.toLowerCase().includes(searchQuery) ||
+          user.location.toLowerCase().includes(searchQuery) ||
+          user.userType.toLowerCase().includes(searchQuery)) {
+        results.push(user);
+      }
+    });
+
+    // Search pages
+    searchData.pages.forEach(page => {
+      if (page.title.toLowerCase().includes(searchQuery) ||
+          page.description.toLowerCase().includes(searchQuery)) {
+        results.push(page);
+      }
+    });
+
+    setSearchResults(results);
+    setShowSearchResults(true);
+  };
+
+  const handleResultClick = (result: any) => {
+    setShowSearchResults(false);
+    setSearchTerm('');
+    
+    if (result.type === 'page') {
+      setCurrentPage(result.page);
+    } else if (result.type === 'user') {
+      // Navigate to user profile or show user modal
+      console.log('Navigate to user:', result.name);
+    } else if (result.type === 'post' || result.type === 'job') {
+      // Navigate to post or show post details
+      console.log('Navigate to post:', result.title);
+    }
+  };
+
+  const getResultIcon = (type: string) => {
+    switch (type) {
+      case 'post': return <FileText className="w-4 h-4 text-blue-600" />;
+      case 'job': return <Briefcase className="w-4 h-4 text-green-600" />;
+      case 'user': return <Users className="w-4 h-4 text-purple-600" />;
+      case 'page': return <Search className="w-4 h-4 text-orange-600" />;
+      default: return <Search className="w-4 h-4 text-gray-600" />;
+    }
+  };
+
+  const getResultLabel = (type: string) => {
+    switch (type) {
+      case 'post': return 'Opslag';
+      case 'job': return 'Job';
+      case 'user': return 'Person';
+      case 'page': return 'Side';
+      default: return '';
+    }
+  };
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
@@ -85,11 +188,88 @@ export default function Header({
               <input
                 type="text"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => handleSearch(e.target.value)}
+                onFocus={() => searchTerm.length >= 2 && setShowSearchResults(true)}
                 placeholder={t('searchPlaceholder')}
                 className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               />
+              {searchTerm && (
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setShowSearchResults(false);
+                  }}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
+
+            {/* Search Results Dropdown */}
+            {showSearchResults && searchResults.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50">
+                <div className="p-3 border-b border-gray-100">
+                  <p className="text-sm font-medium text-gray-900">
+                    {searchResults.length} resultater for "{searchTerm}"
+                  </p>
+                </div>
+                <div className="py-2">
+                  {searchResults.map((result, index) => (
+                    <button
+                      key={`${result.type}-${result.id}-${index}`}
+                      onClick={() => handleResultClick(result)}
+                      className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors duration-200 text-left"
+                    >
+                      <div className="flex-shrink-0">
+                        {result.type === 'user' ? (
+                          <img
+                            src={result.avatar}
+                            alt={result.name}
+                            className="w-8 h-8 rounded-full"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                            {getResultIcon(result.type)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-2">
+                          <p className="font-medium text-gray-900 truncate">
+                            {result.name || result.title}
+                          </p>
+                          <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+                            {getResultLabel(result.type)}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 truncate">
+                          {result.type === 'user' ? (
+                            <>
+                              <MapPin className="w-3 h-3 inline mr-1" />
+                              {result.location} • {result.userType}
+                            </>
+                          ) : result.type === 'page' ? (
+                            result.description
+                          ) : (
+                            <>
+                              <MapPin className="w-3 h-3 inline mr-1" />
+                              {result.location} • {result.content?.substring(0, 50)}...
+                            </>
+                          )}
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+                {searchResults.length === 0 && (
+                  <div className="p-4 text-center text-gray-500">
+                    <Search className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                    <p>Ingen resultater fundet for "{searchTerm}"</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Right side */}
@@ -249,21 +429,87 @@ export default function Header({
             <input
               type="text"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => handleSearch(e.target.value)}
+              onFocus={() => searchTerm.length >= 2 && setShowSearchResults(true)}
               placeholder={t('searchPlaceholder')}
               className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
+            {searchTerm && (
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setShowSearchResults(false);
+                }}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
+
+          {/* Mobile Search Results */}
+          {showSearchResults && searchResults.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-80 overflow-y-auto z-50">
+              <div className="p-3 border-b border-gray-100">
+                <p className="text-sm font-medium text-gray-900">
+                  {searchResults.length} resultater
+                </p>
+              </div>
+              <div className="py-2">
+                {searchResults.map((result, index) => (
+                  <button
+                    key={`mobile-${result.type}-${result.id}-${index}`}
+                    onClick={() => handleResultClick(result)}
+                    className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors duration-200 text-left"
+                  >
+                    <div className="flex-shrink-0">
+                      {result.type === 'user' ? (
+                        <img
+                          src={result.avatar}
+                          alt={result.name}
+                          className="w-8 h-8 rounded-full"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                          {getResultIcon(result.type)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2">
+                        <p className="font-medium text-gray-900 truncate text-sm">
+                          {result.name || result.title}
+                        </p>
+                        <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+                          {getResultLabel(result.type)}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 truncate">
+                        {result.type === 'user' ? (
+                          `${result.location} • ${result.userType}`
+                        ) : result.type === 'page' ? (
+                          result.description
+                        ) : (
+                          `${result.location} • ${result.content?.substring(0, 30)}...`
+                        )}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Dropdown Overlays */}
-      {(showLanguageMenu || showProfileMenu) && (
+      {(showLanguageMenu || showProfileMenu || showSearchResults) && (
         <div 
           className="fixed inset-0 z-30" 
           onClick={() => {
             setShowLanguageMenu(false);
             setShowProfileMenu(false);
+            setShowSearchResults(false);
           }}
         />
       )}
