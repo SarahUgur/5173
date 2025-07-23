@@ -12,7 +12,6 @@ interface HeaderProps {
   onShowSettings: () => void;
   onShowHelp: () => void;
   setCurrentPage: (page: string) => void;
-  onShowSubscription: () => void;
 }
 
 export default function Header({ 

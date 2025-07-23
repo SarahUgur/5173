@@ -872,15 +872,31 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
               <div className="flex space-x-3 mt-6">
                 <button
                   onClick={() => setShowMediaEditor(false)}
-                ℹ️ Alle funktioner er gratis under lanceringsperioden
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
                 >
                   Annuller
-                Du kan like, kommentere, ansøge om jobs og sende beskeder - alt er gratis!
+                </button>
                 <button
                   onClick={() => setShowMediaEditor(false)}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                >
+                  Gem Ændringer
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
+
+      {/* Launch Period Notice */}
+      <div className="mt-3 p-3 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg">
+        <p className="text-xs text-green-800 text-center">
+          ℹ️ Alle funktioner er gratis under lanceringsperioden
+        </p>
+        <p className="text-xs text-green-700 text-center mt-1">
+          Du kan like, kommentere, ansøge om jobs og sende beskeder - alt er gratis!
+        </p>
+      </div>
     </div>
   );
 }
