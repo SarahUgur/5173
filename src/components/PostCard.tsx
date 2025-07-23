@@ -165,7 +165,17 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
         });
       }
       
-      console.log('Posting comment:', commentText);
+      // Add new comment to post
+      const newComment = {
+        id: Date.now().toString(),
+        content: commentText,
+        createdAt: 'Nu',
+        user: currentUser
+      };
+      
+      // Update post comments (in real app this would be API call)
+      post.comments = [...post.comments, newComment];
+      
       setCommentText('');
     }
   };
