@@ -106,35 +106,55 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
     setSocialLoginLoading(provider);
     
     try {
-      // Simulate social login - in real app this would redirect to OAuth provider
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Redirect to real OAuth providers
+      const baseUrl = window.location.origin;
+      const redirectUri = encodeURIComponent(`${baseUrl}/auth/callback`);
       
-      // Demo user for social login
-      const socialUser = {
-        id: `${provider}_user`,
-        name: provider === 'google' ? 'Google Bruger' : provider === 'apple' ? 'Apple Bruger' : 'Facebook Bruger',
-        email: `${provider}@example.com`,
-        userType: 'private' as const,
-        verified: true,
-        isSubscribed: false,
-        location: 'Danmark',
-        avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        rating: 0,
-        completedJobs: 0,
-        bio: `Logget ind via ${provider}`,
-        phone: '',
-        website: '',
-        joinedDate: new Date().toISOString()
-      };
+      let authUrl = '';
       
-      localStorage.setItem('authToken', `${provider}-token`);
-      onLogin(socialUser);
+      switch (provider) {
+        case 'google':
+          // Google OAuth 2.0
+          const googleClientId = 'YOUR_GOOGLE_CLIENT_ID'; // Replace with real client ID
+          authUrl = `https://accounts.google.com/oauth/authorize?` +
+            `client_id=${googleClientId}&` +
+            `redirect_uri=${redirectUri}&` +
+            `response_type=code&` +
+            `scope=openid email profile&` +
+            `state=google`;
+          break;
+          
+        case 'apple':
+          // Apple Sign In
+          const appleClientId = 'YOUR_APPLE_CLIENT_ID'; // Replace with real client ID
+          authUrl = `https://appleid.apple.com/auth/authorize?` +
+            `client_id=${appleClientId}&` +
+            `redirect_uri=${redirectUri}&` +
+            `response_type=code&` +
+            `scope=name email&` +
+            `response_mode=form_post&` +
+            `state=apple`;
+          break;
+          
+        case 'facebook':
+          // Facebook Login
+          const facebookAppId = 'YOUR_FACEBOOK_APP_ID'; // Replace with real app ID
+          authUrl = `https://www.facebook.com/v18.0/dialog/oauth?` +
+            `client_id=${facebookAppId}&` +
+            `redirect_uri=${redirectUri}&` +
+            `response_type=code&` +
+            `scope=email,public_profile&` +
+            `state=facebook`;
+          break;
+      }
+      
+      // Redirect to OAuth provider
+      window.location.href = authUrl;
       
     } catch (error) {
       alert(`Fejl ved ${provider} login. Prøv igen.`);
+      setSocialLoginLoading(null);
     }
-    
-    setSocialLoginLoading(null);
   };
 
   const userTypes = [
@@ -205,7 +225,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
                       </svg>
                     )}
                     <span className="font-medium text-gray-700">
-                      {socialLoginLoading === 'google' ? 'Logger ind...' : 'Fortsæt med Google'}
+                      {socialLoginLoading === 'google' ? 'Omdirigerer til Google...' : 'Fortsæt med Google'}
                     </span>
                   </button>
                   
@@ -223,7 +243,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
                       </svg>
                     )}
                     <span className="font-medium text-gray-700">
-                      {socialLoginLoading === 'apple' ? 'Logger ind...' : 'Fortsæt med Apple'}
+                      {socialLoginLoading === 'apple' ? 'Omdirigerer til Apple...' : 'Fortsæt med Apple'}
                     </span>
                   </button>
                   
@@ -241,7 +261,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
                       </svg>
                     )}
                     <span className="font-medium text-gray-700">
-                      {socialLoginLoading === 'facebook' ? 'Logger ind...' : 'Fortsæt med Facebook'}
+                      {socialLoginLoading === 'facebook' ? 'Omdirigerer til Facebook...' : 'Fortsæt med Facebook'}
                     </span>
                   </button>
                 </div>
