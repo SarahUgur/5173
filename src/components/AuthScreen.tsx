@@ -27,6 +27,31 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
     let response;
 
     try {
+     // Demo admin login - bypass API for admin
+     if (email === 'admin@privatrengoring.dk' && password === 'admin123') {
+       const adminUser = {
+         id: 'admin',
+         name: 'Administrator',
+         email: 'admin@privatrengoring.dk',
+         userType: 'admin',
+         verified: true,
+         isSubscribed: true,
+         location: 'Danmark',
+         avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+         rating: 5.0,
+         completedJobs: 0,
+         bio: 'Platform Administrator',
+         phone: '+45 12 34 56 78',
+         website: 'https://privatrengoring.dk',
+         joinedDate: '2024-01-01'
+       };
+       
+       localStorage.setItem('authToken', 'admin-token');
+       onLogin(adminUser);
+       setLoading(false);
+       return;
+     }
+
       // Real authentication API call
       response = await fetch('/api/auth', {
         method: 'POST',
