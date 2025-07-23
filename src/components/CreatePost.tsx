@@ -332,8 +332,8 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                   <div className="space-y-4">
                     {/* Mobile Step Title */}
                     <div className="sm:hidden text-center mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900">Trin 1: Grundinfo</h3>
-                      <p className="text-sm text-gray-600">Hvad søger du hjælp til?</p>
+                      <h3 className="text-lg font-semibold text-gray-900">Målgruppe & Kategori</h3>
+                      <p className="text-sm text-gray-600">Vælg hvem du er og type rengøring</p>
                     </div>
 
                     {/* Target Audience */}
@@ -373,41 +373,6 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                       </div>
                     </div>
 
-                    {/* Navigation Buttons */}
-                    <div className="flex justify-between pt-4">
-                      <button
-                        type="button"
-                        disabled
-                        className="px-6 py-3 border border-gray-300 text-gray-400 rounded-lg cursor-not-allowed"
-                      >
-                        Tilbage
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (!targetAudience) {
-                            setFormErrors(['Vælg hvad du vil bruge appen til']);
-                            return;
-                          }
-                          setCurrentStep(2);
-                          setFormErrors([]);
-                        }}
-                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                      >
-                        Næste
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 2: Detaljer */}
-                {currentStep === 2 && (
-                  <div className="space-y-4">
-                    {/* Mobile Step Title */}
-                    <div className="sm:hidden text-center mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900">Trin 2: Detaljer</h3>
-                      <p className="text-sm text-gray-600">Fortæl mere om opgaven</p>
-                    </div>
                     {/* User Category */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">{t('userCategory')}</label>
@@ -416,7 +381,15 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                           <button
                             key={type.id}
                             type="button"
-                            onClick={() => setJobCategory(type.id)}
+                            onClick={() => {
+                              setJobCategory(type.id);
+                              // Auto-select appropriate cleaning category based on user type
+                              if (type.id === 'private_customer') {
+                                setJobType('regular_cleaning'); // Default to home cleaning for private
+                              } else if (type.id === 'business_customer') {
+                                setJobType('daily_office'); // Default to office cleaning for business
+                              }
+                            }}
                             className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
                               jobCategory === type.id
                                 ? 'border-purple-500 bg-purple-50 text-purple-700'
@@ -435,12 +408,29 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                     {/* Job Categories */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">{t('cleaningCategory')}</label>
-                      <div className="space-y-3 max-h-[30vh] overflow-y-auto">
+                      <div className="space-y-3 max-h-[40vh] overflow-y-auto custom-scrollbar">
                         {jobCategories.map((category) => (
-                          <div key={category.id} className="border border-gray-200 rounded-xl p-4">
+                          <div key={category.id} className={`border-2 rounded-xl p-4 transition-all duration-200 ${
+                            // Highlight relevant categories based on user type
+                            (jobCategory === 'private_customer' && category.id === 'home_cleaning') ||
+                            (jobCategory === 'business_customer' && category.id === 'office_cleaning') ||
+                            (jobCategory === 'cleaning_expert' && category.id === 'specialized_cleaning')
+                              ? 'border-blue-300 bg-blue-50' 
+                              : 'border-gray-200'
+                          }`}>
                             <div className="flex items-center space-x-2 mb-2">
                               <category.icon className="w-5 h-5 text-gray-600" />
-                              <span className="font-medium text-gray-900">{category.label}</span>
+                              <span className="font-medium text-gray-900">
+                                {category.label}
+                                {/* Show recommendation */}
+                                {((jobCategory === 'private_customer' && category.id === 'home_cleaning') ||
+                                  (jobCategory === 'business_customer' && category.id === 'office_cleaning') ||
+                                  (jobCategory === 'cleaning_expert' && category.id === 'specialized_cleaning')) && (
+                                  <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                                    Anbefalet
+                                  </span>
+                                )}
+                              </span>
                             </div>
                             <div className="grid grid-cols-1 gap-2">
                               {category.subcategories.map((sub) => (
@@ -451,7 +441,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                                   className={`p-3 rounded-lg text-sm transition-all duration-200 hover:scale-105 ${
                                     jobType === sub.id
                                       ? 'bg-blue-100 text-blue-700 border border-blue-300'
-                                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
+                                      : 'bg-gray-50 text-gray-700 hover:bg-blue-50 border border-gray-200'
                                   }`}
                                 >
                                   {sub.label}
@@ -461,6 +451,50 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                           </div>
                         ))}
                       </div>
+                    </div>
+
+                    {/* Navigation Buttons */}
+                    <div className="flex justify-between pt-4">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsExpanded(false);
+                          setCurrentStep(1);
+                        }}
+                        className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                      >
+                        Annuller
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const errors = [];
+                          if (!targetAudience) errors.push('Vælg målgruppe');
+                          if (!jobCategory) errors.push('Vælg brugerkategori');
+                          if (!jobType) errors.push('Vælg rengøringstype');
+                          
+                          if (errors.length > 0) {
+                            setFormErrors(errors);
+                            return;
+                          }
+                          setCurrentStep(2);
+                          setFormErrors([]);
+                        }}
+                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                      >
+                        Næste: Detaljer
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 2: Detaljer */}
+                {currentStep === 2 && (
+                  <div className="space-y-4">
+                    {/* Mobile Step Title */}
+                    <div className="sm:hidden text-center mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Trin 2: Detaljer</h3>
+                      <p className="text-sm text-gray-600">Lokation, budget og hastighed</p>
                     </div>
 
                     {/* Location and Budget */}
@@ -517,8 +551,6 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                         type="button"
                         onClick={() => {
                           const errors = [];
-                          if (!jobCategory) errors.push('Vælg brugerkategori');
-                          if (!jobType) errors.push('Vælg rengøringstype');
                           if (!location.trim()) errors.push('Indtast lokation');
                           
                           if (errors.length > 0) {
@@ -530,7 +562,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                         }}
                         className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
                       >
-                        Næste
+                        Næste: Billeder
                       </button>
                     </div>
                   </div>
@@ -600,7 +632,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                         disabled={!content.trim()}
                         className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                       >
-                        Opret Job
+                        🚀 Opret Job Opslag
                       </button>
                     </div>
                   </div>
