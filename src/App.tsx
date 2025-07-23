@@ -288,6 +288,87 @@ function App() {
     });
   };
 
+  const handleDeletePost = (postId: string) => {
+    // Delete post from API
+    fetch(`/api/posts/${postId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      }
+    }).then(response => {
+      if (response.ok) {
+        alert('Opslag slettet permanent.');
+        // Refresh page to remove post
+        window.location.reload();
+      } else {
+        alert('Kunne ikke slette opslag. Prøv igen.');
+      }
+    }).catch(error => {
+      console.error('Delete post error:', error);
+      alert('Kunne ikke slette opslag. Prøv igen.');
+    });
+  };
+
+  const handleHidePost = (postId: string) => {
+    // Hide post from API
+    fetch(`/api/posts/${postId}/hide`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      }
+    }).then(response => {
+      if (response.ok) {
+        alert('Opslag skjult. Du kan vise det igen i dine indstillinger.');
+        // Refresh page to hide post
+        window.location.reload();
+      } else {
+        alert('Kunne ikke skjule opslag. Prøv igen.');
+      }
+    }).catch(error => {
+      console.error('Hide post error:', error);
+      alert('Kunne ikke skjule opslag. Prøv igen.');
+    });
+  };
+
+  const handleDeleteComment = (commentId: string, postId: string) => {
+    // Delete comment from API
+    fetch(`/api/comments/${commentId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      }
+    }).then(response => {
+      if (response.ok) {
+        alert('Kommentar slettet permanent.');
+        // Refresh page to remove comment
+        window.location.reload();
+      } else {
+        alert('Kunne ikke slette kommentar. Prøv igen.');
+      }
+    }).catch(error => {
+      console.error('Delete comment error:', error);
+      alert('Kunne ikke slette kommentar. Prøv igen.');
+    });
+  };
+
+  const handleHideComment = (commentId: string, postId: string) => {
+    // Hide comment from API
+    fetch(`/api/comments/${commentId}/hide`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      }
+    }).then(response => {
+      if (response.ok) {
+        console.log('Kommentar skjult');
+      } else {
+        alert('Kunne ikke skjule kommentar. Prøv igen.');
+      }
+    }).catch(error => {
+      console.error('Hide comment error:', error);
+      alert('Kunne ikke skjule kommentar. Prøv igen.');
+    });
+  };
   // Show auth screen if not logged in
   if (!currentUser) {
     return <AuthScreen onLogin={handleLogin} />;
@@ -359,6 +440,10 @@ function App() {
               onShowUserProfile={setShowUserProfile}
               onTagUser={handleTagUser}
               onSharePost={handleSharePost}
+              onDeletePost={handleDeletePost}
+              onHidePost={handleHidePost}
+              onDeleteComment={handleDeleteComment}
+              onHideComment={handleHideComment}
             />
             
             {/* Ad between posts */}

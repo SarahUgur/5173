@@ -13,9 +13,13 @@ interface PostCardProps {
   onShowUserProfile?: (user: any) => void;
   onTagUser?: (userId: string, postId: string) => void;
   onSharePost?: (postId: string, platform: string) => void;
+  onDeletePost?: (postId: string) => void;
+  onHidePost?: (postId: string) => void;
+  onDeleteComment?: (commentId: string, postId: string) => void;
+  onHideComment?: (commentId: string, postId: string) => void;
 }
 
-export default function PostCard({ post, currentUser, onShowSubscription, onReport, onShowUserProfile, onTagUser, onSharePost }: PostCardProps) {
+export default function PostCard({ post, currentUser, onShowSubscription, onReport, onShowUserProfile, onTagUser, onSharePost, onDeletePost, onHidePost, onDeleteComment, onHideComment }: PostCardProps) {
   const { t, getJobTypeLabel, getUrgencyLabel } = useLanguage();
   const [liked, setLiked] = useState(false);
   const [reactionType, setReactionType] = useState<'like' | 'love' | 'laugh' | 'wow' | null>(null);
@@ -32,6 +36,8 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
   const [reportReason, setReportReason] = useState('');
   const [reportDescription, setReportDescription] = useState('');
   const [showApplicationModal, setShowApplicationModal] = useState(false);
+  const [hiddenComments, setHiddenComments] = useState<string[]>([]);
+  const [showCommentMenus, setShowCommentMenus] = useState<{[key: string]: boolean}>({});
   
   // Auto-close dropdowns when clicking outside
   React.useEffect(() => {
@@ -46,6 +52,9 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
       }
       if (!target.closest('.reactions-dropdown')) {
         setShowReactions(false);
+      }
+      if (!target.closest('.comment-menu-dropdown')) {
+        setShowCommentMenus({});
       }
     };
 
@@ -222,16 +231,33 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
   const handleHidePost = () => {
     setIsPostHidden(true);
     setShowMoreMenu(false);
-    alert('Opslag skjult. Du kan vise det igen i dine indstillinger.');
+    onHidePost?.(post.id);
   };
 
   const handleDeletePost = () => {
     if (confirm('Er du sikker på at du vil slette dette opslag? Dette kan ikke fortrydes.')) {
-      alert('Opslag slettet permanent.');
       setShowMoreMenu(false);
+      onDeletePost?.(post.id);
     }
   };
 
+  const handleDeleteComment = (commentId: string) => {
+    if (confirm('Er du sikker på at du vil slette denne kommentar? Dette kan ikke fortrydes.')) {
+      onDeleteComment?.(commentId, post.id);
+    }
+  };
+
+  const handleHideComment = (commentId: string) => {
+    setHiddenComments(prev => [...prev, commentId]);
+    onHideComment?.(commentId, post.id);
+  };
+
+  const toggleCommentMenu = (commentId: string) => {
+    setShowCommentMenus(prev => ({
+      ...prev,
+      [commentId]: !prev[commentId]
+    }));
+  };
   const reportReasons = [
     'Spam eller uønsket indhold',
     'Upassende eller krænkende sprog',
@@ -592,17 +618,56 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
       {showComments && (
         <div className="border-t border-gray-100 p-3 sm:p-4 bg-gradient-to-b from-gray-50 to-white animate-slideUp">
           <div className="space-y-3">
-            {post.comments.map((comment) => (
-              <div key={comment.id} className="flex space-x-3 animate-fadeIn">
+            {post.comments.filter(comment => !hiddenComments.includes(comment.id)).map((comment) => (
+              <div key={comment.id} className="flex space-x-3 animate-fadeIn group">
                 <img
                   src={comment.user.avatar}
                   alt={comment.user.name}
                   className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex-shrink-0 ring-2 ring-transparent hover:ring-blue-300 transition-all duration-200"
                 />
                 <div className="flex-1 bg-white rounded-lg p-3 shadow-soft hover:shadow-medium transition-shadow duration-200">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <span className="font-semibold text-sm">{comment.user.name}</span>
-                    <span className="text-xs text-gray-500">{comment.createdAt}</span>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-semibold text-sm">{comment.user.name}</span>
+                      <span className="text-xs text-gray-500">{comment.createdAt}</span>
+                    </div>
+                    
+                    {/* Comment Menu - kun for egne kommentarer */}
+                    {comment.user.id === currentUser?.id && (
+                      <div className="relative">
+                        <button
+                          onClick={() => toggleCommentMenu(comment.id)}
+                          className="comment-menu-dropdown opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-100 rounded-full transition-all duration-200"
+                        >
+                          <MoreHorizontal className="w-4 h-4 text-gray-400" />
+                        </button>
+                        
+                        {showCommentMenus[comment.id] && (
+                          <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 comment-menu-dropdown">
+                            <button
+                              onClick={() => {
+                                handleHideComment(comment.id);
+                                setShowCommentMenus(prev => ({ ...prev, [comment.id]: false }));
+                              }}
+                              className="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-gray-50 transition-colors duration-200 text-gray-700"
+                            >
+                              <EyeOff className="w-3 h-3" />
+                              <span className="text-xs">Skjul</span>
+                            </button>
+                            <button
+                              onClick={() => {
+                                handleDeleteComment(comment.id);
+                                setShowCommentMenus(prev => ({ ...prev, [comment.id]: false }));
+                              }}
+                              className="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-gray-50 transition-colors duration-200 text-red-600"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              <span className="text-xs">Slet</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <p className="text-sm text-gray-800">
                     {comment.content.split(' ').map((word, index) => {
