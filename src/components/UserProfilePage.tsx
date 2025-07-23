@@ -74,15 +74,6 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
   ];
 
   const handleSaveProfile = () => {
-    // Update current user immediately for instant feedback
-    onUpdateUser({
-      ...currentUser,
-      ...editData
-    });
-    setIsEditing(false);
-    alert('✅ Profil opdateret succesfuldt!');
-    
-    // Also save to API in background
     saveProfileChanges();
   };
 
@@ -216,9 +207,9 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
               </div>
               <button
                 onClick={() => setIsEditing(true)}
-                className="mt-3 w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+                className="mt-3 w-full bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors duration-200 font-medium"
               >
-                Fuldfør Profil Nu ({completionPercentage}%)
+                Fuldfør Profil Nu
               </button>
             </div>
           );
@@ -509,7 +500,8 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
                   }}
                   className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
                 >
-                  Kun Pro kan blokere
+                  <Edit className="w-4 h-4" />
+                  <span>Rediger Profil</span>
                 </button>
               </div>
 
