@@ -173,8 +173,8 @@ export default function Header({
                 />
                 {currentUser?.isSubscribed && (
                   <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center">
-                    <Star className="w-2 h-2 text-white" />
-                  </div>
+                    <Star className="w-3 h-3 mr-1" />
+                    Verificeret
                 )}
               </button>
 

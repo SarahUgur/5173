@@ -104,10 +104,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
   };
 
   const handleShare = (platform: string) => {
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription();
-      return;
-    }
+    // Alle funktioner er gratis under lanceringsperioden
     
     const postUrl = `${window.location.origin}/post/${post.id}`;
     const text = `Tjek dette opslag på Privat Rengøring: ${post.content.substring(0, 100)}...`;
