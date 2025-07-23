@@ -121,36 +121,64 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
   ];
   const jobCategories = [
     { 
-      id: 'home_cleaning', 
-      label: t('homeCleaning'), 
+      id: 'private_services', 
+      label: 'Privat Rengøring', 
       icon: Home,
+      userTypes: ['private_customer'],
       subcategories: [
-        { id: 'regular_cleaning', label: t('regularCleaning') },
-        { id: 'deep_cleaning', label: t('deepCleaning') },
-        { id: 'move_cleaning', label: t('moveCleaning') },
-        { id: 'window_cleaning', label: t('windowCleaning') }
+        { id: 'home_cleaning', label: 'Hjemmerengøring' },
+        { id: 'deep_cleaning', label: 'Hovedrengøring' },
+        { id: 'regular_cleaning', label: 'Fast rengøring' },
+        { id: 'one_time_cleaning', label: 'Engangsrengøring' },
+        { id: 'window_cleaning', label: 'Vinduespolering' },
+        { id: 'move_in_out_cleaning', label: 'Fraflytning/Tilflytning' },
+        { id: 'carpet_sofa_cleaning', label: 'Tæppe og sofa rens' },
+        { id: 'laundry_service', label: 'Tøjvask' },
+        { id: 'garden_cleaning', label: 'Have rengøring' }
       ]
     },
     { 
-      id: 'office_cleaning', 
-      label: t('officeCleaning'), 
+      id: 'business_services', 
+      label: 'Erhverv Rengøring', 
       icon: Building,
+      userTypes: ['business_customer'],
       subcategories: [
-        { id: 'daily_office', label: t('dailyOfficeCleaning') },
-        { id: 'construction_cleaning', label: t('constructionCleaning') },
-        { id: 'industrial_cleaning', label: t('industrialCleaning') }
+        { id: 'office_cleaning', label: 'Kontorrengøring' },
+        { id: 'stair_cleaning', label: 'Trappevask' },
+        { id: 'industrial_cleaning', label: 'Industrirengøring' },
+        { id: 'construction_cleaning', label: 'Byggerengøring' },
+        { id: 'warehouse_cleaning', label: 'Lagerrengøring' },
+        { id: 'shop_cleaning', label: 'Butikslokale rengøring' },
+        { id: 'restaurant_cleaning', label: 'Restaurant rengøring' }
       ]
     },
     { 
-      id: 'specialized_cleaning', 
-      label: t('specializedCleaning'), 
-      icon: Shirt,
+      id: 'expert_services', 
+      label: 'Ekspert Specialer', 
+      icon: Car,
+      userTypes: ['cleaning_expert'],
       subcategories: [
-        { id: 'carpet_sofa_cleaning', label: t('carpetSofaCleaning') },
-        { id: 'car_cleaning', label: t('carCleaning') },
-        { id: 'garden_cleaning', label: t('gardenCleaning') },
-        { id: 'laundry_service', label: t('laundryService') },
-        { id: 'dry_cleaning', label: t('dryCleaning') }
+        { id: 'car_wash', label: 'Bilvask' },
+        { id: 'car_cleaning', label: 'Bil rengøring' },
+        { id: 'dry_cleaning', label: 'Kemisk rens' },
+        { id: 'roof_cleaning', label: 'Tag rens' },
+        { id: 'pipe_cleaning', label: 'Rør vask' },
+        { id: 'pressure_washing', label: 'Højtryksrens' },
+        { id: 'facade_cleaning', label: 'Facade rengøring' },
+        { id: 'solar_panel_cleaning', label: 'Solpanel rengøring' }
+      ]
+    },
+    { 
+      id: 'subcontractor_services', 
+      label: 'Underleverandør', 
+      icon: Users,
+      userTypes: ['subcontractor'],
+      subcategories: [
+        { id: 'seeking_supplier', label: 'Søger leverandør' },
+        { id: 'seeking_subcontractor', label: 'Søger underleverandør' },
+        { id: 'partnership', label: 'Partnerskab' },
+        { id: 'bulk_services', label: 'Større opgaver' },
+        { id: 'contract_work', label: 'Kontraktarbejde' }
       ]
     }
   ];
@@ -385,9 +413,13 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                               setJobCategory(type.id);
                               // Auto-select appropriate cleaning category based on user type
                               if (type.id === 'private_customer') {
-                                setJobType('regular_cleaning'); // Default to home cleaning for private
+                                setJobType('home_cleaning'); // Default to home cleaning for private
                               } else if (type.id === 'business_customer') {
-                                setJobType('daily_office'); // Default to office cleaning for business
+                                setJobType('office_cleaning'); // Default to office cleaning for business
+                              } else if (type.id === 'cleaning_expert') {
+                                setJobType('car_wash'); // Default to car wash for experts
+                              } else if (type.id === 'subcontractor') {
+                                setJobType('seeking_supplier'); // Default for subcontractors
                               }
                             }}
                             className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
@@ -408,37 +440,35 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                     {/* Job Categories */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">{t('cleaningCategory')}</label>
-                      <div className="space-y-3 max-h-[40vh] overflow-y-auto custom-scrollbar">
+                      <div className="space-y-3 max-h-[50vh] overflow-y-auto custom-scrollbar">
                         {jobCategories.map((category) => (
                           <div key={category.id} className={`border-2 rounded-xl p-4 transition-all duration-200 ${
-                            // Highlight relevant categories based on user type
-                            (jobCategory === 'private_customer' && category.id === 'home_cleaning') ||
-                            (jobCategory === 'business_customer' && category.id === 'office_cleaning') ||
-                            (jobCategory === 'cleaning_expert' && category.id === 'specialized_cleaning')
-                              ? 'border-blue-300 bg-blue-50' 
-                              : 'border-gray-200'
+                            // Show only relevant categories for selected user type
+                            category.userTypes?.includes(jobCategory)
+                              ? 'border-blue-500 bg-blue-50' 
+                              : 'border-gray-200 opacity-50'
+                          } ${
+                            // Hide categories that don't match user type
+                            !category.userTypes?.includes(jobCategory) ? 'hidden' : ''
                           }`}>
                             <div className="flex items-center space-x-2 mb-2">
                               <category.icon className="w-5 h-5 text-gray-600" />
                               <span className="font-medium text-gray-900">
                                 {category.label}
-                                {/* Show recommendation */}
-                                {((jobCategory === 'private_customer' && category.id === 'home_cleaning') ||
-                                  (jobCategory === 'business_customer' && category.id === 'office_cleaning') ||
-                                  (jobCategory === 'cleaning_expert' && category.id === 'specialized_cleaning')) && (
+                                {category.userTypes?.includes(jobCategory) && (
                                   <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                                    Anbefalet
+                                    Passer til dig
                                   </span>
                                 )}
                               </span>
                             </div>
-                            <div className="grid grid-cols-1 gap-2">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                               {category.subcategories.map((sub) => (
                                 <button
                                   key={sub.id}
                                   type="button"
                                   onClick={() => setJobType(sub.id)}
-                                  className={`p-3 rounded-lg text-sm transition-all duration-200 hover:scale-105 ${
+                                  className={`p-3 rounded-lg text-sm text-left transition-all duration-200 hover:scale-105 ${
                                     jobType === sub.id
                                       ? 'bg-blue-100 text-blue-700 border border-blue-300'
                                       : 'bg-gray-50 text-gray-700 hover:bg-blue-50 border border-gray-200'
