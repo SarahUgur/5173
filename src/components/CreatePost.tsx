@@ -872,18 +872,12 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
               <div className="flex space-x-3 mt-6">
                 <button
                   onClick={() => setShowMediaEditor(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                ℹ️ Alle funktioner er gratis under lanceringsperioden
                 >
                   Annuller
-                </button>
+                Du kan like, kommentere, ansøge om jobs og sende beskeder - alt er gratis!
                 <button
                   onClick={() => setShowMediaEditor(false)}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Gem Ændringer
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}

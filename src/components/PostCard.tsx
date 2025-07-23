@@ -441,57 +441,106 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
           <div className="flex items-center space-x-2 sm:space-x-4">
             <div className="relative">
               <button
-                onClick={() => reactionType ? setReactionType(null) : handleReaction('like')}
-                onMouseEnter={() => setShowReactions(true)}
-                onMouseLeave={() => setTimeout(() => setShowReactions(false), 300)}
-                className={`reactions-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setLiked(!liked);
+                  console.log('Like clicked! New state:', !liked);
+                }}
+                className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-colors duration-200 ${
                   reactionType ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
                 {reactionType ? (
                   <span className="text-lg">{reactions.find(r => r.type === reactionType)?.emoji}</span>
                 ) : (
-                  <ThumbsUp className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <ThumbsUp className={`w-4 h-4 sm:w-5 sm:h-5 ${liked ? 'text-blue-600' : ''}`} />
                 )}
-                <span className="font-medium text-sm sm:text-base">{post.likes + (reactionType ? 1 : 0)}</span>
+                <span className={`font-medium text-sm sm:text-base ${liked ? 'text-blue-600' : ''}`}>
+                  {post.likes + (liked ? 1 : 0)}
+                </span>
               </button>
               
-              {/* Reaction Menu */}
-              {showReactions && (
-                <div 
-                  className="absolute bottom-full left-0 mb-2 bg-white rounded-full shadow-strong border border-gray-200 p-2 flex space-x-2 z-50 animate-fadeIn reactions-dropdown"
-                  onMouseEnter={() => setShowReactions(true)}
-                  onMouseLeave={() => setShowReactions(false)}
+              {/* Emoji Reactions - Hold to show */}
+              <div className="absolute bottom-full left-0 mb-2 bg-white rounded-full shadow-strong border border-gray-200 p-2 hidden group-hover:flex space-x-2 z-50">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setReactionType('like');
+                    console.log('Thumbs up reaction');
+                  }}
+                  className="hover:scale-125 transition-transform duration-200 p-1 hover:bg-gray-50 rounded-full"
+                  title="Like"
                 >
-                  <button
-                    onClick={() => {
-                      setLiked(!liked);
-                      setReactionType(null);
-                      setShowReactions(false);
-                      console.log('Simple like from reactions');
-                    }}
-                    className="hover:scale-125 transition-transform duration-200 p-1 hover:bg-gray-50 rounded-full"
-                    title="Like"
-                  >
-                    <span className="text-xl">👍</span>
-                  </button>
-                  {reactions.slice(1).map((reaction) => (
-                    <button
-                      key={reaction.type}
-                      onClick={() => handleReaction(reaction.type)}
-                      className="hover:scale-125 transition-transform duration-200 p-1 hover:bg-gray-50 rounded-full"
-                      title={reaction.label}
-                    >
-                      <span className="text-xl">{reaction.emoji}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
+                  <span className="text-xl">👍</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setReactionType('love');
+                    console.log('Heart reaction');
+                  }}
+                  className="hover:scale-125 transition-transform duration-200 p-1 hover:bg-gray-50 rounded-full"
+                  title="Elsker"
+                >
+                  <span className="text-xl">❤️</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setReactionType('laugh');
+                    console.log('Laugh reaction');
+                  }}
+                  className="hover:scale-125 transition-transform duration-200 p-1 hover:bg-gray-50 rounded-full"
+                  title="Sjovt"
+                >
+                  <span className="text-xl">😂</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setReactionType('wow');
+                    console.log('Wow reaction');
+                  }}
+                  className="hover:scale-125 transition-transform duration-200 p-1 hover:bg-gray-50 rounded-full"
+                  title="Wow"
+                >
+                  <span className="text-xl">😮</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setReactionType('angry');
+                    console.log('Angry reaction');
+                  }}
+                  className="hover:scale-125 transition-transform duration-200 p-1 hover:bg-gray-50 rounded-full"
+                  title="Sur"
+                >
+                  <span className="text-xl">😠</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setReactionType('sad');
+                    console.log('Sad reaction');
+                  }}
+                  className="hover:scale-125 transition-transform duration-200 p-1 hover:bg-gray-50 rounded-full"
+                  title="Trist"
+                >
+                  <span className="text-xl">😢</span>
+                </button>
+              </div>
             </div>
             
             <button
               onClick={() => handleInteraction('comment')}
-              className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 text-gray-600 hover:bg-gray-50"
+              className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-colors duration-200 text-gray-600 hover:bg-gray-50"
             >
               <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="font-medium text-sm sm:text-base">{post.comments.length}</span>
@@ -500,7 +549,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             <div className="relative">
               <button 
                 onClick={() => setShowShareMenu(!showShareMenu)}
-                className="share-menu-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 text-gray-600 hover:bg-gray-50"
+                className="share-menu-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-colors duration-200 text-gray-600 hover:bg-gray-50"
               >
                 <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="font-medium text-sm sm:text-base">{shareCount}</span>
@@ -531,7 +580,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
           {post.isJobPost && (
             <button
               onClick={() => handleInteraction('apply')}
-              className="px-3 sm:px-6 py-2 rounded-lg font-medium flex items-center space-x-2 text-sm sm:text-base transition-all duration-200 btn-primary text-white hover:scale-105"
+              className="px-3 sm:px-6 py-2 rounded-lg font-medium flex items-center space-x-2 text-sm sm:text-base transition-colors duration-200 btn-primary text-white hover:bg-blue-700"
             >
               <span>{t('apply')}</span>
             </button>
