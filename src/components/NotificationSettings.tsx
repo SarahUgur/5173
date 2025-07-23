@@ -108,9 +108,9 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="relative p-6 border-b border-gray-200">
+        <div className="relative p-4 border-b border-gray-200 flex-shrink-0">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
@@ -119,24 +119,25 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
           </button>
           
           <div className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Bell className="w-8 h-8 text-white" />
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Bell className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Notifikation Indstillinger</h2>
-            <p className="text-gray-600">Administrer hvordan du modtager notifikationer</p>
+            <h2 className="text-xl font-bold text-gray-900 mb-1">Notifikation Indstillinger</h2>
+            <p className="text-sm text-gray-600">Administrer hvordan du modtager notifikationer</p>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[70vh]">
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <div className="p-4 space-y-4">
           {/* Push Notifications Status */}
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+          <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-3">
-                <Smartphone className="w-6 h-6 text-blue-600" />
+                <Smartphone className="w-5 h-5 text-blue-600" />
                 <div>
-                  <h3 className="font-semibold text-blue-900">Push Notifikationer</h3>
-                  <p className="text-sm text-blue-700">Modtag notifikationer direkte på din enhed</p>
+                  <h3 className="text-sm font-semibold text-blue-900">Push Notifikationer</h3>
+                  <p className="text-xs text-blue-700">Modtag notifikationer direkte på din enhed</p>
                 </div>
               </div>
               <div className="text-right">
@@ -149,10 +150,10 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
             </div>
 
             {!pushSupported && (
-              <div className="mb-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+              <div className="mb-3 p-2 bg-orange-50 border border-orange-200 rounded-lg">
                 <div className="flex items-center space-x-2">
                   <AlertTriangle className="w-4 h-4 text-orange-600" />
-                  <span className="text-sm text-orange-800">Push notifikationer understøttes ikke på denne enhed</span>
+                  <span className="text-xs text-orange-800">Push notifikationer understøttes ikke på denne enhed</span>
                 </div>
               </div>
             )}
@@ -160,12 +161,12 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
             {pushSupported && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-blue-800">Browser support:</span>
-                  <span className="text-sm font-medium text-green-600">✅ Understøttet</span>
+                  <span className="text-xs text-blue-800">Browser support:</span>
+                  <span className="text-xs font-medium text-green-600">✅ Understøttet</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-blue-800">Tilladelse:</span>
-                  <span className={`text-sm font-medium ${
+                  <span className="text-xs text-blue-800">Tilladelse:</span>
+                  <span className={`text-xs font-medium ${
                     pushPermission === 'granted' ? 'text-green-600' : 
                     pushPermission === 'denied' ? 'text-red-600' : 'text-yellow-600'
                   }`}>
@@ -174,8 +175,8 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-blue-800">Status:</span>
-                  <span className={`text-sm font-medium ${pushSubscribed ? 'text-green-600' : 'text-gray-600'}`}>
+                  <span className="text-xs text-blue-800">Status:</span>
+                  <span className={`text-xs font-medium ${pushSubscribed ? 'text-green-600' : 'text-gray-600'}`}>
                     {pushSubscribed ? '✅ Tilmeldt' : '⭕ Ikke tilmeldt'}
                   </span>
                 </div>
@@ -185,7 +186,7 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
                     <button
                       onClick={handleEnablePush}
                       disabled={loading}
-                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors duration-200"
+                      className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors duration-200 text-sm"
                     >
                       {loading ? 'Aktiverer...' : 'Aktiver Push Notifikationer'}
                     </button>
@@ -193,14 +194,14 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
                     <>
                       <button
                         onClick={handleTestNotification}
-                        className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+                        className="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm"
                       >
                         Send Test Notifikation
                       </button>
                       <button
                         onClick={handleDisablePush}
                         disabled={loading}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors duration-200"
+                        className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors duration-200 text-sm"
                       >
                         Deaktiver
                       </button>
@@ -212,14 +213,14 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
           </div>
 
           {/* Notification Types */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Notifikation Typer</h3>
+          <div className="space-y-3">
+            <h3 className="text-base font-semibold text-gray-900">Notifikation Typer</h3>
             
             {/* Job Alerts */}
-            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
               <div>
-                <h4 className="font-medium text-gray-900">Job Alerts</h4>
-                <p className="text-sm text-gray-600">Nye jobs i dit område</p>
+                <h4 className="text-sm font-medium text-gray-900">Job Alerts</h4>
+                <p className="text-xs text-gray-600">Nye jobs i dit område</p>
               </div>
               <button
                 onClick={() => handleSettingChange('jobAlerts', !settings.jobAlerts)}
@@ -234,10 +235,10 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
             </div>
 
             {/* Message Alerts */}
-            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
               <div>
-                <h4 className="font-medium text-gray-900">Besked Alerts</h4>
-                <p className="text-sm text-gray-600">Nye beskeder fra andre brugere</p>
+                <h4 className="text-sm font-medium text-gray-900">Besked Alerts</h4>
+                <p className="text-xs text-gray-600">Nye beskeder fra andre brugere</p>
               </div>
               <button
                 onClick={() => handleSettingChange('messageAlerts', !settings.messageAlerts)}
@@ -252,10 +253,10 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
             </div>
 
             {/* Friend Requests */}
-            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
               <div>
-                <h4 className="font-medium text-gray-900">Venskabsanmodninger</h4>
-                <p className="text-sm text-gray-600">Nye venskabsanmodninger</p>
+                <h4 className="text-sm font-medium text-gray-900">Venskabsanmodninger</h4>
+                <p className="text-xs text-gray-600">Nye venskabsanmodninger</p>
               </div>
               <button
                 onClick={() => handleSettingChange('friendRequests', !settings.friendRequests)}
@@ -270,10 +271,10 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
             </div>
 
             {/* Comments */}
-            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
               <div>
-                <h4 className="font-medium text-gray-900">Kommentarer</h4>
-                <p className="text-sm text-gray-600">Kommentarer på dine opslag</p>
+                <h4 className="text-sm font-medium text-gray-900">Kommentarer</h4>
+                <p className="text-xs text-gray-600">Kommentarer på dine opslag</p>
               </div>
               <button
                 onClick={() => handleSettingChange('comments', !settings.comments)}
@@ -288,10 +289,10 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
             </div>
 
             {/* Likes */}
-            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
               <div>
-                <h4 className="font-medium text-gray-900">Likes</h4>
-                <p className="text-sm text-gray-600">Når nogen liker dine opslag</p>
+                <h4 className="text-sm font-medium text-gray-900">Likes</h4>
+                <p className="text-xs text-gray-600">Når nogen liker dine opslag</p>
               </div>
               <button
                 onClick={() => handleSettingChange('likes', !settings.likes)}
@@ -307,11 +308,11 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
           </div>
 
           {/* Quiet Hours */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-xl">
+          <div className="p-3 bg-gray-50 rounded-lg">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h4 className="font-medium text-gray-900">Stille Timer</h4>
-                <p className="text-sm text-gray-600">Ingen notifikationer i disse timer</p>
+                <h4 className="text-sm font-medium text-gray-900">Stille Timer</h4>
+                <p className="text-xs text-gray-600">Ingen notifikationer i disse timer</p>
               </div>
               <button
                 onClick={() => handleSettingChange('quietHours', !settings.quietHours)}
@@ -328,21 +329,21 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
             {settings.quietHours && (
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Fra</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Fra</label>
                   <input
                     type="time"
                     value={settings.quietStart}
                     onChange={(e) => handleSettingChange('quietStart', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Til</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Til</label>
                   <input
                     type="time"
                     value={settings.quietEnd}
                     onChange={(e) => handleSettingChange('quietEnd', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                   />
                 </div>
               </div>
@@ -350,9 +351,9 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
           </div>
 
           {/* Platform Specific Info */}
-          <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl">
-            <h4 className="font-semibold text-blue-900 mb-3">📱 Platform Specifikke Indstillinger</h4>
-            <div className="space-y-2 text-sm text-blue-800">
+          <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+            <h4 className="text-sm font-semibold text-blue-900 mb-2">📱 Platform Specifikke Indstillinger</h4>
+            <div className="space-y-1 text-xs text-blue-800">
               <div className="flex items-center space-x-2">
                 <span>🍎</span>
                 <span><strong>iPhone/iPad:</strong> Notifikationer vises i Notification Center og på låseskærm</span>
@@ -367,17 +368,18 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
               </div>
             </div>
           </div>
+          </div>
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200 bg-gray-50">
+        <div className="p-4 border-t border-gray-200 bg-gray-50 flex-shrink-0">
           <div className="flex justify-between items-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-xs text-gray-600">
               Indstillinger gemmes automatisk
             </p>
             <button
               onClick={onClose}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm"
             >
               Færdig
             </button>
