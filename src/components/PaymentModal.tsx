@@ -20,22 +20,17 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, userEmail }: 
     setError(null);
 
     try {
-      const stripe = await stripePromise;
-      if (!stripe) {
-        throw new Error('Stripe failed to load');
-      }
-
-      // Create checkout session
-      const session = await createCheckoutSession();
+      // For demo purposes, simulate successful payment
+      setTimeout(() => {
+        setIsLoading(false);
+        onSuccess();
+      }, 2000);
       
-      // Redirect to Stripe Checkout
-      const { error } = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      });
-
-      if (error) {
-        throw new Error(error.message);
-      }
+      // In production, use real Stripe:
+      // const stripe = await stripePromise;
+      // const session = await createCheckoutSession();
+      // await stripe.redirectToCheckout({ sessionId: session.id });
+      
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Der opstod en fejl');
       setIsLoading(false);

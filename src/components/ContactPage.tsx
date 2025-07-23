@@ -13,21 +13,37 @@ export default function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simuler form submission
+    // Send real contact form
     console.log('Kontakt form sendt:', formData);
-    setIsSubmitted(true);
     
-    // Reset form efter 3 sekunder
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
-        priority: 'normal'
-      });
-    }, 3000);
+    // Send to real API
+    fetch('/api/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
+    }).then(response => {
+      if (response.ok) {
+        setIsSubmitted(true);
+        // Reset form after 3 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({
+            name: '',
+            email: '',
+            subject: '',
+            message: '',
+            priority: 'normal'
+          });
+        }, 3000);
+      } else {
+        alert('Der opstod en fejl. Prøv igen eller kontakt support@privatrengoring.dk');
+      }
+    }).catch(error => {
+      console.error('Contact form error:', error);
+      alert('Der opstod en fejl. Prøv igen eller kontakt support@privatrengoring.dk');
+    });
   };
 
   if (isSubmitted) {

@@ -25,19 +25,27 @@ export default function InstallPrompt() {
   const handleInstall = async () => {
     if (!deferredPrompt) return;
 
-    // Show the install prompt
-    deferredPrompt.prompt();
-    
-    // Wait for the user to respond to the prompt
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
+    try {
+      // Show the install prompt
+      deferredPrompt.prompt();
+      
+      // Wait for the user to respond to the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+        alert('App installeres... Tjek din hjemmeskærm om et øjeblik!');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+      
+      // Clear the deferredPrompt
+      setDeferredPrompt(null);
+      setIsVisible(false);
+    } catch (error) {
+      console.error('Install error:', error);
+      alert('Installation ikke understøttet på denne enhed');
     }
-    
-    // Clear the deferredPrompt
-    setDeferredPrompt(null);
-    setShowPrompt(false);
   };
 
   const handleDismiss = () => {

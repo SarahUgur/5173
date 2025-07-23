@@ -93,7 +93,13 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
           </button>
           <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2">
             <Plus className="w-4 h-4" />
-            <span>Ny Aftale</span>
+            <span 
+              onClick={() => {
+                alert('Ny aftale funktion kommer snart! Kontakt kunden direkte for nu.');
+              }}
+            >
+              Ny Aftale
+            </span>
           </button>
         </div>
       </div>

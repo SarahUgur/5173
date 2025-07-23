@@ -66,19 +66,22 @@ export default function NetworkPage({ currentUser, onShowSubscription }: Network
   ];
 
   const handleConnect = (userId: string) => {
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription?.();
-      return;
+    // Send friend request
+    console.log('Sending friend request to:', userId);
+    
+    // Update UI to show request sent
+    const button = document.querySelector(`[data-user-id="${userId}"]`);
+    if (button) {
+      button.textContent = 'Anmodning sendt';
+      button.classList.add('bg-gray-300', 'cursor-not-allowed');
+      button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
     }
-    alert('Venskabsanmodning sendt!');
   };
 
   const handleMessage = (userId: string) => {
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription?.();
-      return;
-    }
-    alert('Åbner besked...');
+    // Open message modal or navigate to messages
+    console.log('Opening message to:', userId);
+    // In real app, this would open the messages modal with this user
   };
 
   const getUserTypeLabel = (type: string) => {
@@ -178,6 +181,7 @@ export default function NetworkPage({ currentUser, onShowSubscription }: Network
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleConnect(person.id)}
+                      data-user-id={person.id}
                       className="flex items-center space-x-1 px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
                     >
                       <UserPlus className="w-4 h-4" />

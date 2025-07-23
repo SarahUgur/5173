@@ -39,8 +39,25 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
   if (!isOpen) return null;
 
   const handleSaveProfile = () => {
-    onUpdateUser(formData);
-    alert('Profil opdateret!');
+    // Save to API
+    fetch('/api/user/profile', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: JSON.stringify(formData)
+    }).then(response => {
+      if (response.ok) {
+        onUpdateUser(formData);
+        alert('Profil opdateret succesfuldt!');
+      } else {
+        alert('Kunne ikke gemme profil. Prøv igen.');
+      }
+    }).catch(error => {
+      console.error('Error saving profile:', error);
+      alert('Kunne ikke gemme profil. Prøv igen.');
+    });
   };
 
   const handleDeleteAccount = () => {

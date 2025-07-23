@@ -93,7 +93,12 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
 
   const handleTestNotification = async () => {
     try {
-      await notificationManager.sendTestNotification();
+      if (pushSubscribed) {
+        await notificationManager.sendTestNotification();
+        alert('Test notifikation sendt! Tjek dine notifikationer.');
+      } else {
+        alert('Aktiver først push notifikationer for at teste.');
+      }
     } catch (error) {
       console.error('Failed to send test notification:', error);
       alert('Kunne ikke sende test notifikation');

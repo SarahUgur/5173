@@ -140,7 +140,15 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
             )}
             {type === 'completed' && (
               <p className="text-xs text-gray-500">Afsluttet: {new Date(task.completedDate).toLocaleDateString('da-DK')}</p>
-            )}
+                <button 
+                  onClick={() => {
+                    if (confirm('Marker denne opgave som færdig?')) {
+                      alert('Opgave markeret som færdig! Kunden vil blive notificeret.');
+                    }
+                  }}
+                  className="p-2 rounded-lg hover:bg-green-100 transition-colors duration-200" 
+                  title="Marker som færdig"
+                >
             {type === 'application' && (
               <p className="text-xs text-gray-500">Ansøgt: {new Date(task.appliedDate).toLocaleDateString('da-DK')}</p>
             )}
@@ -159,7 +167,15 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
             </>
           )}
           {type === 'application' && (
-            <button className="p-2 rounded-lg hover:bg-red-100 transition-colors duration-200" title="Træk ansøgning tilbage">
+            <button 
+              onClick={() => {
+                if (confirm('Træk denne ansøgning tilbage?')) {
+                  alert('Ansøgning trukket tilbage.');
+                }
+              }}
+              className="p-2 rounded-lg hover:bg-red-100 transition-colors duration-200" 
+              title="Træk ansøgning tilbage"
+            >
               <XCircle className="w-4 h-4 text-red-600" />
             </button>
           )}

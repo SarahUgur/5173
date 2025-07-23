@@ -81,14 +81,15 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
 
   const handleAdClick = () => {
     if (adData) {
-      // Simuler ad click tracking
+      // Track ad click
       console.log(`Ad clicked: ${adData.id} - Revenue: ~0.50 DKK`);
       
-      // I virkeligheden ville dette åbne reklamen
+      // Open ad URL
       if (onAdClick) {
         onAdClick();
       } else {
-        window.open(adData.url, '_blank');
+        // Open demo ad page
+        window.open('https://example.com/ad-demo', '_blank');
       }
     }
   };

@@ -114,13 +114,11 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
   };
 
   const handleViewDetails = (jobId: string) => {
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription?.();
-      return;
+    // Open job details in modal or new view
+    const job = jobs.find(j => j.id === jobId);
+    if (job) {
+      alert(`Job Detaljer:\n\nTitel: ${job.title}\nLokation: ${job.location}\nBudget: ${job.budget}\nKlient: ${job.client.name}\nBeskrivelse: ${job.description}`);
     }
-    
-    // Open job details modal or navigate to job page
-    window.location.href = `/job/${jobId}`;
   };
 
   const handleSendApplication = async (postId: string, message: string, contactMethod: string) => {

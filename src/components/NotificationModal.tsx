@@ -123,16 +123,40 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
         notif.id === id ? { ...notif, read: true } : notif
       )
     );
+    
+    // Send to API
+    fetch(`/api/notifications/${id}/read`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      }
+    }).catch(error => console.error('Error marking notification as read:', error));
   };
 
   const markAllAsRead = () => {
     setNotifications(prev => 
       prev.map(notif => ({ ...notif, read: true }))
     );
+    
+    // Send to API
+    fetch('/api/notifications/read-all', {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      }
+    }).catch(error => console.error('Error marking all notifications as read:', error));
   };
 
   const deleteNotification = (id: string) => {
     setNotifications(prev => prev.filter(notif => notif.id !== id));
+    
+    // Send to API
+    fetch(`/api/notifications/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      }
+    }).catch(error => console.error('Error deleting notification:', error));
   };
 
   const filteredNotifications = notifications.filter(notif => {

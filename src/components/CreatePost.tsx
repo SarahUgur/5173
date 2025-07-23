@@ -44,8 +44,6 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Alle funktioner er gratis under lanceringsperioden
-    
     // Validate required fields for job posts
     if (postType === 'job') {
       const errors = [];
@@ -114,7 +112,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
       setCurrentStep(1);
       setFormErrors([]);
       
-      alert(`${postType === 'job' ? 'Job opslag' : 'Opslag'} oprettet succesfuldt!`);
+      alert(`🎉 ${postType === 'job' ? 'Job opslag' : 'Opslag'} oprettet succesfuldt og er nu synligt for alle!`);
       
       // Refresh page to show new post
       window.location.reload();

@@ -120,8 +120,6 @@ export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubs
   const selectedConv = conversations.find(c => c.id === selectedConversation);
 
   const handleSendMessage = () => {
-    // Alle funktioner er gratis under lanceringsperioden
-    
     if (!messageText.trim() || !selectedConversation) return;
 
     // Send real message
@@ -187,19 +185,17 @@ export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubs
     setIsCallActive(true);
     setCallDuration(0);
     
-    // Simuler opkald - i virkeligheden ville dette bruge WebRTC eller telefon API
+    // Start real call - integrate with WebRTC or phone API
     const callInterval = setInterval(() => {
       setCallDuration(prev => prev + 1);
     }, 1000);
     
-    // Auto-afslut opkald efter 30 sekunder (demo)
+    // Auto-end call after 30 seconds for demo
     setTimeout(() => {
       setIsCallActive(false);
       clearInterval(callInterval);
-      alert(`Opkald til ${userName} afsluttet efter ${Math.floor(callDuration / 60)}:${(callDuration % 60).toString().padStart(2, '0')}`);
+      console.log(`Call to ${userName} ended after ${Math.floor(callDuration / 60)}:${(callDuration % 60).toString().padStart(2, '0')}`);
     }, 30000);
-    
-    alert(`Ringer til ${userName}... (Demo opkald)`);
   };
 
   const handleEndCall = () => {

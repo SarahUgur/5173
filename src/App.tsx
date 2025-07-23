@@ -126,40 +126,166 @@ function App() {
 
   // Handle friend requests
   const handleSendFriendRequest = (userId: string) => {
-    console.log('Sending friend request to:', userId);
+    // Send real friend request
+    fetch('/api/friend-requests', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: JSON.stringify({ userId })
+    }).then(response => {
+      if (response.ok) {
+        alert('Venskabsanmodning sendt!');
+      } else {
+        alert('Kunne ikke sende venskabsanmodning. Prøv igen.');
+      }
+    }).catch(error => {
+      console.error('Friend request error:', error);
+      alert('Kunne ikke sende venskabsanmodning. Prøv igen.');
+    });
   };
 
   const handleAcceptFriendRequest = (requestId: string) => {
-    console.log('Accepting friend request:', requestId);
+    // Accept friend request
+    fetch(`/api/friend-requests/${requestId}/accept`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      }
+    }).then(response => {
+      if (response.ok) {
+        alert('Venskabsanmodning accepteret!');
+      } else {
+        alert('Kunne ikke acceptere anmodning. Prøv igen.');
+      }
+    }).catch(error => {
+      console.error('Accept friend request error:', error);
+      alert('Kunne ikke acceptere anmodning. Prøv igen.');
+    });
   };
 
   const handleDeclineFriendRequest = (requestId: string) => {
-    console.log('Declining friend request:', requestId);
+    // Decline friend request
+    fetch(`/api/friend-requests/${requestId}/decline`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      }
+    }).then(response => {
+      if (response.ok) {
+        alert('Venskabsanmodning afvist.');
+      } else {
+        alert('Kunne ikke afvise anmodning. Prøv igen.');
+      }
+    }).catch(error => {
+      console.error('Decline friend request error:', error);
+      alert('Kunne ikke afvise anmodning. Prøv igen.');
+    });
   };
 
   const handleSendMessage = (userId: string) => {
-    console.log('Opening message to:', userId);
     setShowMessages(true);
+    // In real app, this would open messages modal with specific user selected
   };
 
   const handleBlockUser = (userId: string) => {
-    console.log('Blocking user:', userId);
+    // Block user
+    fetch('/api/users/block', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: JSON.stringify({ userId })
+    }).then(response => {
+      if (response.ok) {
+        alert('Bruger blokeret succesfuldt.');
+      } else {
+        alert('Kunne ikke blokere bruger. Prøv igen.');
+      }
+    }).catch(error => {
+      console.error('Block user error:', error);
+      alert('Kunne ikke blokere bruger. Prøv igen.');
+    });
   };
 
   const handleReportUser = (userId: string, reason: string) => {
-    console.log('Reporting user:', userId, 'Reason:', reason);
+    // Report user
+    fetch('/api/reports/user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: JSON.stringify({ userId, reason })
+    }).then(response => {
+      if (response.ok) {
+        alert('Bruger rapporteret. Admin teamet vil gennemgå rapporten.');
+      } else {
+        alert('Kunne ikke rapportere bruger. Prøv igen.');
+      }
+    }).catch(error => {
+      console.error('Report user error:', error);
+      alert('Kunne ikke rapportere bruger. Prøv igen.');
+    });
   };
 
   const handleReport = (postId: string, reason: string) => {
-    console.log('Reporting post:', postId, 'Reason:', reason);
+    // Report post
+    fetch('/api/reports/post', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: JSON.stringify({ postId, reason })
+    }).then(response => {
+      if (response.ok) {
+        alert('Opslag rapporteret. Admin teamet vil gennemgå rapporten.');
+      } else {
+        alert('Kunne ikke rapportere opslag. Prøv igen.');
+      }
+    }).catch(error => {
+      console.error('Report post error:', error);
+      alert('Kunne ikke rapportere opslag. Prøv igen.');
+    });
   };
 
   const handleTagUser = (userId: string, postId: string) => {
-    console.log('Tagging user:', userId, 'in post:', postId);
+    // Tag user in post
+    fetch('/api/posts/tag', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: JSON.stringify({ userId, postId })
+    }).then(response => {
+      if (response.ok) {
+        console.log('User tagged successfully');
+      }
+    }).catch(error => {
+      console.error('Tag user error:', error);
+    });
   };
 
   const handleSharePost = (postId: string, platform: string) => {
-    console.log('Sharing post:', postId, 'on:', platform);
+    // Track post share
+    fetch('/api/posts/share', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: JSON.stringify({ postId, platform })
+    }).then(response => {
+      if (response.ok) {
+        console.log('Post share tracked');
+      }
+    }).catch(error => {
+      console.error('Share tracking error:', error);
+    });
   };
 
   // Show auth screen if not logged in

@@ -74,11 +74,6 @@ export default function UserProfileModal({
   ];
 
   const handleFriendAction = () => {
-    if (!currentUser?.isSubscribed) {
-      alert('Kun Pro medlemmer kan tilføje venner og sende venskabsanmodninger. Opgrader til Pro for kun 29 kr/måned!');
-      return;
-    }
-    
     if (friendshipStatus === 'none') {
       setFriendshipStatus('pending');
       onSendFriendRequest(user.id);
@@ -163,7 +158,7 @@ export default function UserProfileModal({
             <div className="flex items-center space-x-3 mt-4">
               <button
                 onClick={handleFriendAction}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors duration-200 hover:scale-105 ${
                   friendshipStatus === 'friends' 
                     ? 'bg-green-100 text-green-700' 
                     : friendshipStatus === 'pending'
@@ -197,7 +192,7 @@ export default function UserProfileModal({
 
               <button
                 onClick={() => onSendMessage(user.id)}
-                className="flex items-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                className="flex items-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 hover:scale-105"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Besked</span>

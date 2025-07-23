@@ -193,12 +193,31 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
   );
 
   const handleDeleteAccount = () => {
-    setShowDeleteConfirm(true);
+    if (confirm('Er du sikker på at du vil deaktivere din konto?')) {
+      setShowDeleteConfirm(true);
+    }
   };
 
   const confirmDeleteAccount = () => {
-    // I en rigtig app ville dette slette kontoen
-    alert('Din konto ville blive slettet. Dette er en demo.');
+    // Send delete request to API
+    fetch('/api/user/delete', {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      }
+    }).then(response => {
+      if (response.ok) {
+        alert('Din konto er blevet deaktiveret. Du vil blive logget ud.');
+        localStorage.removeItem('authToken');
+        window.location.reload();
+      } else {
+        alert('Kunne ikke deaktivere konto. Kontakt support.');
+      }
+    }).catch(error => {
+      console.error('Delete account error:', error);
+      alert('Kunne ikke deaktivere konto. Kontakt support.');
+    });
+    
     setShowDeleteConfirm(false);
     onClose();
   };

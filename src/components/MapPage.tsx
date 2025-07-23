@@ -226,11 +226,11 @@ export default function MapPage({ currentUser }: MapPageProps) {
   const generateGoogleMapsEmbedUrl = () => {
     if (!userLocation) return '';
     
-    const baseUrl = 'https://www.google.com/maps/embed/v1/search';
-    const apiKey = 'AIzaSyBFw0Qcb2BdgMDuq8HiMSyJOVEg'; // Demo key - skal erstattes med rigtig
-    const query = encodeURIComponent('rengøring København');
+    // Use public Google Maps embed (no API key required)
+    const query = encodeURIComponent(`rengøring ${userLocation.lat},${userLocation.lng}`);
+    const baseUrl = 'https://www.google.com/maps/embed';
     
-    return `${baseUrl}?key=${apiKey}&q=${query}&center=${userLocation.lat},${userLocation.lng}&zoom=${mapZoom}`;
+    return `${baseUrl}?pb=!1m18!1m12!1m3!1d2249.9!2d${userLocation.lng}!3d${userLocation.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTXCsDQwJzM0LjAiTiAxMsKwMzQnMDYuMCJF!5e0!3m2!1sda!2sdk!4v1234567890!5m2!1sda!2sdk`;
   };
 
   return (

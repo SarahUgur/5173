@@ -218,14 +218,14 @@ export default function FriendRequestModal({
                         <div className="flex space-x-2">
                           <button
                             onClick={() => onAcceptRequest(request.id)}
-                            className="flex items-center space-x-1 px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                            className="flex items-center space-x-1 px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 hover:scale-105"
                           >
                             <UserCheck className="w-4 h-4" />
                             <span>Accepter</span>
                           </button>
                           <button
                             onClick={() => onDeclineRequest(request.id)}
-                            className="flex items-center space-x-1 px-3 py-1 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                            className="flex items-center space-x-1 px-3 py-1 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 hover:scale-105"
                           >
                             <UserX className="w-4 h-4" />
                             <span>Afvis</span>
