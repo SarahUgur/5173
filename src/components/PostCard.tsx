@@ -79,11 +79,6 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
   ];
 
   const handleInteraction = (action: string) => {
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription();
-      return;
-    }
-    
     if (action === 'like') {
       setLiked(!liked);
     } else if (action === 'comment') {
@@ -95,20 +90,11 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
   };
 
   const handleReaction = (type: string) => {
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription();
-      return;
-    }
     setReactionType(reactionType === type ? null : type as any);
     setShowReactions(false);
   };
 
   const handleShare = (platform: string) => {
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription();
-      return;
-    }
-    
     const postUrl = `${window.location.origin}/post/${post.id}`;
     const text = `Tjek dette opslag på Privat Rengøring: ${post.content.substring(0, 100)}...`;
     
@@ -428,10 +414,8 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                 onMouseEnter={() => setShowReactions(true)}
                 onMouseLeave={() => setTimeout(() => setShowReactions(false), 300)}
                 className={`reactions-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                  reactionType ? 'text-blue-600 bg-blue-50' : 
-                  !currentUser?.isSubscribed ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'
+                  reactionType ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'
                 }`}
-                disabled={!currentUser?.isSubscribed}
               >
                 {reactionType ? (
                   <span className="text-lg">{reactions.find(r => r.type === reactionType)?.emoji}</span>
@@ -439,7 +423,6 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                   <ThumbsUp className="w-4 h-4 sm:w-5 sm:h-5" />
                 )}
                 <span className="font-medium text-sm sm:text-base">{post.likes + (reactionType ? 1 : 0)}</span>
-                {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />}
               </button>
               
               {/* Reaction Menu */}
@@ -465,23 +448,16 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             
             <button
               onClick={() => handleInteraction('comment')}
-              className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                !currentUser?.isSubscribed ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'
-              }`}
-              disabled={!currentUser?.isSubscribed}
+              className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 text-gray-600 hover:bg-gray-50"
             >
               <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="font-medium text-sm sm:text-base">{post.comments.length}</span>
-              {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />}
             </button>
             
             <div className="relative">
               <button 
                 onClick={() => setShowShareMenu(!showShareMenu)}
-                className={`share-menu-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                  !currentUser?.isSubscribed ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'
-                }`}
-                disabled={!currentUser?.isSubscribed}
+                className="share-menu-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 text-gray-600 hover:bg-gray-50"
               >
                 <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="font-medium text-sm sm:text-base">{shareCount}</span>
@@ -512,20 +488,12 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
           {post.isJobPost && (
             <button
               onClick={() => handleInteraction('apply')}
-              className={`px-3 sm:px-6 py-2 rounded-lg font-medium flex items-center space-x-2 text-sm sm:text-base transition-all duration-200 ${
-                currentUser?.isSubscribed 
-                  ? 'btn-primary text-white hover:scale-105' 
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-              disabled={!currentUser?.isSubscribed}
+              className="px-3 sm:px-6 py-2 rounded-lg font-medium flex items-center space-x-2 text-sm sm:text-base transition-all duration-200 btn-primary text-white hover:scale-105"
             >
-              <span>{currentUser?.isSubscribed ? t('apply') : 'Kun Pro'}</span>
-              {!currentUser?.isSubscribed && <Lock className="w-3 h-3 sm:w-4 sm:h-4" />}
+              <span>{t('apply')}</span>
             </button>
           )}
         </div>
-
-
       </div>
 
       {/* Comments Section */}
