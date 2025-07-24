@@ -39,6 +39,7 @@ function App() {
   const { language, t } = useLanguage();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const notifications = useNotifications(currentUser);
+  const [isPWA, setIsPWA] = useState(false);
   const [currentPage, setCurrentPage] = useState<'home' | 'jobs' | 'network' | 'tasks' | 'planning' | 'favorites' | 'local-jobs' | 'trending' | 'map' | 'profile' | 'admin' | 'about' | 'contact' | 'support' | 'terms'>('home');
   const [showSidebar, setShowSidebar] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState<any>(null);
@@ -52,6 +53,23 @@ function App() {
   const [showFriendRequests, setShowFriendRequests] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Check if running as PWA
+  React.useEffect(() => {
+    const checkPWA = () => {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      const isInWebAppiOS = (window.navigator as any).standalone === true;
+      setIsPWA(isStandalone || isInWebAppiOS);
+    };
+    
+    checkPWA();
+    
+    // Listen for display mode changes
+    const mediaQuery = window.matchMedia('(display-mode: standalone)');
+    mediaQuery.addEventListener('change', checkPWA);
+    
+    return () => mediaQuery.removeEventListener('change', checkPWA);
+  }, []);
 
   // Handle Pro upgrade from header
   const handleShowSubscription = () => {
