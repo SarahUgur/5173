@@ -1,61 +1,88 @@
 {
   "name": "Privat Rengøring",
   "short_name": "PrivatRengøring",
-  "description": "Social platform for rengøringsservices i Danmark",
+  "description": "Danmarks største sociale platform for rengøringsservices - Find jobs, eksperter og byg dit netværk",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#ffffff",
   "theme_color": "#2563eb",
   "orientation": "portrait-primary",
   "scope": "/",
-  "display_override": ["window-controls-overlay", "standalone"],
   "launch_handler": {
-    "client_mode": "navigate-existing"
+    "client_mode": "navigate-existing",
+    "route_to": "/"
   },
-  "gcm_sender_id": "103953800507",
-  "icons": [
-    {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icon-192.png",
-      "sizes": "192x192", 
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/icon-512.png", 
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png", 
-      "purpose": "maskable"
-    }
-  ],
-  "categories": ["business", "productivity", "social"],
+  "categories": ["business", "productivity", "social", "lifestyle"],
   "lang": "da",
   "dir": "ltr",
   "prefer_related_applications": false,
-  "scope": "/",
-  "screenshots": [
+  "icons": [
     {
-      "src": "/screenshot-mobile.png",
-      "sizes": "390x844",
+      "src": "https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=192&h=192&fit=crop",
+      "sizes": "192x192",
       "type": "image/png",
-      "form_factor": "narrow"
+      "purpose": "any maskable"
     },
     {
-      "src": "/screenshot-desktop.png", 
+      "src": "https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=512&h=512&fit=crop",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=144&h=144&fit=crop",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=72&h=72&fit=crop",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://images.pexels.com/photos/4099468/pexels-photo-4099468.jpeg?auto=compress&cs=tinysrgb&w=390&h=844&fit=crop",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Privat Rengøring på mobil"
+    },
+    {
+      "src": "https://images.pexels.com/photos/4108715/pexels-photo-4108715.jpeg?auto=compress&cs=tinysrgb&w=1280&h=720&fit=crop",
       "sizes": "1280x720",
       "type": "image/png",
-      "form_factor": "wide"
+      "form_factor": "wide",
+      "label": "Privat Rengøring på desktop"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Find Jobs",
+      "short_name": "Jobs",
+      "description": "Find rengøringsjobs i dit område",
+      "url": "/?page=jobs",
+      "icons": [
+        {
+          "src": "https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=96&h=96&fit=crop",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Opret Job",
+      "short_name": "Opret",
+      "description": "Opret nyt rengøringsjob",
+      "url": "/?create=job",
+      "icons": [
+        {
+          "src": "https://images.pexels.com/photos/4099468/pexels-photo-4099468.jpeg?auto=compress&cs=tinysrgb&w=96&h=96&fit=crop",
+          "sizes": "96x96"
+        }
+      ]
     }
   ]
 }

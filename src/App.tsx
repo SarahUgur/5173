@@ -465,7 +465,14 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen bg-gray-50 ${isPWA ? 'pwa-mode' : ''}`}>
+      {/* PWA Status Bar */}
+      {isPWA && (
+        <div className="bg-blue-600 text-white text-center py-1 text-xs">
+          📱 Kører som app • Privat Rengøring
+        </div>
+      )}
+      
       <Header
         currentUser={currentUser}
         onShowMessages={() => setShowMessages(true)}
@@ -605,6 +612,7 @@ function App() {
 
               {/* Admin link */}
               {currentUser.email === 'admin@privatrengoring.dk' && (
+                <>
                 <button
                   onClick={() => {
                     setCurrentPage('admin');
@@ -617,6 +625,18 @@ function App() {
                   <Shield className="w-5 h-5" />
                   <span className="font-medium">Admin Panel</span>
                 </button>
+                
+                <button
+                  onClick={() => {
+                    setShowLogoSelector(true);
+                    setShowSidebar(false);
+                  }}
+                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 text-purple-600 hover:bg-purple-50"
+                >
+                  <Star className="w-5 h-5" />
+                  <span className="font-medium">Skift Logo</span>
+                </button>
+                </>
               )}
 
               {/* Divider */}
@@ -764,6 +784,14 @@ function App() {
         onUpdateUser={handleUpdateUser}
         onShowSubscription={() => setShowSubscription(true)}
       />
+
+      {/* Logo Selector for Admin */}
+      {showLogoSelector && (
+        <LogoSelector
+          onSelectLogo={handleSelectLogo}
+          currentLogo={currentLogo}
+        />
+      )}
 
       {/* Install Prompt */}
       <InstallPrompt />

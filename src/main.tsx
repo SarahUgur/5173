@@ -17,6 +17,21 @@ if ('serviceWorker' in navigator) {
             console.log('Push notifications initialized');
           }
         });
+        
+        // Check for app updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // New version available
+                if (confirm('Ny version af appen er tilgængelig. Vil du opdatere?')) {
+                  window.location.reload();
+                }
+              }
+            });
+          }
+        });
       })
       .catch((registrationError) => {
         console.log('SW registration failed: ', registrationError);
@@ -29,7 +44,7 @@ window.addEventListener('load', async () => {
   // Wait a bit before asking for permission to not overwhelm user
   setTimeout(async () => {
     if ('Notification' in window && Notification.permission === 'default') {
-      const permission = await notificationManager.requestPermission();
+      // const permission = await notificationManager.requestPermission();
       console.log('Initial notification permission:', permission);
     }
   }, 3000); // Ask after 3 seconds
