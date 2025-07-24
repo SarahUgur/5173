@@ -109,26 +109,26 @@ export default function TermsPage() {
             <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
               <CreditCard className="w-5 h-5 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">Betaling og abonnement</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Gratis platform</h2>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h4 className="font-semibold text-gray-900 mb-3">Pro-medlemskab</h4>
+                <h4 className="font-semibold text-gray-900 mb-3">Gratis at bruge</h4>
                 <div className="space-y-2 text-gray-700">
-                  <p>• Koster 29 kr/måned</p>
-                  <p>• Kan opsiges når som helst</p>
-                  <p>• Automatisk fornyelse via valgte betalingsmetode</p>
-                  <p>• Øjeblikkelig adgang til alle Pro-funktioner</p>
+                  <p>• Privat Rengøring er helt gratis at bruge</p>
+                  <p>• Alle funktioner er tilgængelige uden betaling</p>
+                  <p>• Ingen skjulte gebyrer eller abonnementer</p>
+                  <p>• Du betaler kun for de rengøringsservices du aftaler med andre brugere</p>
                 </div>
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 mb-3">Betalingsbetingelser</h4>
+                <h4 className="font-semibold text-gray-900 mb-3">Hvordan tjener vi penge</h4>
                 <div className="space-y-2 text-gray-700">
-                  <p>• Sikker betaling via Stripe</p>
+                  <p>• Platformen tjener penge via reklamer og partnerskaber</p>
+                  <p>• Vi tager ikke kommission af dine aftaler</p>
                   <p>• Ingen skjulte gebyrer</p>
-                  <p>• Refund kun i særlige tilfælde</p>
-                  <p>• Faktura sendes på email</p>
+                  <p>• Transparent forretningsmodel</p>
                 </div>
               </div>
             </div>

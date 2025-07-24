@@ -482,14 +482,14 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
                 </section>
                 
                 <section>
-                  <h3 className="text-base font-semibold text-gray-900 mb-3">2. Pro abonnement og betaling</h3>
+                  <h3 className="text-base font-semibold text-gray-900 mb-3">2. Gratis platform</h3>
                   <div className="space-y-2 text-gray-700 text-sm">
-                    <p>• Pro koster 29 kr/måned og kan opsiges når som helst</p>
-                    <p>• Automatisk fornyelse via Stripe</p>
-                    <p>• Opsigelse via email til support@privatrengoring.dk</p>
-                    <p>• Ingen refund for allerede betalte perioder</p>
-                    <p>• Sikker betaling håndteres af Stripe (PCI DSS certificeret)</p>
-                    <p>• Faktura sendes på email efter betaling</p>
+                    <p>• Privat Rengøring er helt gratis at bruge</p>
+                    <p>• Alle funktioner er tilgængelige uden betaling</p>
+                    <p>• Ingen skjulte gebyrer eller abonnementer</p>
+                    <p>• Du betaler kun for de rengøringsservices du aftaler med andre brugere</p>
+                    <p>• Platformen tjener penge via reklamer og partnerskaber</p>
+                    <p>• Vi tager ikke kommission af dine aftaler</p>
                   </div>
                 </section>
                 

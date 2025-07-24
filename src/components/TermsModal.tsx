@@ -68,15 +68,15 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
             <section>
               <div className="flex items-center space-x-2 mb-3">
                 <CreditCard className="w-5 h-5 text-green-600" />
-                <h3 className="text-lg font-semibold text-gray-900">3. Abonnement & Betaling</h3>
+                <h3 className="text-lg font-semibold text-gray-900">3. Gratis Platform</h3>
               </div>
               <div className="bg-green-50 rounded-lg p-4 space-y-2 text-sm text-gray-700">
-                <p>• <strong>Pro abonnement:</strong> 29 kr/måned for fuld adgang til alle funktioner</p>
-                <p>• <strong>Automatisk fornyelse:</strong> Abonnementet fornyes automatisk hver måned</p>
-                <p>• <strong>Opsigelsesret:</strong> Du kan altid opsige dit abonnement uden binding</p>
-                <p>• <strong>Opsigelse:</strong> Opsig via din profil eller kontakt kundeservice</p>
-                <p>• <strong>Refund politik:</strong> Ingen refund for allerede betalte perioder</p>
-                <p>• <strong>Sikker betaling:</strong> Alle betalinger håndteres sikkert via Stripe</p>
+                <p>• <strong>Gratis at bruge:</strong> Privat Rengøring er helt gratis for alle brugere</p>
+                <p>• <strong>Alle funktioner:</strong> Fuld adgang til alle funktioner uden betaling</p>
+                <p>• <strong>Ingen skjulte gebyrer:</strong> Du betaler kun for de services du aftaler</p>
+                <p>• <strong>Ingen kommission:</strong> Vi tager ikke kommission af dine aftaler</p>
+                <p>• <strong>Reklame finansieret:</strong> Platformen finansieres via reklamer</p>
+                <p>• <strong>Direkte betaling:</strong> Betal direkte til rengøringsudbyderen</p>
               </div>
             </section>
 
