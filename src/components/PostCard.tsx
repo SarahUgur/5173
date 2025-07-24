@@ -298,11 +298,11 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-soft border border-gray-200 overflow-hidden hover:shadow-medium transition-all duration-300 mx-3 sm:mx-0 card hover-lift">
+    <div className="bg-white rounded-lg xs:rounded-xl shadow-soft border border-gray-200 overflow-hidden hover:shadow-medium transition-all duration-300 mx-2 xs:mx-3 sm:mx-0 card hover-lift">
       {/* Header */}
-      <div className="p-3 sm:p-4 border-b border-gray-100 bg-gradient-to-r from-white to-gray-50">
+      <div className="p-2.5 xs:p-3 sm:p-4 border-b border-gray-100 bg-gradient-to-r from-white to-gray-50">
         <div className="flex items-start justify-between">
-          <div className="flex items-center space-x-3 flex-1 min-w-0">
+          <div className="flex items-center space-x-2 xs:space-x-3 flex-1 min-w-0">
             <button
               onClick={() => onShowUserProfile?.(post.user)}
               className="flex-shrink-0 hover:opacity-80 transition-all duration-200 hover:scale-105"
@@ -310,39 +310,39 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               <img
                 src={post.user.avatar}
                 alt={post.user.name}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full ring-2 ring-transparent hover:ring-blue-300 transition-all duration-200"
+                className="w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full ring-2 ring-transparent hover:ring-blue-300 transition-all duration-200"
               />
             </button>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1.5 xs:space-x-2">
                 <button
                   onClick={() => onShowUserProfile?.(post.user)}
-                  className="font-semibold text-gray-900 truncate text-sm sm:text-base hover:text-blue-600 transition-all duration-200 hover:scale-105"
+                  className="font-semibold text-gray-900 truncate text-xs xs:text-sm sm:text-base hover:text-blue-600 transition-all duration-200 hover:scale-105"
                 >
                   {post.user.name}
                 </button>
                 {post.user.verified && (
-                  <div className="w-4 h-4 sm:w-5 sm:h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
-                    <span className="text-white text-xs">✓</span>
+                  <div className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-5 sm:h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                    <span className="text-white text-xs xs:text-xs">✓</span>
                   </div>
                 )}
               </div>
-              <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-500">
+              <div className="flex items-center space-x-1.5 xs:space-x-2 text-xs text-gray-500">
                 <span>{post.createdAt}</span>
                 <span>•</span>
-                <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+                <MapPin className="w-3 h-3" />
                 <span className="truncate">{post.location}</span>
               </div>
             </div>
           </div>
           
-          <div className="flex items-center space-x-2 ml-2">
+          <div className="flex items-center space-x-1 xs:space-x-2 ml-1 xs:ml-2">
             {post.isJobPost && (
-              <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getUrgencyColor(post.urgency)}`}>
+              <div className="flex flex-col xs:flex-row items-end xs:items-center space-y-0.5 xs:space-y-0 xs:space-x-1 sm:space-x-2">
+                <span className={`px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-full text-xs font-medium ${getUrgencyColor(post.urgency)}`}>
                   {getUrgencyLabel(post.urgency)}
                 </span>
-                <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hidden sm:inline">
+                <span className="px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hidden xs:inline">
                   {getJobTypeLabel(post.jobType)}
                 </span>
               </div>
@@ -412,8 +412,8 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
         
         {/* Mobile job type badge */}
         {post.isJobPost && (
-          <div className="mt-2 sm:hidden">
-            <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          <div className="mt-1.5 xs:hidden">
+            <span className="px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               {getJobTypeLabel(post.jobType)}
             </span>
           </div>
@@ -421,8 +421,8 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
       </div>
 
       {/* Content */}
-      <div className="p-3 sm:p-4 bg-gradient-to-b from-white to-gray-50">
-        <p className="text-gray-800 mb-4 leading-relaxed text-sm sm:text-base">{post.content}</p>
+      <div className="p-2.5 xs:p-3 sm:p-4 bg-gradient-to-b from-white to-gray-50">
+        <p className="text-gray-800 mb-3 xs:mb-4 leading-relaxed text-sm">{post.content}</p>
         
         {post.budget && (
           <div className="flex items-center space-x-2 mb-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200 hover-lift relative group">
