@@ -171,11 +171,11 @@ export default function Header({
                   <path d="M5 15L5.5 17L7.5 17.5L5.5 18L5 20L4.5 18L2.5 17.5L4.5 17L5 15Z"/>
                 </svg>
               </div>
-              <div className="hidden sm:block">
+              <div>
                 <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Privat Rengøring
                 </h1>
-                <p className="text-xs text-gray-500 -mt-1">Social platform</p>
+                <p className="text-xs text-gray-500 -mt-1 hidden sm:block">Social platform</p>
               </div>
             </button>
           </div>
