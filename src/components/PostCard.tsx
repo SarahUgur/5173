@@ -412,8 +412,8 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
         
         {/* Mobile job type badge */}
         {post.isJobPost && (
-          <div className="mt-1.5 xs:hidden">
-            <span className="px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          <div className="mt-2 sm:hidden">
+            <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               {getJobTypeLabel(post.jobType)}
             </span>
           </div>
@@ -421,8 +421,8 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
       </div>
 
       {/* Content */}
-      <div className="p-2.5 xs:p-3 sm:p-4 bg-gradient-to-b from-white to-gray-50">
-        <p className="text-gray-800 mb-3 xs:mb-4 leading-relaxed text-sm">{post.content}</p>
+      <div className="p-3 sm:p-4 bg-gradient-to-b from-white to-gray-50">
+        <p className="text-gray-800 mb-4 leading-relaxed text-sm">{post.content}</p>
         
         {post.budget && (
           <div className="flex items-center space-x-2 mb-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200 hover-lift relative group">

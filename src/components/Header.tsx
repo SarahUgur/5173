@@ -148,49 +148,49 @@ export default function Header({
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-12 xs:h-14 sm:h-16">
+        <div className="flex justify-between items-center h-14 sm:h-16">
           {/* Left side */}
-          <div className="flex items-center space-x-2 xs:space-x-3 sm:space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Mobile menu button */}
             <button
               onClick={onToggleSidebar}
-              className="lg:hidden p-1.5 xs:p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
             >
-              <Menu className="w-4 h-4 xs:w-5 xs:h-5 text-gray-600" />
+              <Menu className="w-5 h-5 text-gray-600" />
             </button>
 
             {/* Logo */}
             <button 
               onClick={() => setCurrentPage('home')}
-              className="flex items-center space-x-1.5 xs:space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity duration-200"
+              className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity duration-200"
             >
-              <div className="w-6 h-6 xs:w-8 xs:h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg xs:rounded-xl flex items-center justify-center shadow-lg">
-                <svg className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
                   <path d="M19 15L19.5 17L21.5 17.5L19.5 18L19 20L18.5 18L16.5 17.5L18.5 17L19 15Z"/>
                   <path d="M5 15L5.5 17L7.5 17.5L5.5 18L5 20L4.5 18L2.5 17.5L4.5 17L5 15Z"/>
                 </svg>
               </div>
               <div>
-                <h1 className="text-sm xs:text-base sm:text-lg lg:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
+                <h1 className="text-base sm:text-lg lg:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
                   Privat Rengøring
                 </h1>
-                <p className="text-xs text-gray-500 -mt-0.5 hidden sm:block leading-none">Social platform</p>
+                <p className="text-xs text-gray-500 -mt-0.5 hidden lg:block leading-none">Social platform</p>
               </div>
             </button>
           </div>
 
           {/* Center - Search */}
-          <div className="flex-1 max-w-xs lg:max-w-md mx-2 xs:mx-3 sm:mx-4 hidden md:block">
+          <div className="flex-1 max-w-xs lg:max-w-md mx-3 sm:mx-4 hidden md:block">
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5 lg:w-4 lg:h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
                 onFocus={() => searchTerm.length >= 2 && setShowSearchResults(true)}
                 placeholder={t('searchPlaceholder')}
-                className="w-full pl-8 lg:pl-9 pr-3 lg:pr-4 py-1.5 lg:py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs lg:text-sm"
+                className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               />
               {searchTerm && (
                 <button
@@ -198,9 +198,9 @@ export default function Header({
                     setSearchTerm('');
                     setShowSearchResults(false);
                   }}
-                  className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  <X className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
+                  <X className="w-4 h-4" />
                 </button>
               )}
             </div>
@@ -272,18 +272,18 @@ export default function Header({
           </div>
 
           {/* Right side */}
-          <div className="flex items-center space-x-1 xs:space-x-2 sm:space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Language Selector */}
             <div className="relative">
               <button
                 onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                className="flex items-center space-x-1 p-1.5 xs:p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                className="flex items-center space-x-1 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
               >
                 <Globe className="w-4 h-4 text-gray-600" />
-                <span className="text-xs xs:text-sm font-medium text-gray-700 hidden lg:inline">
+                <span className="text-sm font-medium text-gray-700 hidden lg:inline">
                   {currentLanguage?.flag} {currentLanguage?.name}
                 </span>
-                <span className="text-sm hidden xs:inline lg:hidden">
+                <span className="text-sm hidden md:inline lg:hidden">
                   {currentLanguage?.flag}
                 </span>
               </button>
@@ -410,16 +410,16 @@ export default function Header({
         </div>
 
         {/* Mobile Search */}
-        <div className="md:hidden pb-2 xs:pb-3">
+        <div className="md:hidden pb-3">
           <div className="relative">
-            <Search className="absolute left-2.5 xs:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5 xs:w-4 xs:h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
               onFocus={() => searchTerm.length >= 2 && setShowSearchResults(true)}
               placeholder={t('searchPlaceholder')}
-              className="w-full pl-8 xs:pl-9 pr-8 xs:pr-10 py-2 xs:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full pl-9 pr-10 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
             {searchTerm && (
               <button
@@ -427,9 +427,9 @@ export default function Header({
                   setSearchTerm('');
                   setShowSearchResults(false);
                 }}
-                className="absolute right-2.5 xs:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                <X className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
+                <X className="w-4 h-4" />
               </button>
             )}
           </div>
