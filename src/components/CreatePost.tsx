@@ -156,6 +156,22 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
     { id: 'professional', name: 'Professionel' },
     { id: 'happy', name: 'Glad' }
   ];
+
+  const getTypeLabel = (type: string) => {
+    const labels = {
+      'home_cleaning': 'Hjemmerengøring',
+      'office_cleaning': 'Kontorrengøring', 
+      'deep_cleaning': 'Hovedrengøring',
+      'regular_cleaning': 'Fast rengøring',
+      'window_cleaning': 'Vinduesrengøring',
+      'move_cleaning': 'Fraflytningsrengøring',
+      'car_wash': 'Bilvask',
+      'car_cleaning': 'Bil rengøring',
+      'seeking_supplier': 'Søger leverandør'
+    };
+    return labels[type as keyof typeof labels] || type;
+  };
+
   const jobCategories = [
     { 
       id: 'private_services', 
