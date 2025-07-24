@@ -53,6 +53,8 @@ function App() {
   const [showFriendRequests, setShowFriendRequests] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showLogoSelector, setShowLogoSelector] = useState(false);
+  const [currentLogo, setCurrentLogo] = useState('default');
 
   // Check if running as PWA
   React.useEffect(() => {
@@ -346,6 +348,11 @@ function App() {
       console.error('Hide post error:', error);
       alert('Kunne ikke skjule opslag. Prøv igen.');
     });
+  };
+
+  const handleSelectLogo = (logoType: string, logoSvg: string) => {
+    setCurrentLogo(logoType);
+    setShowLogoSelector(false);
   };
 
   const handleDeleteComment = (commentId: string, postId: string) => {
