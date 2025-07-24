@@ -228,20 +228,20 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-soft border border-gray-200 p-3 sm:p-4 mb-4 sm:mb-6 mx-3 sm:mx-0 hover:shadow-medium transition-all duration-300 card">
-      <div className="flex items-start space-x-3">
+    <div className="bg-white rounded-lg xs:rounded-xl shadow-soft border border-gray-200 p-2.5 xs:p-3 sm:p-4 mb-3 xs:mb-4 sm:mb-6 mx-2 xs:mx-3 sm:mx-0 hover:shadow-medium transition-all duration-300 card">
+      <div className="flex items-start space-x-2 xs:space-x-3">
         <img
           src={currentUser?.avatar || "/api/placeholder/48/48"}
           alt="Your avatar"
-          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex-shrink-0 ring-2 ring-transparent hover:ring-blue-300 transition-all duration-200"
+          className="w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full flex-shrink-0 ring-2 ring-transparent hover:ring-blue-300 transition-all duration-200"
         />
         <div className="flex-1 min-w-0">
           {/* Post Type Selector */}
           {(isExpanded || postType === 'job') && (
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mb-3">
+            <div className="flex flex-col xs:flex-row space-y-1.5 xs:space-y-0 xs:space-x-2 mb-2 xs:mb-3">
               <button
                 onClick={() => setPostType('regular')}
-                className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
+                className={`px-2.5 xs:px-3 sm:px-4 py-1.5 xs:py-2 rounded-lg text-xs xs:text-sm font-medium transition-all duration-200 hover:scale-105 ${
                   postType === 'regular'
                     ? 'bg-blue-100 text-blue-700'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -251,13 +251,13 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
               </button>
               <button
                 onClick={() => setPostType('job')}
-                className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center space-x-2 hover:scale-105 ${
+                className={`px-2.5 xs:px-3 sm:px-4 py-1.5 xs:py-2 rounded-lg text-xs xs:text-sm font-medium transition-all duration-200 flex items-center justify-center space-x-1.5 xs:space-x-2 hover:scale-105 ${
                   postType === 'job'
                     ? 'bg-green-100 text-green-700'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                <Briefcase className="w-4 h-4" />
+                <Briefcase className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
                 <span>{t('jobPost')}</span>
               </button>
             </div>
