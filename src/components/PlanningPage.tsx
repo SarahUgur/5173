@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, MapPin, User, Plus, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, MapPin, User, Plus, Filter, ChevronLeft, ChevronRight, X, Briefcase, DollarSign } from 'lucide-react';
 
 interface PlanningPageProps {
   currentUser: any;
@@ -7,7 +7,47 @@ interface PlanningPageProps {
 
 export default function PlanningPage({ currentUser }: PlanningPageProps) {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
+  const [viewMode, setViewMode] = useState<'week' | 'month'>('month');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedDateForPost, setSelectedDateForPost] = useState<Date | null>(null);
+  const [newPostData, setNewPostData] = useState({
+    title: '',
+    description: '',
+    location: '',
+    budget: '',
+    time: '',
+    jobType: 'home_cleaning',
+    urgency: 'flexible'
+  });
+
+  // Generer kalender dage for den valgte måned
+  const generateCalendarDays = () => {
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth();
+    
+    // Første dag i måneden
+    const firstDay = new Date(year, month, 1);
+    // Sidste dag i måneden
+    const lastDay = new Date(year, month + 1, 0);
+    // Hvilken ugedag starter måneden på (0 = søndag, 1 = mandag, etc.)
+    const startingDayOfWeek = (firstDay.getDay() + 6) % 7; // Konverter til mandag = 0
+    
+    const days = [];
+    
+    // Tilføj tomme celler for dage før månedens start
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(null);
+    }
+    
+    // Tilføj alle dage i måneden
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      days.push(new Date(year, month, day));
+    }
+    
+    return days;
+  };
+
+  const calendarDays = generateCalendarDays();
 
   const appointments = [
     {
@@ -17,7 +57,8 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
       location: 'København NV',
       client: 'Maria Hansen',
       type: 'regular_cleaning',
-      status: 'confirmed'
+      status: 'confirmed',
+      date: new Date(2025, 0, 20) // 20. januar 2025
     },
     {
       id: '2',
@@ -26,7 +67,8 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
       location: 'Aarhus C',
       client: 'Sofie Andersen',
       type: 'office_cleaning',
-      status: 'pending'
+      status: 'pending',
+      date: new Date(2025, 0, 22) // 22. januar 2025
     },
     {
       id: '3',
@@ -35,7 +77,8 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
       location: 'København Ø',
       client: 'Peter Larsen',
       type: 'deep_cleaning',
-      status: 'confirmed'
+      status: 'confirmed',
+      date: new Date(2025, 0, 25) // 25. januar 2025
     }
   ];
 
@@ -57,6 +100,87 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
     };
     return labels[type as keyof typeof labels] || type;
   };
+
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    const newDate = new Date(selectedDate);
+    if (direction === 'prev') {
+      newDate.setMonth(newDate.getMonth() - 1);
+    } else {
+      newDate.setMonth(newDate.getMonth() + 1);
+    }
+    setSelectedDate(newDate);
+  };
+
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return date.toDateString() === today.toDateString();
+  };
+
+  const isSameDay = (date1: Date, date2: Date) => {
+    return date1.toDateString() === date2.toDateString();
+  };
+
+  const getAppointmentsForDate = (date: Date) => {
+    return appointments.filter(apt => isSameDay(apt.date, date));
+  };
+
+  const handleDateClick = (date: Date) => {
+    setSelectedDateForPost(date);
+    setShowCreateModal(true);
+  };
+
+  const handleCreatePost = async () => {
+    if (!selectedDateForPost || !newPostData.title || !newPostData.location) {
+      alert('Udfyld venligst titel og lokation');
+      return;
+    }
+
+    try {
+      // Opret opslag med specifik dato
+      const postData = {
+        ...newPostData,
+        scheduledDate: selectedDateForPost.toISOString(),
+        type: 'job',
+        content: `${newPostData.title} - ${newPostData.description}`,
+        isScheduled: true
+      };
+
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify(postData)
+      });
+
+      if (response.ok) {
+        alert(`🎉 Opslag planlagt til ${selectedDateForPost.toLocaleDateString('da-DK')}!`);
+        setShowCreateModal(false);
+        setNewPostData({
+          title: '',
+          description: '',
+          location: '',
+          budget: '',
+          time: '',
+          jobType: 'home_cleaning',
+          urgency: 'flexible'
+        });
+      } else {
+        throw new Error('Kunne ikke oprette opslag');
+      }
+    } catch (error) {
+      console.error('Error creating scheduled post:', error);
+      alert('Kunne ikke oprette opslag. Prøv igen.');
+    }
+  };
+
+  const monthNames = [
+    'Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni',
+    'Juli', 'August', 'September', 'Oktober', 'November', 'December'
+  ];
+
+  const dayNames = ['Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn'];
 
   return (
     <div className="max-w-6xl mx-auto p-3 sm:p-6">
@@ -91,15 +215,15 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
           <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
             <Filter className="w-5 h-5 text-gray-600" />
           </button>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2">
+          <button 
+            onClick={() => {
+              setSelectedDateForPost(new Date());
+              setShowCreateModal(true);
+            }}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2"
+          >
             <Plus className="w-4 h-4" />
-            <span 
-              onClick={() => {
-                alert('Ny aftale funktion kommer snart! Kontakt kunden direkte for nu.');
-              }}
-            >
-              Ny Aftale
-            </span>
+            <span>Ny Aftale</span>
           </button>
         </div>
       </div>
@@ -108,15 +232,28 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
         {/* Calendar */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+            {/* Calendar Header */}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-900">
-                {selectedDate.toLocaleDateString('da-DK', { month: 'long', year: 'numeric' })}
+                {monthNames[selectedDate.getMonth()]} {selectedDate.getFullYear()}
               </h2>
               <div className="flex items-center space-x-2">
-                <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                <button 
+                  onClick={() => navigateMonth('prev')}
+                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                >
                   <ChevronLeft className="w-5 h-5 text-gray-600" />
                 </button>
-                <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                <button 
+                  onClick={() => setSelectedDate(new Date())}
+                  className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors duration-200"
+                >
+                  I dag
+                </button>
+                <button 
+                  onClick={() => navigateMonth('next')}
+                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                >
                   <ChevronRight className="w-5 h-5 text-gray-600" />
                 </button>
               </div>
@@ -124,21 +261,67 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
 
             {/* Calendar Grid */}
             <div className="grid grid-cols-7 gap-1 mb-4">
-              {['Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn'].map((day) => (
+              {dayNames.map((day) => (
                 <div key={day} className="p-2 text-center text-sm font-medium text-gray-500">
                   {day}
                 </div>
               ))}
-              {Array.from({ length: 35 }, (_, i) => (
-                <div
-                  key={i}
-                  className={`p-2 text-center text-sm cursor-pointer rounded-lg transition-colors duration-200 ${
-                    i === 15 ? 'bg-blue-600 text-white' : 'hover:bg-gray-100 text-gray-700'
-                  }`}
-                >
-                  {i + 1 <= 31 ? i + 1 : ''}
-                </div>
-              ))}
+              
+              {calendarDays.map((date, index) => {
+                if (!date) {
+                  return <div key={index} className="p-2"></div>;
+                }
+                
+                const dayAppointments = getAppointmentsForDate(date);
+                const isCurrentDay = isToday(date);
+                
+                return (
+                  <div
+                    key={index}
+                    onClick={() => handleDateClick(date)}
+                    className={`p-2 text-center text-sm cursor-pointer rounded-lg transition-all duration-200 hover:bg-blue-50 relative ${
+                      isCurrentDay 
+                        ? 'bg-blue-600 text-white font-bold' 
+                        : 'hover:bg-gray-100 text-gray-700'
+                    }`}
+                  >
+                    <span className="relative z-10">{date.getDate()}</span>
+                    
+                    {/* Appointment indicators */}
+                    {dayAppointments.length > 0 && (
+                      <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                        {dayAppointments.slice(0, 3).map((apt, i) => (
+                          <div
+                            key={i}
+                            className={`w-1.5 h-1.5 rounded-full ${
+                              apt.status === 'confirmed' ? 'bg-green-500' : 'bg-yellow-500'
+                            }`}
+                          />
+                        ))}
+                        {dayAppointments.length > 3 && (
+                          <div className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Legend */}
+            <div className="flex items-center justify-center space-x-6 text-sm text-gray-600">
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span>Bekræftet</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <span>Afventer</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                <span>I dag</span>
+              </div>
             </div>
           </div>
         </div>
@@ -146,9 +329,16 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
         {/* Today's Schedule */}
         <div className="space-y-6">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">I dag's aftaler</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              {selectedDateForPost ? 
+                `${selectedDateForPost.toLocaleDateString('da-DK')} aftaler` : 
+                'I dag\'s aftaler'
+              }
+            </h3>
             <div className="space-y-4">
-              {appointments.map((appointment) => (
+              {appointments
+                .filter(apt => selectedDateForPost ? isSameDay(apt.date, selectedDateForPost) : isToday(apt.date))
+                .map((appointment) => (
                 <div key={appointment.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                   <div className="flex items-start justify-between mb-2">
                     <h4 className="font-medium text-gray-900 text-sm">{appointment.title}</h4>
@@ -179,20 +369,46 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
                   </div>
                 </div>
               ))}
+              
+              {appointments.filter(apt => selectedDateForPost ? isSameDay(apt.date, selectedDateForPost) : isToday(apt.date)).length === 0 && (
+                <div className="text-center py-8">
+                  <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen aftaler</h3>
+                  <p className="text-gray-600 mb-4">
+                    {selectedDateForPost ? 
+                      `Ingen aftaler den ${selectedDateForPost.toLocaleDateString('da-DK')}` :
+                      'Du har ingen aftaler i dag'
+                    }
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSelectedDateForPost(selectedDateForPost || new Date());
+                      setShowCreateModal(true);
+                    }}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                  >
+                    Opret Aftale
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Quick Stats */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Denne uge</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Denne måned</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Bekræftede aftaler</span>
-                <span className="font-semibold text-green-600">8</span>
+                <span className="font-semibold text-green-600">
+                  {appointments.filter(apt => apt.status === 'confirmed').length}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Afventende aftaler</span>
-                <span className="font-semibold text-yellow-600">3</span>
+                <span className="font-semibold text-yellow-600">
+                  {appointments.filter(apt => apt.status === 'pending').length}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Estimeret indtjening</span>
@@ -202,6 +418,189 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
           </div>
         </div>
       </div>
+
+      {/* Create Post Modal */}
+      {showCreateModal && selectedDateForPost && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="relative p-6 border-b border-gray-200">
+              <button
+                onClick={() => setShowCreateModal(false)}
+                className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              >
+                <X className="w-6 h-6 text-gray-500" />
+              </button>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Calendar className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Opret Planlagt Opslag</h2>
+                <p className="text-gray-600">
+                  Opret et job opslag til {selectedDateForPost.toLocaleDateString('da-DK', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </p>
+              </div>
+            </div>
+
+            {/* Form */}
+            <div className="p-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Titel</label>
+                  <input
+                    type="text"
+                    value={newPostData.title}
+                    onChange={(e) => setNewPostData({...newPostData, title: e.target.value})}
+                    placeholder="F.eks. Hjemmerengøring søges"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Beskrivelse</label>
+                  <textarea
+                    value={newPostData.description}
+                    onChange={(e) => setNewPostData({...newPostData, description: e.target.value})}
+                    placeholder="Beskriv rengøringsopgaven detaljeret..."
+                    rows={4}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Lokation</label>
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                      <input
+                        type="text"
+                        value={newPostData.location}
+                        onChange={(e) => setNewPostData({...newPostData, location: e.target.value})}
+                        placeholder="F.eks. København NV"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Budget (valgfrit)</label>
+                    <div className="relative">
+                      <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                      <input
+                        type="text"
+                        value={newPostData.budget}
+                        onChange={(e) => setNewPostData({...newPostData, budget: e.target.value})}
+                        placeholder="F.eks. 300-400 kr"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Tidspunkt (valgfrit)</label>
+                    <div className="relative">
+                      <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                      <input
+                        type="time"
+                        value={newPostData.time}
+                        onChange={(e) => setNewPostData({...newPostData, time: e.target.value})}
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Type rengøring</label>
+                    <select
+                      value={newPostData.jobType}
+                      onChange={(e) => setNewPostData({...newPostData, jobType: e.target.value})}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="home_cleaning">Hjemmerengøring</option>
+                      <option value="office_cleaning">Kontorrengøring</option>
+                      <option value="deep_cleaning">Hovedrengøring</option>
+                      <option value="regular_cleaning">Fast rengøring</option>
+                      <option value="window_cleaning">Vinduesrengøring</option>
+                      <option value="move_cleaning">Fraflytningsrengøring</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Hastighed</label>
+                  <select
+                    value={newPostData.urgency}
+                    onChange={(e) => setNewPostData({...newPostData, urgency: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="flexible">Fleksibel</option>
+                    <option value="this_week">Denne uge</option>
+                    <option value="immediate">Akut</option>
+                  </select>
+                </div>
+
+                {/* Preview */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-medium text-blue-900 mb-2">📅 Preview af dit planlagte opslag:</h4>
+                  <div className="bg-white rounded-lg p-3 border border-blue-200">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <img
+                        src={currentUser?.avatar}
+                        alt="Din avatar"
+                        className="w-8 h-8 rounded-full"
+                      />
+                      <div>
+                        <p className="font-medium text-gray-900">{currentUser?.name}</p>
+                        <p className="text-xs text-gray-600">
+                          Planlagt til {selectedDateForPost.toLocaleDateString('da-DK')}
+                          {newPostData.time && ` kl. ${newPostData.time}`}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-gray-800 text-sm mb-2">
+                      <strong>{newPostData.title || 'Din titel kommer her'}</strong>
+                    </p>
+                    <p className="text-gray-700 text-sm mb-2">
+                      {newPostData.description || 'Din beskrivelse kommer her...'}
+                    </p>
+                    <div className="flex items-center space-x-4 text-xs text-gray-500">
+                      <span>📍 {newPostData.location || 'Lokation'}</span>
+                      {newPostData.budget && <span>💰 {newPostData.budget}</span>}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex space-x-3 mt-6">
+                <button
+                  onClick={() => setShowCreateModal(false)}
+                  className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                >
+                  Annuller
+                </button>
+                <button
+                  onClick={handleCreatePost}
+                  disabled={!newPostData.title || !newPostData.location}
+                  className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  📅 Planlæg Opslag
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
