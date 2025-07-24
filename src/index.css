@@ -135,6 +135,38 @@
   .safe-area-bottom {
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
+  
+  /* Hide browser UI elements in PWA mode */
+  .pwa-mode {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* PWA specific header adjustments */
+  .pwa-mode header {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* iOS PWA specific styles */
+@media (display-mode: standalone) and (-webkit-touch-callout: none) {
+  body {
+    padding-top: max(20px, env(safe-area-inset-top));
+  }
+  
+  /* Status bar area for iOS */
+  .ios-status-bar {
+    height: env(safe-area-inset-top);
+    background: #000;
+  }
+}
+
+/* Android PWA specific styles */
+@media (display-mode: standalone) and (orientation: portrait) {
+  body {
+    padding-top: max(24px, env(safe-area-inset-top));
+  }
 }
 
 /* Ultra-wide screen optimizations */

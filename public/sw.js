@@ -1,20 +1,26 @@
 // Service Worker for PWA functionality og Push Notifications
-const CACHE_NAME = 'privat-rengoring-v1';
+const CACHE_NAME = 'privat-rengoring-v2';
 const urlsToCache = [
   '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
-  '/manifest.json'
+  '/manifest.json',
+  '/browserconfig.xml',
+  'https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=192&h=192&fit=crop',
+  'https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=512&h=512&fit=crop'
 ];
 
 // Install event
 self.addEventListener('install', (event) => {
+  console.log('Service Worker installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        return cache.addAll(urlsToCache);
+        console.log('Caching app shell');
+        return cache.addAll(urlsToCache).catch(err => {
+          console.error('Failed to cache:', err);
+        });
       })
   );
+  self.skipWaiting(); // Force activation
 });
 
 // Fetch event
@@ -31,15 +37,20 @@ self.addEventListener('fetch', (event) => {
 
 // Activate event
 self.addEventListener('activate', (event) => {
+  console.log('Service Worker activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
+    }).then(() => {
+      console.log('Service Worker activated');
+      return self.clients.claim(); // Take control immediately
     })
   );
 });
