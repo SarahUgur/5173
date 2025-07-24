@@ -145,17 +145,9 @@
 }
 
 /* Small phone optimizations */
-@media (max-width: 320px) {
-  .text-xs {
-    font-size: 0.7rem;
-  }
-  
-  .p-3 {
-    padding: 0.5rem;
-  }
-  
-  .space-x-3 > :not([hidden]) ~ :not([hidden]) {
-    margin-left: 0.5rem;
+@media (max-width: 375px) {
+  .text-sm {
+    font-size: 0.8rem;
   }
 }
 

@@ -458,7 +458,7 @@ function App() {
       </div>
 
       {/* Recommendation Widget */}
-      <div className="mt-6 xs:mt-8">
+      <div className="mt-6 sm:mt-8">
         <RecommendationWidget />
       </div>
     </div>
@@ -690,7 +690,7 @@ function App() {
 
         {/* Main Content */}
         <div className="flex-1 lg:ml-0">
-          <main className="py-4 sm:py-6 px-3 sm:px-6 lg:px-8">
+          <main className="py-6 px-3 sm:px-6 lg:px-8">
             {renderMainContent()}
           </main>
         </div>
