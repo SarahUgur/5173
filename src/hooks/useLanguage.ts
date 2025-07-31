@@ -853,7 +853,7 @@ export function useLanguage() {
     
     // Update page title based on language
     const titles = {
-      da: 'Privat Rengøring - Social Platform for Rengøringsservices',
+      da: 'Private Rengøring - Social Platform for Rengøringsservices',
       en: 'Private Cleaning - Social Platform for Cleaning Services',
       ar: 'التنظيف الخاص - منصة اجتماعية لخدمات التنظيف',
       pl: 'Prywatne Sprzątanie - Platforma Społecznościowa dla Usług Sprzątania',

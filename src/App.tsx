@@ -623,7 +623,7 @@ function App() {
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'home' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'home' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <Home className="w-4 h-4 xs:w-5 xs:h-5" />
@@ -636,7 +636,7 @@ function App() {
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'jobs' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'jobs' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <Briefcase className="w-5 h-5" />
@@ -649,7 +649,7 @@ function App() {
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'map' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'map' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <MapPin className="w-5 h-5" />
@@ -662,7 +662,7 @@ function App() {
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'network' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'network' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <Users className="w-5 h-5" />
@@ -675,7 +675,7 @@ function App() {
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'tasks' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'tasks' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <Briefcase className="w-5 h-5" />
@@ -688,7 +688,7 @@ function App() {
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'planning' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'planning' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <Calendar className="w-5 h-5" />
@@ -701,7 +701,7 @@ function App() {
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'favorites' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'favorites' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <Heart className="w-5 h-5" />
@@ -714,7 +714,7 @@ function App() {
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'trending' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'trending' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <TrendingUp className="w-5 h-5" />
@@ -760,7 +760,7 @@ function App() {
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'about' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'about' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <HelpCircle className="w-5 h-5" />
@@ -773,7 +773,7 @@ function App() {
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'support' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'support' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <HelpCircle className="w-5 h-5" />
@@ -786,7 +786,7 @@ function App() {
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'contact' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'contact' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <Mail className="w-5 h-5" />
@@ -799,7 +799,7 @@ function App() {
                   setShowSidebar(false);
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'terms' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  currentPage === 'terms' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <Shield className="w-5 h-5" />

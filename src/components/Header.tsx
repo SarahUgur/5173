@@ -145,9 +145,9 @@ export default function Header({
             {/* Logo */}
             <button 
               onClick={() => setCurrentPage('home')}
-              className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity duration-200"
+              className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity duration-200 flex-shrink-0"
             >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-400 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
                 <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
                   <path d="M19 15L19.5 17L21.5 17.5L19.5 18L19 20L18.5 18L16.5 17.5L18.5 17L19 15Z"/>
@@ -155,8 +155,8 @@ export default function Header({
                 </svg>
               </div>
               <div>
-                <h1 className="text-base sm:text-lg lg:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
-                  Privat Rengøring
+                <h1 className="text-base sm:text-lg lg:text-xl font-bold bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent leading-tight">
+                  Private Rengøring
                 </h1>
                 <p className="text-xs text-gray-500 -mt-0.5 hidden lg:block leading-none">Social platform</p>
               </div>
@@ -164,7 +164,7 @@ export default function Header({
           </div>
 
           {/* Center - Search */}
-          <div className="flex-1 max-w-xs lg:max-w-md mx-3 sm:mx-4 hidden md:block">
+          <div className="flex-1 max-w-xs lg:max-w-md mx-3 sm:mx-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
@@ -173,7 +173,7 @@ export default function Header({
                 onChange={(e) => handleSearch(e.target.value)}
                 onFocus={() => searchTerm.length >= 2 && setShowSearchResults(true)}
                 placeholder={t('searchPlaceholder')}
-                className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
               />
               {searchTerm && (
                 <button
@@ -300,7 +300,7 @@ export default function Header({
               className="relative p-1.5 xs:p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
             >
               <MessageCircle className="w-4 h-4 xs:w-5 xs:h-5 text-gray-600" />
-              <span className="absolute -top-0.5 xs:-top-1 -right-0.5 xs:-right-1 w-3.5 h-3.5 xs:w-4 xs:h-4 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
+              <span className="absolute -top-0.5 xs:-top-1 -right-0.5 xs:-right-1 w-3.5 h-3.5 xs:w-4 xs:h-4 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center">
                 3
               </span>
             </button>
@@ -311,7 +311,7 @@ export default function Header({
               className="relative p-1.5 xs:p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
             >
               <Bell className="w-4 h-4 xs:w-5 xs:h-5 text-gray-600" />
-              <span className="absolute -top-0.5 xs:-top-1 -right-0.5 xs:-right-1 w-3.5 h-3.5 xs:w-4 xs:h-4 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">
+              <span className="absolute -top-0.5 xs:-top-1 -right-0.5 xs:-right-1 w-3.5 h-3.5 xs:w-4 xs:h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                 5
               </span>
             </button>
@@ -392,84 +392,6 @@ export default function Header({
           </div>
         </div>
 
-        {/* Mobile Search */}
-        <div className="md:hidden pb-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-              onFocus={() => searchTerm.length >= 2 && setShowSearchResults(true)}
-              placeholder={t('searchPlaceholder')}
-              className="w-full pl-9 pr-10 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-            />
-            {searchTerm && (
-              <button
-                onClick={() => {
-                  setSearchTerm('');
-                  setShowSearchResults(false);
-                }}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-
-          {/* Mobile Search Results */}
-          {showSearchResults && searchResults.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-80 overflow-y-auto z-50">
-              <div className="p-3 border-b border-gray-100">
-                <p className="text-sm font-medium text-gray-900">
-                  {searchResults.length} resultater
-                </p>
-              </div>
-              <div className="py-2">
-                {searchResults.map((result, index) => (
-                  <button
-                    key={`mobile-${result.type}-${result.id}-${index}`}
-                    onClick={() => handleResultClick(result)}
-                    className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors duration-200 text-left"
-                  >
-                    <div className="flex-shrink-0">
-                      {result.type === 'user' ? (
-                        <img
-                          src={result.avatar}
-                          alt={result.name}
-                          className="w-8 h-8 rounded-full"
-                        />
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                          {getResultIcon(result.type)}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2">
-                        <p className="font-medium text-gray-900 truncate text-sm">
-                          {result.name || result.title}
-                        </p>
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
-                          {getResultLabel(result.type)}
-                        </span>
-                      </div>
-                      <p className="text-xs text-gray-600 truncate">
-                        {result.type === 'user' ? (
-                          `${result.location} • ${result.userType}`
-                        ) : result.type === 'page' ? (
-                          result.description
-                        ) : (
-                          `${result.location} • ${result.content?.substring(0, 30)}...`
-                        )}
-                      </p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Dropdown Overlays */}
