@@ -24,7 +24,6 @@ export default function Header({
   onShowSettings,
   onShowHelp,
   setCurrentPage,
-  onShowSubscription
 }: HeaderProps) {
   const { language, setLanguage, t } = useLanguage();
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);

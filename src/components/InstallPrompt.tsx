@@ -58,7 +58,6 @@ export default function InstallPrompt() {
         alert('💻 På computer: Klik på install ikonet i adresselinjen eller brug browser menu');
       }
     }
-    setSocialLoginLoading(null);
   };
 
   const handleDismiss = () => {

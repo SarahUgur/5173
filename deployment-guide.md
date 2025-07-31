@@ -29,7 +29,9 @@ git branch -M main
 git remote add origin https://github.com/DIT-BRUGERNAVN/privat-rengoring-app.git
 git push -u origin main
 ```
-
+# Ingen environment variables påkrævet for basic funktionalitet
+# DATABASE_URL=your_database_url (kun hvis du bruger database)
+# JWT_SECRET=your_jwt_secret (kun hvis du bruger authentication)
 ## Step 4: Netlify Deployment
 1. Gå til [netlify.com](https://netlify.com)
 2. Klik "Sign up" og vælg "GitHub" login

@@ -15,11 +15,14 @@ export interface User {
   website?: string;
   skills?: string[];
   hourlyRate?: string;
+  hourlyRate?: number;
   availability?: string[];
   languages?: string[];
   certifications?: string[];
   insurance?: boolean;
   backgroundCheck?: boolean;
+  reviewCount?: number;
+  isVerified?: boolean;
 }
 
 export interface Comment {

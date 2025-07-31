@@ -1,23 +1,24 @@
 # Privat Rengøring - Social Platform
 
-En moderne social platform for rengøringsservices i Danmark med support for 6 sprog.
+En moderne social platform for rengøringsservices i Danmark med support for 6 sprog. Helt gratis at bruge!
 
 ## 🚀 Features
 
 - **Multi-language support** (Dansk, English, العربية, Polski, Türkçe, Deutsch)
 - **PWA (Progressive Web App)** - Installer som app på telefon
 - **Responsive design** - Fungerer på alle enheder
-- **Pro subscription system** - Stripe integration
+- **Gratis platform** - Alle funktioner er gratis
 - **Admin panel** - Bruger og content moderation
 - **Real-time notifications** - Push notifications
 - **Job marketplace** - Match rengøringseksperter med kunder
+- **Reklame finansieret** - Ingen brugergebyrer
 
 ## 🛠️ Tech Stack
 
 - **Frontend:** React 18 + TypeScript + Vite
 - **Styling:** Tailwind CSS
 - **Icons:** Lucide React
-- **Payments:** Stripe
+- **Monetization:** Reklamer og partnerskaber
 - **Deployment:** Netlify
 - **PWA:** Service Worker + Web App Manifest
 
@@ -57,13 +58,14 @@ Appen kan installeres som en native app på:
 - Android Chrome
 - Desktop Chrome/Edge
 
-## 💳 Stripe Integration
+## 🆓 Gratis Platform
 
-Pro abonnement: 29 DKK/måned
-- Ubegrænset likes og kommentarer
-- Direkte beskeder
-- Prioriteret visning
-- Verificeret profil badge
+Alle funktioner er gratis:
+- Ubegrænset opslag og ansøgninger
+- Direkte beskeder til alle brugere
+- Like og kommentér på opslag
+- Byg dit professionelle netværk
+- Ingen skjulte gebyrer
 
 ## 🚀 Deployment
 
@@ -73,10 +75,8 @@ Pro abonnement: 29 DKK/måned
 3. Publish directory: `dist`
 4. Auto-deploy on push
 
-### Environment Variables
-```
-VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_key
-```
+### Environment Variables (Valgfrit)
+Ingen environment variables påkrævet for basic funktionalitet.
 
 ## 📂 Project Structure
 
@@ -85,7 +85,7 @@ src/
 ├── components/          # React components
 ├── hooks/              # Custom hooks (useLanguage)
 ├── data/               # Mock data and translations
-├── lib/                # Utilities (Stripe config)
+├── lib/                # Utilities (notifications)
 ├── types/              # TypeScript types
 └── App.tsx             # Main app component
 
@@ -100,10 +100,9 @@ public/
 
 - **AuthScreen** - Login/signup with terms
 - **Header** - Navigation with language switcher
-- **Sidebar** - Main navigation menu
 - **PostCard** - Social media style posts
 - **AdminPage** - Admin dashboard and moderation
-- **SubscriptionModal** - Stripe payment integration
+- **CreatePost** - Opret jobs og opslag
 - **LocalJobsPage** - Geographic job search
 - **NetworkPage** - Social connections
 
@@ -115,15 +114,15 @@ public/
 - Display: standalone
 - Orientation: portrait-primary
 
-### Stripe Configuration
-- Currency: DKK (Danish Kroner)
-- Subscription: 29 DKK/month
-- Payment methods: Card
+### Monetization
+- Reklame integration (Google AdSense ready)
+- Partnerskab muligheder
+- Ingen brugergebyrer
 
 ## 📊 Analytics & Monitoring
 
 - User registration tracking
-- Pro conversion metrics
+- Reklame performance metrics
 - Job posting analytics
 - Geographic usage data
 
@@ -132,7 +131,7 @@ public/
 - Input validation
 - XSS protection
 - CSRF protection
-- Secure payment processing
+- GDPR compliance
 
 ## 🤝 Contributing
 

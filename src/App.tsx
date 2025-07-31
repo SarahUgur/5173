@@ -52,7 +52,6 @@ function App() {
   const [showTerms, setShowTerms] = useState(false);
   const [showFriendRequests, setShowFriendRequests] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showLogoSelector, setShowLogoSelector] = useState(false);
   const [currentLogo, setCurrentLogo] = useState('default');
 

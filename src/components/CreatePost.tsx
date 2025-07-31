@@ -44,17 +44,19 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate required fields
+    const errors = [];
+    if (!content.trim()) errors.push('Beskrivelse er påkrævet');
+    if (!location.trim()) errors.push('Lokation er påkrævet');
+    
     // Validate required fields for job posts
     if (postType === 'job') {
-      const errors = [];
-      if (!content.trim()) errors.push('Beskrivelse er påkrævet');
-      if (!location.trim()) errors.push('Lokation er påkrævet');
       if (!jobType) errors.push('Vælg rengøringstype');
-      
-      if (errors.length > 0) {
-        setFormErrors(errors);
-        return;
-      }
+    }
+    
+    if (errors.length > 0) {
+      setFormErrors(errors);
+      return;
     }
     
     // Submit to real API
