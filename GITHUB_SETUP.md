@@ -4,7 +4,7 @@
 
 1. Gå til [github.com](https://github.com) og log ind
 2. Klik "New repository" (grøn knap)
-3. Repository navn: `privat-rengoring-app`
+3. Repository navn: `private-rengoring-app`
 4. Beskrivelse: `Social platform for rengøringsservices i Danmark - Gratis at bruge`
 5. Vælg "Public" (anbefalet for open source)
 6. ✅ Tilføj README file
@@ -24,8 +24,8 @@
 ### Option B: Via Git Commands (Avanceret)
 ```bash
 # Klon dit tomme repository
-git clone https://github.com/DIT-BRUGERNAVN/privat-rengoring-app.git
-cd privat-rengoring-app
+git clone https://github.com/DIT-BRUGERNAVN/private-rengoring-app.git
+cd private-rengoring-app
 
 # Kopier alle filer fra Bolt til denne mappe
 # (undtagen node_modules og .git)
@@ -34,7 +34,7 @@ cd privat-rengoring-app
 git add .
 
 # Commit ændringer
-git commit -m "Initial commit - Privat Rengøring Platform"
+git commit -m "Initial commit - Private Rengøring Platform"
 
 # Push til GitHub
 git push origin main
@@ -72,7 +72,7 @@ Tilføj disse topics for bedre synlighed:
 1. Gå til [netlify.com](https://netlify.com)
 2. Klik "New site from Git"
 3. Vælg "GitHub"
-4. Vælg dit `privat-rengoring-app` repository
+4. Vælg dit `private-rengoring-app` repository
 5. Build settings:
    - **Build command:** `npm run build`
    - **Publish directory:** `dist`

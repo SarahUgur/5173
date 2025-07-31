@@ -36,7 +36,7 @@ export default function AboutPage() {
             <path d="M5 15L5.5 17L7.5 17.5L5.5 18L5 20L4.5 18L2.5 17.5L4.5 17L5 15Z"/>
           </svg>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Om Privat Rengøring</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Om Private Rengøring</h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
           Vi forbinder personer, der søger rengøringshjælp, med dygtige rengøringsfolk og virksomheder i hele Danmark.
         </p>
@@ -128,7 +128,7 @@ export default function AboutPage() {
           <h3 className="font-semibold text-gray-900 mb-2">Har du spørgsmål, ideer eller brug for hjælp?</h3>
           <p className="text-gray-600 mb-4">Du er altid velkommen til at kontakte os.</p>
           <div className="space-y-2">
-            <p className="font-medium text-blue-600">📧 support@privatrengoring.dk</p>
+            <p className="font-medium text-blue-600">📧 support@privaterengoring.dk</p>
             <p className="text-gray-600 text-sm">Vi svarer inden for 24-48 timer</p>
           </div>
         </div>
@@ -137,7 +137,7 @@ export default function AboutPage() {
       {/* Fremtiden */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 sm:p-8 text-white text-center">
         <Globe className="w-12 h-12 mx-auto mb-4 opacity-90" />
-        <h2 className="text-2xl font-bold mb-4">Fremtiden for Privat Rengøring</h2>
+        <h2 className="text-2xl font-bold mb-4">Fremtiden for Private Rengøring</h2>
         <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
           Vi arbejder konstant på at forbedre platformen med nye funktioner som AI-matching, 
           udvidet geografisk dækning og endnu bedre brugeroplevelse.

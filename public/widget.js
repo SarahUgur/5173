@@ -1,8 +1,8 @@
-// Privat Rengøring Widget
+// Private Rengøring Widget
 (function() {
   'use strict';
 
-  const PrivatRengoring = {
+  const PrivateRengoring = {
     config: {
       apiUrl: 'https://your-app.netlify.app/api',
       containerId: null,
@@ -240,5 +240,5 @@
   };
 
   // Make it globally available
-  window.PrivatRengoring = PrivatRengoring;
+  window.PrivateRengoring = PrivateRengoring;
 })();

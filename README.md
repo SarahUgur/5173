@@ -1,4 +1,4 @@
-# Privat Rengøring - Social Platform
+# Private Rengøring - Social Platform
 
 Danmarks største sociale platform for rengøringsservices med support for 6 sprog. Helt gratis at bruge!
 
@@ -43,7 +43,7 @@ npm run preview
 
 ## 🔐 Admin Access
 
-Admin login: admin@privatrengoring.dk / admin123
+Admin login: admin@privaterengoring.dk / admin123
 
 ## 🌍 Supported Languages
 - 🇩🇰 Dansk (Danish)
@@ -195,7 +195,7 @@ Private project - All rights reserved
 
 ## 📞 Support
 
-For support, email: support@privatrengoring.dk
+For support, email: support@privaterengoring.dk
 
 ---
 

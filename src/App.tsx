@@ -114,7 +114,7 @@ function App() {
       // Trigger Pro upgrade notification
       setTimeout(() => {
         notifications.triggerMessageNotification(
-          'Privat Rengøring',
+          'Private Rengøring',
           'Tillykke! Du er nu Pro medlem med fuld adgang til alle funktioner! 🌟'
         );
       }, 1000);
