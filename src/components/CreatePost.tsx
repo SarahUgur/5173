@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, MapPin, DollarSign, Clock, Briefcase, X, Users, Building, Home, Car, Shirt, Video, Camera, Upload, Filter, Music, Type, Smile, Trash2, Lock } from 'lucide-react';
+import { Image, MapPin, DollarSign, Clock, Briefcase, X, Users, Building, Home, Car, Shirt, Video, Camera, Upload, Filter, Music, Type, Smile, Trash2, Lock, Plus } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 
 interface CreatePostProps {
@@ -836,16 +836,16 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
 
                 {postType !== 'job' && (
                   <button
-                  type="submit"
-                  disabled={!content.trim()}
-                  className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:scale-105 ${
-                    content.trim()
-                      ? 'btn-primary text-white'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
-                  {postType === 'job' ? t('createJob') : t('share')}
-                </button>
+                    type="submit"
+                    disabled={!content.trim()}
+                    className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:scale-105 ${
+                      content.trim()
+                        ? 'btn-primary text-white'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
+                    {postType === 'job' ? t('createJob') : t('share')}
+                  </button>
                 )}
               </div>
             )}
@@ -867,8 +867,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                   <X className="w-5 h-5" />
                 </button>
               </div>
-                <p className="text-gray-600 mb-2">Tilføj billeder af opgaven ({selectedImages.length}/10)</p>
-                <p className="text-sm text-gray-500">Klik for at vælge billeder (max 10MB per billede)</p>
+
               <div className="relative mb-4">
                 <video
                   src={URL.createObjectURL(selectedVideo)}
@@ -912,28 +911,15 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <Type className="w-4 h-4 inline mr-1" />
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                    Tekst overlay
                   </label>
                   <input
                     type="text"
                     value={videoText}
                     onChange={(e) => setVideoText(e.target.value)}
-                    className="w-full h-24 sm:h-28 object-cover rounded-lg border border-gray-200"
+                    placeholder="Tilføj tekst til video..."
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  
-                  {/* Replace Image Button */}
-                  <label className="absolute top-1 left-1 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs cursor-pointer hover:bg-blue-700 transition-colors duration-200">
-                    ✎
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => replaceImage(index, e)}
-                      className="hidden"
-                    />
-                  </label>
-                  
-                  {/* Remove Image Button */}
                 </div>
 
                 {/* Music */}
@@ -945,7 +931,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                   <select
                     value={selectedMusic}
                     onChange={(e) => setSelectedMusic(e.target.value)}
-                    className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors duration-200"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {musicOptions.map((music) => (
                       <option key={music.id} value={music.id}>{music.name}</option>
@@ -984,34 +970,9 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                 <button
                   onClick={() => setShowMediaEditor(false)}
                   className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                    ×
+                >
                   Gem Ændringer
-                  
-                  {/* Image Counter */}
-                  <div className="absolute bottom-1 left-1 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-xs">
-                    {index + 1}/{selectedImages.length}
-                  </div>
                 </button>
-              </div>
-              
-              {/* Add More Images Button */}
-              {selectedImages.length < 10 && (
-                <label className="w-full h-24 sm:h-28 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200">
-                  <Plus className="w-6 h-6 text-gray-400 mb-1" />
-                  <span className="text-xs text-gray-500">Tilføj billede</span>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                </label>
-              )}
-              
-              {/* Drag and Drop hint */}
-              <div className="mt-3 text-xs text-gray-400">
-                Understøttede formater: JPG, PNG, GIF, WebP
               </div>
             </div>
           </div>
