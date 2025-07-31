@@ -602,7 +602,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               
               {/* Share Menu */}
               {showShareMenu && (
-                <div className="absolute bottom-full left-0 mb-2 w-64 bg-white rounded-xl shadow-strong border border-gray-200 p-3 z-50 animate-fadeIn">
+                <div className="absolute bottom-full left-0 mb-2 w-64 bg-white rounded-xl shadow-strong border border-gray-200 p-3 z-50 animate-fadeIn share-menu-dropdown">
                   <h4 className="font-semibold text-gray-900 mb-3 text-sm">Del opslag</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {shareOptions.map((option) => (

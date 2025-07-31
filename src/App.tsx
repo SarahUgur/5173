@@ -427,7 +427,7 @@ function App() {
           />
         );
       case 'admin':
-        return currentUser.email === 'admin@privatrengoring.dk' ? <AdminPage /> : renderHomePage();
+        return currentUser.email === 'admin@privaterengoring.dk' ? <AdminPage /> : renderHomePage();
       case 'about':
         return <AboutPage />;
       case 'contact':
@@ -772,7 +772,7 @@ function App() {
               </button>
 
               {/* Admin link */}
-              {currentUser.email === 'admin@privatrengoring.dk' && (
+              {currentUser.email === 'admin@privaterengoring.dk' && (
                 <>
                 <button
                   onClick={() => {
