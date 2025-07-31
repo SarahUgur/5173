@@ -7,7 +7,7 @@
     "dev": "netlify dev",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "netlify": "npx netlify dev"
   },
   "dependencies": {
     "@stripe/stripe-js": "^7.4.0",
