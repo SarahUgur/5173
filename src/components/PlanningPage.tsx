@@ -353,7 +353,36 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
                    </button>
                  </div>
                ) : (
-                 ))
+                 appointments
+                   .filter(apt => selectedDateForPost ? isSameDay(apt.date, selectedDateForPost) : isToday(apt.date))
+                   .map((appointment, index) => (
+                <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <Briefcase className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">{appointment.title}</h4>
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <Clock className="w-4 h-4" />
+                          <span>{appointment.time}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(appointment.status)}`}>
+                      {appointment.status === 'confirmed' ? 'Bekræftet' : 
+                       appointment.status === 'pending' ? 'Afventer' : 'Aflyst'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4 text-sm text-gray-600 mb-2">
+                    <div className="flex items-center space-x-1">
+                      <MapPin className="w-4 h-4" />
+                      <span>{appointment.location}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <User className="w-4 h-4" />
                       <span>{appointment.client}</span>
                     </div>
                   </div>
@@ -364,7 +393,7 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
                     </span>
                   </div>
                 </div>
-              ))}
+              )))}
               
               {appointments.filter(apt => selectedDateForPost ? isSameDay(apt.date, selectedDateForPost) : isToday(apt.date)).length === 0 && (
                 <div className="text-center py-8">
