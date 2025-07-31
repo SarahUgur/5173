@@ -1,4 +1,4 @@
-# 🚀 Production Checklist - Privat Rengøring
+# 🚀 Production Checklist - Private Rengøring
 
 ## ✅ Pre-Launch Checklist
 
@@ -132,4 +132,4 @@
 
 ---
 
-**🎉 Ready for launch! Lykke til med Privat Rengøring! 🇩🇰**
+**🎉 Ready for launch! Lykke til med Private Rengøring! 🇩🇰**

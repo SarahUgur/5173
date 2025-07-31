@@ -192,7 +192,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubscribe, userEm
           <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-xs text-blue-800 text-center">
               💳 <strong>Månedligt abonnement:</strong> 29 kr trækkes automatisk hver måned via Stripe<br/>
-              📧 <strong>Opsigelse:</strong> Skriv til support@privatrengoring.dk for at opsige
+              📧 <strong>Opsigelse:</strong> Skriv til support@privaterengoring.dk for at opsige
             </p>
           </div>
         </div>

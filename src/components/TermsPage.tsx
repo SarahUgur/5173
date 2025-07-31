@@ -192,7 +192,7 @@ export default function TermsPage() {
             <h3 className="text-xl font-bold mb-2">Har du spørgsmål til vores vilkår?</h3>
             <p className="text-blue-100 mb-4">Vi er her for at hjælpe dig</p>
             <a
-              href="mailto:support@privatrengoring.dk?subject=Spørgsmål til vilkår og betingelser"
+              href="mailto:support@privaterengoring.dk?subject=Spørgsmål til vilkår og betingelser"
               className="inline-flex items-center space-x-2 bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition-colors duration-200"
             >
               <Mail className="w-4 h-4" />

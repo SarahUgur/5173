@@ -311,7 +311,7 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
             <p className="text-sm text-gray-600">Kan du ikke finde svar på dit spørgsmål?</p>
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
               <button 
-                onClick={() => window.location.href = 'mailto:support@privatrengoring.dk?subject=Hjælp med Privat Rengøring'}
+                onClick={() => window.location.href = 'mailto:support@privaterengoring.dk?subject=Hjælp med Private Rengøring'}
                 className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >
                 <Mail className="w-4 h-4" />
@@ -319,7 +319,7 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
               </button>
             </div>
             <div className="text-xs text-gray-500 space-y-1">
-              <p>📧 Email: support@privatrengoring.dk</p>
+              <p>📧 Email: support@privaterengoring.dk</p>
               <p>🕒 Åbningstider: Man-Fre 9:00-17:00 • Vi svarer inden for 24-48 timer</p>
             </div>
           </div>

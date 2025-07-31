@@ -7,7 +7,7 @@
 ## Step 2: GitHub Setup
 1. Gå til [github.com](https://github.com) og log ind
 2. Klik "New repository" (grøn knap)
-3. Repository navn: `privat-rengoring-app`
+3. Repository navn: `private-rengoring-app`
 4. Beskrivelse: `Social platform for rengøringsservices i Danmark`
 5. Vælg "Public" (eller Private hvis du vil)
 6. Klik "Create repository"
@@ -24,9 +24,9 @@
 ```bash
 git init
 git add .
-git commit -m "Initial commit - Privat Rengøring App"
+git commit -m "Initial commit - Private Rengøring App"
 git branch -M main
-git remote add origin https://github.com/DIT-BRUGERNAVN/privat-rengoring-app.git
+git remote add origin https://github.com/DIT-BRUGERNAVN/private-rengoring-app.git
 git push -u origin main
 ```
 # Ingen environment variables påkrævet for basic funktionalitet
@@ -37,7 +37,7 @@ git push -u origin main
 2. Klik "Sign up" og vælg "GitHub" login
 3. Klik "New site from Git"
 4. Vælg "GitHub" som provider
-5. Find og vælg dit `privat-rengoring-app` repository
+5. Find og vælg dit `private-rengoring-app` repository
 6. Deployment settings:
    - **Build command:** `npm run build`
    - **Publish directory:** `dist`

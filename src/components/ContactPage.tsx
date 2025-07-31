@@ -38,11 +38,11 @@ export default function ContactPage() {
           });
         }, 3000);
       } else {
-        alert('Der opstod en fejl. Prøv igen eller kontakt support@privatrengoring.dk');
+        alert('Der opstod en fejl. Prøv igen eller kontakt support@privaterengoring.dk');
       }
     }).catch(error => {
       console.error('Contact form error:', error);
-      alert('Der opstod en fejl. Prøv igen eller kontakt support@privatrengoring.dk');
+      alert('Der opstod en fejl. Prøv igen eller kontakt support@privaterengoring.dk');
     });
   };
 
@@ -225,8 +225,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">Email</p>
-                  <a href="mailto:support@privatrengoring.dk" className="text-blue-600 hover:text-blue-700">
-                    support@privatrengoring.dk
+                  <a href="mailto:support@privaterengoring.dk" className="text-blue-600 hover:text-blue-700">
+                    support@privaterengoring.dk
                   </a>
                 </div>
               </div>

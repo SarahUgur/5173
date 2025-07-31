@@ -270,7 +270,7 @@ export default function SupportPage() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="mailto:support@privatrengoring.dk?subject=Hjælp med Privat Rengøring"
+            href="mailto:support@privaterengoring.dk?subject=Hjælp med Private Rengøring"
             className="inline-flex items-center space-x-2 bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition-colors duration-200"
           >
             <Mail className="w-4 h-4" />
