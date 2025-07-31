@@ -47,11 +47,11 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
     // Validate required fields
     const errors = [];
     if (!content.trim()) errors.push('Beskrivelse er påkrævet');
-    if (!location.trim()) errors.push('Lokation er påkrævet');
     
     // Validate required fields for job posts
     if (postType === 'job') {
       if (!jobType) errors.push('Vælg rengøringstype');
+      if (!location.trim()) errors.push('Lokation er påkrævet for job opslag');
     }
     
     if (errors.length > 0) {
@@ -695,7 +695,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                         type="button"
                         onClick={() => {
                           const errors = [];
-                          if (!location.trim()) errors.push('Indtast lokation');
+                          if (!location.trim()) errors.push('Lokation er påkrævet for job opslag');
                           
                           if (errors.length > 0) {
                             setFormErrors(errors);
@@ -837,9 +837,9 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                 {postType !== 'job' && (
                   <button
                     type="submit"
-                    disabled={!content.trim() || !location.trim()}
+                    disabled={!content.trim()}
                     className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:scale-105 ${
-                      content.trim() && location.trim()
+                      content.trim()
                         ? 'bg-blue-600 text-white hover:bg-blue-700'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}

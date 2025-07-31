@@ -499,7 +499,8 @@ function App() {
           } else {
             setPosts(prev => [...prev, ...(data.posts || [])]);
           }
-          setHasMore(data.hasMore || false);
+          website: user.website || '',
+          coverPhoto: user.cover_photo || ''
         }
       } catch (error) {
         console.error('Error loading posts:', error);

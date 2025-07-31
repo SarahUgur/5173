@@ -354,17 +354,6 @@ export default function Header({
                   
                   <button
                     onClick={() => {
-                      onShowSettings();
-                      setShowProfileMenu(false);
-                    }}
-                    className="w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors duration-200"
-                  >
-                    <Settings className="w-4 h-4 text-gray-500" />
-                    <span className="text-gray-700">{t('settings')}</span>
-                  </button>
-                  
-                  <button
-                    onClick={() => {
                       onShowHelp();
                       setShowProfileMenu(false);
                     }}

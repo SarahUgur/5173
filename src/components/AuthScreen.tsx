@@ -109,7 +109,8 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           bio: 'Logget ind via Google',
           phone: '+45 12 34 56 78',
           website: '',
-          joinedDate: new Date().toISOString().split('T')[0]
+          joinedDate: new Date().toISOString().split('T')[0],
+          coverPhoto: 'https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop'
         },
         apple: {
           id: 'apple-demo',
@@ -126,7 +127,8 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           bio: 'Logget ind via Apple',
           phone: '+45 87 65 43 21',
           website: '',
-          joinedDate: new Date().toISOString().split('T')[0]
+          joinedDate: new Date().toISOString().split('T')[0],
+          coverPhoto: 'https://images.pexels.com/photos/4099468/pexels-photo-4099468.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop'
         },
         facebook: {
           id: 'facebook-demo',
@@ -143,7 +145,8 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           bio: 'Logget ind via Facebook',
           phone: '+45 23 45 67 89',
           website: 'https://example.com',
-          joinedDate: new Date().toISOString().split('T')[0]
+          joinedDate: new Date().toISOString().split('T')[0],
+          coverPhoto: 'https://images.pexels.com/photos/4108715/pexels-photo-4108715.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop'
         }
       };
 
