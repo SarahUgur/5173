@@ -3,6 +3,14 @@
   command = "npm run build"
 
 [dev]
+  framework = "#static"
+  targetPort = 5173
+
+# Disable Edge Functions to avoid Deno requirement
+[edge_functions]
+  enabled = false
+
+[dev]
   framework = "vite"
   command = "npm run dev"
   targetPort = 5173
