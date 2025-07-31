@@ -789,7 +789,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                 <div className="flex items-center space-x-3 sm:space-x-4 w-full sm:w-auto">
                   <label className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105 cursor-pointer">
                     <Image className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Billeder ({selectedImages.length}/10)</span>
+                    <span>Billeder</span>
                     <input
                       type="file"
                       multiple
@@ -801,7 +801,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                   
                   <label className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105 cursor-pointer">
                     <Video className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Video {selectedVideo ? '(1)' : ''}</span>
+                    <span>Video</span>
                     <input
                       type="file"
                       accept="video/*"
@@ -812,21 +812,6 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                   
                   <button
                     type="button"
-                    onClick={() => {
-                      if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                          (position) => {
-                            // Reverse geocoding would go here in production
-                            setLocation('Din nuværende lokation');
-                          },
-                          () => {
-                            alert('Kunne ikke få din lokation');
-                          }
-                        );
-                      } else {
-                        alert('Din browser understøtter ikke geolocation');
-                      }
-                    }}
                     className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105"
                   >
                     <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -868,6 +853,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                 </button>
               </div>
 
+              {/* Video Preview */}
               <div className="relative mb-4">
                 <video
                   src={URL.createObjectURL(selectedVideo)}
@@ -975,6 +961,64 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Preview Grid */}
+      {selectedImages.length > 0 && (
+        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+          <h4 className="font-medium text-gray-900 mb-3">Valgte billeder ({selectedImages.length}/10)</h4>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+            {selectedImages.map((image, index) => (
+              <div key={index} className="relative">
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`Upload ${index + 1}`}
+                  className="w-full h-24 sm:h-28 object-cover rounded-lg border border-gray-200"
+                />
+                
+                {/* Replace Image Button */}
+                <label className="absolute top-1 left-1 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs cursor-pointer hover:bg-blue-700 transition-colors duration-200">
+                  ✎
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => replaceImage(index, e)}
+                    className="hidden"
+                  />
+                </label>
+                
+                {/* Remove Image Button */}
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors duration-200"
+                >
+                  ×
+                </button>
+                
+                {/* Image Counter */}
+                <div className="absolute bottom-1 left-1 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-xs">
+                  {index + 1}/{selectedImages.length}
+                </div>
+              </div>
+            ))}
+            
+            {/* Add More Images Button */}
+            {selectedImages.length < 10 && (
+              <label className="w-full h-24 sm:h-28 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200">
+                <Plus className="w-6 h-6 text-gray-400 mb-1" />
+                <span className="text-xs text-gray-500">Tilføj billede</span>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+              </label>
+            )}
           </div>
         </div>
       )}
