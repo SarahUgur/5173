@@ -836,16 +836,16 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
 
                 {postType !== 'job' && (
                   <button
-                  type="submit"
-                  disabled={!content.trim()}
-                  className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:scale-105 ${
-                    content.trim()
-                      ? 'btn-primary text-white'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
-                  {postType === 'job' ? t('createJob') : t('share')}
-                </button>
+                    type="submit"
+                    disabled={!content.trim() || !location.trim()}
+                    className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:scale-105 ${
+                      content.trim() && location.trim()
+                        ? 'bg-blue-600 text-white hover:bg-blue-700'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
+                    {t('share')}
+                  </button>
                 )}
               </div>
             )}
