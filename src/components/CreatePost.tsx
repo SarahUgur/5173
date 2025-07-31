@@ -789,7 +789,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                 <div className="flex items-center space-x-3 sm:space-x-4 w-full sm:w-auto">
                   <label className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105 cursor-pointer">
                     <Image className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Billeder</span>
+                    <span>Billeder ({selectedImages.length}/10)</span>
                     <input
                       type="file"
                       multiple
@@ -801,7 +801,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                   
                   <label className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105 cursor-pointer">
                     <Video className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Video</span>
+                    <span>Video {selectedVideo ? '(1)' : ''}</span>
                     <input
                       type="file"
                       accept="video/*"
@@ -812,6 +812,21 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                   
                   <button
                     type="button"
+                    onClick={() => {
+                      if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                          (position) => {
+                            // Reverse geocoding would go here in production
+                            setLocation('Din nuværende lokation');
+                          },
+                          () => {
+                            alert('Kunne ikke få din lokation');
+                          }
+                        );
+                      } else {
+                        alert('Din browser understøtter ikke geolocation');
+                      }
+                    }}
                     className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105"
                   >
                     <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -821,16 +836,16 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
 
                 {postType !== 'job' && (
                   <button
-                    type="submit"
-                    disabled={!content.trim()}
-                    className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:scale-105 ${
-                      content.trim()
-                        ? 'btn-primary text-white'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    {postType === 'job' ? t('createJob') : t('share')}
-                  </button>
+                  type="submit"
+                  disabled={!content.trim()}
+                  className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:scale-105 ${
+                    content.trim()
+                      ? 'btn-primary text-white'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  {postType === 'job' ? t('createJob') : t('share')}
+                </button>
                 )}
               </div>
             )}
