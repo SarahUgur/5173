@@ -73,3 +73,5 @@ Thumbs.db
 sw.js.map
 workbox-*.js
 workbox-*.js.map
+# Local Netlify folder
+.netlify
