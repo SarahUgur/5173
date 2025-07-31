@@ -25,7 +25,7 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   verifyToken(req, res, async () => {
     if (req.method === 'POST') {
       // Send message
