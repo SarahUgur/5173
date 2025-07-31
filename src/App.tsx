@@ -89,6 +89,8 @@ function App() {
   const handleLogout = () => {
     // Clear authentication
     localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('userData');
     
     // Reset state
     setCurrentUser(null);

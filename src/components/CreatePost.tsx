@@ -836,11 +836,11 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
 
                 {postType !== 'job' && (
                   <button
-                    type="submit"
+                    onClick={handleSubmit}
                     disabled={!content.trim()}
-                    className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm hover:scale-105 ${
+                    className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm ${
                       content.trim()
-                        ? 'bg-blue-600 text-white hover:bg-blue-700'
+                        ? 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-105'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
                   >
