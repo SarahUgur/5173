@@ -499,8 +499,9 @@ function App() {
           } else {
             setPosts(prev => [...prev, ...(data.posts || [])]);
           }
-          website: user.website || '',
-          coverPhoto: user.cover_photo || ''
+          setHasMore(data.hasMore !== false);
+        } else {
+          console.error('Failed to load posts');
         }
       } catch (error) {
         console.error('Error loading posts:', error);
