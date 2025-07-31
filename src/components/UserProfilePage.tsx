@@ -21,57 +21,83 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
     website: currentUser?.website || ''
   });
 
-  // Mock data for user profile
-  const userStats = {
-    posts: 45,
-    friends: 123,
-    rating: 4.8,
-    completedJobs: 67,
-    joinDate: '2023-08-15',
-    profileViews: 234,
-    totalLikes: 456,
-    totalComments: 189
-  };
+  // Real user stats from API
+  const [userStats, setUserStats] = useState({
+    posts: 0,
+    friends: 0,
+    rating: 0,
+    completedJobs: 0,
+    joinDate: currentUser?.joinedDate || new Date().toISOString().split('T')[0],
+    profileViews: 0,
+    totalLikes: 0,
+    totalComments: 0
+  });
 
-  const userPosts = [
-    {
-      id: '1',
-      content: 'Lige afsluttet en fantastisk rengøring i Østerbro! Kunden var super tilfreds 😊',
-      images: ['https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop'],
-      likes: 24,
-      comments: 8,
-      createdAt: '2 dage siden'
-    },
-    {
-      id: '2',
-      content: 'Søger nye kunder i København området. Specialiseret i miljøvenlig rengøring 🌱',
-      likes: 18,
-      comments: 12,
-      createdAt: '1 uge siden'
-    },
-    {
-      id: '3',
-      content: 'Tips til effektiv vinduesrengøring: Brug aviser i stedet for klude for et strygefrit resultat! ✨',
-      likes: 32,
-      comments: 15,
-      createdAt: '2 uger siden'
+  const [userPosts, setUserPosts] = useState<any[]>([]);
+  const [userFriends, setUserFriends] = useState<any[]>([]);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load user profile data from API
+  React.useEffect(() => {
+    loadUserProfileData();
+  }, [currentUser?.id]);
+
+  const loadUserProfileData = async () => {
+    setLoading(true);
+    try {
+      // Load user stats
+      const statsResponse = await fetch(`/api/user/${currentUser?.id}/stats`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (statsResponse.ok) {
+        const stats = await statsResponse.json();
+        setUserStats(stats);
+      }
+
+      // Load user posts
+      const postsResponse = await fetch(`/api/user/${currentUser?.id}/posts`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (postsResponse.ok) {
+        const posts = await postsResponse.json();
+        setUserPosts(posts);
+      }
+
+      // Load user friends
+      const friendsResponse = await fetch(`/api/user/${currentUser?.id}/friends`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (friendsResponse.ok) {
+        const friends = await friendsResponse.json();
+        setUserFriends(friends);
+      }
+
+      // Load recent activity
+      const activityResponse = await fetch(`/api/user/${currentUser?.id}/activity`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (activityResponse.ok) {
+        const activity = await activityResponse.json();
+        setRecentActivity(activity);
+      }
+    } catch (error) {
+      console.error('Error loading user profile data:', error);
     }
-  ];
-
-  const userFriends = Array.from({ length: 12 }, (_, i) => ({
-    id: i.toString(),
-    name: `Ven ${i + 1}`,
-    avatar: `https://images.pexels.com/photos/${1239291 + i}/pexels-photo-${1239291 + i}.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop`,
-    location: ['København', 'Aarhus', 'Odense'][i % 3],
-    userType: ['private', 'cleaner', 'small_business'][i % 3]
-  }));
-
-  const recentActivity = [
-    { type: 'like', action: 'Likede et opslag', target: 'Hjemmerengøring i Nørrebro', time: '2 timer siden' },
-    { type: 'comment', action: 'Kommenterede på', target: 'Kontorrengøring tips', time: '5 timer siden' },
-    { type: 'friend', action: 'Blev venner med', target: 'Maria Hansen', time: '1 dag siden' },
-    { type: 'post', action: 'Oprettede et opslag', target: 'Rengøringstips', time: '2 dage siden' }
-  ];
+    setLoading(false);
+  };
 
   const handleSaveProfile = () => {
     saveProfileChanges();
@@ -409,6 +435,13 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
 
         {/* Tab Content */}
         <div className="p-6 overflow-y-auto max-h-[60vh] lg:max-h-[70vh]">
+          {loading && (
+            <div className="text-center py-8">
+              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600">Indlæser profil data...</p>
+            </div>
+          )}
+
           {activeTab === 'about' && (
             <div className="space-y-6">
               <div>
@@ -538,7 +571,14 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
 
           {activeTab === 'posts' && (
             <div className="space-y-4">
-              {userPosts.map((post) => (
+              {userPosts.length === 0 ? (
+                <div className="text-center py-8">
+                  <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen opslag endnu</h3>
+                  <p className="text-gray-600">Opret dit første opslag for at dele med andre.</p>
+                </div>
+              ) : (
+                userPosts.map((post) => (
                 <div key={post.id} className="border border-gray-200 rounded-lg p-4">
                   <p className="text-gray-800 mb-3">{post.content}</p>
                   {post.images && (
@@ -564,13 +604,22 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
                     <span>{post.createdAt}</span>
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
           )}
 
           {activeTab === 'friends' && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {userFriends.map((friend) => (
+            <div>
+              {userFriends.length === 0 ? (
+                <div className="text-center py-8">
+                  <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen venner endnu</h3>
+                  <p className="text-gray-600">Start med at forbinde med andre brugere.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {userFriends.map((friend) => (
                 <div key={friend.id} className="text-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
                   <img
                     src={friend.avatar}
@@ -583,13 +632,22 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
                     Se Profil
                   </button>
                 </div>
-              ))}
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
           {activeTab === 'activity' && (
             <div className="space-y-4">
-              {recentActivity.map((activity, index) => (
+              {recentActivity.length === 0 ? (
+                <div className="text-center py-8">
+                  <TrendingUp className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen aktivitet endnu</h3>
+                  <p className="text-gray-600">Din aktivitet vil blive vist her.</p>
+                </div>
+              ) : (
+                recentActivity.map((activity, index) => (
                 <div key={index} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg">
                   <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                     {activity.type === 'like' && <Heart className="w-5 h-5 text-blue-600" />}
@@ -604,7 +662,8 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
                     <p className="text-sm text-gray-500">{activity.time}</p>
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
           )}
         </div>

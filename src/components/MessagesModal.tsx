@@ -41,79 +41,35 @@ export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubs
   const [isCallActive, setIsCallActive] = useState(false);
   const [callDuration, setCallDuration] = useState(0);
 
-  // Mock conversations data
-  const [conversations, setConversations] = useState<Conversation[]>([
-    {
-      id: '1',
-      user: {
-        id: '2',
-        name: 'Maria Hansen',
-        avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        online: true
-      },
-      lastMessage: {
-        id: 'm1',
-        senderId: '2',
-        receiverId: currentUser?.id,
-        content: 'Hej! Er du stadig interesseret i rengøringsjobbet?',
-        timestamp: '10:30',
-        read: false,
-        type: 'text'
-      },
-      unreadCount: 2,
-      messages: [
-        {
-          id: 'm1',
-          senderId: '2',
-          receiverId: currentUser?.id,
-          content: 'Hej! Er du stadig interesseret i rengøringsjobbet?',
-          timestamp: '10:30',
-          read: false,
-          type: 'text'
-        },
-        {
-          id: 'm2',
-          senderId: currentUser?.id,
-          receiverId: '2',
-          content: 'Ja, det er jeg! Hvornår kan vi mødes?',
-          timestamp: '10:25',
-          read: true,
-          type: 'text'
-        }
-      ]
-    },
-    {
-      id: '2',
-      user: {
-        id: '3',
-        name: 'Lars Nielsen',
-        avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        online: false,
-        lastSeen: '2 timer siden'
-      },
-      lastMessage: {
-        id: 'm3',
-        senderId: currentUser?.id,
-        receiverId: '3',
-        content: 'Tak for det gode arbejde!',
-        timestamp: 'I går',
-        read: true,
-        type: 'text'
-      },
-      unreadCount: 0,
-      messages: [
-        {
-          id: 'm3',
-          senderId: currentUser?.id,
-          receiverId: '3',
-          content: 'Tak for det gode arbejde!',
-          timestamp: 'I går',
-          read: true,
-          type: 'text'
-        }
-      ]
+  // Real conversations data from API
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load conversations from API
+  React.useEffect(() => {
+    if (isOpen) {
+      loadConversations();
     }
-  ]);
+  }, [isOpen]);
+
+  const loadConversations = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/messages', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setConversations(data);
+      }
+    } catch (error) {
+      console.error('Error loading conversations:', error);
+    }
+    setLoading(false);
+  };
 
   if (!isOpen) return null;
 
@@ -262,7 +218,19 @@ export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubs
           </div>
 
           <div className="flex-1 overflow-y-auto">
-            {filteredConversations.map((conversation) => (
+            {loading ? (
+              <div className="p-8 text-center">
+                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-600">Indlæser beskeder...</p>
+              </div>
+            ) : filteredConversations.length === 0 ? (
+              <div className="p-8 text-center">
+                <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen beskeder</h3>
+                <p className="text-gray-600">Start en samtale ved at kontakte andre brugere.</p>
+              </div>
+            ) : (
+              filteredConversations.map((conversation) => (
               <div
                 key={conversation.id}
                 onClick={() => {
@@ -316,7 +284,8 @@ export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubs
                   </button>
                 </div>
               </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 

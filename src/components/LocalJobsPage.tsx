@@ -15,64 +15,51 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState<any>(null);
 
-  // Mock job data
-  const jobs = [
-    {
-      id: '1',
-      title: 'Hjemmerengøring - Moderne lejlighed',
-      description: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen.',
-      location: 'København NV',
-      budget: '350-400 kr',
-      urgency: 'flexible',
-      client: {
-        name: 'Maria Hansen',
-        avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        rating: 4.9
-      },
-      applicants: 5,
-      postedTime: '2 timer siden',
-      jobType: 'home_cleaning'
-    },
-    {
-      id: '2',
-      title: 'Kontorrengøring - Startup',
-      description: 'Vores kontor har brug for daglig rengøring. Vi er et lille team på 15 personer.',
-      location: 'Aarhus C',
-      budget: '600-800 kr',
-      urgency: 'this_week',
-      client: {
-        name: 'Lars Nielsen',
-        avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        rating: 4.7
-      },
-      applicants: 12,
-      postedTime: '5 timer siden',
-      jobType: 'office_cleaning'
-    },
-    {
-      id: '3',
-      title: 'Hovedrengøring - Villa',
-      description: 'AKUT: Stor villa har brug for grundig hovedrengøring før familiefest i weekenden.',
-      location: 'Odense',
-      budget: '2000-2500 kr',
-      urgency: 'immediate',
-      client: {
-        name: 'Sofie Andersen',
-        avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        rating: 4.8
-      },
-      applicants: 8,
-      postedTime: '1 time siden',
-      jobType: 'deep_cleaning'
+  // Real job data from API
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load jobs from API
+  React.useEffect(() => {
+    loadJobs();
+  }, [selectedArea, searchTerm, sortBy]);
+
+  const loadJobs = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        area: selectedArea,
+        search: searchTerm,
+        sort: sortBy,
+        type: 'job'
+      });
+
+      const response = await fetch(`/api/posts?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setJobs(data.posts || []);
+      } else {
+        console.error('Failed to load jobs');
+        setJobs([]);
+      }
+    } catch (error) {
+      console.error('Error loading jobs:', error);
+      setJobs([]);
     }
-  ];
+    setLoading(false);
+  };
 
   const areas = [
-    { id: 'all', name: 'Alle områder', count: 156 },
-    { id: 'storkobenhavn', name: 'Storkøbenhavn', count: 89 },
-    { id: 'storaarhus', name: 'Storaarhus', count: 34 },
-    { id: 'storodense', name: 'Storodense', count: 18 },
-    { id: 'storaalborg', name: 'Storaalborg', count: 15 }
+    { id: 'all', name: 'Alle områder', count: jobs.length },
+    { id: 'storkobenhavn', name: 'Storkøbenhavn', count: jobs.filter(j => j.location?.includes('København')).length },
+    { id: 'storaarhus', name: 'Storaarhus', count: jobs.filter(j => j.location?.includes('Aarhus')).length },
+    { id: 'storodense', name: 'Storodense', count: jobs.filter(j => j.location?.includes('Odense')).length },
+    { id: 'storaalborg', name: 'Storaalborg', count: jobs.filter(j => j.location?.includes('Aalborg')).length }
   ];
 
   const getUrgencyColor = (urgency: string) => {
@@ -203,7 +190,9 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
       {/* Results */}
       <div className="mb-4">
         <p className="text-gray-600">
-          Viser <span className="font-semibold">{jobs.length}</span> jobs i{' '}
+          {loading ? 'Indlæser jobs...' : (
+            <>Viser <span className="font-semibold">{jobs.length}</span> jobs i{' '}</>
+          )}
           <span className="font-semibold">
             {areas.find(a => a.id === selectedArea)?.name || 'alle områder'}
           </span>
@@ -212,7 +201,19 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
 
       {/* Job List */}
       <div className="space-y-4">
-        {jobs.map((job) => (
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Indlæser jobs...</p>
+          </div>
+        ) : jobs.length === 0 ? (
+          <div className="text-center py-12">
+            <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen jobs fundet</h3>
+            <p className="text-gray-600">Prøv at justere dine søgekriterier eller vælg et andet område.</p>
+          </div>
+        ) : (
+          jobs.map((job) => (
           <div key={job.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 hover:shadow-md transition-shadow duration-200">
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
@@ -278,7 +279,8 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
               </div>
             </div>
           </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Load More */}

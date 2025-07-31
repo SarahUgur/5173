@@ -21,79 +21,36 @@ interface Notification {
 
 export default function NotificationModal({ isOpen, onClose, currentUser }: NotificationModalProps) {
   const [showSettings, setShowSettings] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: '1',
-      type: 'job',
-      title: 'Nyt job i dit område',
-      message: 'Hjemmerengøring i København NV - 350 kr. Klik for at se detaljer.',
-      time: '5 min siden',
-      read: false,
-      avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-    },
-    {
-      id: '2',
-      type: 'message',
-      title: 'Ny besked fra Lars Nielsen',
-      message: 'Tak for dit opslag! Jeg er interesseret i jobbet...',
-      time: '1 time siden',
-      read: false
-    },
-    {
-      id: '3',
-      type: 'system',
-      title: 'Maria Hansen likede dit opslag',
-      message: 'Maria Hansen reagerede med ❤️ på dit opslag om kontorrengøring.',
-      time: '2 timer siden',
-      read: false,
-      avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-    },
-    {
-      id: '4',
-      type: 'system',
-      title: 'Dit opslag blev delt',
-      message: 'Sofie Andersen delte dit opslag på Facebook.',
-      time: '3 timer siden',
-      read: true,
-      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-    },
-    {
-      id: '5',
-      type: 'connection',
-      title: 'Peter Hansen vil forbinde',
-      message: 'Peter Hansen har sendt dig en venskabsanmodning.',
-      time: '4 timer siden',
-      read: true,
-      avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-    },
-    {
-      id: '6',
-      type: 'system',
-      title: 'Du blev tagget i en kommentar',
-      message: 'Anna Nielsen taggede dig i en kommentar: "@DitNavn har du erfaring med dette?"',
-      time: '5 timer siden',
-      read: false,
-      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-    },
-    {
-      id: '7',
-      type: 'job',
-      title: 'Nyt job tæt på dig',
-      message: 'Hovedrengøring i Østerbro - 2.500 kr. Kun 1.2 km fra dig!',
-      time: '6 timer siden',
-      read: true
-    },
-    {
-      id: '8',
-      type: 'system',
-      title: 'Kommentar på dit opslag',
-      message: 'Michael Sørensen kommenterede: "Hvor lang tid tager denne type rengøring?"',
-      time: '1 dag siden',
-      read: true
-    }
-  ]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [filter, setFilter] = useState<'all' | 'unread' | 'message' | 'job'>('all');
+
+  // Load notifications from API
+  React.useEffect(() => {
+    if (isOpen) {
+      loadNotifications();
+    }
+  }, [isOpen]);
+
+  const loadNotifications = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/notifications', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setNotifications(data);
+      }
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+    }
+    setLoading(false);
+  };
 
   if (!isOpen) return null;
 
@@ -241,7 +198,12 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
 
         {/* Notifications List */}
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          {filteredNotifications.length === 0 ? (
+          {loading ? (
+            <div className="p-8 text-center">
+              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600">Indlæser notifikationer...</p>
+            </div>
+          ) : filteredNotifications.length === 0 ? (
             <div className="p-8 text-center">
               <Bell className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen notifikationer</h3>

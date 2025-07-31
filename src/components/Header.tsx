@@ -43,19 +43,25 @@ export default function Header({
 
   const currentLanguage = languages.find(lang => lang.code === language);
 
-  // Mock search data
-  const searchData = {
-    posts: [
-      { id: '1', type: 'post', title: 'Hjemmerengøring i København', content: 'Søger pålidelig rengøringshjælp...', location: 'København NV', user: 'Maria Hansen' },
-      { id: '2', type: 'post', title: 'Kontorrengøring tilbud', content: 'Professionel kontorrengøring...', location: 'Aarhus C', user: 'Lars Nielsen' },
-      { id: '3', type: 'job', title: 'Hovedrengøring villa', content: 'AKUT: Stor villa har brug for...', location: 'Odense', user: 'Sofie Andersen' }
-    ],
-    users: [
-      { id: '1', type: 'user', name: 'Maria Hansen', location: 'København NV', userType: 'Privat kunde', avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' },
-      { id: '2', type: 'user', name: 'Lars Nielsen', location: 'Aarhus C', userType: 'Rengøringsekspert', avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' },
-      { id: '3', type: 'user', name: 'Sofie Andersen', location: 'Odense', userType: 'Lille virksomhed', avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' }
-    ],
-    pages: [
+  // Real search - will search API
+  const performSearch = async (query: string) => {
+    try {
+      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.results || [];
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+    }
+    
+    // Fallback to static pages if API search fails
+    const staticPages = [
       { id: '1', type: 'page', title: 'Hjælp & Support', description: 'Find svar på dine spørgsmål', page: 'support' },
       { id: '2', type: 'page', title: 'Om os', description: 'Læs om Privat Rengøring', page: 'about' },
       { id: '3', type: 'page', title: 'Kontakt & Klager', description: 'Kontakt vores support team', page: 'contact' },
@@ -64,10 +70,15 @@ export default function Header({
       { id: '6', type: 'page', title: 'Mine Opgaver', description: 'Administrer dine rengøringsjobs', page: 'tasks' },
       { id: '7', type: 'page', title: 'Planlægning', description: 'Planlæg dine rengøringsaftaler', page: 'planning' },
       { id: '8', type: 'page', title: 'Jobs på Kort', description: 'Se jobs på interaktivt kort', page: 'map' }
-    ]
+    ];
+    
+    return staticPages.filter(page => 
+      page.title.toLowerCase().includes(query.toLowerCase()) ||
+      page.description.toLowerCase().includes(query.toLowerCase())
+    );
   };
 
-  const handleSearch = (query: string) => {
+  const handleSearch = async (query: string) => {
     setSearchTerm(query);
     
     if (query.trim().length < 2) {
@@ -76,35 +87,8 @@ export default function Header({
       return;
     }
 
-    const results: any[] = [];
-    const searchQuery = query.toLowerCase();
-
-    // Search posts
-    searchData.posts.forEach(post => {
-      if (post.title.toLowerCase().includes(searchQuery) || 
-          post.content.toLowerCase().includes(searchQuery) ||
-          post.location.toLowerCase().includes(searchQuery) ||
-          post.user.toLowerCase().includes(searchQuery)) {
-        results.push(post);
-      }
-    });
-
-    // Search users
-    searchData.users.forEach(user => {
-      if (user.name.toLowerCase().includes(searchQuery) ||
-          user.location.toLowerCase().includes(searchQuery) ||
-          user.userType.toLowerCase().includes(searchQuery)) {
-        results.push(user);
-      }
-    });
-
-    // Search pages
-    searchData.pages.forEach(page => {
-      if (page.title.toLowerCase().includes(searchQuery) ||
-          page.description.toLowerCase().includes(searchQuery)) {
-        results.push(page);
-      }
-    });
+    // Perform real search
+    const results = await performSearch(query);
 
     setSearchResults(results);
     setShowSearchResults(true);

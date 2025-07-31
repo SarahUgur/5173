@@ -113,11 +113,29 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
     { platform: 'copy', name: 'Kopier Link', icon: '🔗', color: 'bg-gray-600' }
   ];
 
-  const mockUsers = [
-    { id: '1', name: 'Maria Hansen', avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' },
-    { id: '2', name: 'Lars Nielsen', avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' },
-    { id: '3', name: 'Sofie Andersen', avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' }
-  ];
+  // Load users for tagging from API
+  const [availableUsers, setAvailableUsers] = useState<any[]>([]);
+
+  React.useEffect(() => {
+    loadAvailableUsers();
+  }, []);
+
+  const loadAvailableUsers = async () => {
+    try {
+      const response = await fetch('/api/users/search', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAvailableUsers(data.slice(0, 10)); // Limit to 10 users for tagging
+      }
+    } catch (error) {
+      console.error('Error loading users for tagging:', error);
+    }
+  };
 
   const handleInteraction = (action: string) => {
     if (action === 'like') {
@@ -730,7 +748,10 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
           <div className="bg-white rounded-xl max-w-md w-full p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Tag Brugere</h3>
             <div className="space-y-3 mb-6">
-              {mockUsers.map((user) => (
+              {availableUsers.length === 0 ? (
+                <p className="text-gray-600 text-center py-4">Ingen brugere tilgængelige for tagging</p>
+              ) : (
+                availableUsers.map((user) => (
                 <div key={user.id} className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full" />
@@ -746,7 +767,8 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
                     Tag
                   </button>
                 </div>
-              ))}
+                ))
+              )}
             </div>
             <button
               onClick={() => setShowTagModal(false)}

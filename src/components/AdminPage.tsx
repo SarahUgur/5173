@@ -16,12 +16,14 @@ export default function AdminPage() {
   });
   const [recentUsers, setRecentUsers] = useState([]);
   const [recentReports, setRecentReports] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
     loadAdminData();
   }, []);
 
   const loadAdminData = async () => {
+    setLoading(true);
     try {
       const response = await fetch('/api/admin/dashboard', {
         headers: {
@@ -37,7 +39,21 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error('Error loading admin data:', error);
+      // Set default empty state on error
+      setAdminStats({
+        totalUsers: 0,
+        activeUsers: 0,
+        totalPosts: 0,
+        totalJobs: 0,
+        reportsToday: 0,
+        revenue: 0,
+        newUsersToday: 0,
+        onlineNow: 0
+      });
+      setRecentUsers([]);
+      setRecentReports([]);
     }
+    setLoading(false);
   };
 
 
@@ -182,6 +198,13 @@ export default function AdminPage() {
 
         {/* Tab Content */}
         <div className="p-6">
+          {loading && (
+            <div className="text-center py-12">
+              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600">Indlæser admin data...</p>
+            </div>
+          )}
+
           {activeTab === 'overview' && (
             <div className="space-y-6">
               <div>
@@ -208,7 +231,7 @@ export default function AdminPage() {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Online Brugere ({adminStats.onlineNow})</h3>
                 <div className="space-y-3">
-                  {recentUsers.filter(user => user.status === 'online').map((user) => (
+                  {recentUsers.filter((user: any) => user.status === 'online').map((user: any) => (
                     <div key={user.id} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="relative">
@@ -257,7 +280,7 @@ export default function AdminPage() {
               </div>
               
               <div className="space-y-3">
-                {recentUsers.map((user) => (
+                {recentUsers.map((user: any) => (
                   <div key={user.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                     <div className="flex items-center space-x-4">
                       <div className="relative">
@@ -304,7 +327,7 @@ export default function AdminPage() {
               <h3 className="text-lg font-semibold text-gray-900">Rapporter & Moderation</h3>
               
               <div className="space-y-3">
-                {recentReports.map((report) => (
+               {recentReports.map((report: any) => (
                   <div key={report.id} className="p-4 border border-gray-200 rounded-lg">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">

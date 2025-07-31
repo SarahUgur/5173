@@ -74,11 +74,11 @@ export default function AboutPage() {
         <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">Privat Rengøring i Tal</h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="text-center">
-            <div className="text-3xl font-bold text-blue-600 mb-2">1,247</div>
+            <div className="text-3xl font-bold text-blue-600 mb-2" id="user-count">0</div>
             <div className="text-gray-600">Aktive brugere</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-green-600 mb-2">456</div>
+            <div className="text-3xl font-bold text-green-600 mb-2" id="jobs-count">0</div>
             <div className="text-gray-600">Afsluttede jobs</div>
           </div>
           <div className="text-center">
@@ -86,10 +86,24 @@ export default function AboutPage() {
             <div className="text-gray-600">Gennemsnitlig rating</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-orange-600 mb-2">234</div>
-            <div className="text-gray-600">Pro medlemmer</div>
+            <div className="text-3xl font-bold text-orange-600 mb-2" id="posts-count">0</div>
+            <div className="text-gray-600">Opslag i dag</div>
           </div>
         </div>
+       
+       <script>
+         // Load real stats from API
+         fetch('/api/stats/public')
+           .then(response => response.json())
+           .then(data => {
+             document.getElementById('user-count').textContent = data.totalUsers || '0';
+             document.getElementById('jobs-count').textContent = data.completedJobs || '0';
+             document.getElementById('posts-count').textContent = data.postsToday || '0';
+           })
+           .catch(() => {
+             // Keep default values if API fails
+           });
+       </script>
       </div>
 
       {/* Team */}

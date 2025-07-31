@@ -33,72 +33,40 @@ export default function FriendRequestModal({
   const [activeTab, setActiveTab] = useState<'received' | 'sent' | 'suggestions'>('received');
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Real data from API
+  const [receivedRequests, setReceivedRequests] = useState<FriendRequest[]>([]);
+  const [sentRequests, setSentRequests] = useState<FriendRequest[]>([]);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    if (isOpen) {
+      loadFriendRequests();
+    }
+  }, [isOpen]);
+
+  const loadFriendRequests = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/friend-requests', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setReceivedRequests(data.received || []);
+        setSentRequests(data.sent || []);
+        setSuggestions(data.suggestions || []);
+      }
+    } catch (error) {
+      console.error('Error loading friend requests:', error);
+    }
+    setLoading(false);
+  };
+
   if (!isOpen) return null;
-
-  // Mock data
-  const receivedRequests: FriendRequest[] = [
-    {
-      id: '1',
-      user: {
-        id: 'user1',
-        name: 'Emma Larsen',
-        avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        location: 'Esbjerg',
-        userType: 'private',
-        mutualFriends: 3
-      },
-      message: 'Hej! Jeg så dit profil og ville gerne forbinde. Vi har fælles interesser inden for rengøring.',
-      createdAt: '2024-01-15'
-    },
-    {
-      id: '2',
-      user: {
-        id: 'user2',
-        name: 'Michael Sørensen',
-        avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        location: 'Aalborg',
-        userType: 'cleaner',
-        mutualFriends: 7
-      },
-      createdAt: '2024-01-14'
-    }
-  ];
-
-  const sentRequests: FriendRequest[] = [
-    {
-      id: '3',
-      user: {
-        id: 'user3',
-        name: 'Anna Nielsen',
-        avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        location: 'København',
-        userType: 'small_business',
-        mutualFriends: 2
-      },
-      createdAt: '2024-01-13'
-    }
-  ];
-
-  const suggestions = [
-    {
-      id: 'user4',
-      name: 'Peter Hansen',
-      avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      location: 'Odense',
-      userType: 'cleaner',
-      mutualFriends: 5,
-      reason: 'Arbejder i samme område'
-    },
-    {
-      id: 'user5',
-      name: 'Sofie Andersen',
-      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      location: 'Aarhus',
-      userType: 'private',
-      mutualFriends: 8,
-      reason: 'Fælles venner'
-    }
-  ];
 
   const getUserTypeLabel = (type: string) => {
     const labels = {
@@ -180,9 +148,16 @@ export default function FriendRequestModal({
 
         {/* Content */}
         <div className="p-6 overflow-y-auto max-h-[50vh] lg:max-h-[60vh]">
+          {loading && (
+            <div className="text-center py-8">
+              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600">Indlæser...</p>
+            </div>
+          )}
+
           {activeTab === 'received' && (
             <div className="space-y-4">
-              {receivedRequests.length === 0 ? (
+              {!loading && receivedRequests.length === 0 ? (
                 <div className="text-center py-8">
                   <UserPlus className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen anmodninger</h3>
@@ -241,7 +216,7 @@ export default function FriendRequestModal({
 
           {activeTab === 'sent' && (
             <div className="space-y-4">
-              {sentRequests.length === 0 ? (
+              {!loading && sentRequests.length === 0 ? (
                 <div className="text-center py-8">
                   <UserPlus className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen sendte anmodninger</h3>
@@ -275,7 +250,14 @@ export default function FriendRequestModal({
 
           {activeTab === 'suggestions' && (
             <div className="space-y-4">
-              {suggestions.map((person) => (
+              {!loading && suggestions.length === 0 ? (
+                <div className="text-center py-8">
+                  <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen forslag</h3>
+                  <p className="text-gray-600">Vi arbejder på at finde relevante personer for dig.</p>
+                </div>
+              ) : (
+                suggestions.map((person) => (
                 <div key={person.id} className="border border-gray-200 rounded-lg p-4">
                   <div className="flex items-center space-x-4">
                     <img
@@ -297,7 +279,8 @@ export default function FriendRequestModal({
                     </button>
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
           )}
         </div>

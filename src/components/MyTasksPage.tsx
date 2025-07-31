@@ -22,61 +22,37 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
     return date.toISOString().split('T')[0];
   };
 
-  const activeTasks = [
-    {
-      id: '1',
-      title: 'Hjemmerengøring - Familie Hansen',
-      description: 'Ugentlig rengøring af 3-værelses lejlighed. Inkluderer støvsugning, gulvvask og badeværelse.',
-      location: 'København NV',
-      budget: '350 kr/gang',
-      client: 'Maria Hansen',
-      clientAvatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      rating: 4.9,
-      nextDate: getFutureDate(3),
-      status: 'ongoing'
-    },
-    {
-      id: '2',
-      title: 'Kontorrengøring - TechCorp',
-      description: 'Daglig rengøring af kontorområde med 20 arbejdspladser. Inkluderer køkken og mødelokaler.',
-      location: 'Aarhus C',
-      budget: '800 kr/dag',
-      client: 'Sofie Andersen',
-      clientAvatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      rating: 4.7,
-      nextDate: getFutureDate(1),
-      status: 'ongoing'
-    }
-  ];
+  // Real task data from API
+  const [activeTasks, setActiveTasks] = useState<any[]>([]);
+  const [completedTasks, setCompletedTasks] = useState<any[]>([]);
+  const [applications, setApplications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const completedTasks = [
-    {
-      id: '3',
-      title: 'Hovedrengøring - Villa Østerbro',
-      description: 'Omfattende hovedrengøring af 5-værelses villa inkl. vinduer og ovne.',
-      location: 'København Ø',
-      budget: '2.500 kr',
-      client: 'Peter Larsen',
-      clientAvatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      rating: 5.0,
-      completedDate: getPastDate(5),
-      earnings: '2.500 kr'
-    }
-  ];
+  // Load tasks from API
+  React.useEffect(() => {
+    loadTasks();
+  }, []);
 
-  const applications = [
-    {
-      id: '4',
-      title: 'Butikslokale rengøring',
-      description: 'Ugentlig rengøring af tøjbutik i Strøget. Weekendarbejde foretrækkes.',
-      location: 'København K',
-      budget: '600 kr/gang',
-      client: 'Anna Nielsen',
-      clientAvatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      appliedDate: getPastDate(2),
-      status: 'pending'
+  const loadTasks = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/user/tasks', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setActiveTasks(data.active || []);
+        setCompletedTasks(data.completed || []);
+        setApplications(data.applications || []);
+      }
+    } catch (error) {
+      console.error('Error loading tasks:', error);
     }
-  ];
+    setLoading(false);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -248,7 +224,12 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
       <div className="space-y-4">
         {activeTab === 'active' && (
           <>
-            {activeTasks.length > 0 ? (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-600">Indlæser opgaver...</p>
+              </div>
+            ) : activeTasks.length > 0 ? (
               activeTasks.map(task => renderTaskCard(task, 'active'))
             ) : (
               <div className="text-center py-12">
@@ -262,7 +243,12 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
 
         {activeTab === 'applications' && (
           <>
-            {applications.length > 0 ? (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-600">Indlæser ansøgninger...</p>
+              </div>
+            ) : applications.length > 0 ? (
               applications.map(task => renderTaskCard(task, 'application'))
             ) : (
               <div className="text-center py-12">
@@ -276,7 +262,12 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
 
         {activeTab === 'completed' && (
           <>
-            {completedTasks.length > 0 ? (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-600">Indlæser afsluttede opgaver...</p>
+              </div>
+            ) : completedTasks.length > 0 ? (
               completedTasks.map(task => renderTaskCard(task, 'completed'))
             ) : (
               <div className="text-center py-12">

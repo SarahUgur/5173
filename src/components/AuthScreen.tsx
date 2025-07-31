@@ -52,47 +52,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
         return;
       }
 
-      // Demo login for development - use mock users
-      const mockUser = mockUsers.find(user => user.email === email);
-      
-      if (mockUser && password === 'demo123') {
-        // Successful demo login
-        localStorage.setItem('authToken', 'demo-token');
-        onLogin({
-          ...mockUser,
-          isSubscribed: true, // All users get full access during launch period
-          verified: true
-        });
-        setLoading(false);
-        return;
-      }
-      
-      // For new registrations, create demo user
-      if (!isLogin && name && email && password && acceptedTerms) {
-        const newUser = {
-          id: Date.now().toString(),
-          name,
-          email,
-          userType,
-          verified: true,
-          isSubscribed: false, // No subscription needed - all features free
-          location: 'Danmark',
-          avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-          rating: 0,
-          completedJobs: 0,
-          bio: '',
-          phone: '',
-          website: '',
-          joinedDate: new Date().toISOString().split('T')[0]
-        };
-        
-        localStorage.setItem('authToken', 'demo-token');
-        onLogin(newUser);
-        setLoading(false);
-        return;
-      }
-      
-      // Try real API call as fallback
+      // Real API call for authentication
       const response = await fetch('/api/auth', {
         method: 'POST',
         headers: {
@@ -108,8 +68,8 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
       });
 
       if (!response.ok) {
-        // If API fails, show helpful error message
-        throw new Error('Login fejlede. Prøv admin@privatrengoring.dk med admin123 eller en af demo brugerne.');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Login fejlede. Tjek dine oplysninger og prøv igen.');
       }
 
       const userData = await response.json();

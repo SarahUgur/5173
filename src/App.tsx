@@ -453,21 +453,101 @@ function App() {
         <AdBanner type="banner" position="top" className="w-full" />
       </div>
 
+      <PostFeed 
+        currentUser={currentUser}
+        onShowSubscription={() => setShowSubscription(true)}
+        onReport={handleReport}
+        onShowUserProfile={setShowUserProfile}
+        onTagUser={handleTagUser}
+        onSharePost={handleSharePost}
+        onDeletePost={handleDeletePost}
+        onHidePost={handleHidePost}
+        onDeleteComment={handleDeleteComment}
+        onHideComment={handleHideComment}
+      />
+
+      {/* Recommendation Widget */}
+      <div className="mt-6 sm:mt-8">
+        <RecommendationWidget />
+      </div>
+    </div>
+  );
+
+  // Post Feed Component
+  const PostFeed = ({ currentUser, onShowSubscription, onReport, onShowUserProfile, onTagUser, onSharePost, onDeletePost, onHidePost, onDeleteComment, onHideComment }: any) => {
+    const [posts, setPosts] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+
+    React.useEffect(() => {
+      loadPosts();
+    }, []);
+
+    const loadPosts = async (pageNum = 1) => {
+      try {
+        const response = await fetch(`/api/posts?page=${pageNum}&limit=10`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (pageNum === 1) {
+            setPosts(data.posts || []);
+          } else {
+            setPosts(prev => [...prev, ...(data.posts || [])]);
+          }
+          setHasMore(data.hasMore || false);
+        }
+      } catch (error) {
+        console.error('Error loading posts:', error);
+      }
+      setLoading(false);
+    };
+
+    const loadMorePosts = () => {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      loadPosts(nextPage);
+    };
+
+    if (loading && posts.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Indlæser opslag...</p>
+        </div>
+      );
+    }
+
+    if (posts.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen opslag endnu</h3>
+          <p className="text-gray-600">Vær den første til at dele et opslag!</p>
+        </div>
+      );
+    }
+
+    return (
       <div className="space-y-3 xs:space-y-4 sm:space-y-6">
         {posts.map((post, index) => (
           <React.Fragment key={post.id}>
             <PostCard
               post={post}
               currentUser={currentUser}
-              onShowSubscription={() => setShowSubscription(true)}
-              onReport={handleReport}
-              onShowUserProfile={setShowUserProfile}
-              onTagUser={handleTagUser}
-              onSharePost={handleSharePost}
-              onDeletePost={handleDeletePost}
-              onHidePost={handleHidePost}
-              onDeleteComment={handleDeleteComment}
-              onHideComment={handleHideComment}
+              onShowSubscription={onShowSubscription}
+              onReport={onReport}
+              onShowUserProfile={onShowUserProfile}
+              onTagUser={onTagUser}
+              onSharePost={onSharePost}
+              onDeletePost={onDeletePost}
+              onHidePost={onHidePost}
+              onDeleteComment={onDeleteComment}
+              onHideComment={onHideComment}
             />
             
             {/* Ad between posts */}
@@ -479,14 +559,21 @@ function App() {
             )}
           </React.Fragment>
         ))}
+        
+        {/* Load More Button */}
+        {hasMore && (
+          <div className="text-center py-6">
+            <button
+              onClick={loadMorePosts}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+            >
+              Indlæs flere opslag
+            </button>
+          </div>
+        )}
       </div>
-
-      {/* Recommendation Widget */}
-      <div className="mt-6 sm:mt-8">
-        <RecommendationWidget />
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className={`min-h-screen bg-gray-50 ${isPWA ? 'pwa-mode' : ''}`}>

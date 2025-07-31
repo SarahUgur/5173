@@ -10,60 +10,47 @@ export default function NetworkPage({ currentUser, onShowSubscription }: Network
   const [activeTab, setActiveTab] = useState<'suggestions' | 'friends' | 'requests'>('suggestions');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Mock network data
-  const suggestions = [
-    {
-      id: '1',
-      name: 'Emma Larsen',
-      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      location: 'Esbjerg',
-      userType: 'cleaner',
-      rating: 4.8,
-      mutualFriends: 3,
-      reason: 'Arbejder i samme område'
-    },
-    {
-      id: '2',
-      name: 'Michael Sørensen',
-      avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      location: 'Aalborg',
-      userType: 'private',
-      rating: 4.6,
-      mutualFriends: 7,
-      reason: 'Fælles interesser'
-    },
-    {
-      id: '3',
-      name: 'Anna Nielsen',
-      avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      location: 'København',
-      userType: 'small_business',
-      rating: 4.9,
-      mutualFriends: 2,
-      reason: 'Samme branche'
-    }
-  ];
+  // Real network data from API
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [friends, setFriends] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const friends = [
-    {
-      id: '4',
-      name: 'Peter Hansen',
-      avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      location: 'Odense',
-      userType: 'cleaner',
-      rating: 4.7,
-      status: 'online'
-    },
-    {
-      id: '5',
-      name: 'Sofie Andersen',
-      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-      location: 'Aarhus',
-      userType: 'private',
-      rating: 4.5,
-      status: 'offline'
+  // Load network data from API
+  React.useEffect(() => {
+    loadNetworkData();
+  }, []);
+
+  const loadNetworkData = async () => {
+    setLoading(true);
+    try {
+      // Load friend suggestions
+      const suggestionsResponse = await fetch('/api/network/suggestions', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (suggestionsResponse.ok) {
+        const suggestionsData = await suggestionsResponse.json();
+        setSuggestions(suggestionsData);
+      }
+
+      // Load friends
+      const friendsResponse = await fetch('/api/network/friends', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (friendsResponse.ok) {
+        const friendsData = await friendsResponse.json();
+        setFriends(friendsData);
+      }
+    } catch (error) {
+      console.error('Error loading network data:', error);
     }
-  ];
+    setLoading(false);
+  };
 
   const handleConnect = (userId: string) => {
     // Send friend request
@@ -151,7 +138,19 @@ export default function NetworkPage({ currentUser, onShowSubscription }: Network
       <div className="space-y-4">
         {activeTab === 'suggestions' && (
           <>
-            {suggestions.map((person) => (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-600">Indlæser forslag...</p>
+              </div>
+            ) : suggestions.length === 0 ? (
+              <div className="text-center py-12">
+                <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen forslag</h3>
+                <p className="text-gray-600">Vi arbejder på at finde relevante personer for dig.</p>
+              </div>
+            ) : (
+              suggestions.map((person) => (
               <div key={person.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200">
                 <div className="flex items-center space-x-4">
                   <img
@@ -197,13 +196,26 @@ export default function NetworkPage({ currentUser, onShowSubscription }: Network
                   </div>
                 </div>
               </div>
-            ))}
+              ))
+            )}
           </>
         )}
 
         {activeTab === 'friends' && (
           <>
-            {friends.map((friend) => (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-600">Indlæser venner...</p>
+              </div>
+            ) : friends.length === 0 ? (
+              <div className="text-center py-12">
+                <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen venner endnu</h3>
+                <p className="text-gray-600">Start med at forbinde med personer under "Forslag".</p>
+              </div>
+            ) : (
+              friends.map((friend) => (
               <div key={friend.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200">
                 <div className="flex items-center space-x-4">
                   <div className="relative">
@@ -244,7 +256,8 @@ export default function NetworkPage({ currentUser, onShowSubscription }: Network
                   </div>
                 </div>
               </div>
-            ))}
+              ))
+            )}
           </>
         )}
 

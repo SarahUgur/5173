@@ -20,7 +20,34 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
     urgency: 'flexible'
   });
 
-  // Generer kalender dage for den valgte måned
+  // Real appointments from API
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    loadAppointments();
+  }, [selectedDate]);
+
+  const loadAppointments = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/appointments', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAppointments(data);
+      }
+    } catch (error) {
+      console.error('Error loading appointments:', error);
+    }
+    setLoading(false);
+  };
+
+  // Generate calendar days for selected month
   const generateCalendarDays = () => {
     const year = selectedDate.getFullYear();
     const month = selectedDate.getMonth();
@@ -48,39 +75,6 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
   };
 
   const calendarDays = generateCalendarDays();
-
-  const appointments = [
-    {
-      id: '1',
-      title: 'Hjemmerengøring - Familie Hansen',
-      time: '09:00 - 12:00',
-      location: 'København NV',
-      client: 'Maria Hansen',
-      type: 'regular_cleaning',
-      status: 'confirmed',
-      date: new Date(2025, 0, 20) // 20. januar 2025
-    },
-    {
-      id: '2',
-      title: 'Kontorrengøring - TechCorp',
-      time: '14:00 - 17:00',
-      location: 'Aarhus C',
-      client: 'Sofie Andersen',
-      type: 'office_cleaning',
-      status: 'pending',
-      date: new Date(2025, 0, 22) // 22. januar 2025
-    },
-    {
-      id: '3',
-      title: 'Hovedrengøring - Villa Østerbro',
-      time: '10:00 - 16:00',
-      location: 'København Ø',
-      client: 'Peter Larsen',
-      type: 'deep_cleaning',
-      status: 'confirmed',
-      date: new Date(2025, 0, 25) // 25. januar 2025
-    }
-  ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -338,26 +332,28 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
             <div className="space-y-4">
               {appointments
                 .filter(apt => selectedDateForPost ? isSameDay(apt.date, selectedDateForPost) : isToday(apt.date))
-                .map((appointment) => (
-                <div key={appointment.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-medium text-gray-900 text-sm">{appointment.title}</h4>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(appointment.status)}`}>
-                      {appointment.status === 'confirmed' ? 'Bekræftet' : 'Afventer'}
-                    </span>
-                  </div>
-                  
-                  <div className="space-y-2 text-sm text-gray-600">
-                    <div className="flex items-center space-x-2">
-                      <Clock className="w-4 h-4" />
-                      <span>{appointment.time}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <MapPin className="w-4 h-4" />
-                      <span>{appointment.location}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <User className="w-4 h-4" />
+               .length === 0 && !loading ? (
+                 <div className="text-center py-8">
+                   <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                   <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen aftaler</h3>
+                   <p className="text-gray-600">
+                     {selectedDateForPost ? 
+                       `Ingen aftaler den ${selectedDateForPost.toLocaleDateString('da-DK')}` :
+                       'Du har ingen aftaler i dag'
+                     }
+                   </p>
+                   <button
+                     onClick={() => {
+                       setSelectedDateForPost(selectedDateForPost || new Date());
+                       setShowCreateModal(true);
+                     }}
+                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 mt-4"
+                   >
+                     Opret Aftale
+                   </button>
+                 </div>
+               ) : (
+                 ))
                       <span>{appointment.client}</span>
                     </div>
                   </div>
@@ -391,6 +387,13 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
                   </button>
                 </div>
               )}
+
+             {loading && (
+               <div className="text-center py-8">
+                 <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                 <p className="text-gray-600">Indlæser aftaler...</p>
+               </div>
+             )}
             </div>
           </div>
 

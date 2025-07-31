@@ -34,102 +34,41 @@ export default function MapPage({ currentUser }: MapPageProps) {
   const [showGoogleMapsEmbed, setShowGoogleMapsEmbed] = useState(false);
   const [selectedArea, setSelectedArea] = useState('all');
 
-  // Store byer kategorier
-  const areas = [
-    { id: 'all', name: 'Alle områder', count: 156 },
-    { id: 'storkobenhavn', name: 'Storkøbenhavn', count: 89 },
-    { id: 'storaarhus', name: 'Storaarhus', count: 34 },
-    { id: 'storodense', name: 'Storodense', count: 18 },
-    { id: 'storaalborg', name: 'Storaalborg', count: 15 }
-  ];
+  // Real job locations from API
+  const [jobLocations, setJobLocations] = useState<JobLocation[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock job locations med rigtige adresser
-  const jobLocations: JobLocation[] = [
-    {
-      id: '1',
-      title: 'Hjemmerengøring - Moderne lejlighed',
-      location: 'Østerbro, København',
-      address: 'Øster Allé 42, 2100 København Ø',
-      lat: 55.7058,
-      lng: 12.5653,
-      budget: '350-400 kr',
-      urgency: 'flexible',
-      distance: '2.3 km',
-      client: {
-        name: 'Maria Hansen',
-        avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        rating: 4.9
-      },
-      jobType: 'home_cleaning'
-    },
-    {
-      id: '2',
-      title: 'Kontorrengøring - Startup',
-      location: 'Nørrebro, København',
-      address: 'Nørrebrogade 165, 2200 København N',
-      lat: 55.6867,
-      lng: 12.5536,
-      budget: '600-800 kr',
-      urgency: 'this_week',
-      distance: '1.8 km',
-      client: {
-        name: 'Lars Nielsen',
-        avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        rating: 4.7
-      },
-      jobType: 'office_cleaning'
-    },
-    {
-      id: '3',
-      title: 'Hovedrengøring - Villa',
-      location: 'Frederiksberg',
-      address: 'Frederiksberg Allé 12, 1820 Frederiksberg C',
-      lat: 55.6761,
-      lng: 12.5342,
-      budget: '2000-2500 kr',
-      urgency: 'immediate',
-      distance: '3.2 km',
-      client: {
-        name: 'Sofie Andersen',
-        avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        rating: 4.8
-      },
-      jobType: 'deep_cleaning'
-    },
-    {
-      id: '4',
-      title: 'Butikslokale rengøring',
-      location: 'Vesterbro, København',
-      address: 'Vesterbrogade 89, 1620 København V',
-      lat: 55.6736,
-      lng: 12.5504,
-      budget: '500-700 kr',
-      urgency: 'this_week',
-      distance: '1.5 km',
-      client: {
-        name: 'Peter Larsen',
-        avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        rating: 4.6
-      },
-      jobType: 'office_cleaning'
-    },
-    {
-      id: '5',
-      title: 'Lejlighed rengøring',
-      location: 'Amager, København',
-      address: 'Amagerbrogade 200, 2300 København S',
-      lat: 55.6586,
-      lng: 12.6022,
-      budget: '300-350 kr',
-      urgency: 'flexible',
-      distance: '4.1 km',
-      client: {
-        name: 'Anna Nielsen',
-        avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        rating: 4.5
-      },
-      jobType: 'home_cleaning'
+  // Load job locations from API
+  React.useEffect(() => {
+    loadJobLocations();
+  }, []);
+
+  const loadJobLocations = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/jobs/locations', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setJobLocations(data);
+      }
+    } catch (error) {
+      console.error('Error loading job locations:', error);
     }
+    setLoading(false);
+  };
+
+  // Dynamic areas based on actual job data
+  const areas = [
+    { id: 'all', name: 'Alle områder', count: jobLocations.length },
+    { id: 'storkobenhavn', name: 'Storkøbenhavn', count: jobLocations.filter(j => j.location?.includes('København')).length },
+    { id: 'storaarhus', name: 'Storaarhus', count: jobLocations.filter(j => j.location?.includes('Aarhus')).length },
+    { id: 'storodense', name: 'Storodense', count: jobLocations.filter(j => j.location?.includes('Odense')).length },
+    { id: 'storaalborg', name: 'Storaalborg', count: jobLocations.filter(j => j.location?.includes('Aalborg')).length }
   ];
 
   const getUserLocation = () => {
@@ -417,7 +356,17 @@ export default function MapPage({ currentUser }: MapPageProps) {
                   )}
 
                   {/* Job Markers med adresser */}
-                  {filteredJobs.map((job, index) => (
+                  {loading ? (
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                      <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                      <p className="text-xs text-gray-600">Indlæser jobs...</p>
+                    </div>
+                  ) : filteredJobs.length === 0 ? (
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                      <p className="text-sm text-gray-600">Ingen jobs i dette område</p>
+                    </div>
+                  ) : (
+                    filteredJobs.map((job, index) => (
                     <div
                       key={job.id}
                       className={`absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 ${
@@ -441,7 +390,8 @@ export default function MapPage({ currentUser }: MapPageProps) {
                         {job.address}
                       </div>
                     </div>
-                  ))}
+                    ))
+                  )}
 
                   {/* Search Radius Circle */}
                   {userLocation && (
