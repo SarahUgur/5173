@@ -351,12 +351,6 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
                   <span className="text-yellow-800">Email</span>
                 </div>
               </div>
-              <button
-                onClick={() => setIsEditing(true)}
-                className="mt-3 w-full bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors duration-200 font-medium"
-              >
-                Fuldfør Profil Nu
-              </button>
             </div>
           );
         })()}
