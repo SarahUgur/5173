@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "netlify dev",
+    "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "netlify": "npx netlify dev"
+    "netlify": "npx netlify dev",
+    "dev:netlify": "npx netlify dev"
   },
   "dependencies": {
     "@stripe/stripe-js": "^7.4.0",
