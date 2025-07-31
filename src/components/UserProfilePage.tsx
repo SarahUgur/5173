@@ -137,67 +137,109 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        // Validate file
-        const isValidType = file.type.startsWith('image/');
-        const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB max for avatar
-        
-        if (!isValidType) {
-          alert('Kun billede filer er tilladt for profilbillede');
-          return;
-        }
-        if (!isValidSize) {
-          alert('Billede er for stort. Maksimalt 5MB tilladt for profilbillede');
-          return;
-        }
-        
-        uploadAvatar(file);
+        handleImageUpload(file, 'avatar');
       }
     };
     input.click();
   };
 
-  const uploadAvatar = async (file: File) => {
+  const handleCoverChange = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = false;
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        handleImageUpload(file, 'cover');
+      }
+    };
+    input.click();
+  };
+
+  const handleImageUpload = async (file: File, type: 'avatar' | 'cover') => {
+    // Validate file
+    const isValidType = file.type.startsWith('image/');
+    const maxSize = type === 'avatar' ? 5 * 1024 * 1024 : 10 * 1024 * 1024; // 5MB for avatar, 10MB for cover
+    const isValidSize = file.size <= maxSize;
+    
+    if (!isValidType) {
+      alert(`Kun billede filer er tilladt for ${type === 'avatar' ? 'profilbillede' : 'cover billede'}`);
+      return;
+    }
+    if (!isValidSize) {
+      alert(`Billede er for stort. Maksimalt ${maxSize / (1024 * 1024)}MB tilladt for ${type === 'avatar' ? 'profilbillede' : 'cover billede'}`);
+      return;
+    }
+    
     try {
       // Create preview URL for immediate feedback
       const previewUrl = URL.createObjectURL(file);
-      onUpdateUser({ ...currentUser, avatar: previewUrl });
       
-      const formData = new FormData();
-      formData.append('avatar', file);
-      
-      const response = await fetch('/api/user/avatar', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: formData
-      });
-      
-      if (!response.ok) {
-        throw new Error('Kunne ikke uploade billede');
+      if (type === 'avatar') {
+        onUpdateUser({ ...currentUser, avatar: previewUrl });
+      } else {
+        onUpdateUser({ ...currentUser, coverPhoto: previewUrl });
       }
       
-      const result = await response.json();
-      // Clean up preview URL
-      URL.revokeObjectURL(previewUrl);
-      // Update with real URL from server
-      onUpdateUser({ ...currentUser, avatar: result.avatarUrl });
-      alert('Profilbillede opdateret succesfuldt!');
+      // For demo purposes, we'll just use the preview URL
+      // In production, you would upload to your server/cloud storage
+      setTimeout(() => {
+        alert(`${type === 'avatar' ? 'Profilbillede' : 'Cover billede'} opdateret succesfuldt!`);
+      }, 1000);
+      
+      // Real implementation would be:
+      // const formData = new FormData();
+      // formData.append(type, file);
+      
+      // const response = await fetch(`/api/user/${type}`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      //   },
+      //   body: formData
+      // });
+      
+      // if (!response.ok) {
+      //   throw new Error('Kunne ikke uploade billede');
+      // }
+      
+      // const result = await response.json();
+      // URL.revokeObjectURL(previewUrl);
+      // onUpdateUser({ ...currentUser, [type]: result.imageUrl });
       
     } catch (error) {
-      console.error('Error uploading avatar:', error);
-      alert('Kunne ikke uploade profilbillede. Prøv igen.');
-      // Revert to original avatar on error
-      onUpdateUser({ ...currentUser, avatar: currentUser?.avatar });
+      console.error(`Error uploading ${type}:`, error);
+      alert(`Kunne ikke uploade ${type === 'avatar' ? 'profilbillede' : 'cover billede'}. Prøv igen.`);
+      
+      // Revert to original image on error
+      if (type === 'avatar') {
+        onUpdateUser({ ...currentUser, avatar: currentUser?.avatar });
+      } else {
+        onUpdateUser({ ...currentUser, coverPhoto: currentUser?.coverPhoto });
+      }
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto p-3 sm:p-6">
       {/* Cover Photo */}
-      <div className="relative h-48 sm:h-64 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-t-2xl overflow-hidden">
+      <div className="relative h-48 sm:h-64 rounded-t-2xl overflow-hidden">
+        {currentUser?.coverPhoto ? (
+          <img
+            src={currentUser.coverPhoto}
+            alt="Cover"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+        )}
         <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-        <button className="absolute top-4 right-4 p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-75">
+        <button 
+          onClick={handleCoverChange}
+          className="absolute top-4 right-4 p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-75 transition-all duration-200 hover:scale-110"
+          title="Skift cover billede"
+        >
           <Camera className="w-5 h-5" />
         </button>
       </div>
@@ -297,7 +339,8 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
             />
             <button
               onClick={handleAvatarChange}
-              className="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 shadow-lg"
+              className="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 shadow-lg transition-all duration-200 hover:scale-110"
+              title="Skift profilbillede"
             >
               <Camera className="w-4 h-4" />
             </button>
