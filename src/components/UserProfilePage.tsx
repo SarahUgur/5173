@@ -133,9 +133,23 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
+    input.multiple = false;
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
+        // Validate file
+        const isValidType = file.type.startsWith('image/');
+        const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB max for avatar
+        
+        if (!isValidType) {
+          alert('Kun billede filer er tilladt for profilbillede');
+          return;
+        }
+        if (!isValidSize) {
+          alert('Billede er for stort. Maksimalt 5MB tilladt for profilbillede');
+          return;
+        }
+        
         uploadAvatar(file);
       }
     };
@@ -144,6 +158,10 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
 
   const uploadAvatar = async (file: File) => {
     try {
+      // Create preview URL for immediate feedback
+      const previewUrl = URL.createObjectURL(file);
+      onUpdateUser({ ...currentUser, avatar: previewUrl });
+      
       const formData = new FormData();
       formData.append('avatar', file);
       
@@ -160,11 +178,17 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
       }
       
       const result = await response.json();
+      // Clean up preview URL
+      URL.revokeObjectURL(previewUrl);
+      // Update with real URL from server
       onUpdateUser({ ...currentUser, avatar: result.avatarUrl });
+      alert('Profilbillede opdateret succesfuldt!');
       
     } catch (error) {
       console.error('Error uploading avatar:', error);
       alert('Kunne ikke uploade profilbillede. Prøv igen.');
+      // Revert to original avatar on error
+      onUpdateUser({ ...currentUser, avatar: currentUser?.avatar });
     }
   };
 

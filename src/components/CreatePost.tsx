@@ -127,12 +127,52 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    setSelectedImages(prev => [...prev, ...files].slice(0, 10)); // Max 10 billeder
+    if (files.length > 0) {
+      // Validate file types
+      const validFiles = files.filter(file => {
+        const isValidType = file.type.startsWith('image/');
+        const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB max
+        
+        if (!isValidType) {
+          alert(`${file.name} er ikke et gyldigt billede format`);
+          return false;
+        }
+        if (!isValidSize) {
+          alert(`${file.name} er for stort. Max 10MB tilladt`);
+          return false;
+        }
+        return true;
+      });
+      
+      if (validFiles.length > 0) {
+        setSelectedImages(prev => {
+          const newImages = [...prev, ...validFiles];
+          if (newImages.length > 10) {
+            alert('Maksimalt 10 billeder tilladt');
+            return newImages.slice(0, 10);
+          }
+          return newImages;
+        });
+      }
+    }
   };
 
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate video file
+      const isValidType = file.type.startsWith('video/');
+      const isValidSize = file.size <= 50 * 1024 * 1024; // 50MB max
+      
+      if (!isValidType) {
+        alert('Kun video filer er tilladt');
+        return;
+      }
+      if (!isValidSize) {
+        alert('Video er for stor. Maksimalt 50MB tilladt');
+        return;
+      }
+      
       setSelectedVideo(file);
       setShowMediaEditor(true);
     }
@@ -140,6 +180,25 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
 
   const removeImage = (index: number) => {
     setSelectedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const replaceImage = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const isValidType = file.type.startsWith('image/');
+      const isValidSize = file.size <= 10 * 1024 * 1024;
+      
+      if (!isValidType) {
+        alert('Kun billede filer er tilladt');
+        return;
+      }
+      if (!isValidSize) {
+        alert('Billede er for stort. Maksimalt 10MB tilladt');
+        return;
+      }
+      
+      setSelectedImages(prev => prev.map((img, i) => i === index ? file : img));
+    }
   };
 
   const filters = [
@@ -730,7 +789,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                 <div className="flex items-center space-x-3 sm:space-x-4 w-full sm:w-auto">
                   <label className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105 cursor-pointer">
                     <Image className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Billeder</span>
+                    <span>Billeder ({selectedImages.length}/10)</span>
                     <input
                       type="file"
                       multiple
@@ -742,7 +801,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                   
                   <label className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105 cursor-pointer">
                     <Video className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Video</span>
+                    <span>Video {selectedVideo ? '(1)' : ''}</span>
                     <input
                       type="file"
                       accept="video/*"
@@ -753,6 +812,21 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                   
                   <button
                     type="button"
+                    onClick={() => {
+                      if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                          (position) => {
+                            // Reverse geocoding would go here in production
+                            setLocation('Din nuværende lokation');
+                          },
+                          () => {
+                            alert('Kunne ikke få din lokation');
+                          }
+                        );
+                      } else {
+                        alert('Din browser understøtter ikke geolocation');
+                      }
+                    }}
                     className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105"
                   >
                     <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -793,8 +867,8 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                   <X className="w-5 h-5" />
                 </button>
               </div>
-
-              {/* Video Preview */}
+                <p className="text-gray-600 mb-2">Tilføj billeder af opgaven ({selectedImages.length}/10)</p>
+                <p className="text-sm text-gray-500">Klik for at vælge billeder (max 10MB per billede)</p>
               <div className="relative mb-4">
                 <video
                   src={URL.createObjectURL(selectedVideo)}
@@ -838,15 +912,28 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <Type className="w-4 h-4 inline mr-1" />
-                    Tekst Overlay
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
                   </label>
                   <input
                     type="text"
                     value={videoText}
                     onChange={(e) => setVideoText(e.target.value)}
-                    placeholder="Tilføj tekst til video..."
+                    className="w-full h-24 sm:h-28 object-cover rounded-lg border border-gray-200"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  
+                  {/* Replace Image Button */}
+                  <label className="absolute top-1 left-1 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs cursor-pointer hover:bg-blue-700 transition-colors duration-200">
+                    ✎
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => replaceImage(index, e)}
+                      className="hidden"
+                    />
+                  </label>
+                  
+                  {/* Remove Image Button */}
                 </div>
 
                 {/* Music */}
@@ -858,7 +945,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                   <select
                     value={selectedMusic}
                     onChange={(e) => setSelectedMusic(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors duration-200"
                   >
                     {musicOptions.map((music) => (
                       <option key={music.id} value={music.id}>{music.name}</option>
@@ -897,9 +984,34 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
                 <button
                   onClick={() => setShowMediaEditor(false)}
                   className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
+                    ×
                   Gem Ændringer
+                  
+                  {/* Image Counter */}
+                  <div className="absolute bottom-1 left-1 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-xs">
+                    {index + 1}/{selectedImages.length}
+                  </div>
                 </button>
+              </div>
+              
+              {/* Add More Images Button */}
+              {selectedImages.length < 10 && (
+                <label className="w-full h-24 sm:h-28 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200">
+                  <Plus className="w-6 h-6 text-gray-400 mb-1" />
+                  <span className="text-xs text-gray-500">Tilføj billede</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </label>
+              )}
+              
+              {/* Drag and Drop hint */}
+              <div className="mt-3 text-xs text-gray-400">
+                Understøttede formater: JPG, PNG, GIF, WebP
               </div>
             </div>
           </div>
