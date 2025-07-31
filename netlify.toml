@@ -2,10 +2,6 @@
   publish = "dist"
   command = "npm run build"
 
-# Disable Edge Functions to avoid Deno requirement
-[edge_functions]
-  enabled = false
-
 [dev]
   framework = "vite"
   command = "npm run dev"
