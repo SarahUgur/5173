@@ -1,27 +1,11 @@
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
-const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 
 // Database connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
-
-// Configure multer for file uploads
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
-  },
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Kun billeder og videoer er tilladt'));
-    }
-  }
 });
 
 // Middleware to verify JWT token
@@ -44,145 +28,109 @@ const verifyToken = (req, res, next) => {
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     // Create new post
-    upload.array('images', 10)(req, res, async (err) => {
-      if (err) {
-        return res.status(400).json({ error: err.message });
-      }
+    verifyToken(req, res, async () => {
+      try {
+        const {
+          type,
+          content,
+          location,
+          jobType,
+          jobCategory,
+          targetAudience,
+          urgency,
+          budget
+        } = req.body;
 
-      verifyToken(req, res, async () => {
-        try {
-          const {
-            type,
-            content,
-            location,
-            jobType,
-            jobCategory,
-            targetAudience,
-            urgency,
-            budget,
-            videoText,
-            videoFilter
-          } = req.body;
-
-          // Validate required fields
-          if (!content || !location) {
-            return res.status(400).json({ error: 'Indhold og lokation er påkrævet' });
-          }
-
-          // Check if user is subscribed for job posts
-          if (type === 'job') {
-            const userResult = await pool.query(
-              'SELECT is_subscribed FROM users WHERE id = $1',
-              [req.userId]
-            );
-
-            if (!userResult.rows[0]?.is_subscribed) {
-              return res.status(403).json({ error: 'Kun Pro medlemmer kan oprette job opslag' });
-            }
-          }
-
-          // Create post
-          const postResult = await pool.query(
-            `INSERT INTO posts (id, user_id, content, location, post_type, job_type, job_category, 
-             target_audience, urgency, budget, created_at)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())
-             RETURNING *`,
-            [
-              uuidv4(),
-              req.userId,
-              content,
-              location,
-              type,
-              jobType || null,
-              jobCategory || null,
-              targetAudience || null,
-              urgency || null,
-              budget || null
-            ]
-          );
-
-          const post = postResult.rows[0];
-
-          // Handle file uploads (implement cloud storage like AWS S3, Cloudinary etc.)
-          const imageUrls = [];
-          if (req.files) {
-            for (const file of req.files) {
-              // Upload to cloud storage and get URL
-              // const imageUrl = await uploadToCloudStorage(file);
-              // imageUrls.push(imageUrl);
-            }
-          }
-
-          // Save image URLs to database
-          if (imageUrls.length > 0) {
-            await pool.query(
-              'UPDATE posts SET images = $1 WHERE id = $2',
-              [JSON.stringify(imageUrls), post.id]
-            );
-          }
-
-          res.status(201).json({
-            message: 'Opslag oprettet succesfuldt',
-            postId: post.id
-          });
-
-        } catch (error) {
-          console.error('Error creating post:', error);
-          res.status(500).json({ error: 'Server fejl ved oprettelse af opslag' });
+        // Validate required fields
+        if (!content || !location) {
+          return res.status(400).json({ error: 'Indhold og lokation er påkrævet' });
         }
-      });
+
+        // Mock post creation for demo
+        const mockPost = {
+          id: uuidv4(),
+          user_id: req.userId,
+          content,
+          location,
+          post_type: type,
+          job_type: jobType || null,
+          job_category: jobCategory || null,
+          target_audience: targetAudience || null,
+          urgency: urgency || null,
+          budget: budget || null,
+          created_at: new Date().toISOString()
+        };
+
+        res.status(201).json({
+          message: 'Opslag oprettet succesfuldt',
+          postId: mockPost.id
+        });
+
+      } catch (error) {
+        console.error('Error creating post:', error);
+        res.status(500).json({ error: 'Server fejl ved oprettelse af opslag' });
+      }
     });
 
   } else if (req.method === 'GET') {
     // Get posts
-    verifyToken(req, res, async () => {
-      try {
-        const { page = 1, limit = 10, type, location } = req.query;
-        const offset = (page - 1) * limit;
-
-        let query = `
-          SELECT p.*, u.name as user_name, u.avatar_url, u.verified, u.user_type,
-                 (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) as likes_count,
-                 (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) as comments_count
-          FROM posts p
-          JOIN users u ON p.user_id = u.id
-          WHERE 1=1
-        `;
-        
-        const params = [];
-        let paramCount = 0;
-
-        if (type) {
-          paramCount++;
-          query += ` AND p.post_type = $${paramCount}`;
-          params.push(type);
+    try {
+      // Mock posts data for demo
+      const mockPosts = [
+        {
+          id: '1',
+          user: {
+            id: '1',
+            name: 'Maria Hansen',
+            avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            verified: true,
+            userType: 'private'
+          },
+          content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen.',
+          location: 'København NV',
+          budget: '300-400 kr',
+          createdAt: '2 timer siden',
+          likes: 12,
+          comments: [],
+          isJobPost: true,
+          jobType: 'home_cleaning',
+          urgency: 'flexible'
+        },
+        {
+          id: '2',
+          user: {
+            id: '2',
+            name: 'Lars Nielsen',
+            avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            verified: true,
+            userType: 'cleaner'
+          },
+          content: 'Tilbyder professionel kontorrengøring i Aarhus området. 10+ års erfaring og miljøvenlige produkter.',
+          location: 'Aarhus C',
+          budget: '500-600 kr',
+          createdAt: '4 timer siden',
+          likes: 8,
+          comments: [],
+          isJobPost: false,
+          jobType: 'office_cleaning',
+          urgency: 'flexible'
         }
+      ];
 
-        if (location) {
-          paramCount++;
-          query += ` AND p.location ILIKE $${paramCount}`;
-          params.push(`%${location}%`);
+      res.status(200).json({
+        posts: mockPosts,
+        hasMore: false,
+        pagination: {
+          page: 1,
+          limit: 10,
+          total: mockPosts.length
         }
+      });
 
-        query += ` ORDER BY p.created_at DESC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
-        params.push(limit, offset);
-
-        const result = await pool.query(query, params);
-
-        res.status(200).json({
-          posts: result.rows,
-          pagination: {
-            page: parseInt(page),
-            limit: parseInt(limit),
-            total: result.rowCount
-          }
-        });
-
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-        res.status(500).json({ error: 'Server fejl ved hentning af opslag' });
-      }
-    });
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      res.status(500).json({ error: 'Server fejl ved hentning af opslag' });
+    }
 
   } else {
     res.status(405).json({ error: 'Method not allowed' });
