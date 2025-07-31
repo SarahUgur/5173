@@ -1,12 +1,5 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { Pool } = require('pg');
-
-// Database connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -22,33 +15,22 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Alle felter er påkrævet' });
       }
 
-      // Check if user already exists
-      const existingUser = await pool.query(
-        'SELECT id FROM users WHERE email = $1',
-        [email]
-      );
-
-      if (existingUser.rows.length > 0) {
-        return res.status(400).json({ error: 'Email er allerede registreret' });
-      }
-
-      // Hash password
-      const hashedPassword = await bcrypt.hash(password, 12);
-
-      // Create user
-      const result = await pool.query(
-        `INSERT INTO users (name, email, password, user_type, verified, is_subscribed, location, created_at, accepted_terms)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), $8)
-         RETURNING id, name, email, user_type, verified, is_subscribed, location, created_at`,
-        [name, email, hashedPassword, userType, false, false, 'Danmark', true]
-      );
-
-      const user = result.rows[0];
+      // Demo registration - create mock user
+      const user = {
+        id: Date.now().toString(),
+        name,
+        email,
+        user_type: userType,
+        verified: false,
+        is_subscribed: false,
+        location: 'Danmark',
+        created_at: new Date().toISOString()
+      };
 
       // Generate JWT token
       const token = jwt.sign(
         { userId: user.id, email: user.email },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'demo-secret',
         { expiresIn: '7d' }
       );
 
@@ -75,35 +57,29 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Email og adgangskode er påkrævet' });
       }
 
-      // Find user
-      const result = await pool.query(
-        'SELECT * FROM users WHERE email = $1',
-        [email]
-      );
-
-      if (result.rows.length === 0) {
-        return res.status(401).json({ error: 'Ugyldig email eller adgangskode' });
-      }
-
-      const user = result.rows[0];
-
-      // Check password
-      const validPassword = await bcrypt.compare(password, user.password);
-      if (!validPassword) {
-        return res.status(401).json({ error: 'Ugyldig email eller adgangskode' });
-      }
+      // Demo login - accept any email/password combination
+      const user = {
+        id: Date.now().toString(),
+        name: email.split('@')[0], // Use email prefix as name
+        email,
+        user_type: 'private',
+        verified: true,
+        is_subscribed: false,
+        location: 'Danmark',
+        created_at: new Date().toISOString(),
+        avatar_url: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+        rating: 4.5,
+        completed_jobs: 0,
+        bio: 'Demo bruger',
+        phone: '+45 12 34 56 78',
+        website: ''
+      };
 
       // Generate JWT token
       const token = jwt.sign(
         { userId: user.id, email: user.email },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'demo-secret',
         { expiresIn: '7d' }
-      );
-
-      // Update last login
-      await pool.query(
-        'UPDATE users SET last_login = NOW() WHERE id = $1',
-        [user.id]
       );
 
       res.status(200).json({
