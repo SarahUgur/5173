@@ -2,10 +2,6 @@
   publish = "dist"
   command = "npm run build"
 
-[dev]
-  framework = "#static"
-  targetPort = 5173
-
 # Disable Edge Functions to avoid Deno requirement
 [edge_functions]
   enabled = false
