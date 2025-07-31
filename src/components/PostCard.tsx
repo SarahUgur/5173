@@ -593,7 +593,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
             <div className="relative">
               <button 
                 onClick={() => setShowShareMenu(!showShareMenu)}
-                className="share-menu-dropdown flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-colors duration-200 text-gray-600 hover:bg-gray-50"
+                className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-colors duration-200 text-gray-600 hover:bg-gray-50"
               >
                 <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="font-medium text-sm sm:text-base">{shareCount}</span>
@@ -602,7 +602,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
               
               {/* Share Menu */}
               {showShareMenu && (
-                <div className="absolute bottom-full left-0 mb-2 w-64 bg-white rounded-xl shadow-strong border border-gray-200 p-3 z-50 animate-fadeIn share-menu-dropdown">
+                <div className="absolute bottom-full left-0 mb-2 w-64 bg-white rounded-xl shadow-strong border border-gray-200 p-3 z-50 animate-fadeIn">
                   <h4 className="font-semibold text-gray-900 mb-3 text-sm">Del opslag</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {shareOptions.map((option) => (
@@ -783,7 +783,7 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
       {/* Share Menu Overlay */}
       {showShareMenu && (
         <div 
-          className="fixed inset-0 z-40" 
+          className="fixed inset-0 z-40 bg-transparent" 
           onClick={() => setShowShareMenu(false)}
         />
       )}
