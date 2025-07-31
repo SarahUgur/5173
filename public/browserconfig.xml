@@ -2,8 +2,8 @@
 <browserconfig>
     <msapplication>
         <tile>
-            <square150x150logo src="https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop"/>
-            <TileColor>#2563eb</TileColor>
+            <square150x150logo src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiByeD0iMzAiIGZpbGw9IiM3ZGJkZmYiLz4KPHN2ZyB4PSI1MCIgeT0iNTAiIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAyTDEzLjA5IDguMjZMMjAgOUwxMy4wOSA5Ljc0TDEyIDE2TDEwLjkxIDkuNzRMNCA5TDEwLjkxIDguMjZMMTIgMloiLz4KPC9zdmc+Cjwvc3ZnPg=="/>
+            <TileColor>#7dbdff</TileColor>
         </tile>
     </msapplication>
 </browserconfig>

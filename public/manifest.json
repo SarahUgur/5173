@@ -1,6 +1,6 @@
 {
   "name": "Private Rengøring",
-  "short_name": "PrivateRengøring",
+  "short_name": "Private Rengøring",
   "description": "Danmarks største sociale platform for rengøringsservices - Find jobs, eksperter og byg dit netværk",
   "start_url": "/",
   "display": "standalone",
@@ -19,25 +19,25 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=192&h=192&fit=crop",
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMzgiIGZpbGw9IiM3ZGJkZmYiLz4KPHN2ZyB4PSI2NCIgeT0iNjQiIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAyTDEzLjA5IDguMjZMMjAgOUwxMy4wOSA5Ljc0TDEyIDE2TDEwLjkxIDkuNzRMNCA5TDEwLjkxIDguMjZMMTIgMloiLz4KPHN2ZyB4PSIxNSIgeT0iMTUiIHdpZHRoPSI2IiBoZWlnaHQ9IjYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPgo8cGF0aCBkPSJNMTkgMTVMMTkuNSAxN0wyMS41IDE3LjVMMTkuNSAxOEwxOSAyMEwxOC41IDE4TDE2LjUgMTcuNUwxOC41IDE3TDE5IDE1WiIvPgo8L3N2Zz4KPHN2ZyB4PSI1IiB5PSIxNSIgd2lkdGg9IjYiIGhlaWdodD0iNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik01IDE1TDUuNSAxN0w3LjUgMTcuNUw1LjUgMThMNSAyMEw0LjUgMThMMi41IDE3LjVMNC41IDE3TDUgMTVaIi8+Cjwvc3ZnPgo8L3N2Zz4KPC9zdmc+",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=512&h=512&fit=crop",
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTAyIiBmaWxsPSIjN2RiZGZmIi8+CjxzdmcgeD0iMTcwIiB5PSIxNzAiIHdpZHRoPSIxNzIiIGhlaWdodD0iMTcyIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IndoaXRlIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDkuNzRMMTIgMTZMMTAuOTEgOS43NEw0IDlMMTAuOTEgOC4yNkwxMiAyWiIvPgo8c3ZnIHg9IjE1IiB5PSIxNSIgd2lkdGg9IjYiIGhlaWdodD0iNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xOSAxNUwxOS41IDE3TDIxLjUgMTcuNUwxOS41IDE4TDE5IDIwTDE4LjUgMThMMTYuNSAxNy41TDE4LjUgMTdMMTkgMTVaIi8+Cjwvc3ZnPgo8c3ZnIHg9IjUiIHk9IjE1IiB3aWR0aD0iNiIgaGVpZ2h0PSI2IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IndoaXRlIj4KPHBhdGggZD0iTTUgMTVMNS41IDE3TDcuNSAxNy41TDUuNSAxOEw1IDIwTDQuNSAxOEwyLjUgMTcuNUw0LjUgMTdMNSAxNVoiLz4KPC9zdmc+Cjwvc3ZnPgo8L3N2Zz4=",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=144&h=144&fit=crop",
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQ0IiBoZWlnaHQ9IjE0NCIgdmlld0JveD0iMCAwIDE0NCAxNDQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNDQiIGhlaWdodD0iMTQ0IiByeD0iMjkiIGZpbGw9IiM3ZGJkZmYiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAyTDEzLjA5IDguMjZMMjAgOUwxMy4wOSA5Ljc0TDEyIDE2TDEwLjkxIDkuNzRMNCA5TDEwLjkxIDguMjZMMTIgMloiLz4KPHN2ZyB4PSIxNSIgeT0iMTUiIHdpZHRoPSI2IiBoZWlnaHQ9IjYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPgo8cGF0aCBkPSJNMTkgMTVMMTkuNSAxN0wyMS41IDE3LjVMMTkuNSAxOEwxOSAyMEwxOC41IDE4TDE2LjUgMTcuNUwxOC41IDE3TDE5IDE1WiIvPgo8L3N2Zz4KPHN2ZyB4PSI1IiB5PSIxNSIgd2lkdGg9IjYiIGhlaWdodD0iNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik01IDE1TDUuNSAxN0w3LjUgMTcuNUw1LjUgMThMNSAyMEw0LjUgMThMMi41IDE3LjVMNC41IDE3TDUgMTVaIi8+Cjwvc3ZnPgo8L3N2Zz4KPC9zdmc+",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=72&h=72&fit=crop",
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjcyIiBoZWlnaHQ9IjcyIiByeD0iMTQiIGZpbGw9IiM3ZGJkZmYiLz4KPHN2ZyB4PSIyNCIgeT0iMjQiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAyTDEzLjA5IDguMjZMMjAgOUwxMy4wOSA5Ljc0TDEyIDE2TDEwLjkxIDkuNzRMNCA5TDEwLjkxIDguMjZMMTIgMloiLz4KPHN2ZyB4PSIxNSIgeT0iMTUiIHdpZHRoPSI2IiBoZWlnaHQ9IjYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPgo8cGF0aCBkPSJNMTkgMTVMMTkuNSAxN0wyMS41IDE3LjVMMTkuNSAxOEwxOSAyMEwxOC41IDE4TDE2LjUgMTcuNUwxOC41IDE3TDE5IDE1WiIvPgo8L3N2Zz4KPHN2ZyB4PSI1IiB5PSIxNSIgd2lkdGg9IjYiIGhlaWdodD0iNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik01IDE1TDUuNSAxN0w3LjUgMTcuNUw1LjUgMThMNSAyMEw0LjUgMThMMi41IDE3LjVMNC41IDE3TDUgMTVaIi8+Cjwvc3ZnPgo8L3N2Zz4KPC9zdmc+",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "any"
@@ -52,7 +52,7 @@
       "label": "Privat Rengøring på mobil"
     },
     {
-      "src": "https://images.pexels.com/photos/4108715/pexels-photo-4108715.jpeg?auto=compress&cs=tinysrgb&w=1280&h=720&fit=crop",
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4MCIgaGVpZ2h0PSI3MjAiIHZpZXdCb3g9IjAgMCAxMjgwIDcyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyODAiIGhlaWdodD0iNzIwIiByeD0iNDAiIGZpbGw9IiM3ZGJkZmYiLz4KPHN2ZyB4PSI1NDAiIHk9IjI5MCIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIxNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPgo8cGF0aCBkPSJNMTIgMkwxMy4wOSA4LjI2TDIwIDlMMTMuMDkgOS43NEwxMiAxNkwxMC45MSA5Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIi8+Cjwvc3ZnPgo8L3N2Zz4=",
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
@@ -67,7 +67,7 @@
       "url": "/?page=jobs",
       "icons": [
         {
-          "src": "https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=96&h=96&fit=crop",
+          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiByeD0iMTkiIGZpbGw9IiM3ZGJkZmYiLz4KPHN2ZyB4PSIzMiIgeT0iMzIiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAyTDEzLjA5IDguMjZMMjAgOUwxMy4wOSA5Ljc0TDEyIDE2TDEwLjkxIDkuNzRMNCA5TDEwLjkxIDguMjZMMTIgMloiLz4KPC9zdmc+Cjwvc3ZnPg==",
           "sizes": "96x96"
         }
       ]
@@ -79,7 +79,7 @@
       "url": "/?create=job",
       "icons": [
         {
-          "src": "https://images.pexels.com/photos/4099468/pexels-photo-4099468.jpeg?auto=compress&cs=tinysrgb&w=96&h=96&fit=crop",
+          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiByeD0iMTkiIGZpbGw9IiM3ZGJkZmYiLz4KPHN2ZyB4PSIzMiIgeT0iMzIiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAyTDEzLjA5IDguMjZMMjAgOUwxMy4wOSA5Ljc0TDEyIDE2TDEwLjkxIDkuNzRMNCA5TDEwLjkxIDguMjZMMTIgMloiLz4KPC9zdmc+Cjwvc3ZnPg==",
           "sizes": "96x96"
         }
       ]
