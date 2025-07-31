@@ -64,9 +64,46 @@ export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubs
       if (response.ok) {
         const data = await response.json();
         setConversations(data);
+      } else {
+        // Fallback to mock conversations
+        const mockConversations = [
+          {
+            id: '1',
+            user: {
+              id: '2',
+              name: 'Maria Hansen',
+              avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+              online: true
+            },
+            lastMessage: {
+              id: '1',
+              senderId: '2',
+              receiverId: currentUser?.id,
+              content: 'Hej! Er du interesseret i rengøringsjobbet?',
+              timestamp: '10 min siden',
+              read: false,
+              type: 'text'
+            },
+            unreadCount: 1,
+            messages: [
+              {
+                id: '1',
+                senderId: '2',
+                receiverId: currentUser?.id,
+                content: 'Hej! Er du interesseret i rengøringsjobbet?',
+                timestamp: '10 min siden',
+                read: false,
+                type: 'text'
+              }
+            ]
+          }
+        ];
+        setConversations(mockConversations);
       }
     } catch (error) {
       console.error('Error loading conversations:', error);
+      // Set empty array on error
+      setConversations([]);
     }
     setLoading(false);
   };

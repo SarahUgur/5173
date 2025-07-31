@@ -3,7 +3,7 @@ import { Heart, MessageCircle, Share2, MapPin, Clock, DollarSign, Star, Lock, Mo
 import { useLanguage } from '../hooks/useLanguage';
 import AdBanner from './AdBanner';
 import JobApplicationModal from './JobApplicationModal';
-import type { Post } from '../types';
+import type { Post, Comment } from '../types';
 
 interface PostCardProps {
   post: Post;

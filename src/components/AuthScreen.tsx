@@ -28,11 +28,11 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
 
     try {
       // Demo admin login - bypass API for admin
-      if (email === 'admin@privaterengoring.dk' && password === 'admin123') {
+      if (email === 'admin@privatrengoring.dk' && password === 'admin123') {
         const adminUser = {
           id: 'admin',
           name: 'Administrator',
-          email: 'admin@privaterengoring.dk',
+          email: 'admin@privatrengoring.dk',
           userType: 'admin',
           verified: true,
           isSubscribed: true,

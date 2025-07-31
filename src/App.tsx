@@ -501,10 +501,58 @@ function App() {
           }
           setHasMore(data.hasMore !== false);
         } else {
-          console.error('Failed to load posts');
+          console.error('Failed to load posts:', response.status);
+          // Fallback to mock data if API fails
+          const mockPosts = [
+            {
+              id: '1',
+              user: {
+                id: '1',
+                name: 'Maria Hansen',
+                avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+                verified: true,
+                userType: 'private'
+              },
+              content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen.',
+              location: 'København NV',
+              budget: '300-400 kr',
+              createdAt: '2 timer siden',
+              likes: 12,
+              comments: [],
+              isJobPost: true,
+              jobType: 'home_cleaning',
+              urgency: 'flexible'
+            }
+          ];
+          setPosts(mockPosts);
+          setHasMore(false);
         }
       } catch (error) {
         console.error('Error loading posts:', error);
+        // Fallback to mock data on error
+        const mockPosts = [
+          {
+            id: '1',
+            user: {
+              id: '1',
+              name: 'Maria Hansen',
+              avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+              verified: true,
+              userType: 'private'
+            },
+            content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen.',
+            location: 'København NV',
+            budget: '300-400 kr',
+            createdAt: '2 timer siden',
+            likes: 12,
+            comments: [],
+            isJobPost: true,
+            jobType: 'home_cleaning',
+            urgency: 'flexible'
+          }
+        ];
+        setPosts(mockPosts);
+        setHasMore(false);
       }
       setLoading(false);
     };

@@ -45,9 +45,34 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
       if (response.ok) {
         const data = await response.json();
         setNotifications(data);
+      } else {
+        // Fallback to mock notifications
+        const mockNotifications = [
+          {
+            id: '1',
+            type: 'job',
+            title: 'Nyt job i dit område',
+            message: 'Hjemmerengøring i København NV - 350 kr',
+            time: '5 min siden',
+            read: false,
+            avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
+          },
+          {
+            id: '2',
+            type: 'message',
+            title: 'Ny besked fra Lars Nielsen',
+            message: 'Hej! Er du interesseret i rengøringsjobbet?',
+            time: '10 min siden',
+            read: false,
+            avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
+          }
+        ];
+        setNotifications(mockNotifications);
       }
     } catch (error) {
       console.error('Error loading notifications:', error);
+      // Set empty array on error
+      setNotifications([]);
     }
     setLoading(false);
   };

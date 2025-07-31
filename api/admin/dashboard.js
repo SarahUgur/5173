@@ -1,11 +1,4 @@
 const jwt = require('jsonwebtoken');
-const { Pool } = require('pg');
-
-// Database connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
 
 // Middleware to verify JWT token and admin access
 const verifyAdminToken = (req, res, next) => {
@@ -19,7 +12,7 @@ const verifyAdminToken = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'demo-secret');
     
     // Check if user is admin
-    if (decoded.email !== 'admin@privaterengoring.dk') {
+    if (decoded.email !== 'admin@privaterengoring.dk' && decoded.email !== 'admin@privatrengoring.dk') {
       return res.status(403).json({ error: 'Kun admin har adgang' });
     }
     

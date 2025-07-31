@@ -1,12 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid');
-
-// Database connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
 
 // Middleware to verify JWT token
 const verifyToken = (req, res, next) => {
@@ -17,7 +10,7 @@ const verifyToken = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'demo-secret');
     req.userId = decoded.userId;
     next();
   } catch (error) {
@@ -36,44 +29,16 @@ module.exports = async function handler(req, res) {
           return res.status(400).json({ error: 'Modtager og indhold er påkrævet' });
         }
 
-        // Check if sender is subscribed
-        const senderResult = await pool.query(
-          'SELECT is_subscribed FROM users WHERE id = $1',
-          [req.userId]
-        );
-
-        if (!senderResult.rows[0]?.is_subscribed) {
-          return res.status(403).json({ error: 'Kun Pro medlemmer kan sende beskeder' });
-        }
-
-        // Check if receiver exists
-        const receiverResult = await pool.query(
-          'SELECT id FROM users WHERE id = $1',
-          [receiverId]
-        );
-
-        if (receiverResult.rows.length === 0) {
-          return res.status(404).json({ error: 'Modtager ikke fundet' });
-        }
-
-        // Create message
-        const messageResult = await pool.query(
-          `INSERT INTO messages (id, sender_id, receiver_id, content, message_type, created_at, read_at)
-           VALUES ($1, $2, $3, $4, $5, NOW(), NULL)
-           RETURNING *`,
-          [uuidv4(), req.userId, receiverId, content, type]
-        );
-
-        const message = messageResult.rows[0];
-
-        // Create or update conversation
-        await pool.query(
-          `INSERT INTO conversations (sender_id, receiver_id, last_message_id, updated_at)
-           VALUES ($1, $2, $3, NOW())
-           ON CONFLICT (sender_id, receiver_id) 
-           DO UPDATE SET last_message_id = $3, updated_at = NOW()`,
-          [req.userId, receiverId, message.id]
-        );
+        // Mock message creation for demo
+        const message = {
+          id: uuidv4(),
+          sender_id: req.userId,
+          receiver_id: receiverId,
+          content,
+          message_type: type,
+          created_at: new Date().toISOString(),
+          read_at: null
+        };
 
         res.status(201).json({
           id: message.id,
@@ -93,25 +58,41 @@ module.exports = async function handler(req, res) {
     } else if (req.method === 'GET') {
       // Get conversations
       try {
-        const result = await pool.query(
-          `SELECT DISTINCT ON (LEAST(c.sender_id, c.receiver_id), GREATEST(c.sender_id, c.receiver_id))
-                  c.*,
-                  u.name as other_user_name,
-                  u.avatar_url as other_user_avatar,
-                  u.last_seen,
-                  m.content as last_message_content,
-                  m.created_at as last_message_time,
-                  (SELECT COUNT(*) FROM messages 
-                   WHERE receiver_id = $1 AND sender_id = u.id AND read_at IS NULL) as unread_count
-           FROM conversations c
-           JOIN users u ON (u.id = c.sender_id OR u.id = c.receiver_id) AND u.id != $1
-           JOIN messages m ON m.id = c.last_message_id
-           WHERE c.sender_id = $1 OR c.receiver_id = $1
-           ORDER BY LEAST(c.sender_id, c.receiver_id), GREATEST(c.sender_id, c.receiver_id), c.updated_at DESC`,
-          [req.userId]
-        );
+        // Mock conversations for demo
+        const mockConversations = [
+          {
+            id: '1',
+            user: {
+              id: '2',
+              name: 'Maria Hansen',
+              avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+              online: true
+            },
+            lastMessage: {
+              id: '1',
+              senderId: '2',
+              receiverId: req.userId,
+              content: 'Hej! Er du interesseret i rengøringsjobbet?',
+              timestamp: '10 min siden',
+              read: false,
+              type: 'text'
+            },
+            unreadCount: 1,
+            messages: [
+              {
+                id: '1',
+                senderId: '2',
+                receiverId: req.userId,
+                content: 'Hej! Er du interesseret i rengøringsjobbet?',
+                timestamp: '10 min siden',
+                read: false,
+                type: 'text'
+              }
+            ]
+          }
+        ];
 
-        res.status(200).json(result.rows);
+        res.status(200).json(mockConversations);
 
       } catch (error) {
         console.error('Error fetching conversations:', error);

@@ -1,12 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid');
-
-// Database connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
 
 // Middleware to verify JWT token
 const verifyToken = (req, res, next) => {
@@ -91,7 +84,18 @@ module.exports = async function handler(req, res) {
           budget: '300-400 kr',
           createdAt: '2 timer siden',
           likes: 12,
-          comments: [],
+          comments: [
+            {
+              id: '1',
+              content: 'Jeg kan hjælpe dig! Har erfaring med hjemmerengøring.',
+              createdAt: '1 time siden',
+              user: {
+                id: '2',
+                name: 'Lars Nielsen',
+                avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
+              }
+            }
+          ],
           isJobPost: true,
           jobType: 'home_cleaning',
           urgency: 'flexible'

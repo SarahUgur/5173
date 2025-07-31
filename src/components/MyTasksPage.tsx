@@ -47,9 +47,31 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
         setActiveTasks(data.active || []);
         setCompletedTasks(data.completed || []);
         setApplications(data.applications || []);
+      } else {
+        // Fallback to mock data
+        const mockActiveTasks = [
+          {
+            id: '1',
+            title: 'Hjemmerengøring - Maria Hansen',
+            description: 'Ugentlig rengøring af 3-værelses lejlighed',
+            location: 'København NV',
+            budget: '350 kr/gang',
+            status: 'ongoing',
+            client: 'Maria Hansen',
+            clientAvatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            nextDate: getFutureDate(3)
+          }
+        ];
+        setActiveTasks(mockActiveTasks);
+        setCompletedTasks([]);
+        setApplications([]);
       }
     } catch (error) {
       console.error('Error loading tasks:', error);
+      // Set empty arrays on error
+      setActiveTasks([]);
+      setCompletedTasks([]);
+      setApplications([]);
     }
     setLoading(false);
   };
