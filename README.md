@@ -28,7 +28,7 @@ Danmarks største sociale platform for rengøringsservices med support for 6 spr
 ### Development
 ```bash
 npm install
-npm run dev
+npm run dev:netlify
 ```
 
 ### Build
