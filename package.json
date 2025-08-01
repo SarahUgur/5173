@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:netlify": "netlify dev",
     "dev:netlify": "netlify dev",
-    "build": "vite build",
+    "dev:netlify": "npx netlify dev"
     "lint": "eslint ."
   },
   "dependencies": {
