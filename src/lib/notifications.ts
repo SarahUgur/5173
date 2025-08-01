@@ -144,7 +144,7 @@ export class NotificationManager {
     // I virkeligheden ville dette sendes fra server
     const testNotification = {
       title: 'Test Notifikation 📱',
-      body: 'Dette er en test push notifikation fra Privat Rengøring!',
+      body: 'Dette er en test push notifikation fra Private Rengøring!',
       icon: '/icon-192.png',
       badge: '/icon-192.png',
       tag: 'test-notification',

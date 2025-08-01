@@ -41,7 +41,7 @@ export default function SuccessPage({ onContinue }: SuccessPageProps) {
           onClick={onContinue}
           className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2"
         >
-          <span>Fortsæt til Privat Rengøring</span>
+          <span>Fortsæt til Private Rengøring</span>
           <ArrowRight className="w-5 h-5" />
         </button>
 

@@ -663,7 +663,7 @@ function App() {
       {/* PWA Status Bar */}
       {isPWA && (
         <div className="bg-blue-600 text-white text-center py-1 text-xs">
-          📱 Kører som app • Privat Rengøring
+          📱 Kører som app • Private Rengøring
         </div>
       )}
       

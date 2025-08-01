@@ -157,8 +157,8 @@ export default function NotificationSettings({ isOpen, onClose, currentUser }: N
             {!pushSupported && (
               <div className="mb-3 p-2 bg-orange-50 border border-orange-200 rounded-lg">
                 <div className="flex items-center space-x-2">
-                  <AlertTriangle className="w-4 h-4 text-orange-600" />
-                  <span className="text-xs text-orange-800">Push notifikationer understøttes ikke på denne enhed</span>
+                  <span>💻</span>
+                  <span><strong>Desktop:</strong> Browser notifikationer i hjørnet af skærmen</span>
                 </div>
               </div>
             )}
