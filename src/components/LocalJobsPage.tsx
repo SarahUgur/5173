@@ -473,7 +473,6 @@ function App() {
       <SettingsModal
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
-        currentUser={currentUser}
         onUpdateUser={handleUpdateUser}
       />
 
