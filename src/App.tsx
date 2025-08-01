@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { Home, Briefcase, Users, Calendar, Heart, MapPin, Search, Bell, MessageCircle, User as UserIcon, Menu, Plus, Settings, LogOut, Star, Crown, Shield, TrendingUp, Filter, Globe, HelpCircle, Phone, Mail, ExternalLink, Eye, EyeOff, Trash2, Edit, X, Clock, DollarSign, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Share2 } from 'lucide-react';
 import { useLanguage } from './hooks/useLanguage';
-import { getLocalizedPosts } from './data/mockData';
 import Header from './components/Header';
 import CreatePost from './components/CreatePost';
 import PostCard from './components/PostCard';
-import Sidebar from './components/Sidebar';
 import LocalJobsPage from './components/LocalJobsPage';
 import NetworkPage from './components/NetworkPage';
 import MyTasksPage from './components/MyTasksPage';
@@ -31,14 +29,11 @@ import SettingsModal from './components/SettingsModal';
 import InstallPrompt from './components/InstallPrompt';
 import AdBanner from './components/AdBanner';
 import RecommendationWidget from './components/RecommendationWidget';
-import { useNotifications } from './hooks/useNotifications';
-import { notificationManager } from './lib/notifications';
 import type { User } from './types';
 
 function App() {
   const { language, t } = useLanguage();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const notifications = useNotifications(currentUser);
   const [isPWA, setIsPWA] = useState(false);
   const [currentPage, setCurrentPage] = useState<'home' | 'jobs' | 'network' | 'tasks' | 'planning' | 'favorites' | 'local-jobs' | 'trending' | 'map' | 'profile' | 'admin' | 'about' | 'contact' | 'support' | 'terms'>('home');
   const [showSidebar, setShowSidebar] = useState(false);
@@ -52,8 +47,6 @@ function App() {
   const [showTerms, setShowTerms] = useState(false);
   const [showFriendRequests, setShowFriendRequests] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showLogoSelector, setShowLogoSelector] = useState(false);
-  const [currentLogo, setCurrentLogo] = useState('default');
 
   // Check if running as PWA
   React.useEffect(() => {
@@ -84,41 +77,17 @@ function App() {
     return () => mediaQuery.removeEventListener('change', checkPWA);
   }, [currentUser]);
 
-  // Handle Pro upgrade from header
-  const handleShowSubscription = () => {
-    setShowSubscription(true);
-  };
-
-  const posts = getLocalizedPosts(language);
-
   // Handle login
   const handleLogin = (user: User) => {
-    // Load persisted user data from localStorage
-    const savedUserData = localStorage.getItem('userData');
-    if (savedUserData) {
-      try {
-        const userData = JSON.parse(savedUserData);
-        // Merge saved data with login data
-        const mergedUser = { ...user, ...userData };
-        setCurrentUser(mergedUser);
-        return;
-      } catch (error) {
-        console.error('Error loading saved user data:', error);
-      }
-    }
-    
     setCurrentUser(user);
+    localStorage.setItem('currentUser', JSON.stringify(user));
   };
-
 
   // Handle logout
   const handleLogout = () => {
-    // Clear authentication
     localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('userData');
-    
-    // Reset state
     setCurrentUser(null);
     setCurrentPage('home');
   };
@@ -126,7 +95,6 @@ function App() {
   // Handle subscription
   const handleSubscribe = () => {
     setShowSubscription(false);
-    // Simuler Stripe checkout for månedligt abonnement
     if (confirm('Start Pro abonnement for 29 kr/måned via Stripe? Du vil blive omdirigeret til sikker betaling.')) {
       setShowPayment(true);
     }
@@ -138,30 +106,7 @@ function App() {
     setShowSuccess(true);
     if (currentUser) {
       setCurrentUser({ ...currentUser, isSubscribed: true });
-      
-      // Trigger Pro upgrade notification
-      setTimeout(() => {
-        notifications.triggerMessageNotification(
-          'Private Rengøring',
-          'Tillykke! Du er nu Pro medlem med fuld adgang til alle funktioner! 🌟'
-        );
-      }, 1000);
     }
-  };
-  
-  // Listen for Pro upgrade events from header
-  React.useEffect(() => {
-    const handleShowSubscription = () => {
-      setShowSubscription(true);
-    };
-    
-    window.addEventListener('showSubscription', handleShowSubscription);
-    return () => window.removeEventListener('showSubscription', handleShowSubscription);
-  }, []);
-
-  // Handle success continue
-  const handleSuccessContinue = () => {
-    setShowSuccess(false);
   };
 
   // Handle user profile update
@@ -169,263 +114,11 @@ function App() {
     if (currentUser) {
       const updatedUser = { ...currentUser, ...updates };
       setCurrentUser(updatedUser);
-      
-      // Persist user data to localStorage
       localStorage.setItem('userData', JSON.stringify(updatedUser));
       localStorage.setItem('currentUser', JSON.stringify(updatedUser));
     }
   };
 
-  // Handle friend requests
-  const handleSendFriendRequest = (userId: string) => {
-    // Send real friend request
-    fetch('/api/friend-requests', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      },
-      body: JSON.stringify({ userId })
-    }).then(response => {
-      if (response.ok) {
-        alert('Venskabsanmodning sendt!');
-      } else {
-        alert('Kunne ikke sende venskabsanmodning. Prøv igen.');
-      }
-    }).catch(error => {
-      console.error('Friend request error:', error);
-      alert('Kunne ikke sende venskabsanmodning. Prøv igen.');
-    });
-  };
-
-  const handleAcceptFriendRequest = (requestId: string) => {
-    // Accept friend request
-    fetch(`/api/friend-requests/${requestId}/accept`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      }
-    }).then(response => {
-      if (response.ok) {
-        alert('Venskabsanmodning accepteret!');
-      } else {
-        alert('Kunne ikke acceptere anmodning. Prøv igen.');
-      }
-    }).catch(error => {
-      console.error('Accept friend request error:', error);
-      alert('Kunne ikke acceptere anmodning. Prøv igen.');
-    });
-  };
-
-  const handleDeclineFriendRequest = (requestId: string) => {
-    // Decline friend request
-    fetch(`/api/friend-requests/${requestId}/decline`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      }
-    }).then(response => {
-      if (response.ok) {
-        alert('Venskabsanmodning afvist.');
-      } else {
-        alert('Kunne ikke afvise anmodning. Prøv igen.');
-      }
-    }).catch(error => {
-      console.error('Decline friend request error:', error);
-      alert('Kunne ikke afvise anmodning. Prøv igen.');
-    });
-  };
-
-  const handleSendMessage = (userId: string) => {
-    setShowMessages(true);
-    // In real app, this would open messages modal with specific user selected
-  };
-
-  const handleBlockUser = (userId: string) => {
-    // Block user
-    fetch('/api/users/block', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      },
-      body: JSON.stringify({ userId })
-    }).then(response => {
-      if (response.ok) {
-        alert('Bruger blokeret succesfuldt.');
-      } else {
-        alert('Kunne ikke blokere bruger. Prøv igen.');
-      }
-    }).catch(error => {
-      console.error('Block user error:', error);
-      alert('Kunne ikke blokere bruger. Prøv igen.');
-    });
-  };
-
-  const handleReportUser = (userId: string, reason: string) => {
-    // Report user
-    fetch('/api/reports/user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      },
-      body: JSON.stringify({ userId, reason })
-    }).then(response => {
-      if (response.ok) {
-        alert('Bruger rapporteret. Admin teamet vil gennemgå rapporten.');
-      } else {
-        alert('Kunne ikke rapportere bruger. Prøv igen.');
-      }
-    }).catch(error => {
-      console.error('Report user error:', error);
-      alert('Kunne ikke rapportere bruger. Prøv igen.');
-    });
-  };
-
-  const handleReport = (postId: string, reason: string) => {
-    // Report post
-    fetch('/api/reports/post', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      },
-      body: JSON.stringify({ postId, reason })
-    }).then(response => {
-      if (response.ok) {
-        alert('Opslag rapporteret. Admin teamet vil gennemgå rapporten.');
-      } else {
-        alert('Kunne ikke rapportere opslag. Prøv igen.');
-      }
-    }).catch(error => {
-      console.error('Report post error:', error);
-      alert('Kunne ikke rapportere opslag. Prøv igen.');
-    });
-  };
-
-  const handleTagUser = (userId: string, postId: string) => {
-    // Tag user in post
-    fetch('/api/posts/tag', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      },
-      body: JSON.stringify({ userId, postId })
-    }).then(response => {
-      if (response.ok) {
-        console.log('User tagged successfully');
-      }
-    }).catch(error => {
-      console.error('Tag user error:', error);
-    });
-  };
-
-  const handleSharePost = (postId: string, platform: string) => {
-    // Track post share
-    fetch('/api/posts/share', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      },
-      body: JSON.stringify({ postId, platform })
-    }).then(response => {
-      if (response.ok) {
-        console.log('Post share tracked');
-      }
-    }).catch(error => {
-      console.error('Share tracking error:', error);
-    });
-  };
-
-  const handleDeletePost = (postId: string) => {
-    // Delete post from API
-    fetch(`/api/posts/${postId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      }
-    }).then(response => {
-      if (response.ok) {
-        alert('Opslag slettet permanent.');
-        // Refresh page to remove post
-        window.location.reload();
-      } else {
-        alert('Kunne ikke slette opslag. Prøv igen.');
-      }
-    }).catch(error => {
-      console.error('Delete post error:', error);
-      alert('Kunne ikke slette opslag. Prøv igen.');
-    });
-  };
-
-  const handleHidePost = (postId: string) => {
-    // Hide post from API
-    fetch(`/api/posts/${postId}/hide`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      }
-    }).then(response => {
-      if (response.ok) {
-        alert('Opslag skjult. Du kan vise det igen i dine indstillinger.');
-        // Refresh page to hide post
-        window.location.reload();
-      } else {
-        alert('Kunne ikke skjule opslag. Prøv igen.');
-      }
-    }).catch(error => {
-      console.error('Hide post error:', error);
-      alert('Kunne ikke skjule opslag. Prøv igen.');
-    });
-  };
-
-  const handleSelectLogo = (logoType: string, logoSvg: string) => {
-    setCurrentLogo(logoType);
-    setShowLogoSelector(false);
-  };
-
-  const handleDeleteComment = (commentId: string, postId: string) => {
-    // Delete comment from API
-    fetch(`/api/comments/${commentId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      }
-    }).then(response => {
-      if (response.ok) {
-        alert('Kommentar slettet permanent.');
-        // Refresh page to remove comment
-        window.location.reload();
-      } else {
-        alert('Kunne ikke slette kommentar. Prøv igen.');
-      }
-    }).catch(error => {
-      console.error('Delete comment error:', error);
-      alert('Kunne ikke slette kommentar. Prøv igen.');
-    });
-  };
-
-  const handleHideComment = (commentId: string, postId: string) => {
-    // Hide comment from API
-    fetch(`/api/comments/${commentId}/hide`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      }
-    }).then(response => {
-      if (response.ok) {
-        console.log('Kommentar skjult');
-      } else {
-        alert('Kunne ikke skjule kommentar. Prøv igen.');
-      }
-    }).catch(error => {
-      console.error('Hide comment error:', error);
-      alert('Kunne ikke skjule kommentar. Prøv igen.');
-    });
-  };
   // Show auth screen if not logged in
   if (!currentUser) {
     return <AuthScreen onLogin={handleLogin} />;
@@ -433,7 +126,7 @@ function App() {
 
   // Show success page if payment was successful
   if (showSuccess) {
-    return <SuccessPage onContinue={handleSuccessContinue} />;
+    return <SuccessPage onContinue={() => setShowSuccess(false)} />;
   }
 
   const renderMainContent = () => {
@@ -481,7 +174,6 @@ function App() {
         onShowSubscription={() => setShowSubscription(true)}
       />
       
-      {/* Ad Banner */}
       <div className="mb-3 xs:mb-4 sm:mb-6">
         <AdBanner type="banner" position="top" className="w-full" />
       </div>
@@ -489,17 +181,8 @@ function App() {
       <PostFeed 
         currentUser={currentUser}
         onShowSubscription={() => setShowSubscription(true)}
-        onReport={handleReport}
-        onShowUserProfile={setShowUserProfile}
-        onTagUser={handleTagUser}
-        onSharePost={handleSharePost}
-        onDeletePost={handleDeletePost}
-        onHidePost={handleHidePost}
-        onDeleteComment={handleDeleteComment}
-        onHideComment={handleHideComment}
       />
 
-      {/* Recommendation Widget */}
       <div className="mt-6 sm:mt-8">
         <RecommendationWidget />
       </div>
@@ -507,134 +190,13 @@ function App() {
   );
 
   // Post Feed Component
-  const PostFeed = ({ currentUser, onShowSubscription, onReport, onShowUserProfile, onTagUser, onSharePost, onDeletePost, onHidePost, onDeleteComment, onHideComment }: any) => {
+  const PostFeed = ({ currentUser, onShowSubscription }: any) => {
     const [posts, setPosts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
 
     React.useEffect(() => {
-      loadPosts();
-    }, []);
-
-    const loadPosts = async (pageNum = 1) => {
-      try {
-        const response = await fetch(`/api/posts?page=${pageNum}&limit=10`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (pageNum === 1) {
-            setPosts(data.posts || []);
-          } else {
-            setPosts(prev => [...prev, ...(data.posts || [])]);
-          }
-          setHasMore(data.hasMore !== false);
-        } else {
-          console.error('Failed to load posts:', response.status);
-          // Fallback to mock data if API fails
-          const mockPosts = [
-            {
-              id: '1',
-              user: {
-                id: '1',
-                name: 'Maria Hansen',
-                avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-                verified: true,
-                userType: 'private'
-              },
-              content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen. Jeg har 2 børn og en hund, så erfaring med familier er et plus! 🏠✨',
-              location: 'København NV',
-              budget: '300-400 kr',
-              createdAt: '2 timer siden',
-              likes: 12,
-              comments: [
-                {
-                  id: '1',
-                  content: 'Hej Maria! Jeg har 5 års erfaring med familierengøring og elsker at arbejde med familier der har kæledyr. Kan du fortælle mere om opgaven?',
-                  createdAt: '1 time siden',
-                  user: {
-                    id: '2',
-                    name: 'Lars Nielsen',
-                    avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-                    verified: true
-                  }
-                },
-                {
-                  id: '2',
-                  content: 'Lyder som en perfekt opgave! Jeg tilbyder miljøvenlig rengøring og har erfaring med børnefamilier. Kan vi tale sammen?',
-                  createdAt: '45 min siden',
-                  user: {
-                    id: '3',
-                    name: 'Sofie Andersen',
-                    avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-                    verified: false
-                  }
-                }
-              ],
-              isJobPost: true,
-              jobType: 'home_cleaning',
-              urgency: 'flexible',
-              images: ['https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop']
-            },
-            {
-              id: '2',
-              user: {
-                id: '4',
-                name: 'Peter Larsen',
-                avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-                verified: true,
-                userType: 'cleaner'
-              },
-              content: 'Lige afsluttet en fantastisk kontorrengøring i Aarhus! Kunden var super tilfreds med resultatet. Specialiseret i miljøvenlig rengøring og har alle nødvendige certifikater. 🌱✨',
-              location: 'Aarhus C',
-              createdAt: '3 timer siden',
-              likes: 18,
-              comments: [
-                {
-                  id: '3',
-                  content: 'Flot arbejde Peter! Kan du anbefale nogle gode miljøvenlige produkter?',
-                  createdAt: '2 timer siden',
-                  user: {
-                    id: '5',
-                    name: 'Emma Christensen',
-                    avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-                    verified: false
-                  }
-                }
-              ],
-              isJobPost: false,
-              images: ['https://images.pexels.com/photos/4099468/pexels-photo-4099468.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop']
-            },
-            {
-              id: '3',
-              user: {
-                id: '6',
-                name: 'Anna Møller',
-                avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-                verified: false,
-                userType: 'small_business'
-              },
-              content: 'AKUT: Vores kontor i Odense har brug for rengøring i morgen tidlig! Vi har et vigtigt klientmøde kl. 10, og stedet skal være perfekt. Kan betale ekstra for den korte varsel. 🚨',
-              location: 'Odense C',
-              budget: '800-1000 kr',
-              createdAt: '30 minutter siden',
-              likes: 5,
-              comments: [],
-              isJobPost: true,
-              jobType: 'office_cleaning',
-              urgency: 'immediate'
-            }
-          ];
-          setPosts(mockPosts);
-          setHasMore(false);
-        }
-      } catch (error) {
-        console.error('Error loading posts:', error);
-        // Fallback to mock data on error
+      // Simulate loading posts
+      setTimeout(() => {
         const mockPosts = [
           {
             id: '1',
@@ -669,18 +231,11 @@ function App() {
           }
         ];
         setPosts(mockPosts);
-        setHasMore(false);
-      }
-      setLoading(false);
-    };
+        setLoading(false);
+      }, 1000);
+    }, []);
 
-    const loadMorePosts = () => {
-      const nextPage = page + 1;
-      setPage(nextPage);
-      loadPosts(nextPage);
-    };
-
-    if (loading && posts.length === 0) {
+    if (loading) {
       return (
         <div className="text-center py-12">
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -695,61 +250,26 @@ function App() {
           <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen opslag endnu</h3>
           <p className="text-gray-600 mb-4">Vær den første til at dele et opslag!</p>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-blue-800 text-sm">
-              💡 <strong>Tip:</strong> Opret dit første opslag ovenfor for at komme i gang med at finde rengøringsjobs eller tilbyde dine tjenester!
-            </p>
-          </div>
         </div>
       );
     }
 
     return (
       <div className="space-y-3 xs:space-y-4 sm:space-y-6">
-        {posts.map((post, index) => (
-          <React.Fragment key={post.id}>
-            <PostCard
-              post={post}
-              currentUser={currentUser}
-              onShowSubscription={onShowSubscription}
-              onReport={onReport}
-              onShowUserProfile={onShowUserProfile}
-              onTagUser={onTagUser}
-              onSharePost={onSharePost}
-              onDeletePost={onDeletePost}
-              onHidePost={onHidePost}
-              onDeleteComment={onDeleteComment}
-              onHideComment={onHideComment}
-            />
-            
-            {/* Ad between posts */}
-            {index === 1 && (
-              <AdBanner type="native" position="middle" className="w-full" />
-            )}
-            {index === 3 && (
-              <AdBanner type="video" position="middle" className="w-full" />
-            )}
-          </React.Fragment>
+        {posts.map((post) => (
+          <PostCard
+            key={post.id}
+            post={post}
+            currentUser={currentUser}
+            onShowSubscription={onShowSubscription}
+          />
         ))}
-        
-        {/* Load More Button */}
-        {hasMore && (
-          <div className="text-center py-6">
-            <button
-              onClick={loadMorePosts}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-            >
-              Indlæs flere opslag
-            </button>
-          </div>
-        )}
       </div>
     );
   };
 
   return (
     <div className={`min-h-screen bg-gray-50 ${isPWA ? 'pwa-mode' : ''}`}>
-      {/* PWA Status Bar */}
       {isPWA && (
         <div className="bg-blue-600 text-white text-center py-1 text-xs">
           📱 Kører som app • PRIVATE RENGORING
@@ -774,7 +294,6 @@ function App() {
           showSidebar ? 'translate-x-0' : '-translate-x-full'
         }`}>
           <div className="flex flex-col h-full pt-14 xs:pt-16 lg:pt-0">
-            {/* Mobile header */}
             <div className="lg:hidden p-3 xs:p-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h2 className="text-base xs:text-lg font-semibold text-gray-900">Menu</h2>
@@ -787,7 +306,6 @@ function App() {
               </div>
             </div>
 
-            {/* Navigation */}
             <nav className="flex-1 px-3 xs:px-4 py-4 xs:py-6 space-y-1.5 xs:space-y-2 overflow-y-auto">
               <button
                 onClick={() => {
@@ -817,19 +335,6 @@ function App() {
 
               <button
                 onClick={() => {
-                  setCurrentPage('map');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'map' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <MapPin className="w-5 h-5" />
-                <span className="font-medium">Jobs på Kort</span>
-              </button>
-
-              <button
-                onClick={() => {
                   setCurrentPage('network');
                   setShowSidebar(false);
                 }}
@@ -841,61 +346,7 @@ function App() {
                 <span className="font-medium">{t('network')}</span>
               </button>
 
-              <button
-                onClick={() => {
-                  setCurrentPage('tasks');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'tasks' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Briefcase className="w-5 h-5" />
-                <span className="font-medium">{t('myTasks')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('planning');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'planning' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Calendar className="w-5 h-5" />
-                <span className="font-medium">{t('planning')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('favorites');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'favorites' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Heart className="w-5 h-5" />
-                <span className="font-medium">{t('favorites')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('trending');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'trending' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <TrendingUp className="w-5 h-5" />
-                <span className="font-medium">{t('trending')}</span>
-              </button>
-
-              {/* Admin link */}
               {currentUser.email === 'admin@privaterengoring.dk' && (
-                <>
                 <button
                   onClick={() => {
                     setCurrentPage('admin');
@@ -908,78 +359,9 @@ function App() {
                   <Shield className="w-5 h-5" />
                   <span className="font-medium">Admin Panel</span>
                 </button>
-                
-                <button
-                  onClick={() => {
-                    setShowLogoSelector(true);
-                    setShowSidebar(false);
-                  }}
-                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 text-purple-600 hover:bg-purple-50"
-                >
-                  <Star className="w-5 h-5" />
-                  <span className="font-medium">Skift Logo</span>
-                </button>
-                </>
               )}
-
-              {/* Divider */}
-              <div className="border-t border-gray-200 my-4"></div>
-
-              {/* Info Pages */}
-              <button
-                onClick={() => {
-                  setCurrentPage('about');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'about' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <HelpCircle className="w-5 h-5" />
-                <span className="font-medium">Om os</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('support');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'support' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <HelpCircle className="w-5 h-5" />
-                <span className="font-medium">Hjælp & Support</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('contact');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'contact' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Mail className="w-5 h-5" />
-                <span className="font-medium">Kontakt & Klager</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('terms');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  currentPage === 'terms' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Shield className="w-5 h-5" />
-                <span className="font-medium">Vilkår & Betingelser</span>
-              </button>
             </nav>
 
-            {/* Pro Upgrade */}
             {!currentUser?.isSubscribed && (
               <div className="p-4 border-t border-gray-200">
                 <button
@@ -997,7 +379,6 @@ function App() {
           </div>
         </div>
 
-        {/* Overlay for mobile */}
         {showSidebar && (
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
@@ -1005,7 +386,6 @@ function App() {
           />
         )}
 
-        {/* Main Content */}
         <div className="flex-1 lg:ml-0">
           <main className="py-6 px-3 sm:px-6 lg:px-8">
             {renderMainContent()}
@@ -1014,33 +394,6 @@ function App() {
       </div>
 
       {/* Modals */}
-      {showUserProfile && (
-        <UserProfileModal
-          isOpen={!!showUserProfile}
-          onClose={() => setShowUserProfile(null)}
-          user={showUserProfile}
-          currentUser={currentUser}
-          onSendFriendRequest={handleSendFriendRequest}
-          onAcceptFriendRequest={handleAcceptFriendRequest}
-          onSendMessage={handleSendMessage}
-          onBlockUser={handleBlockUser}
-          onReportUser={handleReportUser}
-        />
-      )}
-
-      <MessagesModal
-        isOpen={showMessages}
-        onClose={() => setShowMessages(false)}
-        currentUser={currentUser}
-        onShowSubscription={() => setShowSubscription(true)}
-      />
-
-      <NotificationModal
-        isOpen={showNotifications}
-        onClose={() => setShowNotifications(false)}
-        currentUser={currentUser}
-      />
-
       <SubscriptionModal
         isOpen={showSubscription}
         onClose={() => setShowSubscription(false)}
@@ -1055,23 +408,16 @@ function App() {
         userEmail={currentUser.email}
       />
 
-      <HelpModal
-        isOpen={showHelp}
-        onClose={() => setShowHelp(false)}
+      <MessagesModal
+        isOpen={showMessages}
+        onClose={() => setShowMessages(false)}
+        currentUser={currentUser}
       />
 
-      <TermsModal
-        isOpen={showTerms}
-        onClose={() => setShowTerms(false)}
-        onAccept={() => setShowTerms(false)}
-      />
-
-      <FriendRequestModal
-        isOpen={showFriendRequests}
-        onClose={() => setShowFriendRequests(false)}
-        onAcceptRequest={handleAcceptFriendRequest}
-        onDeclineRequest={handleDeclineFriendRequest}
-        onSendRequest={handleSendFriendRequest}
+      <NotificationModal
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
+        currentUser={currentUser}
       />
 
       <SettingsModal
@@ -1079,18 +425,8 @@ function App() {
         onClose={() => setShowSettings(false)}
         currentUser={currentUser}
         onUpdateUser={handleUpdateUser}
-        onShowSubscription={() => setShowSubscription(true)}
       />
 
-      {/* Logo Selector for Admin */}
-      {showLogoSelector && (
-        <LogoSelector
-          onSelectLogo={handleSelectLogo}
-          currentLogo={currentLogo}
-        />
-      )}
-
-      {/* Install Prompt */}
       <InstallPrompt />
     </div>
   );
