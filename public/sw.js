@@ -1,5 +1,5 @@
 // Service Worker for PWA functionality og Push Notifications
-const CACHE_NAME = 'private-rengoring-v2';
+const CACHE_NAME = 'privat-rengoring-v2';
 const urlsToCache = [
   '/',
   '/manifest.json',
@@ -60,7 +60,7 @@ self.addEventListener('push', (event) => {
   console.log('Push notification received:', event);
   
   let notificationData = {
-    title: 'Private Rengøring',
+    title: 'Privat Rengøring',
     body: 'Du har en ny notifikation',
     icon: '/icon-192.png',
     badge: '/icon-192.png',

@@ -225,8 +225,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">Email</p>
-                  <a href="mailto:support@privaterengoring.dk" className="text-blue-600 hover:text-blue-700">
-                    support@privaterengoring.dk
+                  <a href="mailto:support@privatrengoring.dk" className="text-blue-600 hover:text-blue-700">
+                    support@privatrengoring.dk
                   </a>
                 </div>
               </div>

@@ -319,7 +319,7 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
               </button>
             </div>
             <div className="text-xs text-gray-500 space-y-1">
-              <p>📧 Email: support@privaterengoring.dk</p>
+              <p>📧 Email: support@privatrengoring.dk</p>
               <p>🕒 Åbningstider: Man-Fre 9:00-17:00 • Vi svarer inden for 24-48 timer</p>
             </div>
           </div>

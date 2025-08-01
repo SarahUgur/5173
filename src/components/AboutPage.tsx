@@ -137,7 +137,7 @@ export default function AboutPage() {
       {/* Fremtiden */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 sm:p-8 text-white text-center">
         <Globe className="w-12 h-12 mx-auto mb-4 opacity-90" />
-        <h2 className="text-2xl font-bold mb-4">Fremtiden for Private Rengøring</h2>
+        <h2 className="text-2xl font-bold mb-4">Fremtiden for Privat Rengøring</h2>
         <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
           Vi arbejder konstant på at forbedre platformen med nye funktioner som AI-matching, 
           udvidet geografisk dækning og endnu bedre brugeroplevelse.
