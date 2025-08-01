@@ -9,7 +9,7 @@
   port = 8888
   publish = "dist"
   autoLaunch = true
-  edge_functions = false
+  edge_functions = "false"
 
 [[redirects]]
   from = "/api/*"
