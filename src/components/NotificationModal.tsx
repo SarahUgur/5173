@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Bell, Check, Trash2, User, Briefcase, Heart, MessageCircle } from 'lucide-react';
+import { X, Bell, Check, Trash2, User as UserIcon, Briefcase, Heart, MessageCircle } from 'lucide-react';
 import type { User } from '../types';
 
 interface NotificationModalProps {
@@ -119,7 +119,7 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
       case 'comment':
         return <MessageCircle className="w-5 h-5 text-blue-500" />;
       case 'friend_request':
-        return <User className="w-5 h-5 text-green-500" />;
+        return <UserIcon className="w-5 h-5 text-green-500" />;
       case 'job_application':
         return <Briefcase className="w-5 h-5 text-purple-500" />;
       case 'system':
