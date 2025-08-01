@@ -34,6 +34,7 @@ import type { User } from './types';
 function App() {
   const { language, t } = useLanguage();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isPWA, setIsPWA] = useState(false);
   const [currentPage, setCurrentPage] = useState<'home' | 'jobs' | 'network' | 'tasks' | 'planning' | 'favorites' | 'local-jobs' | 'trending' | 'map' | 'profile' | 'admin' | 'about' | 'contact' | 'support' | 'terms'>('home');
   const [showSidebar, setShowSidebar] = useState(false);
@@ -51,6 +52,7 @@ function App() {
 
   // Check if running as PWA
   React.useEffect(() => {
+    setIsLoading(true);
     const checkPWA = () => {
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
@@ -60,14 +62,17 @@ function App() {
     checkPWA();
     
     // Load persisted user data on app start
+    const authToken = localStorage.getItem('authToken');
     const savedUser = localStorage.getItem('currentUser');
-    if (savedUser && !currentUser) {
+    
+    if (authToken && savedUser) {
       try {
         const userData = JSON.parse(savedUser);
         setCurrentUser(userData);
       } catch (error) {
         console.error('Error loading saved user:', error);
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('authToken');
       }
     }
     
@@ -75,8 +80,10 @@ function App() {
     const mediaQuery = window.matchMedia('(display-mode: standalone)');
     mediaQuery.addEventListener('change', checkPWA);
     
+    setIsLoading(false);
+    
     return () => mediaQuery.removeEventListener('change', checkPWA);
-  }, [currentUser]);
+  }, []);
 
   // Handle login
   const handleLogin = (user: User) => {
@@ -93,23 +100,6 @@ function App() {
     setCurrentPage('home');
   };
 
-  // Handle subscription
-  const handleSubscribe = () => {
-    setShowSubscription(false);
-    if (confirm('Start Pro abonnement for 29 kr/måned via Stripe? Du vil blive omdirigeret til sikker betaling.')) {
-      setShowPayment(true);
-    }
-  };
-
-  // Handle payment success
-  const handlePaymentSuccess = () => {
-    setShowPayment(false);
-    setShowSuccess(true);
-    if (currentUser) {
-      setCurrentUser({ ...currentUser, isSubscribed: true });
-    }
-  };
-
   // Handle user profile update
   const handleUpdateUser = (updates: Partial<User>) => {
     if (currentUser) {
@@ -120,95 +110,34 @@ function App() {
     }
   };
 
-  // Show auth screen if not logged in
-  if (!currentUser) {
-    return <AuthScreen onLogin={handleLogin} />;
-  }
-
-  // Check if user needs Pro subscription (3-month requirement)
-  const needsProSubscription = !currentUser.isSubscribed;
-  
-  // Show Pro lock modal for non-Pro users
-  if (needsProSubscription) {
+  // Show loading screen while checking authentication
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8 text-center">
-          <div className="w-20 h-20 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Crown className="w-12 h-12 text-white" />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-white animate-spin" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
+            </svg>
           </div>
-          
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">PRIVATE RENGORING Pro</h1>
-          
-          <p className="text-gray-600 mb-6">
-            PRIVATE RENGORING er nu kun tilgængelig for Pro medlemmer i de første 3 måneder efter lanceringen.
-          </p>
-
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6">
-            <div className="flex items-center justify-center space-x-2 mb-2">
-              <Star className="w-5 h-5 text-yellow-500" />
-              <span className="font-semibold text-gray-900">Kun 29 kr/måned</span>
-              <Star className="w-5 h-5 text-yellow-500" />
-            </div>
-            <p className="text-sm text-gray-600">Få adgang til alle funktioner og byg dit rengøringsnetværk</p>
-          </div>
-
-          <div className="space-y-3 mb-6 text-left">
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              <span className="text-gray-700">Ubegrænset job ansøgninger</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              <span className="text-gray-700">Direkte beskeder til alle brugere</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              <span className="text-gray-700">Prioriteret visning af opslag</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              <span className="text-gray-700">Verificeret profil badge</span>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setShowPayment(true)}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-[1.02] shadow-lg flex items-center justify-center space-x-2 mb-4"
-          >
-            <Crown className="w-5 h-5" />
-            <span>Få Pro Adgang Nu</span>
-          </button>
-
-          <button
-            onClick={handleLogout}
-            className="w-full text-gray-600 hover:text-gray-800 text-sm"
-          >
-            Log ud og prøv igen senere
-          </button>
-
-          {/* Payment Modal */}
-          <PaymentModal
-            isOpen={showPayment}
-            onClose={() => setShowPayment(false)}
-            onSuccess={handlePaymentSuccess}
-            userEmail={currentUser.email}
-          />
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
+          <p className="text-gray-600">Indlæser...</p>
         </div>
       </div>
     );
   }
 
-  // Show success page if payment was successful
-  if (showSuccess) {
-    return <SuccessPage onContinue={() => setShowSuccess(false)} />;
+  // Show auth screen if not logged in
+  if (!currentUser) {
+    return <AuthScreen onLogin={handleLogin} />;
   }
 
   const renderMainContent = () => {
     switch (currentPage) {
       case 'jobs':
-        return <LocalJobsPage currentUser={currentUser} onShowSubscription={() => setShowSubscription(true)} />;
+        return <LocalJobsPage currentUser={currentUser} />;
       case 'network':
-        return <NetworkPage currentUser={currentUser} onShowSubscription={() => setShowSubscription(true)} />;
+        return <NetworkPage currentUser={currentUser} />;
       case 'tasks':
         return <MyTasksPage currentUser={currentUser} />;
       case 'planning':
@@ -223,7 +152,6 @@ function App() {
             currentUser={currentUser} 
             onUpdateUser={handleUpdateUser}
             onShowSettings={() => setShowSettings(true)}
-            onShowSubscription={() => setShowSubscription(true)}
           />
         );
       case 'admin':
@@ -245,7 +173,6 @@ function App() {
     <div className="max-w-2xl mx-auto px-1 xs:px-0">
       <CreatePost 
         currentUser={currentUser} 
-        onShowSubscription={() => setShowSubscription(true)}
       />
       
       <div className="mb-3 xs:mb-4 sm:mb-6">
@@ -254,7 +181,6 @@ function App() {
 
       <PostFeed 
         currentUser={currentUser}
-        onShowSubscription={() => setShowSubscription(true)}
       />
 
       <div className="mt-6 sm:mt-8">
@@ -264,7 +190,7 @@ function App() {
   );
 
   // Post Feed Component
-  const PostFeed = ({ currentUser, onShowSubscription }: any) => {
+  const PostFeed = ({ currentUser }: any) => {
     const [posts, setPosts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -335,7 +261,6 @@ function App() {
             key={post.id}
             post={post}
             currentUser={currentUser}
-            onShowSubscription={onShowSubscription}
           />
         ))}
       </div>
@@ -529,20 +454,6 @@ function App() {
               </div>
             </nav>
 
-            {!currentUser?.isSubscribed && (
-              <div className="p-4 border-t border-gray-200">
-                <button
-                  onClick={() => {
-                    setShowSubscription(true);
-                    setShowSidebar(false);
-                  }}
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-medium hover:from-purple-700 hover:to-pink-700 transition-colors duration-200 flex items-center justify-center space-x-2"
-                >
-                  <Crown className="w-5 h-5" />
-                  <span>Opgrader til Pro</span>
-                </button>
-              </div>
-            )}
           </div>
         </div>
 
@@ -561,20 +472,6 @@ function App() {
       </div>
 
       {/* Modals */}
-      <SubscriptionModal
-        isOpen={showSubscription}
-        onClose={() => setShowSubscription(false)}
-        onSubscribe={handleSubscribe}
-        userEmail={currentUser.email}
-      />
-
-      <PaymentModal
-        isOpen={showPayment}
-        onClose={() => setShowPayment(false)}
-        onSuccess={handlePaymentSuccess}
-        userEmail={currentUser.email}
-      />
-
       <MessagesModal
         isOpen={showMessages}
         onClose={() => setShowMessages(false)}

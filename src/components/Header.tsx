@@ -293,7 +293,7 @@ export default function Header({
             </div>
 
             {/* Pro Upgrade Button */}
-
+            
             {/* Messages */}
             <button
               onClick={onShowMessages}

@@ -3,10 +3,9 @@ import { Users, UserPlus, MessageCircle, Star, MapPin, Search, Filter, TrendingU
 
 interface NetworkPageProps {
   currentUser?: any;
-}
 
 export default function NetworkPage({ currentUser }: NetworkPageProps) {
-  const [activeTab, setActiveTab] = useState<'suggestions' | 'friends' | 'requests'>('suggestions');
+export default function NetworkPage({ currentUser }: NetworkPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Real network data from API

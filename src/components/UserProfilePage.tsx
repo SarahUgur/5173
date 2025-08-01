@@ -6,10 +6,9 @@ interface UserProfilePageProps {
   currentUser: any;
   onUpdateUser: (updates: any) => void;
   onShowSettings: () => void;
-}
 
 export default function UserProfilePage({ currentUser, onUpdateUser, onShowSettings }: UserProfilePageProps) {
-  const { t, getUserTypeLabel } = useLanguage();
+export default function UserProfilePage({ currentUser, onUpdateUser, onShowSettings }: UserProfilePageProps) {
   const [activeTab, setActiveTab] = useState<'posts' | 'about' | 'friends' | 'activity'>('about');
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({

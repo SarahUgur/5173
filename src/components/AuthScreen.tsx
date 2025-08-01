@@ -77,10 +77,6 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
       localStorage.setItem('authToken', userData.token);
       
       // For demo: Auto-upgrade new users to Pro for testing
-      if (!isLogin) {
-        userData.user.isSubscribed = true;
-      }
-      
       // Login user
       onLogin(userData.user);
       
@@ -121,7 +117,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           email: 'apple@example.com',
           userType: 'cleaner',
           verified: true,
-          isSubscribed: false,
+        isSubscribed: false,
           location: 'Aarhus',
           avatar: '',
           coverPhoto: '',
@@ -154,8 +150,6 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
       // Simulate loading time
       setTimeout(() => {
         const demoUser = demoUsers[provider];
-        // Auto-upgrade social login users to Pro for testing
-        demoUser.isSubscribed = true;
         localStorage.setItem('authToken', `${provider}-demo-token`);
         onLogin(demoUser);
         setSocialLoginLoading(null);

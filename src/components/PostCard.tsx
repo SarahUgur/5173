@@ -6,10 +6,9 @@ import type { Post } from '../types';
 interface PostCardProps {
   post: any;
   currentUser: any;
-  onShowSubscription: () => void;
 }
 
-export default function PostCard({ post, currentUser, onShowSubscription }: PostCardProps) {
+export default function PostCard({ post, currentUser }: PostCardProps) {
   const { t } = useLanguage();
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
