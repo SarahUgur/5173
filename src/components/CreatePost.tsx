@@ -4,10 +4,9 @@ import { useLanguage } from '../hooks/useLanguage';
 
 interface CreatePostProps {
   currentUser: any;
-  onShowSubscription?: () => void;
 }
 
-export default function CreatePost({ currentUser, onShowSubscription }: CreatePostProps) {
+export default function CreatePost({ currentUser }: CreatePostProps) {
   const { t } = useLanguage();
   const [postType, setPostType] = useState<'regular' | 'job'>('regular');
   const [content, setContent] = useState('');
@@ -43,14 +42,6 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Check if user has Pro subscription
-    if (!currentUser?.isSubscribed) {
-      if (onShowSubscription) {
-        onShowSubscription();
-      }
-      return;
-    }
     
     // Validate required fields
     const errors = [];

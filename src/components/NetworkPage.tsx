@@ -3,10 +3,9 @@ import { Users, UserPlus, MessageCircle, Star, MapPin, Search, Filter, TrendingU
 
 interface NetworkPageProps {
   currentUser?: any;
-  onShowSubscription?: () => void;
 }
 
-export default function NetworkPage({ currentUser, onShowSubscription }: NetworkPageProps) {
+export default function NetworkPage({ currentUser }: NetworkPageProps) {
   const [activeTab, setActiveTab] = useState<'suggestions' | 'friends' | 'requests'>('suggestions');
   const [searchTerm, setSearchTerm] = useState('');
 

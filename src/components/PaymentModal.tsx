@@ -20,8 +20,13 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, userEmail }: 
     setError(null);
 
     try {
-      // For demo purposes, simulate successful payment
+      // Simulate successful payment processing
       setTimeout(() => {
+        // Update user subscription status
+        const updatedUser = { ...currentUser, isSubscribed: true };
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        localStorage.setItem('userData', JSON.stringify(updatedUser));
+        
         setIsLoading(false);
         onSuccess();
       }, 2000);

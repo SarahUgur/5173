@@ -15,29 +15,54 @@ export default function PostCard({ post, currentUser, onShowSubscription }: Post
   const [showComments, setShowComments] = useState(false);
 
   const handleLike = () => {
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription();
-      return;
-    }
     setLiked(!liked);
   };
 
   const handleComment = () => {
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription();
-      return;
-    }
     setShowComments(!showComments);
   };
 
   const handleApply = () => {
-    if (!currentUser?.isSubscribed) {
-      onShowSubscription();
-      return;
-    }
     alert('Ansøgning sendt! (Demo)');
   };
 
+  const handleShare = async () => {
+    try {
+      // Track share for analytics
+      await fetch(`/api/posts/${post.id}/share`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({ platform: 'native' })
+      });
+
+      // Use Web Share API if available
+      if (navigator.share) {
+        await navigator.share({
+          title: 'PRIVATE RENGORING - ' + post.content.substring(0, 50) + '...',
+          text: post.content,
+          url: window.location.href
+        });
+      } else {
+        // Fallback: Copy to clipboard
+        const shareText = `${post.content}\n\nSe mere på PRIVATE RENGORING: ${window.location.href}`;
+        await navigator.clipboard.writeText(shareText);
+        alert('Link kopieret til udklipsholder!');
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      // Fallback: Copy to clipboard
+      try {
+        const shareText = `${post.content}\n\nSe mere på PRIVATE RENGORING: ${window.location.href}`;
+        await navigator.clipboard.writeText(shareText);
+        alert('Link kopieret til udklipsholder!');
+      } catch (clipboardError) {
+        alert('Opslag delt! (Demo mode)');
+      }
+    }
+  };
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
       {/* Header */}
@@ -126,7 +151,10 @@ export default function PostCard({ post, currentUser, onShowSubscription }: Post
               <span className="font-medium">{post.comments.length}</span>
             </button>
             
-            <button className="flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors duration-200 text-gray-600 hover:bg-gray-50">
+            <button 
+              onClick={handleShare}
+              className="flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors duration-200 text-gray-600 hover:bg-gray-50"
+            >
               <Share2 className="w-5 h-5" />
               <span className="font-medium">Del</span>
             </button>

@@ -7,10 +7,9 @@ interface SettingsModalProps {
   onClose: () => void;
   currentUser: any;
   onUpdateUser: (updates: any) => void;
-  onShowSubscription?: () => void;
 }
 
-export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUser, onShowSubscription }: SettingsModalProps) {
+export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUser }: SettingsModalProps) {
   const { language, setLanguage, t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'privacy' | 'subscription' | 'account'>('profile');
   const [formData, setFormData] = useState({
@@ -41,6 +40,12 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
   const handleSaveProfile = () => {
     // Update local state immediately
     onUpdateUser(formData);
+    
+    // Save to localStorage for persistence
+    const updatedUser = { ...currentUser, ...formData };
+    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+    localStorage.setItem('userData', JSON.stringify(updatedUser));
+    
     alert('Profil opdateret succesfuldt!');
     onClose();
     

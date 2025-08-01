@@ -76,6 +76,11 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
       // Store authentication token
       localStorage.setItem('authToken', userData.token);
       
+      // For demo: Auto-upgrade new users to Pro for testing
+      if (!isLogin) {
+        userData.user.isSubscribed = true;
+      }
+      
       // Login user
       onLogin(userData.user);
       
@@ -149,6 +154,8 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
       // Simulate loading time
       setTimeout(() => {
         const demoUser = demoUsers[provider];
+        // Auto-upgrade social login users to Pro for testing
+        demoUser.isSubscribed = true;
         localStorage.setItem('authToken', `${provider}-demo-token`);
         onLogin(demoUser);
         setSocialLoginLoading(null);
@@ -174,7 +181,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 sm:p-6 text-center">
             <h1 className="text-xl sm:text-2xl font-bold text-white mb-2">PRIVATE RENGORING</h1>
-            <p className="text-blue-100 text-sm sm:text-base">Danmarks største platform for rengøring</p>
+            <p className="text-blue-100 text-sm sm:text-base">Danmarks største GRATIS platform for rengøring</p>
           </div>
 
           {/* Form */}

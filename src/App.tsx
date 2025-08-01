@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Briefcase, Users, Calendar, Heart, MapPin, Search, Bell, MessageCircle, User as UserIcon, Menu, Plus, Settings, LogOut, Star, Crown, Shield, TrendingUp, Filter, Globe, HelpCircle, Phone, Mail, ExternalLink, Eye, EyeOff, Trash2, Edit, X, Clock, DollarSign, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Share2 } from 'lucide-react';
+import { Home, Briefcase, Users, Calendar, Heart, MapPin, Search, Bell, MessageCircle, User as UserIcon, Menu, Plus, Settings, LogOut, Star, Crown, Shield, TrendingUp, Filter, Globe, HelpCircle, Phone, Mail, ExternalLink, Eye, EyeOff, Trash2, Edit, X, Clock, DollarSign, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Share2, CheckCircle } from 'lucide-react';
 import { useLanguage } from './hooks/useLanguage';
 import Header from './components/Header';
 import CreatePost from './components/CreatePost';
@@ -47,6 +47,7 @@ function App() {
   const [showTerms, setShowTerms] = useState(false);
   const [showFriendRequests, setShowFriendRequests] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showProLockModal, setShowProLockModal] = useState(false);
 
   // Check if running as PWA
   React.useEffect(() => {
@@ -122,6 +123,79 @@ function App() {
   // Show auth screen if not logged in
   if (!currentUser) {
     return <AuthScreen onLogin={handleLogin} />;
+  }
+
+  // Check if user needs Pro subscription (3-month requirement)
+  const needsProSubscription = !currentUser.isSubscribed;
+  
+  // Show Pro lock modal for non-Pro users
+  if (needsProSubscription) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8 text-center">
+          <div className="w-20 h-20 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Crown className="w-12 h-12 text-white" />
+          </div>
+          
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">PRIVATE RENGORING Pro</h1>
+          
+          <p className="text-gray-600 mb-6">
+            PRIVATE RENGORING er nu kun tilgængelig for Pro medlemmer i de første 3 måneder efter lanceringen.
+          </p>
+
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6">
+            <div className="flex items-center justify-center space-x-2 mb-2">
+              <Star className="w-5 h-5 text-yellow-500" />
+              <span className="font-semibold text-gray-900">Kun 29 kr/måned</span>
+              <Star className="w-5 h-5 text-yellow-500" />
+            </div>
+            <p className="text-sm text-gray-600">Få adgang til alle funktioner og byg dit rengøringsnetværk</p>
+          </div>
+
+          <div className="space-y-3 mb-6 text-left">
+            <div className="flex items-center space-x-3">
+              <CheckCircle className="w-5 h-5 text-green-500" />
+              <span className="text-gray-700">Ubegrænset job ansøgninger</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <CheckCircle className="w-5 h-5 text-green-500" />
+              <span className="text-gray-700">Direkte beskeder til alle brugere</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <CheckCircle className="w-5 h-5 text-green-500" />
+              <span className="text-gray-700">Prioriteret visning af opslag</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <CheckCircle className="w-5 h-5 text-green-500" />
+              <span className="text-gray-700">Verificeret profil badge</span>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setShowPayment(true)}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-[1.02] shadow-lg flex items-center justify-center space-x-2 mb-4"
+          >
+            <Crown className="w-5 h-5" />
+            <span>Få Pro Adgang Nu</span>
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="w-full text-gray-600 hover:text-gray-800 text-sm"
+          >
+            Log ud og prøv igen senere
+          </button>
+
+          {/* Payment Modal */}
+          <PaymentModal
+            isOpen={showPayment}
+            onClose={() => setShowPayment(false)}
+            onSuccess={handlePaymentSuccess}
+            userEmail={currentUser.email}
+          />
+        </div>
+      </div>
+    );
   }
 
   // Show success page if payment was successful
