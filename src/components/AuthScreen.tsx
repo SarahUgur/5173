@@ -51,7 +51,9 @@ function App() {
   const [showProLockModal, setShowProLockModal] = useState(false);
 
   // Check if running as PWA
-    setIsLoading(true);
+  React.useEffect(() => {
+    const checkPWA = () => {
+      setIsLoading(true);
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
       setIsPWA(isStandalone || isInWebAppiOS);
@@ -63,7 +65,7 @@ function App() {
     const authToken = localStorage.getItem('authToken');
     const savedUser = localStorage.getItem('currentUser');
     
-              ✨ 100% GRATIS • Login påkrævet • Alle funktioner inkluderet
+    // ✨ 100% GRATIS • Login påkrævet • Alle funktioner inkluderet
     if (authToken && savedUser) {
       try {
         const userData = JSON.parse(savedUser);
@@ -155,6 +157,7 @@ function App() {
           />
         );
       case 'admin':
+        return <AdminPage currentUser={currentUser} />;
       case 'about':
         return <AboutPage />;
       case 'contact':
