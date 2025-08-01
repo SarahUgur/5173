@@ -31,7 +31,7 @@ self.addEventListener('fetch', (event) => {
 // Push notification event
 self.addEventListener('push', (event) => {
   const options = {
-    body: event.data ? event.data.text() : 'Ny notifikation fra PRIVATE RENGORING',
+    body: event.data ? event.data.text() : 'Ny notifikation fra PRIVATE RENGØRING',
     icon: '/icon-192.png',
     badge: '/icon-192.png',
     vibrate: [200, 100, 200],
@@ -53,7 +53,7 @@ self.addEventListener('push', (event) => {
   };
 
   event.waitUntil(
-    self.registration.showNotification('PRIVATE RENGORING', options)
+    self.registration.showNotification('PRIVATE RENGØRING', options)
   );
 });
 

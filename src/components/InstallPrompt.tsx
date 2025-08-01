@@ -80,7 +80,7 @@ export default function InstallPrompt() {
         </div>
         
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-gray-900 mb-1">Installer PRIVATE RENGORING</h3>
+          <h3 className="font-semibold text-gray-900 mb-1">Installer PRIVATE RENGØRING</h3>
           <p className="text-sm text-gray-600 mb-3">
             Få hurtig adgang direkte fra din hjemmeskærm
           </p>

@@ -68,7 +68,7 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
         {
           id: '4',
           type: 'system',
-          title: 'Velkommen til PRIVATE RENGORING',
+          title: 'Velkommen til PRIVATE RENGØRING',
           message: 'Tak for at du blev medlem! Udforsk alle funktionerne.',
           time: '2 dage siden',
           read: true

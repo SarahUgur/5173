@@ -4,9 +4,10 @@ import { useLanguage } from '../hooks/useLanguage';
 
 interface CreatePostProps {
   currentUser: any;
+}
 
 export default function CreatePost({ currentUser }: CreatePostProps) {
-export default function CreatePost({ currentUser }: CreatePostProps) {
+  const { t } = useLanguage();
   const [postType, setPostType] = useState<'regular' | 'job'>('regular');
   const [content, setContent] = useState('');
   const [jobType, setJobType] = useState('home_cleaning');

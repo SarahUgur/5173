@@ -133,7 +133,7 @@ export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubs
       const newMessage = {
         id: Date.now().toString(),
         senderId: currentUser?.id,
-        receiverId: selectedConv?.user.id,
+        title: 'Ny besked fra PRIVATE RENGØRING',
         content,
         timestamp: 'Nu',
         read: false,
