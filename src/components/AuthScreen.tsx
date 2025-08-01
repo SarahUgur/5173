@@ -49,8 +49,10 @@ function App() {
   const [showFriendRequests, setShowFriendRequests] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showProLockModal, setShowProLockModal] = useState(false);
+  
   // Check if running as PWA
   React.useEffect(() => {
+    const checkPWA = () => {
       setIsLoading(true);
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
@@ -63,16 +65,45 @@ function App() {
     const authToken = localStorage.getItem('authToken');
     const savedUser = localStorage.getItem('currentUser');
     if (authToken && savedUser) {
-      // Real social login - redirect to actual OAuth
-      const authUrls = {
-        google: `https://accounts.google.com/oauth/authorize?client_id=YOUR_GOOGLE_CLIENT_ID&redirect_uri=${encodeURIComponent(window.location.origin)}/auth/google/callback&response_type=code&scope=email profile`,
-        apple: `https://appleid.apple.com/auth/authorize?client_id=YOUR_APPLE_CLIENT_ID&redirect_uri=${encodeURIComponent(window.location.origin)}/auth/apple/callback&response_type=code&scope=email name`,
-        facebook: `https://www.facebook.com/v18.0/dialog/oauth?client_id=YOUR_FACEBOOK_APP_ID&redirect_uri=${encodeURIComponent(window.location.origin)}/auth/facebook/callback&response_type=code&scope=email`
-      };
-      
-      // Redirect to real OAuth provider
-      window.location.href = authUrls[provider];
-          </div>
+      setCurrentUser(JSON.parse(savedUser));
+    }
+    setIsLoading(false);
+  }, []);
+
+  const handleLogin = (user: User) => {
+    setCurrentUser(user);
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    localStorage.setItem('authToken', 'demo-token');
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
+  };
+
+  const handleUpdateUser = (updatedUser: User) => {
+    setCurrentUser(updatedUser);
+    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+  };
+
+  const handleSocialLogin = (provider: 'google' | 'apple' | 'facebook') => {
+    // Real social login - redirect to actual OAuth
+    const authUrls = {
+      google: `https://accounts.google.com/oauth/authorize?client_id=YOUR_GOOGLE_CLIENT_ID&redirect_uri=${encodeURIComponent(window.location.origin)}/auth/google/callback&response_type=code&scope=email profile`,
+      apple: `https://appleid.apple.com/auth/authorize?client_id=YOUR_APPLE_CLIENT_ID&redirect_uri=${encodeURIComponent(window.location.origin)}/auth/apple/callback&response_type=code&scope=email name`,
+      facebook: `https://www.facebook.com/v18.0/dialog/oauth?client_id=YOUR_FACEBOOK_APP_ID&redirect_uri=${encodeURIComponent(window.location.origin)}/auth/facebook/callback&response_type=code&scope=email`
+    };
+    
+    // Redirect to real OAuth provider
+    window.location.href = authUrls[provider];
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
           <p className="text-gray-600">Indlæser...</p>
         </div>
@@ -175,6 +206,7 @@ function App() {
         setPosts([]);
       }
     };
+    
     if (loading) {
       return (
         <div className="text-center py-12">

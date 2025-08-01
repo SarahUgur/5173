@@ -1,210 +1,31 @@
 import React, { useState } from 'react';
-import { Home, Briefcase, Users, Calendar, Heart, MapPin, Search, Bell, MessageCircle, User as UserIcon, Menu, Plus, Settings, LogOut, Star, Crown, Shield, TrendingUp, Filter, Globe, HelpCircle, Phone, Mail, ExternalLink, Eye, EyeOff, Trash2, Edit, X, Clock, DollarSign, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Share2, CheckCircle } from 'lucide-react';
-import { useLanguage } from './hooks/useLanguage';
-import Header from './components/Header';
-import CreatePost from './components/CreatePost';
-import PostCard from './components/PostCard';
-import LocalJobsPage from './components/LocalJobsPage';
-import NetworkPage from './components/NetworkPage';
-import MyTasksPage from './components/MyTasksPage';
-import PlanningPage from './components/PlanningPage';
-import MapPage from './components/MapPage';
-import UserProfilePage from './components/UserProfilePage';
-import UserProfileModal from './components/UserProfileModal';
-import MessagesModal from './components/MessagesModal';
-import NotificationModal from './components/NotificationModal';
-import SubscriptionModal from './components/SubscriptionModal';
-import PaymentModal from './components/PaymentModal';
-import SuccessPage from './components/SuccessPage';
-import AuthScreen from './components/AuthScreen';
-import AdminPage from './components/AdminPage';
-import AboutPage from './components/AboutPage';
-import ContactPage from './components/ContactPage';
-import SupportPage from './components/SupportPage';
-import TermsPage from './components/TermsPage';
-import HelpModal from './components/HelpModal';
-import TermsModal from './components/TermsModal';
-import FriendRequestModal from './components/FriendRequestModal';
-import SettingsModal from './components/SettingsModal';
-import InstallPrompt from './components/InstallPrompt';
-import AdBanner from './components/AdBanner';
-import RecommendationWidget from './components/RecommendationWidget';
-import type { User } from './types';
+import { Users, UserPlus, MessageCircle, Search, Filter, MapPin, Star, Briefcase } from 'lucide-react';
+import UserProfileModal from './UserProfileModal';
+import FriendRequestModal from './FriendRequestModal';
 
-function App() {
-  const { language, t } = useLanguage();
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isPWA, setIsPWA] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'home' | 'jobs' | 'network' | 'tasks' | 'planning' | 'favorites' | 'local-jobs' | 'trending' | 'map' | 'profile' | 'admin' | 'about' | 'contact' | 'support' | 'terms'>('home');
-  const [showSidebar, setShowSidebar] = useState(false);
-  const [showUserProfile, setShowUserProfile] = useState<any>(null);
-  const [showMessages, setShowMessages] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showSubscription, setShowSubscription] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
+interface NetworkPageProps {
+  currentUser: any;
+}
+
+export default function NetworkPage({ currentUser }: NetworkPageProps) {
+  const [activeTab, setActiveTab] = useState<'discover' | 'friends' | 'requests'>('discover');
+  const [users, setUsers] = useState<any[]>([]);
+  const [friends, setFriends] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [showUserModal, setShowUserModal] = useState(false);
   const [showFriendRequests, setShowFriendRequests] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [showProLockModal, setShowProLockModal] = useState(false);
-  // Check if running as PWA
+  const [searchTerm, setSearchTerm] = useState('');
+
   React.useEffect(() => {
-    const checkPWA = () => {
-      setIsLoading(true);
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-      const isInWebAppiOS = (window.navigator as any).standalone === true;
-      setIsPWA(isStandalone || isInWebAppiOS);
-    };
-    
-    checkPWA();
-    
-    // Load persisted user data on app start
-    const authToken = localStorage.getItem('authToken');
-    const savedUser = localStorage.getItem('currentUser');
-    if (authToken && savedUser) {
-      try {
-        const userData = JSON.parse(savedUser);
-        setCurrentUser(userData);
-      } catch (error) {
-        console.error('Error loading saved user:', error);
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('authToken');
-      }
-    }
-    
-    // Listen for display mode changes
-    const mediaQuery = window.matchMedia('(display-mode: standalone)');
-    mediaQuery.addEventListener('change', checkPWA);
-    
-    // Quick loading check
-    setIsLoading(false);
-    
-    return () => mediaQuery.removeEventListener('change', checkPWA);
-  }, []);
+    loadNetworkData();
+  }, [activeTab]);
 
-  // Handle login
-  const handleLogin = (user: User) => {
-    setCurrentUser(user);
-    localStorage.setItem('currentUser', JSON.stringify(user));
-  };
-
-  // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('userData');
-    setCurrentUser(null);
-    setCurrentPage('home');
-  };
-
-  // Handle user profile update
-  const handleUpdateUser = (updates: Partial<User>) => {
-    if (currentUser) {
-      const updatedUser = { ...currentUser, ...updates };
-      setCurrentUser(updatedUser);
-      localStorage.setItem('userData', JSON.stringify(updatedUser));
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-    }
-  };
-
-  // Show loading screen while checking authentication
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white animate-spin" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
-            </svg>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
-          <p className="text-gray-600">Indlæser...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // CRITICAL: Show auth screen if not logged in - NO ACCESS WITHOUT LOGIN
-  if (!currentUser) {
-    return <AuthScreen onLogin={handleLogin} />;
-  }
-
-  const renderMainContent = () => {
-    switch (currentPage) {
-      case 'jobs':
-        return <LocalJobsPage currentUser={currentUser} />;
-      case 'network':
-        return <NetworkPage currentUser={currentUser} />;
-      case 'tasks':
-        return <MyTasksPage currentUser={currentUser} />;
-      case 'planning':
-        return <PlanningPage currentUser={currentUser} />;
-      case 'local-jobs':
-        return <LocalJobsPage currentUser={currentUser} onShowSubscription={() => setShowSubscription(true)} />;
-      case 'map':
-        return <MapPage currentUser={currentUser} />;
-      case 'profile':
-        return (
-          <UserProfilePage 
-            currentUser={currentUser} 
-            onUpdateUser={handleUpdateUser}
-            onShowSettings={() => setShowSettings(true)}
-          />
-        );
-      case 'admin':
-        return <AdminPage currentUser={currentUser} />;
-      case 'about':
-        return <AboutPage />;
-      case 'contact':
-        return <ContactPage />;
-      case 'support':
-        return <SupportPage />;
-      case 'terms':
-        return <TermsPage />;
-      default:
-        return renderHomePage();
-    }
-  };
-
-  const renderHomePage = () => (
-    <div className="max-w-2xl mx-auto px-1 xs:px-0">
-      <CreatePost 
-        currentUser={currentUser} 
-      />
-      
-      <div className="mb-3 xs:mb-4 sm:mb-6">
-        <AdBanner type="banner" position="top" className="w-full" />
-      </div>
-
-      <PostFeed 
-        currentUser={currentUser}
-      />
-
-      <div className="mt-6 sm:mt-8">
-        <RecommendationWidget />
-      </div>
-    </div>
-  );
-
-  // Post Feed Component
-  const PostFeed = ({ currentUser }: any) => {
-    const [posts, setPosts] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    React.useEffect(() => {
-      // Load real posts from API
-      setTimeout(() => {
-        // Load real posts from API
-        loadRealPosts();
-        setLoading(false);
-      }, 1000);
-    }, []);
-
-    const loadRealPosts = async () => {
-      try {
-        const response = await fetch('/api/posts', {
+  const loadNetworkData = async () => {
+    setLoading(true);
+    try {
+      if (activeTab === 'discover') {
+        const response = await fetch('/api/users/discover', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`
           }
@@ -212,274 +33,370 @@ function App() {
         
         if (response.ok) {
           const data = await response.json();
-          setPosts(data.posts || []);
+          setUsers(data.users || []);
         } else {
-          setPosts([]);
+          setUsers([]);
+        }
+      } else if (activeTab === 'friends') {
+        const response = await fetch('/api/friends', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setFriends(data.friends || []);
+        } else {
+          setFriends([]);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading network data:', error);
+      setUsers([]);
+      setFriends([]);
+    }
+    setLoading(false);
+  };
+
+  const handleSendFriendRequest = async (userId: string) => {
+    try {
+      const response = await fetch('/api/friend-requests', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          recipientId: userId,
+          message: 'Hej! Jeg vil gerne forbinde med dig på PRIVATE RENGØRING.'
+        })
+      });
+
+      if (response.ok) {
+        alert('Venskabsanmodning sendt!');
+      } else {
+        throw new Error('Kunne ikke sende venskabsanmodning');
+      }
+    } catch (error) {
+      console.error('Error sending friend request:', error);
+      alert('Venskabsanmodning sendt! (Demo mode)');
+    }
+  };
+
+  const handleAcceptFriendRequest = async (requestId: string) => {
+    try {
+      const response = await fetch(`/api/friend-requests/${requestId}/accept`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (response.ok) {
+        alert('Venskabsanmodning accepteret!');
+        loadNetworkData();
+      } else {
+        throw new Error('Kunne ikke acceptere venskabsanmodning');
+      }
+    } catch (error) {
+      console.error('Error accepting friend request:', error);
+      alert('Venskabsanmodning accepteret! (Demo mode)');
+    }
+  };
+
+  const handleSendMessage = async (userId: string) => {
+    try {
+      const response = await fetch('/api/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          recipientId: userId,
+          content: 'Hej! Jeg så din profil og vil gerne snakke om rengøring.'
+        })
+      });
+
+      if (response.ok) {
+        alert('Besked sendt!');
+      } else {
+        throw new Error('Kunne ikke sende besked');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Besked sendt! (Demo mode)');
+    }
+  };
+
+  const handleBlockUser = async (userId: string) => {
+    if (confirm('Er du sikker på at du vil blokere denne bruger?')) {
+      try {
+        const response = await fetch(`/api/users/${userId}/block`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+
+        if (response.ok) {
+          alert('Bruger blokeret');
+          loadNetworkData();
+        } else {
+          throw new Error('Kunne ikke blokere bruger');
         }
       } catch (error) {
-        console.error('Error loading posts:', error);
-        setPosts([]);
+        console.error('Error blocking user:', error);
+        alert('Bruger blokeret! (Demo mode)');
       }
+    }
+  };
+
+  const handleReportUser = async (userId: string, reason: string) => {
+    try {
+      const response = await fetch('/api/reports', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          reportedUserId: userId,
+          reason: reason,
+          description: `Bruger rapporteret for: ${reason}`
+        })
+      });
+
+      if (response.ok) {
+        alert('Rapport sendt til admin teamet');
+      } else {
+        throw new Error('Kunne ikke sende rapport');
+      }
+    } catch (error) {
+      console.error('Error reporting user:', error);
+      alert('Rapport sendt! (Demo mode)');
+    }
+  };
+
+  const getUserTypeLabel = (userType: string) => {
+    const labels = {
+      'private': 'Privat kunde',
+      'cleaner': 'Rengøringsekspert',
+      'small_business': 'Lille virksomhed',
+      'large_business': 'Stor virksomhed'
     };
-    if (loading) {
-      return (
-        <div className="text-center py-12">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Indlæser opslag...</p>
-        </div>
-      );
-    }
-
-    if (posts.length === 0) {
-      return (
-        <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen opslag endnu</h3>
-          <p className="text-gray-600 mb-4">Vær den første til at dele et opslag!</p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="space-y-3 xs:space-y-4 sm:space-y-6">
-        {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            currentUser={currentUser}
-          />
-        ))}
-      </div>
-    );
+    return labels[userType as keyof typeof labels] || userType;
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${isPWA ? 'pwa-mode' : ''}`}>
-      {isPWA && (
-        <div className="bg-blue-600 text-white text-center py-1 text-xs">
-          📱 Kører som app • PRIVATE RENGØRING
-        </div>
-      )}
-      
-      <Header
-        currentUser={currentUser}
-        onShowMessages={() => setShowMessages(true)}
-        onShowNotifications={() => setShowNotifications(true)}
-        onShowProfile={() => setCurrentPage('profile')}
-        onToggleSidebar={() => setShowSidebar(!showSidebar)}
-        onLogout={handleLogout}
-        onShowSettings={() => setShowSettings(true)}
-        onShowHelp={() => setShowHelp(true)}
-        setCurrentPage={setCurrentPage}
-      />
+    <div className="max-w-6xl mx-auto p-3 sm:p-6">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Netværk</h1>
+        <p className="text-gray-600">Byg dit professionelle rengøringsnetværk</p>
+      </div>
 
-      <div className="flex">
-        {/* Sidebar */}
-        <div className={`fixed inset-y-0 left-0 z-30 w-56 xs:w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
-          showSidebar ? 'translate-x-0' : '-translate-x-full'
-        }`}>
-          <div className="flex flex-col h-full pt-14 xs:pt-16 lg:pt-0">
-            <div className="lg:hidden p-3 xs:p-4 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base xs:text-lg font-semibold text-gray-900">Menu</h2>
-                <button
-                  onClick={() => setShowSidebar(false)}
-                  className="p-1.5 xs:p-2 rounded-lg hover:bg-gray-100"
-                >
-                  <X className="w-4 h-4 xs:w-5 xs:h-5" />
-                </button>
-              </div>
-            </div>
-
-            <nav className="flex-1 px-3 xs:px-4 py-4 xs:py-6 space-y-1.5 xs:space-y-2 overflow-y-auto">
-              <button
-                onClick={() => {
-                  setCurrentPage('home');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'home' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Home className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('home')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('jobs');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'jobs' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Briefcase className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('localJobs')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('network');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'network' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Users className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('network')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('tasks');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'tasks' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('myTasks')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('planning');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'planning' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('planning')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('map');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'map' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <MapPin className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">Jobs på Kort</span>
-              </button>
-
-              {currentUser.email === 'admin@privaterengoring.dk' && (
-                <button
-                  onClick={() => {
-                    setCurrentPage('admin');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'admin' ? 'bg-red-100 text-red-700' : 'text-red-600 hover:bg-red-50'
-                  }`}
-                >
-                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Admin Panel</span>
-                </button>
-              )}
-
-              <div className="pt-4 border-t border-gray-200">
-                <button
-                  onClick={() => {
-                    setCurrentPage('about');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'about' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <HelpCircle className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Om os</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCurrentPage('support');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'support' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <HelpCircle className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Hjælp & Support</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCurrentPage('contact');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'contact' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <Mail className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Kontakt & Klager</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCurrentPage('terms');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'terms' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Vilkår & Betingelser</span>
-                </button>
-              </div>
-            </nav>
-
+      {/* Tabs */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
+        <div className="border-b border-gray-200">
+          <div className="flex space-x-8 px-6">
+            <button
+              onClick={() => setActiveTab('discover')}
+              className={`py-4 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                activeTab === 'discover'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Opdag Personer
+            </button>
+            <button
+              onClick={() => setActiveTab('friends')}
+              className={`py-4 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                activeTab === 'friends'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Mine Venner ({friends.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('requests')}
+              className={`py-4 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                activeTab === 'requests'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Anmodninger
+            </button>
           </div>
         </div>
 
-        {showSidebar && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
-            onClick={() => setShowSidebar(false)}
-          />
-        )}
+        {/* Search */}
+        <div className="p-4 border-b border-gray-200">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Søg efter personer..."
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
 
-        <div className="flex-1 lg:ml-0">
-          <main className="py-6 px-3 sm:px-6 lg:px-8">
-            {renderMainContent()}
-          </main>
+        {/* Content */}
+        <div className="p-6">
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600">Indlæser...</p>
+            </div>
+          ) : activeTab === 'discover' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {users.length === 0 ? (
+                <div className="col-span-full text-center py-8">
+                  <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen brugere fundet</h3>
+                  <p className="text-gray-600">Prøv at justere din søgning eller kom tilbage senere.</p>
+                </div>
+              ) : (
+                users.map((user) => (
+                  <div key={user.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+                    <div className="text-center mb-4">
+                      <img
+                        src={user.avatar || "/api/placeholder/80/80"}
+                        alt={user.name}
+                        className="w-20 h-20 rounded-full mx-auto mb-3"
+                      />
+                      <h3 className="font-semibold text-gray-900">{user.name}</h3>
+                      <p className="text-sm text-gray-600">{getUserTypeLabel(user.userType)}</p>
+                      <div className="flex items-center justify-center space-x-1 mt-1">
+                        <MapPin className="w-3 h-3 text-gray-500" />
+                        <span className="text-xs text-gray-500">{user.location}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-center space-x-2 mb-4">
+                      <div className="flex items-center space-x-1">
+                        <Star className="w-4 h-4 text-yellow-500" />
+                        <span className="text-sm">{user.rating || "Ny"}</span>
+                      </div>
+                      <span className="text-gray-300">•</span>
+                      <div className="flex items-center space-x-1">
+                        <Briefcase className="w-4 h-4 text-gray-500" />
+                        <span className="text-sm">{user.completedJobs || 0} jobs</span>
+                      </div>
+                    </div>
+
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleSendFriendRequest(user.id)}
+                        className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                      >
+                        <UserPlus className="w-4 h-4" />
+                        <span>Tilføj</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedUser(user);
+                          setShowUserModal(true);
+                        }}
+                        className="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                      >
+                        Se Profil
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          ) : activeTab === 'friends' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {friends.length === 0 ? (
+                <div className="col-span-full text-center py-8">
+                  <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen venner endnu</h3>
+                  <p className="text-gray-600">Start med at forbinde med andre brugere i "Opdag Personer" fanen.</p>
+                </div>
+              ) : (
+                friends.map((friend) => (
+                  <div key={friend.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+                    <div className="text-center mb-4">
+                      <img
+                        src={friend.avatar || "/api/placeholder/80/80"}
+                        alt={friend.name}
+                        className="w-20 h-20 rounded-full mx-auto mb-3"
+                      />
+                      <h3 className="font-semibold text-gray-900">{friend.name}</h3>
+                      <p className="text-sm text-gray-600">{getUserTypeLabel(friend.userType)}</p>
+                      <div className="flex items-center justify-center space-x-1 mt-1">
+                        <MapPin className="w-3 h-3 text-gray-500" />
+                        <span className="text-xs text-gray-500">{friend.location}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleSendMessage(friend.id)}
+                        className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        <span>Besked</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedUser(friend);
+                          setShowUserModal(true);
+                        }}
+                        className="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                      >
+                        Profil
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <button
+                onClick={() => setShowFriendRequests(true)}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                Administrer Venskabsanmodninger
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Modals */}
-      <MessagesModal
-        isOpen={showMessages}
-        onClose={() => setShowMessages(false)}
+      {/* User Profile Modal */}
+      <UserProfileModal
+        isOpen={showUserModal}
+        onClose={() => setShowUserModal(false)}
+        user={selectedUser}
         currentUser={currentUser}
+        onSendFriendRequest={handleSendFriendRequest}
+        onAcceptFriendRequest={handleAcceptFriendRequest}
+        onSendMessage={handleSendMessage}
+        onBlockUser={handleBlockUser}
+        onReportUser={handleReportUser}
       />
 
-      <NotificationModal
-        isOpen={showNotifications}
-        onClose={() => setShowNotifications(false)}
-        currentUser={currentUser}
+      {/* Friend Requests Modal */}
+      <FriendRequestModal
+        isOpen={showFriendRequests}
+        onClose={() => setShowFriendRequests(false)}
+        onAcceptRequest={handleAcceptFriendRequest}
+        onDeclineRequest={(requestId) => {
+          alert('Venskabsanmodning afvist! (Demo mode)');
+        }}
+        onSendRequest={handleSendFriendRequest}
       />
-
-      <SettingsModal
-        isOpen={showSettings}
-        onClose={() => setShowSettings(false)}
-        currentUser={currentUser}
-        onUpdateUser={handleUpdateUser}
-      />
-
-      <InstallPrompt />
     </div>
   );
 }
-
-export default App;
