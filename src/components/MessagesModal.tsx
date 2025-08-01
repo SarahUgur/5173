@@ -49,76 +49,69 @@ function App() {
   const [showFriendRequests, setShowFriendRequests] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showProLockModal, setShowProLockModal] = useState(false);
-  const [conversations, setConversations] = useState([]);
-
-  const handleLogin = (user: User) => {
-    setCurrentUser(user);
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    localStorage.setItem('authToken', 'mock-token');
-  };
-
-  const handleLogout = () => {
-    setCurrentUser(null);
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('authToken');
-  };
-
-  const handleUpdateUser = (updatedUser: User) => {
-    setCurrentUser(updatedUser);
-    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-  };
-
   // Check if running as PWA
   React.useEffect(() => {
-    const checkPWA = async () => {
       setIsLoading(true);
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
       setIsPWA(isStandalone || isInWebAppiOS);
-    
-      // Load persisted user data on app start
-      const authToken = localStorage.getItem('authToken');
-      const savedUser = localStorage.getItem('currentUser');
-      
-      if (authToken && savedUser) {
-        try {
-          const user = JSON.parse(savedUser);
-          setCurrentUser(user);
-        } catch (error) {
-          console.error('Error parsing saved user:', error);
-          localStorage.removeItem('currentUser');
-          localStorage.removeItem('authToken');
-        }
-      }
-
-      try {
-        // Load real conversations from API
-        const response = await fetch('/api/messages', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setConversations(data || []);
-        } else {
-          setConversations([]);
-        }
-      } catch (error) {
-        console.error('Error loading conversations:', error);
-        setConversations([]);
-      }
-
-      setIsLoading(false);
     };
     
     checkPWA();
+    
+    // Load persisted user data on app start
+    const authToken = localStorage.getItem('authToken');
+    const savedUser = localStorage.getItem('currentUser');
+    if (authToken && savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        setCurrentUser(userData);
+      } catch (error) {
+        console.error('Error loading saved user:', error);
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('authToken');
+      }
+    }
+    
+    // Listen for display mode changes
+    const mediaQuery = window.matchMedia('(display-mode: standalone)');
+    mediaQuery.addEventListener('change', checkPWA);
+    
+    // Quick loading check
+    setIsLoading(false);
+    
+    return () => mediaQuery.removeEventListener('change', checkPWA);
   }, []);
 
+  // Handle login
+  const handleLogin = (user: User) => {
+    setCurrentUser(user);
+    localStorage.setItem('currentUser', JSON.stringify(user));
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('userData');
+    setCurrentUser(null);
+    setCurrentPage('home');
+  };
+
+  // Handle user profile update
+  const handleUpdateUser = (updates: Partial<User>) => {
+    if (currentUser) {
+      const updatedUser = { ...currentUser, ...updates };
+      setCurrentUser(updatedUser);
+      localStorage.setItem('userData', JSON.stringify(updatedUser));
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+    }
+  };
+
+  // Show loading screen while checking authentication
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-white animate-spin" fill="currentColor" viewBox="0 0 24 24">
@@ -126,7 +119,7 @@ function App() {
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
-          <p className="text-gray-600">Tjekker login status...</p>
+          <p className="text-gray-600">Indlæser...</p>
         </div>
       </div>
     );
@@ -200,46 +193,33 @@ function App() {
     const [loading, setLoading] = useState(true);
 
     React.useEffect(() => {
-      // Simulate loading posts
+      // Load real posts from API
       setTimeout(() => {
-        const mockPosts = [
-          {
-            id: '1',
-            user: {
-              id: '1',
-              name: 'Maria Hansen',
-              avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-              verified: true,
-              userType: 'private'
-            },
-            content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen. Jeg har 2 børn og en hund, så erfaring med familier er et plus! 🏠✨',
-            location: 'København NV',
-            budget: '300-400 kr',
-            createdAt: '2 timer siden',
-            likes: 12,
-            comments: [
-              {
-                id: '1',
-                content: 'Hej Maria! Jeg har 5 års erfaring med familierengøring og elsker at arbejde med familier der har kæledyr.',
-                createdAt: '1 time siden',
-                user: {
-                  id: '2',
-                  name: 'Lars Nielsen',
-                  avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-                  verified: true
-                }
-              }
-            ],
-            isJobPost: true,
-            jobType: 'home_cleaning',
-            urgency: 'flexible'
-          }
-        ];
-        setPosts(mockPosts);
+        // Load real posts from API
+        loadRealPosts();
         setLoading(false);
       }, 1000);
     }, []);
 
+    const loadRealPosts = async () => {
+      try {
+        const response = await fetch('/api/posts', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setPosts(data.posts || []);
+        } else {
+          setPosts([]);
+        }
+      } catch (error) {
+        console.error('Error loading posts:', error);
+        setPosts([]);
+      }
+    };
     if (loading) {
       return (
         <div className="text-center py-12">
