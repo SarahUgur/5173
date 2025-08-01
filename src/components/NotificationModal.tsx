@@ -1,307 +1,500 @@
 import React, { useState } from 'react';
-import { X, Bell, MessageCircle, Briefcase, Users, Calendar, Check, Trash2, Settings } from 'lucide-react';
-import NotificationSettings from './NotificationSettings';
+import { Home, Briefcase, Users, Calendar, Heart, MapPin, Search, Bell, MessageCircle, User as UserIcon, Menu, Plus, Settings, LogOut, Star, Crown, Shield, TrendingUp, Filter, Globe, HelpCircle, Phone, Mail, ExternalLink, Eye, EyeOff, Trash2, Edit, X, Clock, DollarSign, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Share2, CheckCircle } from 'lucide-react';
+import { useLanguage } from './hooks/useLanguage';
+import Header from './components/Header';
+import CreatePost from './components/CreatePost';
+import PostCard from './components/PostCard';
+import LocalJobsPage from './components/LocalJobsPage';
+import NetworkPage from './components/NetworkPage';
+import MyTasksPage from './components/MyTasksPage';
+import PlanningPage from './components/PlanningPage';
+import MapPage from './components/MapPage';
+import UserProfilePage from './components/UserProfilePage';
+import UserProfileModal from './components/UserProfileModal';
+import MessagesModal from './components/MessagesModal';
+import NotificationModal from './components/NotificationModal';
+import SubscriptionModal from './components/SubscriptionModal';
+import PaymentModal from './components/PaymentModal';
+import SuccessPage from './components/SuccessPage';
+import AuthScreen from './components/AuthScreen';
+import AdminPage from './components/AdminPage';
+import AboutPage from './components/AboutPage';
+import ContactPage from './components/ContactPage';
+import SupportPage from './components/SupportPage';
+import TermsPage from './components/TermsPage';
+import HelpModal from './components/HelpModal';
+import TermsModal from './components/TermsModal';
+import FriendRequestModal from './components/FriendRequestModal';
+import SettingsModal from './components/SettingsModal';
+import InstallPrompt from './components/InstallPrompt';
+import AdBanner from './components/AdBanner';
+import RecommendationWidget from './components/RecommendationWidget';
+import type { User } from './types';
 
-interface NotificationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  currentUser: any;
-}
-
-interface Notification {
-  id: string;
-  type: 'message' | 'job' | 'connection' | 'system';
-  title: string;
-  message: string;
-  time: string;
-  read: boolean;
-  avatar?: string;
-  actionUrl?: string;
-}
-
-export default function NotificationModal({ isOpen, onClose, currentUser }: NotificationModalProps) {
+function App() {
+  const { language, t } = useLanguage();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPWA, setIsPWA] = useState(false);
+  const [currentPage, setCurrentPage] = useState<'home' | 'jobs' | 'network' | 'tasks' | 'planning' | 'favorites' | 'local-jobs' | 'trending' | 'map' | 'profile' | 'admin' | 'about' | 'contact' | 'support' | 'terms'>('home');
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [showUserProfile, setShowUserProfile] = useState<any>(null);
+  const [showMessages, setShowMessages] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showSubscription, setShowSubscription] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showFriendRequests, setShowFriendRequests] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [showProLockModal, setShowProLockModal] = useState(false);
 
-  const [filter, setFilter] = useState<'all' | 'unread' | 'message' | 'job'>('all');
-
-  // Load notifications from API
+  // Check if running as PWA
   React.useEffect(() => {
-    if (isOpen) {
-      loadNotifications();
+    const checkPWA = () => {
+      setIsLoading(true);
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      const isInWebAppiOS = (window.navigator as any).standalone === true;
+      setIsPWA(isStandalone || isInWebAppiOS);
+    };
+    
+    checkPWA();
+    
+    // Load persisted user data on app start
+    const authToken = localStorage.getItem('authToken');
+    const savedUser = localStorage.getItem('currentUser');
+    
+    if (authToken && savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        setCurrentUser(userData);
+      } catch (error) {
+        console.error('Error loading saved user:', error);
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('authToken');
+      }
     }
-  }, [isOpen]);
+    
+    // Listen for display mode changes
+    const mediaQuery = window.matchMedia('(display-mode: standalone)');
+    mediaQuery.addEventListener('change', checkPWA);
+    
+    // Set loading to false after checking authentication
+    setTimeout(() => setIsLoading(false), 500);
+    
+    return () => mediaQuery.removeEventListener('change', checkPWA);
+  }, []);
 
-  const loadNotifications = async () => {
-    setLoading(true);
-    try {
-      // Mock notifications for demo
-      const mockNotifications = [
-        {
-          id: '1',
-          type: 'job',
-          title: 'Nyt job i dit område',
-          message: 'Hjemmerengøring i København NV - 350 kr',
-          time: '5 min siden',
-          read: false,
-          avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-        },
-        {
-          id: '2',
-          type: 'message',
-          title: 'Ny besked fra PRIVATE RENGØRING',
-          message: 'Velkommen til Danmarks største gratis rengøringsplatform!',
-          time: '10 min siden',
-          read: false,
-          avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-        },
-        {
-          id: '3',
-          type: 'connection',
-          title: 'Ny venskabsanmodning',
-          message: 'Peter Larsen vil gerne forbinde med dig',
-          time: '1 time siden',
-          read: true,
-          avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-        },
-        {
-          id: '4',
-          type: 'system',
-          title: 'Velkommen til PRIVATE RENGØRING! 🎉',
-          message: 'Tak for at du blev medlem! Udforsk alle de gratis funktioner.',
-          time: '2 dage siden',
-          read: true
-        }
-      ];
-      setNotifications(mockNotifications);
-    } catch (error) {
-      console.error('Error loading notifications:', error);
-      // Set empty array on error
-      setNotifications([]);
-    }
-    setLoading(false);
+  // Handle login
+  const handleLogin = (user: User) => {
+    setCurrentUser(user);
+    localStorage.setItem('currentUser', JSON.stringify(user));
   };
 
-  if (!isOpen) return null;
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('userData');
+    setCurrentUser(null);
+    setCurrentPage('home');
+  };
 
-  const getIcon = (type: string) => {
-    switch (type) {
-      case 'message': return MessageCircle;
-      case 'job': return Briefcase;
-      case 'connection': return Users;
-      case 'system': return Bell;
-      default: return Bell;
+  // Handle user profile update
+  const handleUpdateUser = (updates: Partial<User>) => {
+    if (currentUser) {
+      const updatedUser = { ...currentUser, ...updates };
+      setCurrentUser(updatedUser);
+      localStorage.setItem('userData', JSON.stringify(updatedUser));
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
     }
   };
 
-  const getIconColor = (type: string) => {
-    switch (type) {
-      case 'message': return 'text-blue-600 bg-blue-100';
-      case 'job': return 'text-green-600 bg-green-100';
-      case 'system': return 'text-orange-600 bg-orange-100';
-      default: return 'text-gray-600 bg-gray-100';
-    }
-  };
-
-  const markAsRead = async (id: string) => {
-    setNotifications(prev => 
-      prev.map(notif => 
-        notif.id === id ? { ...notif, read: true } : notif
-      )
+  // Show loading screen while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-white animate-spin" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
+          <p className="text-gray-600">Tjekker login status...</p>
+        </div>
+      </div>
     );
+  }
+
+  // CRITICAL: Show auth screen if not logged in - NO ACCESS WITHOUT LOGIN
+  if (!currentUser) {
+    return <AuthScreen onLogin={handleLogin} />;
+  }
+
+  const renderMainContent = () => {
+    switch (currentPage) {
+      case 'jobs':
+        return <LocalJobsPage currentUser={currentUser} />;
+      case 'network':
+        return <NetworkPage currentUser={currentUser} />;
+      case 'tasks':
+        return <MyTasksPage currentUser={currentUser} />;
+      case 'planning':
+        return <PlanningPage currentUser={currentUser} />;
+      case 'local-jobs':
+        return <LocalJobsPage currentUser={currentUser} onShowSubscription={() => setShowSubscription(true)} />;
+      case 'map':
+        return <MapPage currentUser={currentUser} />;
+      case 'profile':
+        return (
+          <UserProfilePage 
+            currentUser={currentUser} 
+            onUpdateUser={handleUpdateUser}
+            onShowSettings={() => setShowSettings(true)}
+          />
+        );
+      case 'admin':
+        return <AdminPage currentUser={currentUser} />;
+      case 'about':
+        return <AboutPage />;
+      case 'contact':
+        return <ContactPage />;
+      case 'support':
+        return <SupportPage />;
+      case 'terms':
+        return <TermsPage />;
+      default:
+        return renderHomePage();
+    }
   };
 
-  const markAllAsRead = async () => {
-    setNotifications(prev => 
-      prev.map(notif => ({ ...notif, read: true }))
-    );
-  };
+  const renderHomePage = () => (
+    <div className="max-w-2xl mx-auto px-1 xs:px-0">
+      <CreatePost 
+        currentUser={currentUser} 
+      />
+      
+      <div className="mb-3 xs:mb-4 sm:mb-6">
+        <AdBanner type="banner" position="top" className="w-full" />
+      </div>
 
-  const deleteNotification = async (id: string) => {
-    setNotifications(prev => prev.filter(notif => notif.id !== id));
-  };
+      <PostFeed 
+        currentUser={currentUser}
+      />
 
-  const filteredNotifications = notifications.filter(notif => {
-    if (filter === 'all') return true;
-    if (filter === 'unread') return !notif.read;
-    return notif.type === filter;
-  });
-
-  const unreadCount = notifications.filter(n => !n.read).length;
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-md w-full max-h-[85vh] overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="relative p-4 border-b border-gray-200 flex-shrink-0">
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
-          >
-            <X className="w-5 h-5 text-gray-500" />
-          </button>
-          
-          <div className="flex items-center justify-between pr-12">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">Notifikationer</h2>
-              {unreadCount > 0 && (
-                <p className="text-sm text-gray-600">{unreadCount} ulæste</p>
-              )}
-            </div>
-            <button
-              onClick={() => {
-                setShowSettings(true);
-              }}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
-              title="Notifikation indstillinger"
-            >
-              <Settings className="w-5 h-5 text-gray-600" />
-            </button>
-          </div>
-
-          {/* Filter Tabs */}
-          <div className="flex space-x-1 mt-4 bg-gray-100 rounded-lg p-1">
-            <button
-              onClick={() => setFilter('all')}
-              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 ${
-                filter === 'all' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'
-              }`}
-            >
-              Alle
-            </button>
-            <button
-              onClick={() => setFilter('unread')}
-              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 ${
-                filter === 'unread' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'
-              }`}
-            >
-              Ulæste
-            </button>
-            <button
-              onClick={() => setFilter('job')}
-              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 ${
-                filter === 'job' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'
-              }`}
-            >
-              Jobs
-            </button>
-          </div>
-        </div>
-
-        {/* Actions */}
-        {unreadCount > 0 && (
-          <div className="p-3 border-b border-gray-100 flex-shrink-0">
-            <button
-              onClick={markAllAsRead}
-              className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center space-x-1"
-            >
-              <Check className="w-4 h-4" />
-              <span>Marker alle som læst</span>
-            </button>
-          </div>
-        )}
-
-        {/* Notifications List */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
-          {loading ? (
-            <div className="p-8 text-center">
-              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-600">Indlæser notifikationer...</p>
-            </div>
-          ) : filteredNotifications.length === 0 ? (
-            <div className="p-8 text-center">
-              <Bell className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen notifikationer</h3>
-              <p className="text-gray-600">Du har ingen notifikationer at vise.</p>
-            </div>
-          ) : (
-            <div className="divide-y divide-gray-100 pb-4">
-              {filteredNotifications.map((notification) => {
-                const Icon = getIcon(notification.type);
-                return (
-                  <div
-                    key={notification.id}
-                    className={`p-3 hover:bg-gray-50 transition-colors duration-200 ${
-                      !notification.read ? 'bg-blue-50' : ''
-                    }`}
-                  >
-                    <div className="flex items-start space-x-2">
-                      {notification.avatar ? (
-                        <img
-                          src={notification.avatar}
-                          alt=""
-                          className="w-8 h-8 rounded-full flex-shrink-0"
-                        />
-                      ) : (
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${getIconColor(notification.type)}`}>
-                          <Icon className="w-4 h-4" />
-                        </div>
-                      )}
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <p className={`text-xs font-medium ${!notification.read ? 'text-gray-900' : 'text-gray-700'}`}>
-                              {notification.title}
-                            </p>
-                            <p className="text-xs text-gray-600 mt-1 line-clamp-2">
-                              {notification.message}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-2">{notification.time}</p>
-                          </div>
-                          
-                          <div className="flex items-center space-x-1 ml-1">
-                            {!notification.read && (
-                              <button
-                                onClick={() => markAsRead(notification.id)}
-                                className="p-0.5 hover:bg-gray-200 rounded-full transition-colors duration-200"
-                                title="Marker som læst"
-                              >
-                                <Check className="w-3 h-3 text-gray-600" />
-                              </button>
-                            )}
-                            <button
-                              onClick={() => deleteNotification(notification.id)}
-                              className="p-0.5 hover:bg-gray-200 rounded-full transition-colors duration-200"
-                              title="Slet notifikation"
-                            >
-                              <Trash2 className="w-3 h-3 text-gray-600" />
-                            </button>
-                          </div>
-                        </div>
-                        
-                        {!notification.read && (
-                          <div className="w-2 h-2 bg-blue-600 rounded-full absolute right-3 top-4"></div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-200 bg-gray-50 flex-shrink-0">
-          <button
-            onClick={() => {
-              setShowSettings(true);
-            }}
-            className="w-full text-center text-blue-600 hover:text-blue-700 text-sm font-medium"
-          >
-            Administrer notifikation indstillinger
-          </button>
-        </div>
-
-        {/* Notification Settings Modal */}
-        <NotificationSettings
-          isOpen={showSettings}
-          onClose={() => setShowSettings(false)}
-          currentUser={currentUser}
-        />
+      <div className="mt-6 sm:mt-8">
+        <RecommendationWidget />
       </div>
     </div>
   );
+
+  // Post Feed Component
+  const PostFeed = ({ currentUser }: any) => {
+    const [posts, setPosts] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    React.useEffect(() => {
+      // Simulate loading posts
+      setTimeout(() => {
+        const mockPosts = [
+          {
+            id: '1',
+            user: {
+              id: '1',
+              name: 'Maria Hansen',
+              avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+              verified: true,
+              userType: 'private'
+            },
+            content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen. Jeg har 2 børn og en hund, så erfaring med familier er et plus! 🏠✨',
+            location: 'København NV',
+            budget: '300-400 kr',
+            createdAt: '2 timer siden',
+            likes: 12,
+            comments: [
+              {
+                id: '1',
+                content: 'Hej Maria! Jeg har 5 års erfaring med familierengøring og elsker at arbejde med familier der har kæledyr.',
+                createdAt: '1 time siden',
+                user: {
+                  id: '2',
+                  name: 'Lars Nielsen',
+                  avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+                  verified: true
+                }
+              }
+            ],
+            isJobPost: true,
+            jobType: 'home_cleaning',
+            urgency: 'flexible'
+          }
+        ];
+        setPosts(mockPosts);
+        setLoading(false);
+      }, 1000);
+    }, []);
+
+    if (loading) {
+      return (
+        <div className="text-center py-12">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Indlæser opslag...</p>
+        </div>
+      );
+    }
+
+    if (posts.length === 0) {
+      return (
+        <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen opslag endnu</h3>
+          <p className="text-gray-600 mb-4">Vær den første til at dele et opslag!</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-3 xs:space-y-4 sm:space-y-6">
+        {posts.map((post) => (
+          <PostCard
+            key={post.id}
+            post={post}
+            currentUser={currentUser}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div className={`min-h-screen bg-gray-50 ${isPWA ? 'pwa-mode' : ''}`}>
+      {isPWA && (
+        <div className="bg-blue-600 text-white text-center py-1 text-xs">
+          📱 Kører som app • PRIVATE RENGØRING
+        </div>
+      )}
+      
+      <Header
+        currentUser={currentUser}
+        onShowMessages={() => setShowMessages(true)}
+        onShowNotifications={() => setShowNotifications(true)}
+        onShowProfile={() => setCurrentPage('profile')}
+        onToggleSidebar={() => setShowSidebar(!showSidebar)}
+        onLogout={handleLogout}
+        onShowSettings={() => setShowSettings(true)}
+        onShowHelp={() => setShowHelp(true)}
+        setCurrentPage={setCurrentPage}
+      />
+
+      <div className="flex">
+        {/* Sidebar */}
+        <div className={`fixed inset-y-0 left-0 z-30 w-56 xs:w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+          showSidebar ? 'translate-x-0' : '-translate-x-full'
+        }`}>
+          <div className="flex flex-col h-full pt-14 xs:pt-16 lg:pt-0">
+            <div className="lg:hidden p-3 xs:p-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-base xs:text-lg font-semibold text-gray-900">Menu</h2>
+                <button
+                  onClick={() => setShowSidebar(false)}
+                  className="p-1.5 xs:p-2 rounded-lg hover:bg-gray-100"
+                >
+                  <X className="w-4 h-4 xs:w-5 xs:h-5" />
+                </button>
+              </div>
+            </div>
+
+            <nav className="flex-1 px-3 xs:px-4 py-4 xs:py-6 space-y-1.5 xs:space-y-2 overflow-y-auto">
+              <button
+                onClick={() => {
+                  setCurrentPage('home');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'home' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Home className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">{t('home')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('jobs');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'jobs' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Briefcase className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">{t('localJobs')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('network');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'network' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Users className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">{t('network')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('tasks');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'tasks' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">{t('myTasks')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('planning');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'planning' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">{t('planning')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('map');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'map' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <MapPin className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">Jobs på Kort</span>
+              </button>
+
+              {currentUser.email === 'admin@privaterengoring.dk' && (
+                <button
+                  onClick={() => {
+                    setCurrentPage('admin');
+                    setShowSidebar(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                    currentPage === 'admin' ? 'bg-red-100 text-red-700' : 'text-red-600 hover:bg-red-50'
+                  }`}
+                >
+                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <span className="font-medium">Admin Panel</span>
+                </button>
+              )}
+
+              <div className="pt-4 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setCurrentPage('about');
+                    setShowSidebar(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                    currentPage === 'about' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <HelpCircle className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <span className="font-medium">Om os</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setCurrentPage('support');
+                    setShowSidebar(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                    currentPage === 'support' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <HelpCircle className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <span className="font-medium">Hjælp & Support</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setCurrentPage('contact');
+                    setShowSidebar(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                    currentPage === 'contact' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Mail className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <span className="font-medium">Kontakt & Klager</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setCurrentPage('terms');
+                    setShowSidebar(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                    currentPage === 'terms' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <span className="font-medium">Vilkår & Betingelser</span>
+                </button>
+              </div>
+            </nav>
+
+          </div>
+        </div>
+
+        {showSidebar && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+            onClick={() => setShowSidebar(false)}
+          />
+        )}
+
+        <div className="flex-1 lg:ml-0">
+          <main className="py-6 px-3 sm:px-6 lg:px-8">
+            {renderMainContent()}
+          </main>
+        </div>
+      </div>
+
+      {/* Modals */}
+      <MessagesModal
+        isOpen={showMessages}
+        onClose={() => setShowMessages(false)}
+        currentUser={currentUser}
+      />
+
+      <NotificationModal
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
+        currentUser={currentUser}
+      />
+
+      <SettingsModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        currentUser={currentUser}
+        onUpdateUser={handleUpdateUser}
+      />
+
+      <InstallPrompt />
+    </div>
+  );
 }
+
+export default App;
