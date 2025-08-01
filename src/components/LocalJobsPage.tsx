@@ -5,10 +5,11 @@ import JobApplicationModal from './JobApplicationModal';
 
 interface LocalJobsPageProps {
   currentUser?: any;
+}
 
 export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
-export default function LocalJobsPage({ currentUser }: LocalJobsPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedArea, setSelectedArea] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState<any>(null);
