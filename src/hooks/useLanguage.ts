@@ -853,12 +853,12 @@ export function useLanguage() {
     
     // Update page title based on language
     const titles = {
-      da: 'Private Rengøring - Social Platform for Rengøringsservices',
-      en: 'Private Cleaning - Social Platform for Cleaning Services',
+      da: 'PRIVATE RENGORING - Social Platform for Rengøringsservices',
+      en: 'PRIVATE RENGORING - Social Platform for Cleaning Services',
       ar: 'التنظيف الخاص - منصة اجتماعية لخدمات التنظيف',
-      pl: 'Prywatne Sprzątanie - Platforma Społecznościowa dla Usług Sprzątania',
-      tr: 'Özel Temizlik - Temizlik Hizmetleri için Sosyal Platform',
-      de: 'Private Reinigung - Soziale Plattform für Reinigungsdienste'
+      pl: 'PRIVATE RENGORING - Platforma Społecznościowa dla Usług Sprzątania',
+      tr: 'PRIVATE RENGORING - Temizlik Hizmetleri için Sosyal Platform',
+      de: 'PRIVATE RENGORING - Soziale Plattform für Reinigungsdienste'
     };
     document.title = titles[language];
   }, [language]);

@@ -25,7 +25,7 @@ if ('serviceWorker' in navigator) {
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                 // New version available
-                if (confirm('Ny version af appen er tilgængelig. Vil du opdatere?')) {
+                if (confirm('Ny version af PRIVATE RENGORING er tilgængelig. Vil du opdatere?')) {
                   window.location.reload();
                 }
               }

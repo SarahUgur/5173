@@ -12,7 +12,7 @@ const verifyAdminToken = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'demo-secret');
     
     // Check if user is admin
-    if (decoded.email !== 'admin@privatrengoring.dk') {
+    if (decoded.email !== 'admin@privaterengoring.dk') {
       return res.status(403).json({ error: 'Kun admin har adgang' });
     }
     

@@ -25,7 +25,7 @@ export default function SuccessPage({ onContinue }: SuccessPageProps) {
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Velkommen til Pro!</h1>
         
         <p className="text-gray-600 mb-6">
-          Din betaling er gennemført, og du har nu fuld adgang til alle Pro-funktioner på Privat Rengøring.
+          Din betaling er gennemført, og du har nu fuld adgang til alle Pro-funktioner på PRIVATE RENGORING.
         </p>
 
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6">
@@ -42,6 +42,7 @@ export default function SuccessPage({ onContinue }: SuccessPageProps) {
           className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2"
         >
           <span>Fortsæt til Private Rengøring</span>
+          <span>Fortsæt til PRIVATE RENGORING</span>
           <ArrowRight className="w-5 h-5" />
         </button>
 

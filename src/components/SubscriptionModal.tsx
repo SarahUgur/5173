@@ -61,7 +61,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubscribe, userEm
               <Star className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold gradient-text mb-2">Opgrader til Pro</h2>
-            <p className="text-sm sm:text-base text-gray-600">Få adgang til alle funktioner og byg dit rengøringsnetværk</p>
+            <p className="text-sm sm:text-base text-gray-600">Få adgang til alle funktioner på PRIVATE RENGORING</p>
           </div>
         </div>
 
@@ -76,7 +76,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubscribe, userEm
               </div>
             </div>
             <p className="text-xs sm:text-sm text-gray-600">Månedligt abonnement • Opsig når som helst ved at skrive til support</p>
-            <p className="text-xs text-blue-600 mt-1">📧 support@privatrengoring.dk</p>
+            <p className="text-xs text-blue-600 mt-1">📧 support@privaterengoring.dk</p>
           </div>
         </div>
 

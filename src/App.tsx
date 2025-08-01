@@ -752,7 +752,7 @@ function App() {
       {/* PWA Status Bar */}
       {isPWA && (
         <div className="bg-blue-600 text-white text-center py-1 text-xs">
-          📱 Kører som app • Private Rengøring
+          📱 Kører som app • PRIVATE RENGORING
         </div>
       )}
       
@@ -894,7 +894,7 @@ function App() {
               </button>
 
               {/* Admin link */}
-              {currentUser.email === 'admin@privatrengoring.dk' && (
+              {currentUser.email === 'admin@privaterengoring.dk' && (
                 <>
                 <button
                   onClick={() => {

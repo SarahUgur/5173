@@ -156,7 +156,7 @@ export default function Header({
               </div>
               <div>
                 <h1 className="text-base sm:text-lg lg:text-xl font-bold bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent leading-tight">
-                  Private Rengøring
+                  PRIVATE RENGORING
                 </h1>
                 <p className="text-xs text-gray-500 -mt-0.5 hidden lg:block leading-none">Social platform</p>
               </div>

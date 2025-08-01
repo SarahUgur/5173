@@ -54,7 +54,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, userEmail }: 
             <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <CreditCard className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Opgrader til Pro</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Opgrader til PRIVATE RENGORING Pro</h2>
             <p className="text-gray-600">Få fuld adgang til alle funktioner</p>
           </div>
         </div>
