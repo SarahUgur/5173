@@ -60,36 +60,6 @@ module.exports = async function handler(req, res) {
       try {
         // Mock conversations for demo
         const mockConversations = [
-          {
-            id: '1',
-            user: {
-              id: '2',
-              name: 'Maria Hansen',
-              avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-              online: true
-            },
-            lastMessage: {
-              id: '1',
-              senderId: '2',
-              receiverId: req.userId,
-              content: 'Hej! Er du interesseret i rengøringsjobbet?',
-              timestamp: '10 min siden',
-              read: false,
-              type: 'text'
-            },
-            unreadCount: 1,
-            messages: [
-              {
-                id: '1',
-                senderId: '2',
-                receiverId: req.userId,
-                content: 'Hej! Er du interesseret i rengøringsjobbet?',
-                timestamp: '10 min siden',
-                read: false,
-                type: 'text'
-              }
-            ]
-          }
         ];
 
         res.status(200).json(mockConversations);

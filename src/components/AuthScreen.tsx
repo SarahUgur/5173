@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, Building, Users, CheckCircle, X, Chrome } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
-import { mockUsers } from '../data/mockData';
 import type { User as UserType } from '../types';
 
 interface AuthScreenProps {
@@ -102,15 +101,14 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           verified: true,
           isSubscribed: false,
           location: 'København',
-          avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-          coverPhoto: 'https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop',
+          avatar: '',
+          coverPhoto: '',
           rating: 4.5,
           completedJobs: 0,
           bio: 'Logget ind via Google',
           phone: '+45 12 34 56 78',
           website: '',
-          joinedDate: new Date().toISOString().split('T')[0],
-          coverPhoto: 'https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop'
+          joinedDate: new Date().toISOString().split('T')[0]
         },
         apple: {
           id: 'apple-demo',
@@ -120,15 +118,14 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           verified: true,
           isSubscribed: false,
           location: 'Aarhus',
-          avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-          coverPhoto: 'https://images.pexels.com/photos/4099468/pexels-photo-4099468.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop',
+          avatar: '',
+          coverPhoto: '',
           rating: 4.8,
           completedJobs: 15,
           bio: 'Logget ind via Apple',
           phone: '+45 87 65 43 21',
           website: '',
-          joinedDate: new Date().toISOString().split('T')[0],
-          coverPhoto: 'https://images.pexels.com/photos/4099468/pexels-photo-4099468.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop'
+          joinedDate: new Date().toISOString().split('T')[0]
         },
         facebook: {
           id: 'facebook-demo',
@@ -138,8 +135,8 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           verified: true,
           isSubscribed: true,
           location: 'Odense',
-          avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-          coverPhoto: 'https://images.pexels.com/photos/4108715/pexels-photo-4108715.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop',
+          avatar: '',
+          coverPhoto: '',
           rating: 4.9,
           completedJobs: 45,
           bio: 'Logget ind via Facebook',

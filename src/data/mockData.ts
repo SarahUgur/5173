@@ -1,32 +1,9 @@
 import type { User, Post } from '../types';
 
-// Mock users for development
-export const mockUsers: User[] = [
-  {
-    id: '1',
-    name: 'Maria Hansen',
-    email: 'maria@example.com',
-    avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-    verified: true,
-    userType: 'private',
-    location: 'København',
-    rating: 4.8,
-    completedJobs: 15
-  },
-  {
-    id: '2',
-    name: 'Lars Nielsen',
-    email: 'lars@example.com',
-    avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-    verified: true,
-    userType: 'cleaner',
-    location: 'Aarhus',
-    rating: 4.9,
-    completedJobs: 45
-  }
-];
+// Empty mock users - no fake profiles
+export const mockUsers: User[] = [];
 
-// Load users from API
+// Load users from API only
 export const loadUsers = async (): Promise<User[]> => {
   try {
     const response = await fetch('/api/users', {
@@ -39,32 +16,16 @@ export const loadUsers = async (): Promise<User[]> => {
       return await response.json();
     }
     
-    return mockUsers;
+    return []; // Return empty array instead of mock data
   } catch (error) {
     console.error('Error loading users:', error);
-    return mockUsers;
+    return []; // Return empty array instead of mock data
   }
 };
 
-// Multilingual post content
+// Empty posts - no fake content
 export const getLocalizedPosts = (language: string): Post[] => {
-  // Return mock posts for development
-  return [
-    {
-      id: '1',
-      userId: '1',
-      user: mockUsers[0],
-      content: 'Søger pålidelig rengøringshjælp til mit hjem i København.',
-      createdAt: '2 timer siden',
-      location: 'København NV',
-      likes: 12,
-      comments: [],
-      isJobPost: true,
-      jobType: 'home_cleaning',
-      urgency: 'flexible',
-      budget: '300-400 kr'
-    }
-  ];
+  return []; // Return empty array instead of mock posts
 };
 
 export const mockPosts = getLocalizedPosts('da');

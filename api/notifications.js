@@ -23,33 +23,6 @@ module.exports = async function handler(req, res) {
       try {
         // Mock notifications for demo
         const mockNotifications = [
-          {
-            id: '1',
-            type: 'job',
-            title: 'Nyt job i dit område',
-            message: 'Hjemmerengøring i København NV - 350 kr',
-            time: '5 min siden',
-            read: false,
-            avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-          },
-          {
-            id: '2',
-            type: 'message',
-            title: 'Ny besked fra Lars Nielsen',
-            message: 'Hej! Er du interesseret i rengøringsjobbet?',
-            time: '10 min siden',
-            read: false,
-            avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-          },
-          {
-            id: '3',
-            type: 'connection',
-            title: 'Ny venskabsanmodning',
-            message: 'Sofie Andersen vil gerne forbinde med dig',
-            time: '1 time siden',
-            read: true,
-            avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-          }
         ];
 
         res.status(200).json(mockNotifications);

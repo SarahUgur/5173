@@ -21,7 +21,7 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
         id: 'ad1',
         title: 'Kärcher Rengøringsmaskiner',
         description: 'Professionelt rengøringsudstyr til alle opgaver',
-        image: 'https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=800&h=200&fit=crop',
+        image: '',
         url: 'https://example.com/karcher',
         sponsor: 'Kärcher Danmark',
         cta: 'Se Tilbud'
@@ -30,7 +30,7 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
         id: 'ad2',
         title: 'Rengøringsservice København',
         description: 'Professionel rengøring til private og erhverv',
-        image: 'https://images.pexels.com/photos/4099468/pexels-photo-4099468.jpeg?auto=compress&cs=tinysrgb&w=800&h=200&fit=crop',
+        image: '',
         url: 'https://example.com/cleanservice',
         sponsor: 'CleanPro ApS',
         cta: 'Book Nu'
@@ -39,7 +39,7 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
         id: 'ad3',
         title: 'Miljøvenlige Rengøringsprodukter',
         description: 'Skån miljøet med vores grønne produkter',
-        image: 'https://images.pexels.com/photos/4108715/pexels-photo-4108715.jpeg?auto=compress&cs=tinysrgb&w=800&h=200&fit=crop',
+        image: '',
         url: 'https://example.com/ecogreen',
         sponsor: 'EcoClean',
         cta: 'Køb Online'
@@ -50,7 +50,7 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
         id: 'video1',
         title: 'Sådan rengør du effektivt',
         description: 'Lær professionelle rengøringsteknikker',
-        thumbnail: 'https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop',
+        thumbnail: '',
         duration: '2:30',
         sponsor: 'Rengørings Akademiet',
         cta: 'Se Video'
@@ -61,7 +61,7 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
         id: 'native1',
         title: 'Top 5 Rengøringstips fra Eksperterne',
         description: 'Professionelle rengøringseksperter deler deres bedste tips til effektiv hjemmerengøring.',
-        image: 'https://images.pexels.com/photos/4099468/pexels-photo-4099468.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop',
+        image: '',
         author: 'Rengørings Magasinet',
         readTime: '3 min læsning',
         sponsored: true
@@ -119,11 +119,17 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
           onClick={handleAdClick}
           className="cursor-pointer hover:bg-gray-50 transition-all duration-200 hover:scale-105"
         >
-          <img 
-            src={adData.image} 
-            alt={adData.title}
-            className="w-full h-24 sm:h-32 object-cover hover:scale-105 transition-transform duration-300"
-          />
+          {adData.image ? (
+            <img 
+              src={adData.image} 
+              alt={adData.title}
+              className="w-full h-24 sm:h-32 object-cover hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <div className="w-full h-24 sm:h-32 bg-gradient-to-r from-blue-100 to-purple-100 flex items-center justify-center">
+              <span className="text-gray-600 font-medium">{adData.title}</span>
+            </div>
+          )}
           <div className="p-3">
             <h3 className="font-semibold text-gray-900 text-sm mb-1">{adData.title}</h3>
             <p className="text-gray-600 text-xs mb-2">{adData.description}</p>
@@ -154,11 +160,17 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
         </button>
         
         <div className="relative">
-          <img 
-            src={adData.thumbnail} 
-            alt={adData.title}
-            className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
-          />
+          {adData.thumbnail ? (
+            <img 
+              src={adData.thumbnail} 
+              alt={adData.title}
+              className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <div className="w-full h-48 bg-gradient-to-r from-gray-800 to-gray-900 flex items-center justify-center">
+              <span className="text-white font-medium">{adData.title}</span>
+            </div>
+          )}
           
           {!isVideoPlaying && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -213,11 +225,17 @@ export default function AdBanner({ type, position = 'middle', onAdClick, classNa
           className="cursor-pointer hover:bg-gray-50 transition-all duration-200 p-4 hover:scale-105"
         >
           <div className="flex space-x-3">
-            <img 
-              src={adData.image} 
-              alt={adData.title}
-              className="w-20 h-20 object-cover rounded-lg flex-shrink-0 hover:scale-105 transition-transform duration-300"
-            />
+            {adData.image ? (
+              <img 
+                src={adData.image} 
+                alt={adData.title}
+                className="w-20 h-20 object-cover rounded-lg flex-shrink-0 hover:scale-105 transition-transform duration-300"
+              />
+            ) : (
+              <div className="w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg flex-shrink-0 flex items-center justify-center">
+                <span className="text-xs text-gray-600 text-center font-medium">{adData.title.substring(0, 10)}...</span>
+              </div>
+            )}
             <div className="flex-1">
               <h3 className="font-semibold text-gray-900 text-sm mb-1">{adData.title}</h3>
               <p className="text-gray-600 text-xs mb-2 line-clamp-2">{adData.description}</p>

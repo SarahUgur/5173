@@ -186,7 +186,24 @@ export default function PostCard({ post, currentUser, onShowSubscription, onRepo
     }
     
     setShareCount(prev => prev + 1);
-    onSharePost?.(post.id, platform);
+    
+    // Track share via API
+    fetch(`/api/posts/${post.id}/share`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: JSON.stringify({ platform })
+    }).then(response => {
+      if (response.ok) {
+        console.log('Share tracked successfully');
+        onSharePost?.(post.id, platform);
+      }
+    }).catch(error => {
+      console.error('Error tracking share:', error);
+    });
+    
     setShowShareMenu(false);
   };
 

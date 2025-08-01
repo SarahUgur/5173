@@ -1,142 +1,27 @@
-const jwt = require('jsonwebtoken');
-const { v4: uuidv4 } = require('uuid');
+total: 0
 
-// Middleware to verify JWT token
-const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  
-  if (!token) {
-    return res.status(401).json({ error: 'Ingen adgangstoken' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.userId;
-    next();
-  } catch (error) {
-    return res.status(401).json({ error: 'Ugyldig token' });
-  }
-};
-
-module.exports = async function handler(req, res) {
-  if (req.method === 'POST') {
-    // Create new post
-    verifyToken(req, res, async () => {
+  } else if (req.method === 'PUT') {
+    // Handle share tracking
+    const urlParts = req.url.split('/');
+    const postId = urlParts[3]; // /api/posts/{postId}/share
+    const action = urlParts[4]; // share
+    
+    if (action === 'share') {
       try {
-        const {
-          type,
-          content,
-          location,
-          jobType,
-          jobCategory,
-          targetAudience,
-          urgency,
-          budget
-        } = req.body;
-
-        // Validate required fields
-        if (!content || !location) {
-          return res.status(400).json({ error: 'Indhold og lokation er påkrævet' });
-        }
-
-        // Mock post creation for demo
-        const mockPost = {
-          id: uuidv4(),
-          user_id: req.userId,
-          content,
-          location,
-          post_type: type,
-          job_type: jobType || null,
-          job_category: jobCategory || null,
-          target_audience: targetAudience || null,
-          urgency: urgency || null,
-          budget: budget || null,
-          created_at: new Date().toISOString()
-        };
-
-        res.status(201).json({
-          message: 'Opslag oprettet succesfuldt',
-          postId: mockPost.id
-        });
-
+        const { platform } = req.body;
+        
+        // Log the share for analytics
+        console.log(`Post ${postId} shared on ${platform}`);
+        
+        res.status(200).json({ message: 'Share tracked successfully' });
       } catch (error) {
-        console.error('Error creating post:', error);
-        res.status(500).json({ error: 'Server fejl ved oprettelse af opslag' });
+        console.error('Error tracking share:', error);
+        res.status(500).json({ error: 'Server fejl ved tracking af deling' });
       }
-    });
-
-  } else if (req.method === 'GET') {
-    // Get posts
-    try {
-      // Mock posts data for demo
-      const mockPosts = [
-        {
-          id: '1',
-          user: {
-            id: '1',
-            name: 'Maria Hansen',
-            avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-            verified: true,
-            userType: 'private'
-          },
-          content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen.',
-          location: 'København NV',
-          budget: '300-400 kr',
-          createdAt: '2 timer siden',
-          likes: 12,
-          comments: [
-            {
-              id: '1',
-              content: 'Jeg kan hjælpe dig! Har erfaring med hjemmerengøring.',
-              createdAt: '1 time siden',
-              user: {
-                id: '2',
-                name: 'Lars Nielsen',
-                avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-              }
-            }
-          ],
-          isJobPost: true,
-          jobType: 'home_cleaning',
-          urgency: 'flexible'
-        },
-        {
-          id: '2',
-          user: {
-            id: '2',
-            name: 'Lars Nielsen',
-            avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-            verified: true,
-            userType: 'cleaner'
-          },
-          content: 'Tilbyder professionel kontorrengøring i Aarhus området. 10+ års erfaring og miljøvenlige produkter.',
-          location: 'Aarhus C',
-          budget: '500-600 kr',
-          createdAt: '4 timer siden',
-          likes: 8,
-          comments: [],
-          isJobPost: false,
-          jobType: 'office_cleaning',
-          urgency: 'flexible'
-        }
-      ];
-
-      res.status(200).json({
-        posts: mockPosts,
-        hasMore: false,
-        pagination: {
-          page: 1,
-          limit: 10,
-          total: mockPosts.length
-        }
-      });
-
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-      res.status(500).json({ error: 'Server fejl ved hentning af opslag' });
+    } else {
+      res.status(404).json({ error: 'Endpoint ikke fundet' });
     }
 
   } else {
     res.status(405).json({ error: 'Method not allowed' });
   }
-}

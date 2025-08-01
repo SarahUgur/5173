@@ -44,50 +44,6 @@ module.exports = async function handler(req, res) {
       };
 
       const mockRecentUsers = [
-        {
-          id: '1',
-          name: 'Maria Hansen',
-          email: 'maria@example.com',
-          avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-          userType: 'private',
-          status: 'online',
-          isSubscribed: false,
-          joinedDate: '2024-01-15',
-          lastActive: 'Nu'
-        },
-        {
-          id: '2',
-          name: 'Lars Nielsen',
-          email: 'lars@example.com',
-          avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-          userType: 'cleaner',
-          status: 'online',
-          isSubscribed: true,
-          joinedDate: '2023-08-20',
-          lastActive: 'Nu'
-        },
-        {
-          id: '3',
-          name: 'Sofie Andersen',
-          email: 'sofie@example.com',
-          avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-          userType: 'small_business',
-          status: 'away',
-          isSubscribed: false,
-          joinedDate: '2023-12-10',
-          lastActive: '5 min siden'
-        },
-        {
-          id: '4',
-          name: 'Peter Larsen',
-          email: 'peter@example.com',
-          avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-          userType: 'cleaner',
-          status: 'offline',
-          isSubscribed: true,
-          joinedDate: '2023-11-05',
-          lastActive: '2 timer siden'
-        }
       ];
 
       const mockRecentReports = [

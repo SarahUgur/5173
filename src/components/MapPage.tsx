@@ -57,26 +57,7 @@ export default function MapPage({ currentUser }: MapPageProps) {
         setJobLocations(data);
       } else {
         // Fallback to mock job locations
-        const mockJobLocations = [
-          {
-            id: '1',
-            title: 'Hjemmerengøring søges',
-            location: 'København NV',
-            address: 'Nørrebrogade 123, 2200 København N',
-            lat: 55.6761,
-            lng: 12.5683,
-            budget: '300-400 kr',
-            urgency: 'flexible',
-            distance: '2.3 km',
-            client: {
-              name: 'Maria Hansen',
-              avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-              rating: 4.8
-            },
-            jobType: 'home_cleaning'
-          }
-        ];
-        setJobLocations(mockJobLocations);
+        setJobLocations([]); // No fallback mock locations
       }
     } catch (error) {
       console.error('Error loading job locations:', error);
