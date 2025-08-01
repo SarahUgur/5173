@@ -31,34 +31,32 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
   const loadAppointments = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/appointments', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      // Mock appointments for demo
+      const mockAppointments = [
+        {
+          id: '1',
+          title: 'Hjemmerengøring - Maria',
+          time: '10:00',
+          location: 'København NV',
+          client: 'Maria Hansen',
+          status: 'confirmed',
+          type: 'home_cleaning',
+          date: new Date()
+        },
+        {
+          id: '2',
+          title: 'Kontorrengøring - TechCorp',
+          time: '14:00',
+          location: 'Aarhus C',
+          client: 'TechCorp ApS',
+          status: 'pending',
+          type: 'office_cleaning',
+          date: new Date(Date.now() + 24 * 60 * 60 * 1000) // Tomorrow
         }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setAppointments(data);
-      } else {
-        // Fallback to mock appointments
-        const mockAppointments = [
-          {
-            id: '1',
-            title: 'Hjemmerengøring - Maria',
-            time: '10:00',
-            location: 'København NV',
-            client: 'Maria Hansen',
-            status: 'confirmed',
-            type: 'home_cleaning',
-            date: new Date()
-          }
-        ];
-        setAppointments(mockAppointments);
-      }
+      ];
+      setAppointments(mockAppointments);
     } catch (error) {
       console.error('Error loading appointments:', error);
-      // Set empty array on error
       setAppointments([]);
     }
     setLoading(false);

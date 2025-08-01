@@ -46,22 +46,63 @@ export default function MapPage({ currentUser }: MapPageProps) {
   const loadJobLocations = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/jobs/locations', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      // Mock job locations for demo
+      const mockJobLocations = [
+        {
+          id: '1',
+          title: 'Hjemmerengøring søges',
+          location: 'København NV',
+          address: 'Nørrebrogade 123, 2200 København N',
+          lat: 55.6761,
+          lng: 12.5683,
+          budget: '350 kr',
+          urgency: 'flexible',
+          distance: '2.3 km',
+          client: {
+            name: 'Maria Hansen',
+            avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            rating: 4.8
+          },
+          jobType: 'home_cleaning'
+        },
+        {
+          id: '2',
+          title: 'Kontorrengøring akut',
+          location: 'Aarhus C',
+          address: 'Åboulevarden 45, 8000 Aarhus C',
+          lat: 56.1629,
+          lng: 10.2039,
+          budget: '800 kr',
+          urgency: 'immediate',
+          distance: '1.8 km',
+          client: {
+            name: 'Sofie Andersen',
+            avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            rating: 4.9
+          },
+          jobType: 'office_cleaning'
+        },
+        {
+          id: '3',
+          title: 'Hovedrengøring villa',
+          location: 'Odense',
+          address: 'Albanigade 67, 5000 Odense C',
+          lat: 55.4038,
+          lng: 10.4024,
+          budget: '1500 kr',
+          urgency: 'this_week',
+          distance: '3.1 km',
+          client: {
+            name: 'Lars Nielsen',
+            avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            rating: 4.7
+          },
+          jobType: 'deep_cleaning'
         }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setJobLocations(data);
-      } else {
-        // Fallback to mock job locations
-        setJobLocations([]); // No fallback mock locations
-      }
+      ];
+      setJobLocations(mockJobLocations);
     } catch (error) {
       console.error('Error loading job locations:', error);
-      // Set empty array on error
       setJobLocations([]);
     }
     setLoading(false);

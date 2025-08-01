@@ -25,21 +25,63 @@ export default function AdminPage() {
   const loadAdminData = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/admin/dashboard', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
+      // Mock admin data for demo
+      setAdminStats({
+        totalUsers: 1247,
+        activeUsers: 89,
+        totalPosts: 456,
+        totalJobs: 234,
+        reportsToday: 3,
+        revenue: 18500,
+        newUsersToday: 12,
+        onlineNow: 24
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        setAdminStats(data.stats);
-        setRecentUsers(data.recentUsers);
-        setRecentReports(data.recentReports);
-      }
+      setRecentUsers([
+        {
+          id: '1',
+          name: 'Maria Hansen',
+          email: 'maria@example.com',
+          avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          userType: 'private',
+          isSubscribed: false,
+          joinedDate: '2024-01-15',
+          status: 'online',
+          lastActive: 'Nu'
+        },
+        {
+          id: '2',
+          name: 'Lars Nielsen',
+          email: 'lars@example.com',
+          avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          userType: 'cleaner',
+          isSubscribed: true,
+          joinedDate: '2024-01-10',
+          status: 'away',
+          lastActive: '30 min siden'
+        }
+      ]);
+      
+      setRecentReports([
+        {
+          id: '1',
+          reported: 'Upassende opslag om kontorrengøring',
+          reporter: 'Anna Nielsen',
+          reason: 'Spam eller uønsket indhold',
+          status: 'pending',
+          createdAt: '2024-01-20 14:30'
+        },
+        {
+          id: '2',
+          reported: 'Bruger: Michael Sørensen',
+          reporter: 'Emma Larsen',
+          reason: 'Upassende eller krænkende sprog',
+          status: 'pending',
+          createdAt: '2024-01-20 12:15'
+        }
+      ]);
     } catch (error) {
       console.error('Error loading admin data:', error);
-      // Set default empty state on error
       setAdminStats({
         totalUsers: 0,
         activeUsers: 0,
@@ -50,8 +92,6 @@ export default function AdminPage() {
         newUsersToday: 0,
         onlineNow: 0
       });
-      setRecentUsers([]);
-      setRecentReports([]);
     }
     setLoading(false);
   };

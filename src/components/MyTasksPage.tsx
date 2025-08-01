@@ -36,39 +36,67 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
   const loadTasks = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/user/tasks', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      // Mock tasks data for demo
+      const mockActiveTasks = [
+        {
+          id: '1',
+          title: 'Hjemmerengøring - Maria Hansen',
+          description: 'Ugentlig rengøring af 3-værelses lejlighed',
+          location: 'København NV',
+          budget: '350 kr/gang',
+          status: 'ongoing',
+          client: 'Maria Hansen',
+          clientAvatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          nextDate: getFutureDate(3)
+        },
+        {
+          id: '2',
+          title: 'Kontorrengøring - TechCorp',
+          description: 'Månedlig hovedrengøring af kontorfaciliteter',
+          location: 'Aarhus C',
+          budget: '1200 kr/gang',
+          status: 'ongoing',
+          client: 'TechCorp ApS',
+          clientAvatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          nextDate: getFutureDate(7)
         }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setActiveTasks(data.active || []);
-        setCompletedTasks(data.completed || []);
-        setApplications(data.applications || []);
-      } else {
-        // Fallback to mock data
-        const mockActiveTasks = [
-          {
-            id: '1',
-            title: 'Hjemmerengøring - Maria Hansen',
-            description: 'Ugentlig rengøring af 3-værelses lejlighed',
-            location: 'København NV',
-            budget: '350 kr/gang',
-            status: 'ongoing',
-            client: 'Maria Hansen',
-            clientAvatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-            nextDate: getFutureDate(3)
-          }
-        ];
-        setActiveTasks(mockActiveTasks);
-        setCompletedTasks([]);
-        setApplications([]);
-      }
+      ];
+      
+      const mockCompletedTasks = [
+        {
+          id: '3',
+          title: 'Fraflytningsrengøring - Lars Nielsen',
+          description: 'Komplet rengøring af 2-værelses lejlighed',
+          location: 'Odense',
+          budget: '2500 kr',
+          status: 'completed',
+          client: 'Lars Nielsen',
+          clientAvatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          completedDate: getPastDate(5),
+          earnings: '2500 kr',
+          rating: 5
+        }
+      ];
+      
+      const mockApplications = [
+        {
+          id: '4',
+          title: 'Vinduespolering - Emma Larsen',
+          description: 'Rengøring af vinduer i villa',
+          location: 'Aalborg',
+          budget: '800 kr',
+          status: 'pending',
+          client: 'Emma Larsen',
+          clientAvatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          appliedDate: getPastDate(2)
+        }
+      ];
+      
+      setActiveTasks(mockActiveTasks);
+      setCompletedTasks(mockCompletedTasks);
+      setApplications(mockApplications);
     } catch (error) {
       console.error('Error loading tasks:', error);
-      // Set empty arrays on error
       setActiveTasks([]);
       setCompletedTasks([]);
       setApplications([]);

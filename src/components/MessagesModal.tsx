@@ -55,27 +55,28 @@ export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubs
   const loadConversations = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/messages', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setConversations(data);
-      } else {
-        // Fallback to mock conversations
-        const mockConversations = [
-          {
+      // Mock conversations for demo
+      const mockConversations = [
+        {
+          id: '1',
+          user: {
+            id: '2',
+            name: 'Maria Hansen',
+            avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            online: true
+          },
+          lastMessage: {
             id: '1',
-            user: {
-              id: '2',
-              name: 'Maria Hansen',
-              avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-              online: true
-            },
-            lastMessage: {
+            senderId: '2',
+            receiverId: currentUser?.id,
+            content: 'Hej! Er du interesseret i rengøringsjobbet?',
+            timestamp: '10 min siden',
+            read: false,
+            type: 'text'
+          },
+          unreadCount: 1,
+          messages: [
+            {
               id: '1',
               senderId: '2',
               receiverId: currentUser?.id,
@@ -83,19 +84,140 @@ export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubs
               timestamp: '10 min siden',
               read: false,
               type: 'text'
-            },
-            unreadCount: 1,
-            messages: [
-              {
-                id: '1',
-                senderId: '2',
-                receiverId: currentUser?.id,
-                content: 'Hej! Er du interesseret i rengøringsjobbet?',
-                timestamp: '10 min siden',
-                read: false,
-                type: 'text'
-              }
-            ]
+            }
+          ]
+        },
+        {
+          id: '2',
+          user: {
+            id: '3',
+            name: 'Lars Nielsen',
+            avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            online: false,
+            lastSeen: '2 timer siden'
+          },
+          lastMessage: {
+            id: '2',
+            senderId: currentUser?.id,
+            receiverId: '3',
+            content: 'Tak for det hurtige svar!',
+            timestamp: '1 time siden',
+            read: true,
+            type: 'text'
+          },
+          unreadCount: 0,
+          messages: [
+            {
+              id: '2',
+              senderId: currentUser?.id,
+              receiverId: '3',
+              content: 'Tak for det hurtige svar!',
+              timestamp: '1 time siden',
+              read: true,
+              type: 'text'
+            }
+          ]
+        }
+      ];
+      setConversations(mockConversations);
+    } catch (error) {
+      console.error('Error loading conversations:', error);
+      setConversations([]);
+    }
+    setLoading(false);
+  };
+
+  const sendMessage = async (content: string) => {
+    try {
+      // Mock successful message send
+      const newMessage = {
+        id: Date.now().toString(),
+        senderId: currentUser?.id,
+        receiverId: selectedConv?.user.id,
+        content,
+        timestamp: 'Nu',
+        read: false,
+        type: 'text' as const
+      };
+      
+      // Update local state
+      setConversations(prev => prev.map(conv => {
+        if (conv.id === selectedConversation) {
+          return {
+            ...conv,
+            messages: [...conv.messages, newMessage],
+            lastMessage: newMessage
+          };
+        }
+        return conv;
+      }));
+      
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Besked sendt! (Demo mode)');
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (!messageText.trim() || !selectedConversation) return;
+
+    sendMessage(messageText);
+    setMessageText('');
+  };
+
+  const sendMessage = async (content: string) => {
+    try {
+      // Mock API call - in production this would be a real API call
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const newMessage = {
+        id: Date.now().toString(),
+        senderId: currentUser?.id,
+        receiverId: selectedConv?.user.id,
+        content,
+        timestamp: 'Nu',
+        read: false,
+        type: 'text' as const
+      };
+      
+      // Update local state
+      setConversations(prev => prev.map(conv => {
+        if (conv.id === selectedConversation) {
+          return {
+            ...conv,
+            messages: [...conv.messages, newMessage],
+            lastMessage: newMessage
+          };
+        }
+        return conv;
+      }));
+      
+    } catch (error) {
+      console.error('Error sending message:', error);
+      // Still show success in demo mode
+      const newMessage = {
+        id: Date.now().toString(),
+        senderId: currentUser?.id,
+        receiverId: selectedConv?.user.id,
+        content,
+        timestamp: 'Nu',
+        read: false,
+        type: 'text' as const
+      };
+      
+      setConversations(prev => prev.map(conv => {
+        if (conv.id === selectedConversation) {
+          return {
+            ...conv,
+            messages: [...conv.messages, newMessage],
+            lastMessage: newMessage
+          };
+        }
+        return conv;
+      }));
+    }
+  };
+
           }
         ];
         setConversations(mockConversations);

@@ -27,31 +27,72 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
   const loadJobs = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({
-        area: selectedArea,
-        search: searchTerm,
-        sort: sortBy,
-        type: 'job'
-      });
-
-      const response = await fetch(`/api/posts?${params}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      // Mock jobs data for demo
+      const mockJobs = [
+        {
+          id: '1',
+          title: 'Hjemmerengøring søges i København',
+          description: 'Søger pålidelig rengøringshjælp til mit hjem. Hver 14. dag, ca. 3 timer.',
+          location: 'København NV',
+          budget: '350 kr/gang',
+          urgency: 'flexible',
+          postedTime: '2 timer siden',
+          applicants: 3,
+          jobType: 'home_cleaning',
+          client: {
+            id: '1',
+            name: 'Maria Hansen',
+            avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            rating: 4.8
+          }
+        },
+        {
+          id: '2',
+          title: 'Kontorrengøring - Akut behov',
+          description: 'Vores kontor har brug for rengøring i morgen tidlig før klientmøde.',
+          location: 'Aarhus C',
+          budget: '800 kr',
+          urgency: 'immediate',
+          postedTime: '30 min siden',
+          applicants: 7,
+          jobType: 'office_cleaning',
+          client: {
+            id: '2',
+            name: 'Sofie Andersen',
+            avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            rating: 4.9
+          }
         }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setJobs(data.posts || []);
-      } else {
-        console.error('Failed to load jobs');
-        // Fallback to mock jobs
-        setJobs([]); // No fallback mock jobs
+      ];
+      
+      // Filter based on selected area
+      let filteredJobs = mockJobs;
+      if (selectedArea !== 'all') {
+        const areaMap = {
+          'storkobenhavn': 'København',
+          'storaarhus': 'Aarhus',
+          'storodense': 'Odense',
+          'storaalborg': 'Aalborg'
+        };
+        const areaName = areaMap[selectedArea as keyof typeof areaMap];
+        if (areaName) {
+          filteredJobs = mockJobs.filter(job => job.location.includes(areaName));
+        }
       }
+      
+      // Filter by search term
+      if (searchTerm) {
+        filteredJobs = filteredJobs.filter(job => 
+          job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          job.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          job.description.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+      
+      setJobs(filteredJobs);
     } catch (error) {
       console.error('Error loading jobs:', error);
-      // Fallback to mock jobs on error
-      setJobs([]); // No fallback mock jobs
+      setJobs([]);
     }
     setLoading(false);
   };

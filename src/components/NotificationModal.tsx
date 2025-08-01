@@ -36,39 +36,45 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
   const loadNotifications = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/notifications', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      // Mock notifications for demo
+      const mockNotifications = [
+        {
+          id: '1',
+          type: 'job',
+          title: 'Nyt job i dit område',
+          message: 'Hjemmerengøring i København NV - 350 kr',
+          time: '5 min siden',
+          read: false,
+          avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
+        },
+        {
+          id: '2',
+          type: 'message',
+          title: 'Ny besked fra Lars Nielsen',
+          message: 'Hej! Er du interesseret i rengøringsjobbet?',
+          time: '10 min siden',
+          read: false,
+          avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
+        },
+        {
+          id: '3',
+          type: 'connection',
+          title: 'Ny venskabsanmodning',
+          message: 'Peter Larsen vil gerne forbinde med dig',
+          time: '1 time siden',
+          read: true,
+          avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
+        },
+        {
+          id: '4',
+          type: 'system',
+          title: 'Velkommen til PRIVATE RENGORING',
+          message: 'Tak for at du blev medlem! Udforsk alle funktionerne.',
+          time: '2 dage siden',
+          read: true
         }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setNotifications(data);
-      } else {
-        // Fallback to mock notifications
-        const mockNotifications = [
-          {
-            id: '1',
-            type: 'job',
-            title: 'Nyt job i dit område',
-            message: 'Hjemmerengøring i København NV - 350 kr',
-            time: '5 min siden',
-            read: false,
-            avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-          },
-          {
-            id: '2',
-            type: 'message',
-            title: 'Ny besked fra Lars Nielsen',
-            message: 'Hej! Er du interesseret i rengøringsjobbet?',
-            time: '10 min siden',
-            read: false,
-            avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-          }
-        ];
-        setNotifications(mockNotifications);
-      }
+      ];
+      setNotifications(mockNotifications);
     } catch (error) {
       console.error('Error loading notifications:', error);
       // Set empty array on error
@@ -93,52 +99,27 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
     switch (type) {
       case 'message': return 'text-blue-600 bg-blue-100';
       case 'job': return 'text-green-600 bg-green-100';
-      case 'connection': return 'text-purple-600 bg-purple-100';
       case 'system': return 'text-orange-600 bg-orange-100';
       default: return 'text-gray-600 bg-gray-100';
     }
   };
 
-  const markAsRead = (id: string) => {
+  const markAsRead = async (id: string) => {
     setNotifications(prev => 
       prev.map(notif => 
         notif.id === id ? { ...notif, read: true } : notif
       )
     );
-    
-    // Send to API
-    fetch(`/api/notifications/${id}/read`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      }
-    }).catch(error => console.error('Error marking notification as read:', error));
   };
 
-  const markAllAsRead = () => {
+  const markAllAsRead = async () => {
     setNotifications(prev => 
       prev.map(notif => ({ ...notif, read: true }))
     );
-    
-    // Send to API
-    fetch('/api/notifications/read-all', {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      }
-    }).catch(error => console.error('Error marking all notifications as read:', error));
   };
 
-  const deleteNotification = (id: string) => {
+  const deleteNotification = async (id: string) => {
     setNotifications(prev => prev.filter(notif => notif.id !== id));
-    
-    // Send to API
-    fetch(`/api/notifications/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      }
-    }).catch(error => console.error('Error deleting notification:', error));
   };
 
   const filteredNotifications = notifications.filter(notif => {

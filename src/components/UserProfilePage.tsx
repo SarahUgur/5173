@@ -46,99 +46,7 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
   const loadUserProfileData = async () => {
     setLoading(true);
     try {
-      // Load user stats
-      const statsResponse = await fetch(`/api/user/${currentUser?.id}/stats`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
-
-      if (statsResponse.ok) {
-        const stats = await statsResponse.json();
-        setUserStats(stats);
-      } else {
-        // Keep default stats if API fails
-        setUserStats({
-          posts: 12,
-          friends: 45,
-          rating: 4.8,
-          completedJobs: 23,
-          joinDate: currentUser?.joinedDate || new Date().toISOString().split('T')[0],
-          profileViews: 156,
-          totalLikes: 89,
-          totalComments: 34
-        });
-      }
-
-      // Load user posts
-      const postsResponse = await fetch(`/api/user/${currentUser?.id}/posts`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
-
-      if (postsResponse.ok) {
-        const posts = await postsResponse.json();
-        setUserPosts(posts);
-      } else {
-        // Fallback to mock posts
-        setUserPosts([
-          {
-            id: '1',
-            content: 'Lige afsluttet en fantastisk rengøring i Østerbro!',
-            likes: 24,
-            comments: 8,
-            createdAt: '2 dage siden'
-          }
-        ]);
-      }
-
-      // Load user friends
-      const friendsResponse = await fetch(`/api/user/${currentUser?.id}/friends`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
-
-      if (friendsResponse.ok) {
-        const friends = await friendsResponse.json();
-        setUserFriends(friends);
-      } else {
-        // Fallback to mock friends
-        setUserFriends([
-          {
-            id: '1',
-            name: 'Peter Larsen',
-            avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-            location: 'København'
-          }
-        ]);
-      }
-
-      // Load recent activity
-      const activityResponse = await fetch(`/api/user/${currentUser?.id}/activity`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
-
-      if (activityResponse.ok) {
-        const activity = await activityResponse.json();
-        setRecentActivity(activity);
-      } else {
-        // Fallback to mock activity
-        setRecentActivity([
-          {
-            type: 'like',
-            action: 'Likede',
-            target: 'Marias opslag om hjemmerengøring',
-            time: '2 timer siden'
-          }
-        ]);
-      }
-    } catch (error) {
-      console.error('Error loading user profile data:', error);
-      // Set fallback data on error
+      // Mock user profile data for demo
       setUserStats({
         posts: 12,
         friends: 45,
@@ -149,44 +57,77 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
         totalLikes: 89,
         totalComments: 34
       });
-      setUserPosts([]);
-      setUserFriends([]);
-      setRecentActivity([]);
-    }
-    setLoading(false);
+      
+      setUserPosts([
+        {
+          id: '1',
+          content: 'Lige afsluttet en fantastisk rengøring i Østerbro! Kunden var super tilfreds 😊',
+          images: ['https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop'],
+          likes: 24,
+          comments: 8,
+          createdAt: '2 dage siden'
+        },
+        {
+          id: '2',
+          content: 'Søger nye kunder i København området. Specialiseret i miljøvenlig rengøring 🌱',
+          likes: 18,
+          comments: 12,
+          createdAt: '1 uge siden'
+        }
+      ]);
+      
+      setUserFriends([
+        {
+          id: '1',
+          name: 'Peter Larsen',
+          avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          location: 'København'
+        },
+        {
+          id: '2',
+          name: 'Sofie Andersen',
+          avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          location: 'Aarhus'
+        }
+      ]);
+      
+      setRecentActivity([
+        {
+          type: 'like',
+          action: 'Likede',
+          target: 'Marias opslag om hjemmerengøring',
+          time: '2 timer siden'
+        },
+        {
+          type: 'comment',
+          action: 'Kommenterede på',
+          target: 'Lars\' kontorrengøring opslag',
+          time: '5 timer siden'
+        },
+        {
+          type: 'friend',
+          action: 'Blev venner med',
+          target: 'Sofie Andersen',
+          time: '1 dag siden'
+        }
+      ]);
+    } catch (error) {
+      console.error('Error loading user profile data:', error);
+      setUserStats({
+        posts: 12,
+        friends: 45,
+        rating: 4.8,
+        completedJobs: 23,
+        joinDate: currentUser?.joinedDate || new Date().toISOString().split('T')[0],
+        profileViews: 156,
+        totalLikes: 89,
   };
 
-  const handleSaveProfile = () => {
+  const saveProfileChanges = () => {
     // Update current user immediately
     onUpdateUser(editData);
     setIsEditing(false);
-    alert('Profil opdateret succesfuldt!');
-    
-    // Try to save to API (optional)
-    saveProfileChanges();
-  };
-
-  const saveProfileChanges = async () => {
-    try {
-      const response = await fetch('/api/user/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: JSON.stringify(editData)
-      });
-      
-      if (response.ok) {
-        console.log('Profile saved to server successfully');
-      } else {
-        console.log('Server save failed, but profile saved locally');
-      }
-      
-    } catch (error) {
-      console.error('Error saving profile:', error);
-      console.log('Profile saved locally even though server failed');
-    }
+    alert('Profil opdateret succesfuldt! (Demo mode)');
   };
 
   const handleAvatarChange = () => {
