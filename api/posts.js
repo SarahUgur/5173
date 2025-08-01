@@ -1,3 +1,4 @@
+          ```javascript
           job_category: jobCategory || null,
           target_audience: targetAudience || null,
           urgency: urgency || null,
