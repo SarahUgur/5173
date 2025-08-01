@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Bell, Shield, Save } from 'lucide-react';
+import { X, User as UserIcon, Bell, Shield, Save } from 'lucide-react';
 import type { User } from '../types';
 
 interface SettingsModalProps {
@@ -76,7 +76,7 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
           {/* Profile Settings */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <User className="w-5 h-5 mr-2" />
+              <UserIcon className="w-5 h-5 mr-2" />
               Profil Oplysninger
             </h3>
             <div className="space-y-4">

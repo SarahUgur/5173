@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Home, Briefcase, Users, Calendar, Heart, MapPin, Search, Bell, MessageCircle, User as UserIcon, Menu, Plus, Settings, LogOut, Star, Crown, Shield, TrendingUp, Filter, Globe, HelpCircle, Phone, Mail, ExternalLink, Eye, EyeOff, Trash2, Edit, X, Clock, DollarSign, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Share2, CheckCircle } from 'lucide-react';
-import { useLanguage } from './hooks/useLanguage';
+import { useLanguage } from '../hooks/useLanguage';
 import Header from './components/Header';
 import CreatePost from './components/CreatePost';
 import PostCard from './components/PostCard';
