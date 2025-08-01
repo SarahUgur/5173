@@ -41,7 +41,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           completedJobs: 0,
           bio: 'Platform Administrator',
           phone: '+45 12 34 56 78',
-          website: 'https://privatrengoring.dk',
+          website: 'https://privaterengoring.dk',
           joinedDate: '2024-01-01'
         };
         
