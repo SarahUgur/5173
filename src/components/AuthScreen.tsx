@@ -51,6 +51,7 @@ function App() {
   const [showProLockModal, setShowProLockModal] = useState(false);
   // Check if running as PWA
   React.useEffect(() => {
+    const checkPWA = () => {
       setIsLoading(true);
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
@@ -63,13 +64,6 @@ function App() {
     const authToken = localStorage.getItem('authToken');
     const savedUser = localStorage.getItem('currentUser');
     if (authToken && savedUser) {
-                  <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
-                  <path d="M19 15L19.5 17L21.5 17.5L19.5 18L19 20L18.5 18L16.5 17.5L18.5 17L19 15Z"/>
-                  <path d="M5 15L5.5 17L7.5 17.5L5.5 18L5 20L4.5 18L2.5 17.5L4.5 17L5 15Z"/>
-                </svg>
-              </div>
-              <h1 className="text-xl sm:text-2xl font-normal text-white">Private Rengøring</h1>
-            </div>
       try {
         const userData = JSON.parse(savedUser);
         setCurrentUser(userData);
