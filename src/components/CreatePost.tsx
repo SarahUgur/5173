@@ -44,6 +44,14 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Check if user has Pro subscription
+    if (!currentUser?.isSubscribed) {
+      if (onShowSubscription) {
+        onShowSubscription();
+      }
+      return;
+    }
+    
     // Validate required fields
     const errors = [];
     if (!content.trim()) errors.push('Beskrivelse er påkrævet');
@@ -65,8 +73,27 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
 
   const submitPost = async () => {
     try {
-      // Mock successful post creation
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          type: postType,
+          content,
+          location,
+          jobType: postType === 'job' ? jobType : null,
+          jobCategory: postType === 'job' ? jobCategory : null,
+          targetAudience: postType === 'job' ? targetAudience : null,
+          urgency: postType === 'job' ? urgency : null,
+          budget: budget || null
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Kunne ikke oprette opslag');
+      }
       
       // Success - reset form
       setContent('');
@@ -800,7 +827,7 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
 
                 {postType !== 'job' && (
                   <button
-                    onClick={handleSubmit}
+                    type="submit"
                     disabled={!content.trim()}
                     className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm ${
                       content.trim()

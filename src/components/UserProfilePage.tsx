@@ -121,6 +121,11 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
         joinDate: currentUser?.joinedDate || new Date().toISOString().split('T')[0],
         profileViews: 156,
         totalLikes: 89,
+        totalComments: 34
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const saveProfileChanges = () => {
@@ -128,6 +133,10 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
     onUpdateUser(editData);
     setIsEditing(false);
     alert('Profil opdateret succesfuldt! (Demo mode)');
+  };
+
+  const handleSaveProfile = () => {
+    saveProfileChanges();
   };
 
   const handleAvatarChange = () => {
@@ -489,7 +498,7 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
                     }
                     alert('Kun Pro medlemmer kan blokere brugere');
                   }}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center space-x-2"
                 >
                   <Edit className="w-4 h-4" />
                   <span>Rediger Profil</span>
