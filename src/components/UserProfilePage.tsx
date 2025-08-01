@@ -6,8 +6,19 @@ interface UserProfilePageProps {
   currentUser: any;
   onUpdateUser: (updates: any) => void;
   onShowSettings: () => void;
+}
 
-export default function UserProfilePage({ currentUser, onUpdateUser, onShowSettings }: UserProfilePageProps) {
+function getUserTypeLabel(userType: string) {
+  switch (userType) {
+    case 'cleaner':
+      return 'Rengøringshjælper';
+    case 'customer':
+      return 'Kunde';
+    default:
+      return 'Bruger';
+  }
+}
+
 export default function UserProfilePage({ currentUser, onUpdateUser, onShowSettings }: UserProfilePageProps) {
   const [activeTab, setActiveTab] = useState<'posts' | 'about' | 'friends' | 'activity'>('about');
   const [isEditing, setIsEditing] = useState(false);
