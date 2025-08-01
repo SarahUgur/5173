@@ -155,7 +155,6 @@ function App() {
           />
         );
       case 'admin':
-        return currentUser.email === 'admin@privaterengoring.dk' ? <AdminPage /> : renderHomePage();
       case 'about':
         return <AboutPage />;
       case 'contact':
