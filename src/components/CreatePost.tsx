@@ -1,1034 +1,500 @@
 import React, { useState } from 'react';
-import { Image, MapPin, DollarSign, Clock, Briefcase, X, Users, Building, Home, Car, Shirt, Video, Camera, Upload, Filter, Music, Type, Smile, Trash2, Lock, Plus } from 'lucide-react';
-import { useLanguage } from '../hooks/useLanguage';
+import { Home, Briefcase, Users, Calendar, Heart, MapPin, Search, Bell, MessageCircle, User as UserIcon, Menu, Plus, Settings, LogOut, Star, Crown, Shield, TrendingUp, Filter, Globe, HelpCircle, Phone, Mail, ExternalLink, Eye, EyeOff, Trash2, Edit, X, Clock, DollarSign, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Share2, CheckCircle } from 'lucide-react';
+import { useLanguage } from './hooks/useLanguage';
+import Header from './components/Header';
+import CreatePost from './components/CreatePost';
+import PostCard from './components/PostCard';
+import LocalJobsPage from './components/LocalJobsPage';
+import NetworkPage from './components/NetworkPage';
+import MyTasksPage from './components/MyTasksPage';
+import PlanningPage from './components/PlanningPage';
+import MapPage from './components/MapPage';
+import UserProfilePage from './components/UserProfilePage';
+import UserProfileModal from './components/UserProfileModal';
+import MessagesModal from './components/MessagesModal';
+import NotificationModal from './components/NotificationModal';
+import SubscriptionModal from './components/SubscriptionModal';
+import PaymentModal from './components/PaymentModal';
+import SuccessPage from './components/SuccessPage';
+import AuthScreen from './components/AuthScreen';
+import AdminPage from './components/AdminPage';
+import AboutPage from './components/AboutPage';
+import ContactPage from './components/ContactPage';
+import SupportPage from './components/SupportPage';
+import TermsPage from './components/TermsPage';
+import HelpModal from './components/HelpModal';
+import TermsModal from './components/TermsModal';
+import FriendRequestModal from './components/FriendRequestModal';
+import SettingsModal from './components/SettingsModal';
+import InstallPrompt from './components/InstallPrompt';
+import AdBanner from './components/AdBanner';
+import RecommendationWidget from './components/RecommendationWidget';
+import type { User } from './types';
 
-interface CreatePostProps {
-  currentUser: any;
-}
+function App() {
+  const { language, t } = useLanguage();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPWA, setIsPWA] = useState(false);
+  const [currentPage, setCurrentPage] = useState<'home' | 'jobs' | 'network' | 'tasks' | 'planning' | 'favorites' | 'local-jobs' | 'trending' | 'map' | 'profile' | 'admin' | 'about' | 'contact' | 'support' | 'terms'>('home');
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [showUserProfile, setShowUserProfile] = useState<any>(null);
+  const [showMessages, setShowMessages] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showSubscription, setShowSubscription] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showFriendRequests, setShowFriendRequests] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showProLockModal, setShowProLockModal] = useState(false);
 
-export default function CreatePost({ currentUser }: CreatePostProps) {
-  const { t } = useLanguage();
-  const [postType, setPostType] = useState<'regular' | 'job'>('regular');
-  const [content, setContent] = useState('');
-  const [jobType, setJobType] = useState('home_cleaning');
-  const [jobCategory, setJobCategory] = useState('private_customer');
-  const [targetAudience, setTargetAudience] = useState<'looking_for_work' | 'hiring_cleaner'>('hiring_cleaner');
-  const [budget, setBudget] = useState('');
-  const [urgency, setUrgency] = useState('flexible');
-  const [location, setLocation] = useState('');
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
-  const [showMediaEditor, setShowMediaEditor] = useState(false);
-  const [currentFilter, setCurrentFilter] = useState('none');
-  const [videoText, setVideoText] = useState('');
-  const [selectedMusic, setSelectedMusic] = useState('none');
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formErrors, setFormErrors] = useState<string[]>([]);
-
-  // Auto-close media editor when clicking outside
+  // Check if running as PWA
   React.useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      
-      if (showMediaEditor && !target.closest('.media-editor-modal')) {
-        setShowMediaEditor(false);
-      }
+    const checkPWA = () => {
+      setIsLoading(true);
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      const isInWebAppiOS = (window.navigator as any).standalone === true;
+      setIsPWA(isStandalone || isInWebAppiOS);
     };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showMediaEditor]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
     
-    // Validate required fields
-    const errors = [];
-    if (!content.trim()) errors.push('Beskrivelse er påkrævet');
+    checkPWA();
     
-    // Validate required fields for job posts
-    if (postType === 'job') {
-      if (!jobType) errors.push('Vælg rengøringstype');
-      if (!location.trim()) errors.push('Lokation er påkrævet for job opslag');
-    }
+    // Load persisted user data on app start
+    const authToken = localStorage.getItem('authToken');
+    const savedUser = localStorage.getItem('currentUser');
     
-    if (errors.length > 0) {
-      setFormErrors(errors);
-      return;
+    if (authToken && savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        setCurrentUser(userData);
+      } catch (error) {
+        console.error('Error loading saved user:', error);
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('authToken');
+      }
     }
     
-    // Submit to real API
-    submitPost();
+    // Listen for display mode changes
+    const mediaQuery = window.matchMedia('(display-mode: standalone)');
+    mediaQuery.addEventListener('change', checkPWA);
+    
+    // Set loading to false after checking authentication
+    setTimeout(() => setIsLoading(false), 500);
+    
+    return () => mediaQuery.removeEventListener('change', checkPWA);
+  }, []);
+
+  // Handle login
+  const handleLogin = (user: User) => {
+    setCurrentUser(user);
+    localStorage.setItem('currentUser', JSON.stringify(user));
   };
 
-  const submitPost = async () => {
-    try {
-      const response = await fetch('/api/posts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: JSON.stringify({
-          type: postType,
-          content,
-          location,
-          jobType: postType === 'job' ? jobType : null,
-          jobCategory: postType === 'job' ? jobCategory : null,
-          targetAudience: postType === 'job' ? targetAudience : null,
-          urgency: postType === 'job' ? urgency : null,
-          budget: budget || null
-        })
-      });
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('userData');
+    setCurrentUser(null);
+    setCurrentPage('home');
+  };
 
-      if (!response.ok) {
-        throw new Error('Kunne ikke oprette opslag');
-      }
-      
-      // Success - reset form
-      setContent('');
-      setBudget('');
-      setLocation('');
-      setIsExpanded(false);
-      setSelectedImages([]);
-      setSelectedVideo(null);
-      setCurrentStep(1);
-      setFormErrors([]);
-      
-      alert(`🎉 ${postType === 'job' ? 'Job opslag' : 'Opslag'} oprettet succesfuldt! (Demo mode)`);
-      
-      // Close create post form
-      setIsExpanded(false);
-      
-    } catch (error) {
-      console.error('Error creating post:', error);
-      alert('Opslag oprettet! (Demo mode)');
+  // Handle user profile update
+  const handleUpdateUser = (updates: Partial<User>) => {
+    if (currentUser) {
+      const updatedUser = { ...currentUser, ...updates };
+      setCurrentUser(updatedUser);
+      localStorage.setItem('userData', JSON.stringify(updatedUser));
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length > 0) {
-      // Validate file types
-      const validFiles = files.filter(file => {
-        const isValidType = file.type.startsWith('image/');
-        const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB max
-        
-        if (!isValidType) {
-          alert(`${file.name} er ikke et gyldigt billede format`);
-          return false;
-        }
-        if (!isValidSize) {
-          alert(`${file.name} er for stort. Max 10MB tilladt`);
-          return false;
-        }
-        return true;
-      });
-      
-      if (validFiles.length > 0) {
-        setSelectedImages(prev => {
-          const newImages = [...prev, ...validFiles];
-          if (newImages.length > 10) {
-            alert('Maksimalt 10 billeder tilladt');
-            return newImages.slice(0, 10);
-          }
-          return newImages;
-        });
-      }
-    }
-  };
-
-  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validate video file
-      const isValidType = file.type.startsWith('video/');
-      const isValidSize = file.size <= 50 * 1024 * 1024; // 50MB max
-      
-      if (!isValidType) {
-        alert('Kun video filer er tilladt');
-        return;
-      }
-      if (!isValidSize) {
-        alert('Video er for stor. Maksimalt 50MB tilladt');
-        return;
-      }
-      
-      setSelectedVideo(file);
-      setShowMediaEditor(true);
-    }
-  };
-
-  const removeImage = (index: number) => {
-    setSelectedImages(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const replaceImage = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const isValidType = file.type.startsWith('image/');
-      const isValidSize = file.size <= 10 * 1024 * 1024;
-      
-      if (!isValidType) {
-        alert('Kun billede filer er tilladt');
-        return;
-      }
-      if (!isValidSize) {
-        alert('Billede er for stort. Maksimalt 10MB tilladt');
-        return;
-      }
-      
-      setSelectedImages(prev => prev.map((img, i) => i === index ? file : img));
-    }
-  };
-
-  const filters = [
-    { id: 'none', name: 'Ingen', style: {} },
-    { id: 'vintage', name: 'Vintage', style: { filter: 'sepia(0.5) contrast(1.2)' } },
-    { id: 'bw', name: 'Sort/Hvid', style: { filter: 'grayscale(1)' } },
-    { id: 'bright', name: 'Lys', style: { filter: 'brightness(1.3)' } },
-    { id: 'warm', name: 'Varm', style: { filter: 'hue-rotate(30deg) saturate(1.2)' } },
-    { id: 'cool', name: 'Kølig', style: { filter: 'hue-rotate(-30deg) saturate(1.1)' } }
-  ];
-
-  const musicOptions = [
-    { id: 'none', name: 'Ingen musik' },
-    { id: 'upbeat', name: 'Energisk' },
-    { id: 'chill', name: 'Afslappet' },
-    { id: 'professional', name: 'Professionel' },
-    { id: 'happy', name: 'Glad' }
-  ];
-
-  const getTypeLabel = (type: string) => {
-    const labels = {
-      'home_cleaning': 'Hjemmerengøring',
-      'office_cleaning': 'Kontorrengøring', 
-      'deep_cleaning': 'Hovedrengøring',
-      'regular_cleaning': 'Fast rengøring',
-      'window_cleaning': 'Vinduesrengøring',
-      'move_cleaning': 'Fraflytningsrengøring',
-      'car_wash': 'Bilvask',
-      'car_cleaning': 'Bil rengøring',
-      'seeking_supplier': 'Søger leverandør'
-    };
-    return labels[type as keyof typeof labels] || type;
-  };
-
-  const jobCategories = [
-    { 
-      id: 'private_services', 
-      label: 'Privat Rengøring', 
-      icon: Home,
-      userTypes: ['private_customer'],
-      subcategories: [
-        { id: 'home_cleaning', label: 'Hjemmerengøring' },
-        { id: 'deep_cleaning', label: 'Hovedrengøring' },
-        { id: 'regular_cleaning', label: 'Fast rengøring' },
-        { id: 'one_time_cleaning', label: 'Engangsrengøring' },
-        { id: 'window_cleaning', label: 'Vinduespolering' },
-        { id: 'move_in_out_cleaning', label: 'Fraflytning/Tilflytning' },
-        { id: 'carpet_sofa_cleaning', label: 'Tæppe og sofa rens' },
-        { id: 'laundry_service', label: 'Tøjvask' },
-        { id: 'garden_cleaning', label: 'Have rengøring' }
-      ]
-    },
-    { 
-      id: 'business_services', 
-      label: 'Erhverv Rengøring', 
-      icon: Building,
-      userTypes: ['business_customer'],
-      subcategories: [
-        { id: 'office_cleaning', label: 'Kontorrengøring' },
-        { id: 'stair_cleaning', label: 'Trappevask' },
-        { id: 'industrial_cleaning', label: 'Industrirengøring' },
-        { id: 'construction_cleaning', label: 'Byggerengøring' },
-        { id: 'warehouse_cleaning', label: 'Lagerrengøring' },
-        { id: 'shop_cleaning', label: 'Butikslokale rengøring' },
-        { id: 'restaurant_cleaning', label: 'Restaurant rengøring' }
-      ]
-    },
-    { 
-      id: 'expert_services', 
-      label: 'Ekspert Specialer', 
-      icon: Car,
-      userTypes: ['cleaning_expert'],
-      subcategories: [
-        { id: 'car_wash', label: 'Bilvask' },
-        { id: 'car_cleaning', label: 'Bil rengøring' },
-        { id: 'dry_cleaning', label: 'Kemisk rens' },
-        { id: 'roof_cleaning', label: 'Tag rens' },
-        { id: 'pipe_cleaning', label: 'Rør vask' },
-        { id: 'pressure_washing', label: 'Højtryksrens' },
-        { id: 'facade_cleaning', label: 'Facade rengøring' },
-        { id: 'solar_panel_cleaning', label: 'Solpanel rengøring' }
-      ]
-    },
-    { 
-      id: 'subcontractor_services', 
-      label: 'Underleverandør', 
-      icon: Users,
-      userTypes: ['subcontractor'],
-      subcategories: [
-        { id: 'seeking_supplier', label: 'Søger leverandør' },
-        { id: 'seeking_subcontractor', label: 'Søger underleverandør' },
-        { id: 'partnership', label: 'Partnerskab' },
-        { id: 'bulk_services', label: 'Større opgaver' },
-        { id: 'contract_work', label: 'Kontraktarbejde' }
-      ]
-    }
-  ];
-
-  const userTypes = [
-    { id: 'private_customer', label: t('privateCustomer'), icon: Home },
-    { id: 'business_customer', label: t('businessCustomer'), icon: Building },
-    { id: 'cleaning_expert', label: t('cleaningExpert'), icon: Users },
-    { id: 'subcontractor', label: t('subcontractor'), icon: Briefcase }
-  ];
-
-  return (
-    <div className="bg-white rounded-xl shadow-soft border border-gray-200 p-3 sm:p-4 mb-4 sm:mb-6 mx-3 sm:mx-0 hover:shadow-medium transition-all duration-300 card">
-      <div className="flex items-start space-x-3">
-        <img
-          src={currentUser?.avatar || "/api/placeholder/48/48"}
-          alt="Your avatar"
-          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex-shrink-0 ring-2 ring-transparent hover:ring-blue-300 transition-all duration-200"
-        />
-        <div className="flex-1 min-w-0">
-          {/* Post Type Selector */}
-          {(isExpanded || postType === 'job') && (
-            <div className="flex flex-row space-x-2 mb-3">
-              <button
-                onClick={() => setPostType('regular')}
-                className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
-                  postType === 'regular'
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                {t('regularPost')}
-              </button>
-              <button
-                onClick={() => setPostType('job')}
-                className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center space-x-2 hover:scale-105 ${
-                  postType === 'job'
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                <Briefcase className="w-4 h-4" />
-                <span>{t('jobPost')}</span>
-              </button>
-            </div>
-          )}
-          
-          <form onSubmit={handleSubmit}>
-            <div className="relative">
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                onFocus={() => setIsExpanded(true)}
-                placeholder={postType === 'job' ? 'Skriv kort hvem du er, og hvad du tilbyder inden for rengøring...' : 'Hvad kan du hjælpe med i dag?'}
-                className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base transition-all duration-200"
-                rows={isExpanded ? 4 : 2}
-              />
-              {isExpanded && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsExpanded(false);
-                    setContent('');
-                    setPostType('regular');
-                  }}
-                  className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 transition-all duration-200 hover:scale-110"
-                >
-                  <X className="w-4 h-4 text-gray-400" />
-                </button>
-              )}
-            </div>
-
-            {/* Media Preview */}
-            {(selectedImages.length > 0 || selectedVideo) && (
-              <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                <h4 className="font-medium text-gray-900 mb-3">Valgte medier</h4>
-                
-                {/* Images */}
-                {selectedImages.length > 0 && (
-                  <div className="grid grid-cols-3 gap-2 mb-3">
-                    {selectedImages.map((image, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={URL.createObjectURL(image)}
-                          alt={`Upload ${index + 1}`}
-                          className="w-full h-20 object-cover rounded-lg"
-                          style={currentFilter !== 'none' ? filters.find(f => f.id === currentFilter)?.style : {}}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Video */}
-                {selectedVideo && (
-                  <div className="relative mb-3">
-                    <video
-                      src={URL.createObjectURL(selectedVideo)}
-                      className="w-full h-32 object-cover rounded-lg"
-                      style={currentFilter !== 'none' ? filters.find(f => f.id === currentFilter)?.style : {}}
-                      controls
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setSelectedVideo(null)}
-                      className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                    {videoText && (
-                      <div className="absolute bottom-4 left-4 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-sm">
-                        {videoText}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Filter Options */}
-                <div className="flex space-x-2 mb-3 overflow-x-auto">
-                  {filters.map((filter) => (
-                    <button
-                      key={filter.id}
-                      type="button"
-                      onClick={() => setCurrentFilter(filter.id)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
-                        currentFilter === filter.id
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
-                    >
-                      {filter.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {isExpanded && postType === 'job' && (
-              <div className="mt-4 space-y-4">
-                {/* Step Indicator */}
-                <div className="flex items-center justify-center space-x-4 mb-6">
-                  <div className={`flex items-center space-x-2 ${currentStep >= 1 ? 'text-blue-600' : 'text-gray-400'}`}>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>1</div>
-                    <span className="text-sm font-medium hidden sm:inline">Grundinfo</span>
-                  </div>
-                  <div className={`w-8 h-1 ${currentStep >= 2 ? 'bg-blue-600' : 'bg-gray-200'} rounded`}></div>
-                  <div className={`flex items-center space-x-2 ${currentStep >= 2 ? 'text-blue-600' : 'text-gray-400'}`}>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>2</div>
-                    <span className="text-sm font-medium hidden sm:inline">Detaljer</span>
-                  </div>
-                  <div className={`w-8 h-1 ${currentStep >= 3 ? 'bg-blue-600' : 'bg-gray-200'} rounded`}></div>
-                  <div className={`flex items-center space-x-2 ${currentStep >= 3 ? 'text-blue-600' : 'text-gray-400'}`}>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 3 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>3</div>
-                    <span className="text-sm font-medium hidden sm:inline">Billeder</span>
-                  </div>
-                </div>
-
-                {/* Form Errors */}
-                {formErrors.length > 0 && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-red-800 font-medium mb-2">Du mangler at udfylde:</p>
-                    <ul className="text-red-700 text-sm space-y-1">
-                      {formErrors.map((error, index) => (
-                        <li key={index}>• {error}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Step 1: Grundinfo */}
-                {currentStep === 1 && (
-                  <div className="space-y-4">
-                    {/* Mobile Step Title */}
-                    <div className="sm:hidden text-center mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900">Målgruppe & Kategori</h3>
-                      <p className="text-sm text-gray-600">Vælg hvem du er og type rengøring</p>
-                    </div>
-
-                    {/* Target Audience */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('targetAudience')}</label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setTargetAudience('hiring_cleaner')}
-                          className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
-                            targetAudience === 'hiring_cleaner'
-                              ? 'border-blue-500 bg-blue-50 text-blue-700'
-                              : 'border-gray-300 hover:border-gray-400'
-                          }`}
-                        >
-                          <div className="text-center">
-                            <Users className="w-8 h-8 mx-auto mb-2" />
-                            <div className="font-medium">{t('hiringCleaner')}</div>
-                            <div className="text-sm text-gray-500 mt-1">{t('lookingForHelp')}</div>
-                          </div>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setTargetAudience('looking_for_work')}
-                          className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
-                            targetAudience === 'looking_for_work'
-                              ? 'border-green-500 bg-green-50 text-green-700'
-                              : 'border-gray-300 hover:border-gray-400'
-                          }`}
-                        >
-                          <div className="text-center">
-                            <Briefcase className="w-8 h-8 mx-auto mb-2" />
-                            <div className="font-medium">{t('lookingForWork')}</div>
-                            <div className="text-sm text-gray-500 mt-1">{t('offeringServices')}</div>
-                          </div>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* User Category */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('userCategory')}</label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {userTypes.map((type) => (
-                          <button
-                            key={type.id}
-                            type="button"
-                            onClick={() => {
-                              setJobCategory(type.id);
-                              // Auto-select appropriate cleaning category based on user type
-                              if (type.id === 'private_customer') {
-                                setJobType('home_cleaning'); // Default to home cleaning for private
-                              } else if (type.id === 'business_customer') {
-                                setJobType('office_cleaning'); // Default to office cleaning for business
-                              } else if (type.id === 'cleaning_expert') {
-                                setJobType('car_wash'); // Default to car wash for experts
-                              } else if (type.id === 'subcontractor') {
-                                setJobType('seeking_supplier'); // Default for subcontractors
-                              }
-                            }}
-                            className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
-                              jobCategory === type.id
-                                ? 'border-purple-500 bg-purple-50 text-purple-700'
-                                : 'border-gray-300 hover:border-gray-400'
-                            }`}
-                          >
-                            <div className="flex items-center space-x-3">
-                              <type.icon className="w-6 h-6" />
-                              <span className="font-medium">{type.label}</span>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Job Categories */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('cleaningCategory')}</label>
-                      <div className="space-y-3 max-h-[50vh] overflow-y-auto custom-scrollbar">
-                        {jobCategories.map((category) => (
-                          <div key={category.id} className={`border-2 rounded-xl p-4 transition-all duration-200 ${
-                            // Show only relevant categories for selected user type
-                            category.userTypes?.includes(jobCategory)
-                              ? 'border-blue-500 bg-blue-50' 
-                              : 'border-gray-200 opacity-50'
-                          } ${
-                            // Hide categories that don't match user type
-                            !category.userTypes?.includes(jobCategory) ? 'hidden' : ''
-                          }`}>
-                            <div className="flex items-center space-x-2 mb-2">
-                              <category.icon className="w-5 h-5 text-gray-600" />
-                              <span className="font-medium text-gray-900">
-                                {category.label}
-                                {category.userTypes?.includes(jobCategory) && (
-                                  <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                                    Passer til dig
-                                  </span>
-                                )}
-                              </span>
-                            </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                              {category.subcategories.map((sub) => (
-                                <button
-                                  key={sub.id}
-                                  type="button"
-                                  onClick={() => setJobType(sub.id)}
-                                  className={`p-3 rounded-lg text-sm text-left transition-all duration-200 hover:scale-105 ${
-                                    jobType === sub.id
-                                      ? 'bg-blue-100 text-blue-700 border border-blue-300'
-                                      : 'bg-gray-50 text-gray-700 hover:bg-blue-50 border border-gray-200'
-                                  }`}
-                                >
-                                  {sub.label}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Navigation Buttons */}
-                    <div className="flex justify-between pt-4">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsExpanded(false);
-                          setCurrentStep(1);
-                        }}
-                        className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-                      >
-                        Annuller
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const errors = [];
-                          if (!targetAudience) errors.push('Vælg målgruppe');
-                          if (!jobCategory) errors.push('Vælg brugerkategori');
-                          if (!jobType) errors.push('Vælg rengøringstype');
-                          
-                          if (errors.length > 0) {
-                            setFormErrors(errors);
-                            return;
-                          }
-                          setCurrentStep(2);
-                          setFormErrors([]);
-                        }}
-                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                      >
-                        Næste: Detaljer
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 2: Detaljer */}
-                {currentStep === 2 && (
-                  <div className="space-y-4">
-                    {/* Mobile Step Title */}
-                    <div className="sm:hidden text-center mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900">Trin 2: Detaljer</h3>
-                      <p className="text-sm text-gray-600">Lokation, budget og hastighed</p>
-                    </div>
-
-                    {/* Location and Budget */}
-                    <div className="space-y-3">
-                      <div className="relative">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Lokation</label>
-                        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
-                        <input
-                          type="text"
-                          value={location}
-                          onChange={(e) => setLocation(e.target.value)}
-                          placeholder={t('location')}
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-                        />
-                      </div>
-                      
-                      <div className="relative">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Budget (valgfrit)</label>
-                        <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
-                        <input
-                          type="text"
-                          value={budget}
-                          onChange={(e) => setBudget(e.target.value)}
-                          placeholder={t('budget')}
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Urgency */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('urgency')}</label>
-                      <select
-                        value={urgency}
-                        onChange={(e) => setUrgency(e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-                      >
-                        <option value="flexible">{t('flexible')}</option>
-                        <option value="this_week">{t('thisWeek')}</option>
-                        <option value="immediate">{t('immediate')}</option>
-                      </select>
-                    </div>
-
-                    {/* Navigation Buttons */}
-                    <div className="flex justify-between pt-4">
-                      <button
-                        type="button"
-                        onClick={() => setCurrentStep(1)}
-                        className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-                      >
-                        Tilbage
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const errors = [];
-                          if (!location.trim()) errors.push('Lokation er påkrævet for job opslag');
-                          
-                          if (errors.length > 0) {
-                            setFormErrors(errors);
-                            return;
-                          }
-                          setCurrentStep(3);
-                          setFormErrors([]);
-                        }}
-                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                      >
-                        Næste: Billeder
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 3: Billeder og Afslut */}
-                {currentStep === 3 && (
-                  <div className="space-y-4">
-                    {/* Mobile Step Title */}
-                    <div className="sm:hidden text-center mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900">Trin 3: Billeder</h3>
-                      <p className="text-sm text-gray-600">Tilføj billeder (valgfrit)</p>
-                    </div>
-
-                    {/* Image Upload */}
-                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
-                      <label className="cursor-pointer">
-                        <Camera className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                        <p className="text-gray-600 mb-2">Tilføj billeder af opgaven</p>
-                        <p className="text-sm text-gray-500">Klik for at vælge billeder</p>
-                        <input
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="hidden"
-                        />
-                      </label>
-                    </div>
-
-                    {/* Preview */}
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <h4 className="font-medium text-gray-900 mb-3">Preview af dit opslag:</h4>
-                      <div className="bg-white rounded-lg p-4 border border-gray-200">
-                        <div className="flex items-center space-x-3 mb-3">
-                          <img
-                            src={currentUser?.avatar}
-                            alt="Din avatar"
-                            className="w-10 h-10 rounded-full"
-                          />
-                          <div>
-                            <p className="font-medium text-gray-900">{currentUser?.name}</p>
-                            <p className="text-sm text-gray-600">{location}</p>
-                          </div>
-                        </div>
-                        <p className="text-gray-800 mb-3">{content || 'Din beskrivelse kommer her...'}</p>
-                        {budget && (
-                          <div className="flex items-center space-x-2 text-green-600">
-                            <DollarSign className="w-4 h-4" />
-                            <span className="font-medium">Budget: {budget}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Navigation Buttons */}
-                    <div className="flex justify-between pt-4">
-                      <button
-                        type="button"
-                        onClick={() => setCurrentStep(2)}
-                        className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-                      >
-                        Tilbage
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={!content.trim()}
-                        className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                      >
-                        🚀 Opret Job Opslag
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {isExpanded && (
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-4 space-y-3 sm:space-y-0">
-                <div className="flex items-center space-x-3 sm:space-x-4 w-full sm:w-auto">
-                  <label className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105 cursor-pointer">
-                    <Image className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Billeder ({selectedImages.length}/10)</span>
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
-                  </label>
-                  
-                  <label className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105 cursor-pointer">
-                    <Video className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Video {selectedVideo ? '(1)' : ''}</span>
-                    <input
-                      type="file"
-                      accept="video/*"
-                      onChange={handleVideoUpload}
-                      className="hidden"
-                    />
-                  </label>
-                  
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                          (position) => {
-                            // Reverse geocoding would go here in production
-                            setLocation('Din nuværende lokation');
-                          },
-                          () => {
-                            alert('Kunne ikke få din lokation');
-                          }
-                        );
-                      } else {
-                        alert('Din browser understøtter ikke geolocation');
-                      }
-                    }}
-                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-all duration-200 text-sm hover:scale-105"
-                  >
-                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>{t('location')}</span>
-                  </button>
-                </div>
-
-                {postType !== 'job' && (
-                  <button
-                    type="submit"
-                    disabled={!content.trim()}
-                    className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 text-sm ${
-                      content.trim()
-                        ? 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-105'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    Opret Opslag
-                  </button>
-                )}
-              </div>
-            )}
-          </form>
+  // Show loading screen while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-white animate-spin" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
+          <p className="text-gray-600">Tjekker login status...</p>
         </div>
       </div>
+    );
+  }
 
-      {/* Media Editor Modal */}
-      {showMediaEditor && selectedVideo && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto media-editor-modal">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Rediger Video</h3>
-                <button
-                  onClick={() => setShowMediaEditor(false)}
-                  className="p-2 hover:bg-gray-100 rounded-full"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+  // CRITICAL: Show auth screen if not logged in - NO ACCESS WITHOUT LOGIN
+  if (!currentUser) {
+    return <AuthScreen onLogin={handleLogin} />;
+  }
 
-              {/* Video Preview */}
-              <div className="relative mb-4">
-                <video
-                  src={URL.createObjectURL(selectedVideo)}
-                  className="w-full h-64 object-cover rounded-lg"
-                  style={currentFilter !== 'none' ? filters.find(f => f.id === currentFilter)?.style : {}}
-                  controls
-                />
-                {videoText && (
-                  <div className="absolute bottom-4 left-4 bg-black bg-opacity-75 text-white px-3 py-2 rounded text-sm">
-                    {videoText}
-                  </div>
-                )}
-              </div>
+  const renderMainContent = () => {
+    switch (currentPage) {
+      case 'jobs':
+        return <LocalJobsPage currentUser={currentUser} />;
+      case 'network':
+        return <NetworkPage currentUser={currentUser} />;
+      case 'tasks':
+        return <MyTasksPage currentUser={currentUser} />;
+      case 'planning':
+        return <PlanningPage currentUser={currentUser} />;
+      case 'local-jobs':
+        return <LocalJobsPage currentUser={currentUser} onShowSubscription={() => setShowSubscription(true)} />;
+      case 'map':
+        return <MapPage currentUser={currentUser} />;
+      case 'profile':
+        return (
+          <UserProfilePage 
+            currentUser={currentUser} 
+            onUpdateUser={handleUpdateUser}
+            onShowSettings={() => setShowSettings(true)}
+          />
+        );
+      case 'admin':
+        return <AdminPage currentUser={currentUser} />;
+      case 'about':
+        return <AboutPage />;
+      case 'contact':
+        return <ContactPage />;
+      case 'support':
+        return <SupportPage />;
+      case 'terms':
+        return <TermsPage />;
+      default:
+        return renderHomePage();
+    }
+  };
 
-              {/* Editing Tools */}
-              <div className="space-y-4 max-h-[50vh] overflow-y-auto">
-                {/* Filters */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Filter className="w-4 h-4 inline mr-1" />
-                    Filtre
-                  </label>
-                  <div className="flex space-x-2 overflow-x-auto">
-                    {filters.map((filter) => (
-                      <button
-                        key={filter.id}
-                        onClick={() => setCurrentFilter(filter.id)}
-                        className={`px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap ${
-                          currentFilter === filter.id
-                            ? 'bg-blue-100 text-blue-700'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        {filter.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+  const renderHomePage = () => (
+    <div className="max-w-2xl mx-auto px-1 xs:px-0">
+      <CreatePost 
+        currentUser={currentUser} 
+      />
+      
+      <div className="mb-3 xs:mb-4 sm:mb-6">
+        <AdBanner type="banner" position="top" className="w-full" />
+      </div>
 
-                {/* Text Overlay */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Type className="w-4 h-4 inline mr-1" />
-                    Tekst overlay
-                  </label>
-                  <input
-                    type="text"
-                    value={videoText}
-                    onChange={(e) => setVideoText(e.target.value)}
-                    placeholder="Tilføj tekst til video..."
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
+      <PostFeed 
+        currentUser={currentUser}
+      />
 
-                {/* Music */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Music className="w-4 h-4 inline mr-1" />
-                    Baggrundsmusik
-                  </label>
-                  <select
-                    value={selectedMusic}
-                    onChange={(e) => setSelectedMusic(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    {musicOptions.map((music) => (
-                      <option key={music.id} value={music.id}>{music.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Emoji Picker */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Smile className="w-4 h-4 inline mr-1" />
-                    Emoji
-                  </label>
-                  <div className="flex space-x-2">
-                    {['😊', '😍', '🔥', '💪', '✨', '👍', '❤️', '🎉'].map((emoji) => (
-                      <button
-                        key={emoji}
-                        onClick={() => setVideoText(prev => prev + emoji)}
-                        className="p-2 hover:bg-gray-100 rounded-lg text-xl"
-                      >
-                        {emoji}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex space-x-3 mt-6">
-                <button
-                  onClick={() => setShowMediaEditor(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-                >
-                  Annuller
-                </button>
-                <button
-                  onClick={() => setShowMediaEditor(false)}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
-                  Gem Ændringer
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Image Preview Grid */}
-      {selectedImages.length > 0 && (
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-          <h4 className="font-medium text-gray-900 mb-3">Valgte billeder ({selectedImages.length}/10)</h4>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
-            {selectedImages.map((image, index) => (
-              <div key={index} className="relative">
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt={`Upload ${index + 1}`}
-                  className="w-full h-24 sm:h-28 object-cover rounded-lg border border-gray-200"
-                />
-                
-                {/* Replace Image Button */}
-                <label className="absolute top-1 left-1 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs cursor-pointer hover:bg-blue-700 transition-colors duration-200">
-                  ✎
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => replaceImage(index, e)}
-                    className="hidden"
-                  />
-                </label>
-                
-                {/* Remove Image Button */}
-                <button
-                  type="button"
-                  onClick={() => removeImage(index)}
-                  className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors duration-200"
-                >
-                  ×
-                </button>
-                
-                {/* Image Counter */}
-                <div className="absolute bottom-1 left-1 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-xs">
-                  {index + 1}/{selectedImages.length}
-                </div>
-              </div>
-            ))}
-            
-            {/* Add More Images Button */}
-            {selectedImages.length < 10 && (
-              <label className="w-full h-24 sm:h-28 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200">
-                <Plus className="w-6 h-6 text-gray-400 mb-1" />
-                <span className="text-xs text-gray-500">Tilføj billede</span>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-              </label>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Launch Period Notice */}
-      <div className="mt-3 p-3 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg">
-        <p className="text-xs text-green-800 text-center font-medium">
-          🎉 PRIVATE RENGØRING er 100% GRATIS!
-        </p>
-        <p className="text-xs text-green-700 text-center mt-1">
-          Like, kommentér, ansøg om jobs, send beskeder - alt er gratis for altid!
-        </p>
+      <div className="mt-6 sm:mt-8">
+        <RecommendationWidget />
       </div>
     </div>
   );
+
+  // Post Feed Component
+  const PostFeed = ({ currentUser }: any) => {
+    const [posts, setPosts] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    React.useEffect(() => {
+      // Simulate loading posts
+      setTimeout(() => {
+        const mockPosts = [
+          {
+            id: '1',
+            user: {
+              id: '1',
+              name: 'Maria Hansen',
+              avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+              verified: true,
+              userType: 'private'
+            },
+            content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen. Jeg har 2 børn og en hund, så erfaring med familier er et plus! 🏠✨',
+            location: 'København NV',
+            budget: '300-400 kr',
+            createdAt: '2 timer siden',
+            likes: 12,
+            comments: [
+              {
+                id: '1',
+                content: 'Hej Maria! Jeg har 5 års erfaring med familierengøring og elsker at arbejde med familier der har kæledyr.',
+                createdAt: '1 time siden',
+                user: {
+                  id: '2',
+                  name: 'Lars Nielsen',
+                  avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+                  verified: true
+                }
+              }
+            ],
+            isJobPost: true,
+            jobType: 'home_cleaning',
+            urgency: 'flexible'
+          }
+        ];
+        setPosts(mockPosts);
+        setLoading(false);
+      }, 1000);
+    }, []);
+
+    if (loading) {
+      return (
+        <div className="text-center py-12">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Indlæser opslag...</p>
+        </div>
+      );
+    }
+
+    if (posts.length === 0) {
+      return (
+        <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen opslag endnu</h3>
+          <p className="text-gray-600 mb-4">Vær den første til at dele et opslag!</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-3 xs:space-y-4 sm:space-y-6">
+        {posts.map((post) => (
+          <PostCard
+            key={post.id}
+            post={post}
+            currentUser={currentUser}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div className={`min-h-screen bg-gray-50 ${isPWA ? 'pwa-mode' : ''}`}>
+      {isPWA && (
+        <div className="bg-blue-600 text-white text-center py-1 text-xs">
+          📱 Kører som app • PRIVATE RENGØRING
+        </div>
+      )}
+      
+      <Header
+        currentUser={currentUser}
+        onShowMessages={() => setShowMessages(true)}
+        onShowNotifications={() => setShowNotifications(true)}
+        onShowProfile={() => setCurrentPage('profile')}
+        onToggleSidebar={() => setShowSidebar(!showSidebar)}
+        onLogout={handleLogout}
+        onShowSettings={() => setShowSettings(true)}
+        onShowHelp={() => setShowHelp(true)}
+        setCurrentPage={setCurrentPage}
+      />
+
+      <div className="flex">
+        {/* Sidebar */}
+        <div className={`fixed inset-y-0 left-0 z-30 w-56 xs:w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+          showSidebar ? 'translate-x-0' : '-translate-x-full'
+        }`}>
+          <div className="flex flex-col h-full pt-14 xs:pt-16 lg:pt-0">
+            <div className="lg:hidden p-3 xs:p-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-base xs:text-lg font-semibold text-gray-900">Menu</h2>
+                <button
+                  onClick={() => setShowSidebar(false)}
+                  className="p-1.5 xs:p-2 rounded-lg hover:bg-gray-100"
+                >
+                  <X className="w-4 h-4 xs:w-5 xs:h-5" />
+                </button>
+              </div>
+            </div>
+
+            <nav className="flex-1 px-3 xs:px-4 py-4 xs:py-6 space-y-1.5 xs:space-y-2 overflow-y-auto">
+              <button
+                onClick={() => {
+                  setCurrentPage('home');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'home' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Home className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">{t('home')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('jobs');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'jobs' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Briefcase className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">{t('localJobs')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('network');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'network' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Users className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">{t('network')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('tasks');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'tasks' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">{t('myTasks')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('planning');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'planning' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">{t('planning')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('map');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'map' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <MapPin className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">Jobs på Kort</span>
+              </button>
+
+              {currentUser.email === 'admin@privaterengoring.dk' && (
+                <button
+                  onClick={() => {
+                    setCurrentPage('admin');
+                    setShowSidebar(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                    currentPage === 'admin' ? 'bg-red-100 text-red-700' : 'text-red-600 hover:bg-red-50'
+                  }`}
+                >
+                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <span className="font-medium">Admin Panel</span>
+                </button>
+              )}
+
+              <div className="pt-4 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setCurrentPage('about');
+                    setShowSidebar(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                    currentPage === 'about' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <HelpCircle className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <span className="font-medium">Om os</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setCurrentPage('support');
+                    setShowSidebar(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                    currentPage === 'support' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <HelpCircle className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <span className="font-medium">Hjælp & Support</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setCurrentPage('contact');
+                    setShowSidebar(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                    currentPage === 'contact' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Mail className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <span className="font-medium">Kontakt & Klager</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setCurrentPage('terms');
+                    setShowSidebar(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                    currentPage === 'terms' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <span className="font-medium">Vilkår & Betingelser</span>
+                </button>
+              </div>
+            </nav>
+
+          </div>
+        </div>
+
+        {showSidebar && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+            onClick={() => setShowSidebar(false)}
+          />
+        )}
+
+        <div className="flex-1 lg:ml-0">
+          <main className="py-6 px-3 sm:px-6 lg:px-8">
+            {renderMainContent()}
+          </main>
+        </div>
+      </div>
+
+      {/* Modals */}
+      <MessagesModal
+        isOpen={showMessages}
+        onClose={() => setShowMessages(false)}
+        currentUser={currentUser}
+      />
+
+      <NotificationModal
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
+        currentUser={currentUser}
+      />
+
+      <SettingsModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        currentUser={currentUser}
+        onUpdateUser={handleUpdateUser}
+      />
+
+      <InstallPrompt />
+    </div>
+  );
 }
+
+export default App;
