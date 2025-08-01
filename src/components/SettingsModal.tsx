@@ -2,32 +2,7 @@ import React, { useState } from 'react';
 import { Home, Briefcase, Users, Calendar, Heart, MapPin, Search, Bell, MessageCircle, User as UserIcon, Menu, Plus, Settings, LogOut, Star, Crown, Shield, TrendingUp, Filter, Globe, HelpCircle, Phone, Mail, ExternalLink, Eye, EyeOff, Trash2, Edit, X, Clock, DollarSign, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Share2, CheckCircle } from 'lucide-react';
 import { useLanguage } from './hooks/useLanguage';
 import Header from './components/Header';
-import CreatePost from './components/CreatePost';
-import PostCard from './components/PostCard';
-import LocalJobsPage from './components/LocalJobsPage';
-import NetworkPage from './components/NetworkPage';
-import MyTasksPage from './components/MyTasksPage';
-import PlanningPage from './components/PlanningPage';
-import MapPage from './components/MapPage';
-import UserProfilePage from './components/UserProfilePage';
-import UserProfileModal from './components/UserProfileModal';
-import MessagesModal from './components/MessagesModal';
-import NotificationModal from './components/NotificationModal';
-import SubscriptionModal from './components/SubscriptionModal';
-import PaymentModal from './components/PaymentModal';
-import SuccessPage from './components/SuccessPage';
-import AuthScreen from './components/AuthScreen';
-import AdminPage from './components/AdminPage';
-import AboutPage from './components/AboutPage';
-import ContactPage from './components/ContactPage';
-import SupportPage from './components/SupportPage';
-import TermsPage from './components/TermsPage';
-import HelpModal from './components/HelpModal';
-import TermsModal from './components/TermsModal';
-import FriendRequestModal from './components/FriendRequestModal';
-import SettingsModal from './components/SettingsModal';
-import InstallPrompt from './components/InstallPrompt';
-import AdBanner from './components/AdBanner';
+import { X, User, Bell, Shield, Globe, Eye, EyeOff, Save } from 'lucide-react';
 import RecommendationWidget from './components/RecommendationWidget';
 import type { User } from './types';
 
@@ -51,6 +26,7 @@ function App() {
   const [showProLockModal, setShowProLockModal] = useState(false);
   // Check if running as PWA
   React.useEffect(() => {
+    const checkPWA = () => {
       setIsLoading(true);
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
@@ -63,6 +39,38 @@ function App() {
     const authToken = localStorage.getItem('authToken');
     const savedUser = localStorage.getItem('currentUser');
     if (authToken && savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        setCurrentUser(userData);
+      } catch (error) {
+        console.error('Error loading saved user:', error);
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('authToken');
+      }
+    }
+    
+    // Listen for display mode changes
+    const mediaQuery = window.matchMedia('(display-mode: standalone)');
+    mediaQuery.addEventListener('change', checkPWA);
+    
+    // Quick loading check
+    setIsLoading(false);
+    
+    return () => mediaQuery.removeEventListener('change', checkPWA);
+  }, []);
+
+export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUser }: SettingsModalProps) {
+  const [formData, setFormData] = useState({
+    name: currentUser.name || '',
+    email: currentUser.email || '',
+    phone: currentUser.phone || '',
+    location: currentUser.location || '',
+    bio: currentUser.bio || '',
+    notifications: currentUser.notifications !== false,
+    privacy: currentUser.privacy || 'public'
+  });
+
+  const handleSave = () => {
     try {
       // Update local state immediately
       const updatedUser = { ...currentUser, ...formData };
@@ -97,111 +105,138 @@ function App() {
       console.error('Error updating profile:', error);
       alert('Fejl ved opdatering af profil. Prøv igen.');
     }
-    mediaQuery.addEventListener('change', checkPWA);
-    
-    // Quick loading check
-    setIsLoading(false);
-    
-    return () => mediaQuery.removeEventListener('change', checkPWA);
-  }, []);
-
-  // Handle login
-  const handleLogin = (user: User) => {
-    setCurrentUser(user);
-    localStorage.setItem('currentUser', JSON.stringify(user));
   };
 
-  // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('userData');
-    setCurrentUser(null);
-    setCurrentPage('home');
-  };
+  if (!isOpen) return null;
 
-  // Handle user profile update
-  const handleUpdateUser = (updates: Partial<User>) => {
-    if (currentUser) {
-      const updatedUser = { ...currentUser, ...updates };
-      setCurrentUser(updatedUser);
-      localStorage.setItem('userData', JSON.stringify(updatedUser));
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-    }
-  };
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <h2 className="text-xl font-bold text-gray-900">Indstillinger</h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
-  // Show loading screen while checking authentication
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white animate-spin" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
-            </svg>
+        <div className="p-6 space-y-6">
+          {/* Profile Settings */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <User className="w-5 h-5 mr-2" />
+              Profil Oplysninger
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Navn</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Lokation</label>
+                <input
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                <textarea
+                  value={formData.bio}
+                  onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
-          <p className="text-gray-600">Indlæser...</p>
+
+          {/* Notification Settings */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <Bell className="w-5 h-5 mr-2" />
+              Notifikationer
+            </h3>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-700">Modtag notifikationer</span>
+              <button
+                onClick={() => setFormData({ ...formData, notifications: !formData.notifications })}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  formData.notifications ? 'bg-blue-600' : 'bg-gray-200'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    formData.notifications ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* Privacy Settings */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <Shield className="w-5 h-5 mr-2" />
+              Privatliv
+            </h3>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Profil synlighed</label>
+              <select
+                value={formData.privacy}
+                onChange={(e) => setFormData({ ...formData, privacy: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="public">Offentlig</option>
+                <option value="friends">Kun venner</option>
+                <option value="private">Privat</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Save Button */}
+          <div className="pt-4 border-t border-gray-200">
+            <button
+              onClick={handleSave}
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+            >
+              <Save className="w-5 h-5 mr-2" />
+              Gem Ændringer
+            </button>
+          </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
-  // CRITICAL: Show auth screen if not logged in - NO ACCESS WITHOUT LOGIN
-  if (!currentUser) {
-    return <AuthScreen onLogin={handleLogin} />;
-  }
-
-  const renderMainContent = () => {
-    switch (currentPage) {
-      case 'jobs':
-        return <LocalJobsPage currentUser={currentUser} />;
-      case 'network':
-        return <NetworkPage currentUser={currentUser} />;
-      case 'tasks':
-        return <MyTasksPage currentUser={currentUser} />;
-      case 'planning':
-        return <PlanningPage currentUser={currentUser} />;
-      case 'local-jobs':
-        return <LocalJobsPage currentUser={currentUser} onShowSubscription={() => setShowSubscription(true)} />;
-      case 'map':
-        return <MapPage currentUser={currentUser} />;
-      case 'profile':
-        return (
-          <UserProfilePage 
-            currentUser={currentUser} 
-            onUpdateUser={handleUpdateUser}
-            onShowSettings={() => setShowSettings(true)}
-          />
-        );
-      case 'admin':
-        return <AdminPage currentUser={currentUser} />;
-      case 'about':
-        return <AboutPage />;
-      case 'contact':
-        return <ContactPage />;
-      case 'support':
-        return <SupportPage />;
-      case 'terms':
-        return <TermsPage />;
-      default:
-        return renderHomePage();
-    }
-  };
-
-  const renderHomePage = () => (
-    <div className="max-w-2xl mx-auto px-1 xs:px-0">
-      <CreatePost 
-        currentUser={currentUser} 
-      />
-      
-      <div className="mb-3 xs:mb-4 sm:mb-6">
-        <AdBanner type="banner" position="top" className="w-full" />
-      </div>
-
-      <PostFeed 
-        currentUser={currentUser}
-      />
 
       <div className="mt-6 sm:mt-8">
         <RecommendationWidget />
@@ -417,86 +452,18 @@ function App() {
                   }`}
                 >
                   <HelpCircle className="w-4 h-4 xs:w-5 xs:h-5" />
+interface SettingsModalProps {
                   <span className="font-medium">Om os</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCurrentPage('support');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'support' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <HelpCircle className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Hjælp & Support</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCurrentPage('contact');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'contact' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <Mail className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Kontakt & Klager</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCurrentPage('terms');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'terms' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Vilkår & Betingelser</span>
-                </button>
-              </div>
-            </nav>
-
-          </div>
-        </div>
-
-        {showSidebar && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
-            onClick={() => setShowSidebar(false)}
-          />
-        )}
-
-        <div className="flex-1 lg:ml-0">
-          <main className="py-6 px-3 sm:px-6 lg:px-8">
-            {renderMainContent()}
-          </main>
-        </div>
-      </div>
-
-      {/* Modals */}
-      <MessagesModal
-        isOpen={showMessages}
-        onClose={() => setShowMessages(false)}
-        currentUser={currentUser}
-      />
-
-      <NotificationModal
-        isOpen={showNotifications}
-        onClose={() => setShowNotifications(false)}
-        currentUser={currentUser}
-      />
-
+  isOpen: boolean;
       <SettingsModal
+  onClose: () => void;
         isOpen={showSettings}
+  currentUser: User;
         onClose={() => setShowSettings(false)}
+  onUpdateUser: (updates: Partial<User>) => void;
         currentUser={currentUser}
+}
         onUpdateUser={handleUpdateUser}
-      />
 
       <InstallPrompt />
     </div>
