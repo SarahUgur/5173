@@ -379,6 +379,7 @@ function App() {
                   className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
                     currentPage === 'admin' ? 'bg-red-100 text-red-700' : 'text-red-600 hover:bg-red-50'
                   }`}
+                >
                   <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
                   <span className="font-medium">Admin Panel</span>
                 </button>
@@ -449,81 +450,6 @@ function App() {
           />
         )}
 
-        {/* Live Preview */}
-        {postContent.trim() && (
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h3 className="font-medium text-blue-900 mb-3">📱 Forhåndsvisning af dit opslag:</h3>
-            <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-              {/* Preview Header */}
-              <div className="flex items-center space-x-3 mb-3">
-                <img
-                  src={currentUser?.avatar || "/api/placeholder/40/40"}
-                  alt="Din avatar"
-                  className="w-10 h-10 rounded-full"
-                />
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <span className="font-semibold text-gray-900">{currentUser?.name}</span>
-                    {currentUser?.verified && (
-                      <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-xs">✓</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <span>Nu</span>
-                    <span>•</span>
-                    <MapPin className="w-3 h-3" />
-                    <span>{location || "Lokation ikke angivet"}</span>
-                  </div>
-                </div>
-                {isJobPost && (
-                  <div className="ml-auto flex space-x-2">
-                    <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
-                      Job
-                    </span>
-                    {urgency === 'immediate' && (
-                      <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
-                        Akut
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Preview Content */}
-              <p className="text-gray-800 mb-3">{postContent}</p>
-              
-              {/* Preview Job Details */}
-              {isJobPost && budget && (
-                <div className="flex items-center space-x-2 mb-3 p-2 bg-green-50 rounded-lg border border-green-200">
-                  <DollarSign className="w-4 h-4 text-green-600" />
-                  <span className="font-semibold text-green-800">Budget: {budget}</span>
-                </div>
-              )}
-
-              {/* Preview Actions */}
-              <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-1 text-gray-500">
-                    <span className="text-sm">👍 0</span>
-                  </div>
-                  <div className="flex items-center space-x-1 text-gray-500">
-                    <span className="text-sm">💬 0</span>
-                  </div>
-                  <div className="flex items-center space-x-1 text-gray-500">
-                    <span className="text-sm">📤 Del</span>
-                  </div>
-                </div>
-                {isJobPost && (
-                  <span className="px-4 py-1 bg-blue-600 text-white rounded-lg text-sm font-medium">
-                    Ansøg
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
         <div className="flex-1 lg:ml-0">
           <main className="py-6 px-3 sm:px-6 lg:px-8">
             {renderMainContent()}
