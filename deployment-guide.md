@@ -87,3 +87,8 @@ Din app er nu live på: `https://DIT-SITE-NAVN.netlify.app`
 
 ## 📞 Hjælp
 Hvis du har problemer, spørg mig i Bolt! 😊
+
+### 📞 Support
+Hvis du har problemer med GitHub setup:
+- 📧 Email: support@privatrengoring.dk
+- 💬 Opret et issue på GitHub repository

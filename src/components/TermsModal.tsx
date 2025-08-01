@@ -103,7 +103,6 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
               </div>
               <div className="bg-indigo-50 rounded-lg p-4 space-y-2 text-sm text-gray-700">
                 <p>• <strong>Kundeservice:</strong> support@privatrengoring.dk</p>
-                <p>• <strong>Kundeservice:</strong> support@privaterengoring.dk</p>
                 <p>• <strong>Teknisk hjælp:</strong> Brug hjælp-funktionen i appen</p>
                 <p>• <strong>Rapporter problemer:</strong> Kontakt os ved problemer med andre brugere</p>
                 <p>• <strong>Feedback:</strong> Vi værdsætter din feedback til forbedringer</p>

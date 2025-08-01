@@ -95,9 +95,9 @@
 - **Domain**: Domain registrar support
 
 ### Business Issues
+- **Email**: support@privatrengoring.dk
 - **Legal**: Legal advisor for GDPR/terms
 - **Marketing**: Marketing team/agency
-- **Partnerships**: Business development contact
 
 ## 🎯 Success Metrics (Month 1)
 

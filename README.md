@@ -211,7 +211,7 @@ Private project - All rights reserved
 
 ## 📞 Support
 
-For support, email: support@privaterengoring.dk
+For support, email: support@privatrengoring.dk
 
 ---
 

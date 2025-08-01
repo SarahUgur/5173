@@ -145,8 +145,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           bio: 'Logget ind via Facebook',
           phone: '+45 23 45 67 89',
           website: 'https://example.com',
-          joinedDate: new Date().toISOString().split('T')[0],
-          coverPhoto: 'https://images.pexels.com/photos/4108715/pexels-photo-4108715.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop'
+          joinedDate: new Date().toISOString().split('T')[0]
         }
       };
 

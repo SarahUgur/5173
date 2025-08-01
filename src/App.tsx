@@ -805,7 +805,7 @@ function App() {
               </button>
 
               {/* Admin link */}
-              {currentUser.email === 'admin@privaterengoring.dk' && (
+              {currentUser.email === 'admin@privatrengoring.dk' && (
                 <>
                 <button
                   onClick={() => {
