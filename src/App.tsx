@@ -546,15 +546,87 @@ function App() {
                 verified: true,
                 userType: 'private'
               },
-              content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen.',
+              content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen. Jeg har 2 børn og en hund, så erfaring med familier er et plus! 🏠✨',
               location: 'København NV',
               budget: '300-400 kr',
               createdAt: '2 timer siden',
               likes: 12,
-              comments: [],
+              comments: [
+                {
+                  id: '1',
+                  content: 'Hej Maria! Jeg har 5 års erfaring med familierengøring og elsker at arbejde med familier der har kæledyr. Kan du fortælle mere om opgaven?',
+                  createdAt: '1 time siden',
+                  user: {
+                    id: '2',
+                    name: 'Lars Nielsen',
+                    avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+                    verified: true
+                  }
+                },
+                {
+                  id: '2',
+                  content: 'Lyder som en perfekt opgave! Jeg tilbyder miljøvenlig rengøring og har erfaring med børnefamilier. Kan vi tale sammen?',
+                  createdAt: '45 min siden',
+                  user: {
+                    id: '3',
+                    name: 'Sofie Andersen',
+                    avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+                    verified: false
+                  }
+                }
+              ],
               isJobPost: true,
               jobType: 'home_cleaning',
-              urgency: 'flexible'
+              urgency: 'flexible',
+              images: ['https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop']
+            },
+            {
+              id: '2',
+              user: {
+                id: '4',
+                name: 'Peter Larsen',
+                avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+                verified: true,
+                userType: 'cleaner'
+              },
+              content: 'Lige afsluttet en fantastisk kontorrengøring i Aarhus! Kunden var super tilfreds med resultatet. Specialiseret i miljøvenlig rengøring og har alle nødvendige certifikater. 🌱✨',
+              location: 'Aarhus C',
+              createdAt: '3 timer siden',
+              likes: 18,
+              comments: [
+                {
+                  id: '3',
+                  content: 'Flot arbejde Peter! Kan du anbefale nogle gode miljøvenlige produkter?',
+                  createdAt: '2 timer siden',
+                  user: {
+                    id: '5',
+                    name: 'Emma Christensen',
+                    avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+                    verified: false
+                  }
+                }
+              ],
+              isJobPost: false,
+              images: ['https://images.pexels.com/photos/4099468/pexels-photo-4099468.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop']
+            },
+            {
+              id: '3',
+              user: {
+                id: '6',
+                name: 'Anna Møller',
+                avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+                verified: false,
+                userType: 'small_business'
+              },
+              content: 'AKUT: Vores kontor i Odense har brug for rengøring i morgen tidlig! Vi har et vigtigt klientmøde kl. 10, og stedet skal være perfekt. Kan betale ekstra for den korte varsel. 🚨',
+              location: 'Odense C',
+              budget: '800-1000 kr',
+              createdAt: '30 minutter siden',
+              likes: 5,
+              comments: [],
+              isJobPost: true,
+              jobType: 'office_cleaning',
+              urgency: 'immediate'
             }
           ];
           setPosts(mockPosts);
@@ -573,12 +645,24 @@ function App() {
               verified: true,
               userType: 'private'
             },
-            content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen.',
+            content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen. Jeg har 2 børn og en hund, så erfaring med familier er et plus! 🏠✨',
             location: 'København NV',
             budget: '300-400 kr',
             createdAt: '2 timer siden',
             likes: 12,
-            comments: [],
+            comments: [
+              {
+                id: '1',
+                content: 'Hej Maria! Jeg har 5 års erfaring med familierengøring og elsker at arbejde med familier der har kæledyr.',
+                createdAt: '1 time siden',
+                user: {
+                  id: '2',
+                  name: 'Lars Nielsen',
+                  avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+                  verified: true
+                }
+              }
+            ],
             isJobPost: true,
             jobType: 'home_cleaning',
             urgency: 'flexible'
@@ -607,10 +691,15 @@ function App() {
 
     if (posts.length === 0) {
       return (
-        <div className="text-center py-12">
+        <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen opslag endnu</h3>
-          <p className="text-gray-600">Vær den første til at dele et opslag!</p>
+          <p className="text-gray-600 mb-4">Vær den første til at dele et opslag!</p>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-blue-800 text-sm">
+              💡 <strong>Tip:</strong> Opret dit første opslag ovenfor for at komme i gang med at finde rengøringsjobs eller tilbyde dine tjenester!
+            </p>
+          </div>
         </div>
       );
     }
