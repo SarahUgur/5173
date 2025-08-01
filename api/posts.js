@@ -30,22 +30,25 @@ module.exports = async function handler(req, res) {
   if (req.method === 'POST') {
     verifyToken(req, res, async () => {
       try {
-        const { title, description, location, jobCategory, targetAudience, urgency } = req.body;
+        const { type, content, location, jobType, jobCategory, targetAudience, urgency, budget } = req.body;
 
         // Create mock post response
         const mockPost = {
           id: Date.now().toString(),
-          title: title || '',
-          description: description || '',
+          type: type || 'regular',
+          content: content || '',
           location: location || '',
+          job_type: jobType || null,
           job_category: jobCategory || null,
           target_audience: targetAudience || null,
           urgency: urgency || null,
+          budget: budget || null,
           created_at: new Date().toISOString()
         };
 
         res.status(201).json({
-          postId: mockPost.id
+          postId: mockPost.id,
+          message: 'Opslag oprettet succesfuldt'
         });
 
       } catch (error) {
