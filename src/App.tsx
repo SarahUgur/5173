@@ -325,11 +325,11 @@ function App() {
                   setCurrentPage('jobs');
                   setShowSidebar(false);
                 }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
                   currentPage === 'jobs' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                <Briefcase className="w-5 h-5" />
+                <Briefcase className="w-4 h-4 xs:w-5 xs:h-5" />
                 <span className="font-medium">{t('localJobs')}</span>
               </button>
 
@@ -338,12 +338,51 @@ function App() {
                   setCurrentPage('network');
                   setShowSidebar(false);
                 }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
                   currentPage === 'network' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                <Users className="w-5 h-5" />
+                <Users className="w-4 h-4 xs:w-5 xs:h-5" />
                 <span className="font-medium">{t('network')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('tasks');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'tasks' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">{t('myTasks')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('planning');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'planning' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">{t('planning')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentPage('map');
+                  setShowSidebar(false);
+                }}
+                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                  currentPage === 'map' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <MapPin className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-medium">Jobs på Kort</span>
               </button>
 
               {currentUser.email === 'admin@privaterengoring.dk' && (
@@ -352,11 +391,11 @@ function App() {
                     setCurrentPage('admin');
                     setShowSidebar(false);
                   }}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
                     currentPage === 'admin' ? 'bg-red-100 text-red-700' : 'text-red-600 hover:bg-red-50'
                   }`}
                 >
-                  <Shield className="w-5 h-5" />
+                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
                   <span className="font-medium">Admin Panel</span>
                 </button>
               )}
