@@ -192,7 +192,6 @@ function App() {
   const PostFeed = ({ currentUser }: any) => {
     const [posts, setPosts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-
     React.useEffect(() => {
       // Load real posts from API
       setTimeout(() => {
@@ -220,6 +219,7 @@ function App() {
         console.error('Error loading posts:', error);
         setPosts([]);
       }
+      setLoading(false);
     };
     if (loading) {
       return (

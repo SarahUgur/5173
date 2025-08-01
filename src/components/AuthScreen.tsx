@@ -51,7 +51,6 @@ function App() {
   const [showProLockModal, setShowProLockModal] = useState(false);
   // Check if running as PWA
   React.useEffect(() => {
-    const checkPWA = () => {
       setIsLoading(true);
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
@@ -64,70 +63,15 @@ function App() {
     const authToken = localStorage.getItem('authToken');
     const savedUser = localStorage.getItem('currentUser');
     if (authToken && savedUser) {
-      try {
-        const userData = JSON.parse(savedUser);
-        setCurrentUser(userData);
-      } catch (error) {
-        console.error('Error loading saved user:', error);
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('authToken');
-      }
-    }
-    
-    // Listen for display mode changes
-    const mediaQuery = window.matchMedia('(display-mode: standalone)');
-    mediaQuery.addEventListener('change', checkPWA);
-    
-    // Quick loading check
-    setIsLoading(false);
-    
-    return () => mediaQuery.removeEventListener('change', checkPWA);
-  }, []);
-
-  // Handle login
-  const handleLogin = (user: User) => {
-    setCurrentUser(user);
-    localStorage.setItem('currentUser', JSON.stringify(user));
-  };
-
-  // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('userData');
-    setCurrentUser(null);
-    setCurrentPage('home');
-  };
-
-  // Handle user profile update
-  const handleUpdateUser = (updates: Partial<User>) => {
-    if (currentUser) {
-      const updatedUser = { ...currentUser, ...updates };
-      setCurrentUser(updatedUser);
-      localStorage.setItem('userData', JSON.stringify(updatedUser));
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-    }
-  };
-
-  // Show loading screen while checking authentication
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
-                  <path d="M19 15L19.5 17L21.5 17.5L19.5 18L19 20L18.5 18L16.5 17.5L18.5 17L19 15Z"/>
-                  <path d="M5 15L5.5 17L7.5 17.5L5.5 18L5 20L4.5 18L2.5 17.5L4.5 17L5 15Z"/>
-                </svg>
-              </div>
-              <h1 className="text-xl sm:text-2xl font-normal text-white">Private Rengøring</h1>
-            </div>
-            <svg className="w-8 h-8 text-white animate-spin" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
-            </svg>
+      // Real social login - redirect to actual OAuth
+      const authUrls = {
+        google: `https://accounts.google.com/oauth/authorize?client_id=YOUR_GOOGLE_CLIENT_ID&redirect_uri=${encodeURIComponent(window.location.origin)}/auth/google/callback&response_type=code&scope=email profile`,
+        apple: `https://appleid.apple.com/auth/authorize?client_id=YOUR_APPLE_CLIENT_ID&redirect_uri=${encodeURIComponent(window.location.origin)}/auth/apple/callback&response_type=code&scope=email name`,
+        facebook: `https://www.facebook.com/v18.0/dialog/oauth?client_id=YOUR_FACEBOOK_APP_ID&redirect_uri=${encodeURIComponent(window.location.origin)}/auth/facebook/callback&response_type=code&scope=email`
+      };
+      
+      // Redirect to real OAuth provider
+      window.location.href = authUrls[provider];
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
           <p className="text-gray-600">Indlæser...</p>
