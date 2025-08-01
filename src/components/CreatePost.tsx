@@ -116,8 +116,8 @@ export default function CreatePost({ currentUser, onShowSubscription }: CreatePo
       
       alert(`🎉 ${postType === 'job' ? 'Job opslag' : 'Opslag'} oprettet succesfuldt og er nu synligt for alle!`);
       
-      // Refresh page to show new post
-      window.location.reload();
+      // Close create post form
+      setIsExpanded(false);
       
     } catch (error) {
       console.error('Error creating post:', error);

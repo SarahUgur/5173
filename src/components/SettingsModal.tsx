@@ -42,6 +42,7 @@ export default function SettingsModal({ isOpen, onClose, currentUser, onUpdateUs
     // Update local state immediately
     onUpdateUser(formData);
     alert('Profil opdateret succesfuldt!');
+    onClose();
     
     // Try to save to API (optional)
     fetch('/api/user/profile', {

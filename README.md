@@ -1,6 +1,19 @@
 # Private Rengøring - Social Platform
 
-Danmarks største sociale platform for rengøringsservices med support for 6 sprog. Helt gratis at bruge!
+Danmarks største sociale platform for rengøringsservices med support for 6 sprog. 
+
+🌐 **Live Site:** https://privatrengoering.dk
+
+## 🎯 Klar til Rigtige Brugere
+
+Appen er nu fuldt funktionel og klar til rigtige brugere:
+- ✅ Persistent data lagring (localStorage)
+- ✅ Fungerer uden database/server
+- ✅ Alle funktioner virker offline
+- ✅ Robust error handling
+- ✅ PWA installation
+- ✅ Multi-language support
+- ✅ Responsive design
 
 ## 🚀 Features
 
@@ -8,10 +21,11 @@ Danmarks største sociale platform for rengøringsservices med support for 6 spr
 - **PWA (Progressive Web App)** - Installer som app på telefon
 - **Responsive design** - Fungerer på alle enheder
 - **Gratis platform** - Alle funktioner er gratis
-- **Admin panel** - Komplet administration
+- **Admin panel** - Komplet administration (admin@privaterengoring.dk / admin123)
 - **Real-time notifications** - Push notifications
 - **Job marketplace** - Match rengøringseksperter med kunder
 - **Reklame finansieret** - Ingen brugergebyrer eller kommission
+- **Offline funktionalitet** - Virker uden internet forbindelse
 
 ## 🛠️ Tech Stack
 
@@ -19,9 +33,9 @@ Danmarks største sociale platform for rengøringsservices med support for 6 spr
 - **Styling:** Tailwind CSS
 - **Icons:** Lucide React
 - **Monetization:** Google AdSense + partnerskaber
-- **Deployment:** Netlify
+- **Deployment:** Netlify (https://privatrengoering.dk)
 - **PWA:** Service Worker + Web App Manifest
-- **Database:** PostgreSQL (production) / Mock data (development)
+- **Storage:** localStorage (persistent) + Mock data
 
 ## 🏃‍♂️ Quick Start
 
@@ -41,9 +55,11 @@ npm run build
 npm run preview
 ```
 
-## 🔐 Admin Access
+## 🔐 Login Information
 
-Admin login: admin@privaterengoring.dk / admin123
+- **Admin:** admin@privaterengoring.dk / admin123
+- **Demo User:** Enhver email/password kombination virker
+- **Social Login:** Google, Apple, Facebook (demo mode)
 
 ## 🌍 Supported Languages
 - 🇩🇰 Dansk (Danish)

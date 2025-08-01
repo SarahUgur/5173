@@ -65,12 +65,24 @@ function App() {
     
     checkPWA();
     
+    // Load persisted user data on app start
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser && !currentUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        setCurrentUser(userData);
+      } catch (error) {
+        console.error('Error loading saved user:', error);
+        localStorage.removeItem('currentUser');
+      }
+    }
+    
     // Listen for display mode changes
     const mediaQuery = window.matchMedia('(display-mode: standalone)');
     mediaQuery.addEventListener('change', checkPWA);
     
     return () => mediaQuery.removeEventListener('change', checkPWA);
-  }, []);
+  }, [currentUser]);
 
   // Handle Pro upgrade from header
   const handleShowSubscription = () => {
@@ -81,6 +93,20 @@ function App() {
 
   // Handle login
   const handleLogin = (user: User) => {
+    // Load persisted user data from localStorage
+    const savedUserData = localStorage.getItem('userData');
+    if (savedUserData) {
+      try {
+        const userData = JSON.parse(savedUserData);
+        // Merge saved data with login data
+        const mergedUser = { ...user, ...userData };
+        setCurrentUser(mergedUser);
+        return;
+      } catch (error) {
+        console.error('Error loading saved user data:', error);
+      }
+    }
+    
     setCurrentUser(user);
   };
 
@@ -141,7 +167,12 @@ function App() {
   // Handle user profile update
   const handleUpdateUser = (updates: Partial<User>) => {
     if (currentUser) {
-      setCurrentUser({ ...currentUser, ...updates });
+      const updatedUser = { ...currentUser, ...updates };
+      setCurrentUser(updatedUser);
+      
+      // Persist user data to localStorage
+      localStorage.setItem('userData', JSON.stringify(updatedUser));
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
     }
   };
 
