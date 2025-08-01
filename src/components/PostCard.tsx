@@ -37,27 +37,70 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
         body: JSON.stringify({ platform: 'native' })
       });
 
-      // Use Web Share API if available
+      // Create shareable link
+      const shareUrl = `https://privaterengoring.dk/post/${post.id}`;
+      const shareText = `${post.content}\n\nSe mere på PRIVATE RENGØRING: ${shareUrl}`;
+
+      // Use Web Share API if available (mobile)
       if (navigator.share) {
         await navigator.share({
-          title: 'PRIVATE RENGORING - ' + post.content.substring(0, 50) + '...',
+          title: 'PRIVATE RENGØRING - ' + post.content.substring(0, 50) + '...',
           text: post.content,
-          url: window.location.href
+          url: shareUrl
         });
       } else {
-        // Fallback: Copy to clipboard
-        const shareText = `${post.content}\n\nSe mere på PRIVATE RENGORING: ${window.location.href}`;
-        await navigator.clipboard.writeText(shareText);
-        alert('Link kopieret til udklipsholder!');
+        // Desktop: Show share options
+        const shareOptions = [
+          {
+            name: 'Facebook',
+            url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(post.content)}`
+          },
+          {
+            name: 'WhatsApp',
+            url: `https://wa.me/?text=${encodeURIComponent(shareText)}`
+          },
+          {
+            name: 'SMS',
+            url: `sms:?body=${encodeURIComponent(shareText)}`
+          },
+          {
+            name: 'Email',
+            url: `mailto:?subject=${encodeURIComponent('PRIVATE RENGØRING - ' + post.content.substring(0, 50))}&body=${encodeURIComponent(shareText)}`
+          },
+          {
+            name: 'Kopier link',
+            action: 'copy'
+          }
+        ];
+
+        // Show share menu
+        const choice = prompt(
+          'Vælg hvordan du vil dele:\n\n' +
+          shareOptions.map((opt, i) => `${i + 1}. ${opt.name}`).join('\n') +
+          '\n\nIndtast nummer (1-5):'
+        );
+
+        const selectedOption = shareOptions[parseInt(choice || '0') - 1];
+        
+        if (selectedOption) {
+          if (selectedOption.action === 'copy') {
+            await navigator.clipboard.writeText(shareText);
+            alert('Link kopieret til udklipsholder! 📋');
+          } else if (selectedOption.url) {
+            window.open(selectedOption.url, '_blank', 'width=600,height=400');
+          }
+        }
       }
     } catch (error) {
       console.error('Error sharing:', error);
       // Fallback: Copy to clipboard
       try {
-        const shareText = `${post.content}\n\nSe mere på PRIVATE RENGORING: ${window.location.href}`;
+        const shareUrl = `https://privaterengoring.dk/post/${post.id}`;
+        const shareText = `${post.content}\n\nSe mere på PRIVATE RENGØRING: ${shareUrl}`;
         await navigator.clipboard.writeText(shareText);
-        alert('Link kopieret til udklipsholder!');
-      } catch (clipboardError) {
+        alert('Link kopieret til udklipsholder! 📋\n\nDu kan nu dele det på WhatsApp, SMS, Facebook eller andre sociale medier.');
+      }
+      catch (clipboardError) {
         alert('Opslag delt! (Demo mode)');
       }
     }

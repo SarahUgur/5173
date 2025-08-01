@@ -519,7 +519,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
                 <section>
                   <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3">5. Kontakt og support</h3>
                   <div className="space-y-1.5 sm:space-y-2 text-gray-700 text-xs sm:text-sm">
-                    <p>• Email: support@privatrengoring.dk</p>
+                    <p>• Email: support@privaterengoring.dk</p>
                     <p>• Svartid: 24-48 timer på hverdage</p>
                     <p>• Rapporter problemer via app eller email</p>
                   </div>
@@ -628,8 +628,8 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
                 <section>
                   <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3">6. Kontakt vedrørende persondata</h3>
                   <div className="space-y-1.5 sm:space-y-2 text-gray-700 text-xs sm:text-sm">
-                    <p>• Email: privacy@privatrengoring.dk</p>
-                    <p>• Eller: support@privatrengoring.dk</p>
+                    <p>• Email: privacy@privaterengoring.dk</p>
+                    <p>• Eller: support@privaterengoring.dk</p>
                     <p>• Vi svarer inden for 30 dage (GDPR krav)</p>
                   </div>
                 </section>

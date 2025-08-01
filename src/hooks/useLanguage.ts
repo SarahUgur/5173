@@ -191,7 +191,7 @@ const translations: Translations = {
     de: 'Stellenausschreibung'
   },
   share: {
-    da: 'Del',
+    da: 'Del på sociale medier',
     en: 'Share',
     ar: 'مشاركة',
     pl: 'Udostępnij',

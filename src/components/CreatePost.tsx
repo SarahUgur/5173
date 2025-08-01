@@ -826,7 +826,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
                   >
-                    {t('share')}
+                    Opret Opslag
                   </button>
                 )}
               </div>
