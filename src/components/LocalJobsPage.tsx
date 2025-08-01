@@ -51,6 +51,7 @@ function App() {
   const [showProLockModal, setShowProLockModal] = useState(false);
   // Check if running as PWA
   React.useEffect(() => {
+    const checkPWA = () => {
       setIsLoading(true);
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
@@ -63,7 +64,6 @@ function App() {
     const authToken = localStorage.getItem('authToken');
     const savedUser = localStorage.getItem('currentUser');
     if (authToken && savedUser) {
-import CreatePost from './CreatePost';
       try {
         const userData = JSON.parse(savedUser);
         setCurrentUser(userData);
