@@ -980,6 +980,20 @@ function App() {
             </nav>
 
             {/* Pro Upgrade */}
+            {!currentUser?.isSubscribed && (
+              <div className="p-4 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setShowSubscription(true);
+                    setShowSidebar(false);
+                  }}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-medium hover:from-purple-700 hover:to-pink-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+                >
+                  <Crown className="w-5 h-5" />
+                  <span>Opgrader til Pro</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
