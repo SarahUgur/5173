@@ -81,7 +81,7 @@ export function useNotifications(currentUser: any) {
       message: {
         id: Date.now().toString(),
         type: 'message' as const,
-        title: 'Ny besked fra Maria Hansen',
+        title: 'Ny besked fra PRIVATE RENGORING',
         body: 'Tak for dit hurtige svar!',
         timestamp: Date.now(),
         data: { sender: 'Maria Hansen' }
