@@ -49,34 +49,77 @@ function App() {
   const [showFriendRequests, setShowFriendRequests] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showProLockModal, setShowProLockModal] = useState(false);
+  const [conversations, setConversations] = useState([]);
+
+  const handleLogin = (user: User) => {
+    setCurrentUser(user);
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    localStorage.setItem('authToken', 'mock-token');
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
+  };
+
+  const handleUpdateUser = (updatedUser: User) => {
+    setCurrentUser(updatedUser);
+    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+  };
 
   // Check if running as PWA
   React.useEffect(() => {
+    const checkPWA = async () => {
       setIsLoading(true);
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
       setIsPWA(isStandalone || isInWebAppiOS);
+    
+      // Load persisted user data on app start
+      const authToken = localStorage.getItem('authToken');
+      const savedUser = localStorage.getItem('currentUser');
+      
+      if (authToken && savedUser) {
+        try {
+          const user = JSON.parse(savedUser);
+          setCurrentUser(user);
+        } catch (error) {
+          console.error('Error parsing saved user:', error);
+          localStorage.removeItem('currentUser');
+          localStorage.removeItem('authToken');
+        }
+      }
+
+      try {
+        // Load real conversations from API
+        const response = await fetch('/api/messages', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setConversations(data || []);
+        } else {
+          setConversations([]);
+        }
+      } catch (error) {
+        console.error('Error loading conversations:', error);
+        setConversations([]);
+      }
+
+      setIsLoading(false);
     };
     
     checkPWA();
-    
-    // Load persisted user data on app start
-    const authToken = localStorage.getItem('authToken');
-    const savedUser = localStorage.getItem('currentUser');
-    
-      // Load real conversations from API
-      const response = await fetch('/api/messages', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setConversations(data || []);
-      } else {
-        setConversations([]);
-      }
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-white animate-spin" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
