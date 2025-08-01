@@ -53,7 +53,6 @@ function App() {
   // Check if running as PWA
   React.useEffect(() => {
     setIsLoading(true);
-    const checkPWA = () => {
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
       setIsPWA(isStandalone || isInWebAppiOS);
@@ -80,7 +79,8 @@ function App() {
     const mediaQuery = window.matchMedia('(display-mode: standalone)');
     mediaQuery.addEventListener('change', checkPWA);
     
-    setIsLoading(false);
+    // Set loading to false after checking authentication
+    setTimeout(() => setIsLoading(false), 500);
     
     return () => mediaQuery.removeEventListener('change', checkPWA);
   }, []);
@@ -121,13 +121,13 @@ function App() {
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
-          <p className="text-gray-600">Indlæser...</p>
+          <p className="text-gray-600">Tjekker login status...</p>
         </div>
       </div>
     );
   }
 
-  // Show auth screen if not logged in
+  // CRITICAL: Show auth screen if not logged in - NO ACCESS WITHOUT LOGIN
   if (!currentUser) {
     return <AuthScreen onLogin={handleLogin} />;
   }
