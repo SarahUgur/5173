@@ -51,6 +51,7 @@ function App() {
   const [showProLockModal, setShowProLockModal] = useState(false);
   // Check if running as PWA
   React.useEffect(() => {
+    const checkPWA = () => {
       setIsLoading(true);
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
