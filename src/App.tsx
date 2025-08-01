@@ -49,7 +49,6 @@ function App() {
   const [showFriendRequests, setShowFriendRequests] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showProLockModal, setShowProLockModal] = useState(false);
-
   // Check if running as PWA
   React.useEffect(() => {
     const checkPWA = () => {
@@ -64,7 +63,6 @@ function App() {
     // Load persisted user data on app start
     const authToken = localStorage.getItem('authToken');
     const savedUser = localStorage.getItem('currentUser');
-    
     if (authToken && savedUser) {
       try {
         const userData = JSON.parse(savedUser);
@@ -80,8 +78,8 @@ function App() {
     const mediaQuery = window.matchMedia('(display-mode: standalone)');
     mediaQuery.addEventListener('change', checkPWA);
     
-    // Set loading to false after checking authentication
-    setTimeout(() => setIsLoading(false), 500);
+    // Quick loading check
+    setIsLoading(false);
     
     return () => mediaQuery.removeEventListener('change', checkPWA);
   }, []);
@@ -122,7 +120,7 @@ function App() {
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
-          <p className="text-gray-600">Tjekker login status...</p>
+          <p className="text-gray-600">Indlæser...</p>
         </div>
       </div>
     );
@@ -196,46 +194,33 @@ function App() {
     const [loading, setLoading] = useState(true);
 
     React.useEffect(() => {
-      // Simulate loading posts
+      // Load real posts from API
       setTimeout(() => {
-        const mockPosts = [
-          {
-            id: '1',
-            user: {
-              id: '1',
-              name: 'Maria Hansen',
-              avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-              verified: true,
-              userType: 'private'
-            },
-            content: 'Søger pålidelig rengøringshjælp til mit hjem i København. Har brug for hjælp hver 14. dag, ca. 3 timer ad gangen. Jeg har 2 børn og en hund, så erfaring med familier er et plus! 🏠✨',
-            location: 'København NV',
-            budget: '300-400 kr',
-            createdAt: '2 timer siden',
-            likes: 12,
-            comments: [
-              {
-                id: '1',
-                content: 'Hej Maria! Jeg har 5 års erfaring med familierengøring og elsker at arbejde med familier der har kæledyr.',
-                createdAt: '1 time siden',
-                user: {
-                  id: '2',
-                  name: 'Lars Nielsen',
-                  avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-                  verified: true
-                }
-              }
-            ],
-            isJobPost: true,
-            jobType: 'home_cleaning',
-            urgency: 'flexible'
-          }
-        ];
-        setPosts(mockPosts);
+        // Load real posts from API
+        loadRealPosts();
         setLoading(false);
       }, 1000);
     }, []);
 
+    const loadRealPosts = async () => {
+      try {
+        const response = await fetch('/api/posts', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setPosts(data.posts || []);
+        } else {
+          setPosts([]);
+        }
+      } catch (error) {
+        console.error('Error loading posts:', error);
+        setPosts([]);
+      }
+    };
     if (loading) {
       return (
         <div className="text-center py-12">

@@ -53,19 +53,18 @@ function App() {
   // Check if running as PWA
   React.useEffect(() => {
     const checkPWA = () => {
-      setIsLoading(true);
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
       setIsPWA(isStandalone || isInWebAppiOS);
     };
     
+    setIsLoading(true);
     checkPWA();
     
     // Load persisted user data on app start
     const authToken = localStorage.getItem('authToken');
     const savedUser = localStorage.getItem('currentUser');
     
-    // ✨ 100% GRATIS • Login påkrævet • Alle funktioner inkluderet
     if (authToken && savedUser) {
       try {
         const userData = JSON.parse(savedUser);
