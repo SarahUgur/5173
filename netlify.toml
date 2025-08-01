@@ -2,6 +2,18 @@
   publish = "dist"
   command = "npm run build"
 
+[[redirects]]
+  from = "https://privatrengoering.dk/*"
+  to = "https://privaterengoring.dk/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.privatrengoering.dk/*"
+  to = "https://privaterengoring.dk/:splat"
+  status = 301
+  force = true
+
 [dev]
   framework = "vite"
   command = "npm run dev:netlify"

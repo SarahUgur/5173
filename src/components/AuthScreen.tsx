@@ -180,7 +180,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 sm:p-6 text-center">
-            <h1 className="text-xl sm:text-2xl font-bold text-white mb-2">PRIVATE RENGORING</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-white mb-2">PRIVATE RENGØRING</h1>
             <p className="text-blue-100 text-sm sm:text-base">Danmarks største GRATIS platform for rengøring</p>
           </div>
 
