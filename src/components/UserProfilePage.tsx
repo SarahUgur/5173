@@ -1,35 +1,6 @@
 import React, { useState } from 'react';
 import { Home, Briefcase, Users, Calendar, Heart, MapPin, Search, Bell, MessageCircle, User as UserIcon, Menu, Plus, Settings, LogOut, Star, Crown, Shield, TrendingUp, Filter, Globe, HelpCircle, Phone, Mail, ExternalLink, Eye, EyeOff, Trash2, Edit, X, Clock, DollarSign, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Share2, CheckCircle } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
-import Header from './components/Header';
-import CreatePost from './components/CreatePost';
-import PostCard from './components/PostCard';
-import LocalJobsPage from './components/LocalJobsPage';
-import NetworkPage from './components/NetworkPage';
-import MyTasksPage from './components/MyTasksPage';
-import PlanningPage from './components/PlanningPage';
-import MapPage from './components/MapPage';
-import UserProfilePage from './components/UserProfilePage';
-import UserProfileModal from './components/UserProfileModal';
-import MessagesModal from './components/MessagesModal';
-import NotificationModal from './components/NotificationModal';
-import SubscriptionModal from './components/SubscriptionModal';
-import PaymentModal from './components/PaymentModal';
-import SuccessPage from './components/SuccessPage';
-import AuthScreen from './components/AuthScreen';
-import AdminPage from './components/AdminPage';
-import AboutPage from './components/AboutPage';
-import ContactPage from './components/ContactPage';
-import SupportPage from './components/SupportPage';
-import TermsPage from './components/TermsPage';
-import HelpModal from './components/HelpModal';
-import TermsModal from './components/TermsModal';
-import FriendRequestModal from './components/FriendRequestModal';
-import SettingsModal from './components/SettingsModal';
-import InstallPrompt from './components/InstallPrompt';
-import AdBanner from './components/AdBanner';
-import RecommendationWidget from './components/RecommendationWidget';
-import type { User } from './types';
 
 function App() {
   const { language, t } = useLanguage();
