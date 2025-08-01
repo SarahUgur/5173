@@ -57,20 +57,22 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Email og adgangskode er påkrævet' });
       }
 
-      // Demo login - accept any email/password combination
+      // Demo login - accept any email/password combination for easy testing
       const user = {
         id: Date.now().toString(),
-        name: email.split('@')[0], // Use email prefix as name
+        name: email.includes('demo') ? 'Demo Bruger' : email.split('@')[0], // Use email prefix as name
         email,
-        user_type: 'private',
+        user_type: email.includes('demo') ? 'cleaner' : 'private',
         verified: true,
         is_subscribed: false,
-        location: 'Danmark',
+        location: email.includes('demo') ? 'København' : 'Danmark',
         created_at: new Date().toISOString(),
-        avatar_url: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-        rating: 4.5,
+        avatar_url: email.includes('demo') ? 
+          'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop' :
+          'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+        rating: email.includes('demo') ? 4.8 : 4.5,
         completed_jobs: 0,
-        bio: 'Demo bruger',
+        bio: email.includes('demo') ? 'Demo bruger - Prøv alle funktioner!' : 'Ny bruger',
         phone: '+45 12 34 56 78',
         website: ''
       };

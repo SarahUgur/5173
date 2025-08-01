@@ -176,6 +176,9 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 sm:p-6 text-center">
             <h1 className="text-xl sm:text-2xl font-bold text-white mb-2">PRIVATE RENGØRING</h1>
             <p className="text-blue-100 text-sm sm:text-base">Danmarks største GRATIS platform for rengøring</p>
+            <div className="mt-3 text-blue-100 text-xs sm:text-sm">
+              ✨ Helt gratis at bruge • Ingen skjulte gebyrer • Alle funktioner inkluderet
+            </div>
           </div>
 
           {/* Form */}
@@ -419,12 +422,32 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
               <button
                 type="submit"
                 disabled={loading || (!isLogin && !acceptedTerms)}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2.5 sm:py-3 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2.5 sm:py-3 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base shadow-lg hover:shadow-xl"
               >
-                {loading ? 'Vent venligst...' : isLogin ? 'Log ind' : 'Opret konto'}
+                {loading ? 'Vent venligst...' : isLogin ? '🚀 Log ind nu' : '🎉 Opret gratis konto'}
               </button>
             </form>
 
+            {/* Welcome message for new users */}
+            {!isLogin && (
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-green-800 text-xs sm:text-sm text-center">
+                  🎉 Velkommen! Opret din gratis konto og få adgang til alle funktioner med det samme
+                </p>
+              </div>
+            )}
+
+            {/* Demo login info */}
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-blue-800 text-xs sm:text-sm text-center font-medium mb-2">
+                💡 Prøv appen med demo login:
+              </p>
+              <div className="text-blue-700 text-xs text-center space-y-1">
+                <p><strong>Email:</strong> demo@example.com</p>
+                <p><strong>Adgangskode:</strong> demo123</p>
+                <p className="text-blue-600 mt-2">Eller brug Google/Apple/Facebook login</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

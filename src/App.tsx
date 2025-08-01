@@ -271,7 +271,7 @@ function App() {
     <div className={`min-h-screen bg-gray-50 ${isPWA ? 'pwa-mode' : ''}`}>
       {isPWA && (
         <div className="bg-blue-600 text-white text-center py-1 text-xs">
-          📱 Kører som app • PRIVATE RENGORING
+          📱 Kører som app • PRIVATE RENGØRING
         </div>
       )}
       

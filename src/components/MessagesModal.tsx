@@ -69,7 +69,7 @@ export default function MessagesModal({ isOpen, onClose, currentUser, onShowSubs
             id: '1',
             senderId: '2',
             receiverId: currentUser?.id,
-            content: 'Hej! Er du interesseret i rengøringsjobbet?',
+            content: 'Velkommen til PRIVATE RENGØRING! Har du spørgsmål til platformen?',
             timestamp: '10 min siden',
             read: false,
             type: 'text'

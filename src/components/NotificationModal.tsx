@@ -50,8 +50,8 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
         {
           id: '2',
           type: 'message',
-          title: 'Ny besked fra Lars Nielsen',
-          message: 'Hej! Er du interesseret i rengøringsjobbet?',
+          title: 'Ny besked fra PRIVATE RENGØRING',
+          message: 'Velkommen til Danmarks største gratis rengøringsplatform!',
           time: '10 min siden',
           read: false,
           avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
@@ -68,8 +68,8 @@ export default function NotificationModal({ isOpen, onClose, currentUser }: Noti
         {
           id: '4',
           type: 'system',
-          title: 'Velkommen til PRIVATE RENGØRING',
-          message: 'Tak for at du blev medlem! Udforsk alle funktionerne.',
+          title: 'Velkommen til PRIVATE RENGØRING! 🎉',
+          message: 'Tak for at du blev medlem! Udforsk alle de gratis funktioner.',
           time: '2 dage siden',
           read: true
         }

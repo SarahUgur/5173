@@ -1022,11 +1022,11 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
 
       {/* Launch Period Notice */}
       <div className="mt-3 p-3 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg">
-        <p className="text-xs text-green-800 text-center">
-          ℹ️ Alle funktioner er gratis under lanceringsperioden
+        <p className="text-xs text-green-800 text-center font-medium">
+          🎉 PRIVATE RENGØRING er 100% GRATIS!
         </p>
         <p className="text-xs text-green-700 text-center mt-1">
-          Du kan like, kommentere, ansøge om jobs og sende beskeder - alt er gratis!
+          Like, kommentér, ansøg om jobs, send beskeder - alt er gratis for altid!
         </p>
       </div>
     </div>
