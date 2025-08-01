@@ -52,7 +52,8 @@ function App() {
 
   // Check if running as PWA
   React.useEffect(() => {
-    setIsLoading(true);
+    const checkPWA = () => {
+      setIsLoading(true);
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
       const isInWebAppiOS = (window.navigator as any).standalone === true;
       setIsPWA(isStandalone || isInWebAppiOS);
@@ -155,6 +156,7 @@ function App() {
           />
         );
       case 'admin':
+        return <AdminPage currentUser={currentUser} />;
       case 'about':
         return <AboutPage />;
       case 'contact':
