@@ -1,441 +1,342 @@
 import React, { useState } from 'react';
-import { Home, Briefcase, Users, Calendar, Heart, MapPin, Search, Bell, MessageCircle, User as UserIcon, Menu, Plus, Settings, LogOut, Star, Crown, Shield, TrendingUp, Filter, Globe, HelpCircle, Phone, Mail, ExternalLink, Eye, EyeOff, Trash2, Edit, X, Clock, DollarSign, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Share2, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Phone, MapPin, Briefcase } from 'lucide-react';
+import { useLanguage } from '../hooks/useLanguage';
 
-function App() {
-  const { language, t } = useLanguage();
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isPWA, setIsPWA] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'home' | 'jobs' | 'network' | 'tasks' | 'planning' | 'favorites' | 'local-jobs' | 'trending' | 'map' | 'profile' | 'admin' | 'about' | 'contact' | 'support' | 'terms'>('home');
-  const [showSidebar, setShowSidebar] = useState(false);
-  const [showUserProfile, setShowUserProfile] = useState<any>(null);
-  const [showMessages, setShowMessages] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showSubscription, setShowSubscription] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
-  const [showFriendRequests, setShowFriendRequests] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [showProLockModal, setShowProLockModal] = useState(false);
-  
-  // Check if running as PWA
-  React.useEffect(() => {
-    const checkPWA = () => {
-      setIsLoading(true);
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-      const isInWebAppiOS = (window.navigator as any).standalone === true;
-      setIsPWA(isStandalone || isInWebAppiOS);
-    };
-    
-    checkPWA();
-    
-    // Load persisted user data on app start
-    const authToken = localStorage.getItem('authToken');
-    const savedUser = localStorage.getItem('currentUser');
-    if (authToken && savedUser) {
-      setCurrentUser(JSON.parse(savedUser));
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  location: string;
+  bio: string;
+  avatar: string;
+  isVerified: boolean;
+  isPro: boolean;
+  rating: number;
+  completedJobs: number;
+  joinDate: string;
+  skills: string[];
+  hourlyRate: number;
+  availability: string[];
+}
+
+interface AuthScreenProps {
+  onLogin: (user: User) => void;
+}
+
+const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
+  const { t } = useLanguage();
+  const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    phone: '',
+    location: '',
+    userType: 'helper' as 'helper' | 'customer'
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Create user object
+      const user: User = {
+        id: Math.random().toString(36).substr(2, 9),
+        name: formData.name || 'Demo Bruger',
+        email: formData.email,
+        phone: formData.phone || '+45 12 34 56 78',
+        location: formData.location || 'København',
+        bio: formData.userType === 'helper' 
+          ? 'Erfaren rengøringshjælper med fokus på kvalitet og pålidelighed.'
+          : 'Søger pålidelig rengøringshjælp til mit hjem.',
+        avatar: `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000) + 1500000000000}?w=150&h=150&fit=crop&crop=face`,
+        isVerified: true,
+        isPro: Math.random() > 0.5,
+        rating: 4.2 + Math.random() * 0.8,
+        completedJobs: Math.floor(Math.random() * 50) + 5,
+        joinDate: new Date().toISOString(),
+        skills: formData.userType === 'helper' 
+          ? ['Almindelig rengøring', 'Vinduespolering', 'Dybderengøring']
+          : [],
+        hourlyRate: formData.userType === 'helper' ? 200 + Math.floor(Math.random() * 100) : 0,
+        availability: ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag']
+      };
+
+      onLogin(user);
+    } catch (err) {
+      setError('Der opstod en fejl. Prøv igen.');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, []);
-
-  const handleLogin = (user: User) => {
-    setCurrentUser(user);
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    localStorage.setItem('authToken', 'demo-token');
-  };
-
-  const handleLogout = () => {
-    setCurrentUser(null);
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('authToken');
-  };
-
-  const handleUpdateUser = (updatedUser: User) => {
-    setCurrentUser(updatedUser);
-    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
   };
 
   const handleSocialLogin = (provider: 'google' | 'apple' | 'facebook') => {
-    // Real social login - redirect to actual OAuth
-    const authUrls = {
-      google: `https://accounts.google.com/oauth/authorize?client_id=YOUR_GOOGLE_CLIENT_ID&redirect_uri=${encodeURIComponent(window.location.origin)}/auth/google/callback&response_type=code&scope=email profile`,
-      apple: `https://appleid.apple.com/auth/authorize?client_id=YOUR_APPLE_CLIENT_ID&redirect_uri=${encodeURIComponent(window.location.origin)}/auth/apple/callback&response_type=code&scope=email name`,
-      facebook: `https://www.facebook.com/v18.0/dialog/oauth?client_id=YOUR_FACEBOOK_APP_ID&redirect_uri=${encodeURIComponent(window.location.origin)}/auth/facebook/callback&response_type=code&scope=email`
+    // Demo social login
+    const demoUser: User = {
+      id: Math.random().toString(36).substr(2, 9),
+      name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} Bruger`,
+      email: `demo@${provider}.com`,
+      phone: '+45 12 34 56 78',
+      location: 'København',
+      bio: 'Ny bruger via social login.',
+      avatar: `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000) + 1500000000000}?w=150&h=150&fit=crop&crop=face`,
+      isVerified: true,
+      isPro: false,
+      rating: 4.0,
+      completedJobs: 0,
+      joinDate: new Date().toISOString(),
+      skills: [],
+      hourlyRate: 0,
+      availability: []
     };
     
-    // Redirect to real OAuth provider
-    window.location.href = authUrls[provider];
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
-          <p className="text-gray-600">Indlæser...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // CRITICAL: Show auth screen if not logged in - NO ACCESS WITHOUT LOGIN
-  if (!currentUser) {
-    return <AuthScreen onLogin={handleLogin} />;
-  }
-
-  const renderMainContent = () => {
-    switch (currentPage) {
-      case 'jobs':
-        return <LocalJobsPage currentUser={currentUser} />;
-      case 'network':
-        return <NetworkPage currentUser={currentUser} />;
-      case 'tasks':
-        return <MyTasksPage currentUser={currentUser} />;
-      case 'planning':
-        return <PlanningPage currentUser={currentUser} />;
-      case 'local-jobs':
-        return <LocalJobsPage currentUser={currentUser} onShowSubscription={() => setShowSubscription(true)} />;
-      case 'map':
-        return <MapPage currentUser={currentUser} />;
-      case 'profile':
-        return (
-          <UserProfilePage 
-            currentUser={currentUser} 
-            onUpdateUser={handleUpdateUser}
-            onShowSettings={() => setShowSettings(true)}
-          />
-        );
-      case 'admin':
-        return <AdminPage currentUser={currentUser} />;
-      case 'about':
-        return <AboutPage />;
-      case 'contact':
-        return <ContactPage />;
-      case 'support':
-        return <SupportPage />;
-      case 'terms':
-        return <TermsPage />;
-      default:
-        return renderHomePage();
-    }
-  };
-
-  const renderHomePage = () => (
-    <div className="max-w-2xl mx-auto px-1 xs:px-0">
-      <CreatePost 
-        currentUser={currentUser} 
-      />
-      
-      <div className="mb-3 xs:mb-4 sm:mb-6">
-        <AdBanner type="banner" position="top" className="w-full" />
-      </div>
-
-      <PostFeed 
-        currentUser={currentUser}
-      />
-
-      <div className="mt-6 sm:mt-8">
-        <RecommendationWidget />
-      </div>
-    </div>
-  );
-
-  // Post Feed Component
-  const PostFeed = ({ currentUser }: any) => {
-    const [posts, setPosts] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    React.useEffect(() => {
-      // Load real posts from API
-      setTimeout(() => {
-        // Load real posts from API
-        loadRealPosts();
-        setLoading(false);
-      }, 1000);
-    }, []);
-
-    const loadRealPosts = async () => {
-      try {
-        const response = await fetch('/api/posts', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setPosts(data.posts || []);
-        } else {
-          setPosts([]);
-        }
-      } catch (error) {
-        console.error('Error loading posts:', error);
-        setPosts([]);
-      }
-    };
-    
-    if (loading) {
-      return (
-        <div className="text-center py-12">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Indlæser opslag...</p>
-        </div>
-      );
-    }
-
-    if (posts.length === 0) {
-      return (
-        <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen opslag endnu</h3>
-          <p className="text-gray-600 mb-4">Vær den første til at dele et opslag!</p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="space-y-3 xs:space-y-4 sm:space-y-6">
-        {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            currentUser={currentUser}
-          />
-        ))}
-      </div>
-    );
+    onLogin(demoUser);
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${isPWA ? 'pwa-mode' : ''}`}>
-      {isPWA && (
-        <div className="bg-blue-600 text-white text-center py-1 text-xs">
-          📱 Kører som app • PRIVATE RENGØRING
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
+      <div className="max-w-md w-full">
+        {/* Logo and Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4">
+            <Briefcase className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Private Rengøring</h1>
+          <p className="text-gray-600">Find hjælp. Få job. Gør rent.</p>
         </div>
-      )}
-      
-      <Header
-        currentUser={currentUser}
-        onShowMessages={() => setShowMessages(true)}
-        onShowNotifications={() => setShowNotifications(true)}
-        onShowProfile={() => setCurrentPage('profile')}
-        onToggleSidebar={() => setShowSidebar(!showSidebar)}
-        onLogout={handleLogout}
-        onShowSettings={() => setShowSettings(true)}
-        onShowHelp={() => setShowHelp(true)}
-        setCurrentPage={setCurrentPage}
-      />
 
-      <div className="flex">
-        {/* Sidebar */}
-        <div className={`fixed inset-y-0 left-0 z-30 w-56 xs:w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
-          showSidebar ? 'translate-x-0' : '-translate-x-full'
-        }`}>
-          <div className="flex flex-col h-full pt-14 xs:pt-16 lg:pt-0">
-            <div className="lg:hidden p-3 xs:p-4 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base xs:text-lg font-semibold text-gray-900">Menu</h2>
+        {/* Auth Form */}
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="flex mb-6">
+            <button
+              onClick={() => setIsLogin(true)}
+              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
+                isLogin ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Log ind
+            </button>
+            <button
+              onClick={() => setIsLogin(false)}
+              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
+                !isLogin ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Opret konto
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {!isLogin && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Fulde navn
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Dit fulde navn"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Telefonnummer
+                  </label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="+45 12 34 56 78"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Lokation
+                  </label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      value={formData.location}
+                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="København, Aarhus, etc."
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Jeg er
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, userType: 'helper' })}
+                      className={`p-3 rounded-lg border-2 transition-colors ${
+                        formData.userType === 'helper'
+                          ? 'border-blue-500 bg-blue-50 text-blue-700'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <Briefcase className="w-5 h-5 mx-auto mb-1" />
+                      <span className="text-sm font-medium">Rengøringshjælper</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, userType: 'customer' })}
+                      className={`p-3 rounded-lg border-2 transition-colors ${
+                        formData.userType === 'customer'
+                          ? 'border-blue-500 bg-blue-50 text-blue-700'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <User className="w-5 h-5 mx-auto mb-1" />
+                      <span className="text-sm font-medium">Kunde</span>
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="din@email.dk"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Adgangskode
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="••••••••"
+                  required
+                />
                 <button
-                  onClick={() => setShowSidebar(false)}
-                  className="p-1.5 xs:p-2 rounded-lg hover:bg-gray-100"
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  <X className="w-4 h-4 xs:w-5 xs:h-5" />
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
 
-            <nav className="flex-1 px-3 xs:px-4 py-4 xs:py-6 space-y-1.5 xs:space-y-2 overflow-y-auto">
-              <button
-                onClick={() => {
-                  setCurrentPage('home');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'home' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Home className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('home')}</span>
-              </button>
+            {error && (
+              <div className="text-red-600 text-sm text-center">{error}</div>
+            )}
 
-              <button
-                onClick={() => {
-                  setCurrentPage('jobs');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'jobs' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Briefcase className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('localJobs')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('network');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'network' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Users className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('network')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('tasks');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'tasks' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('myTasks')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('planning');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'planning' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('planning')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('map');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'map' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <MapPin className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">Jobs på Kort</span>
-              </button>
-
-              {currentUser.email === 'admin@privaterengoring.dk' && (
-                <button
-                  onClick={() => {
-                    setCurrentPage('admin');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'admin' ? 'bg-red-100 text-red-700' : 'text-red-600 hover:bg-red-50'
-                  }`}
-                >
-                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Admin Panel</span>
-                </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  {isLogin ? 'Logger ind...' : 'Opretter konto...'}
+                </div>
+              ) : (
+                isLogin ? 'Log ind' : 'Opret konto'
               )}
+            </button>
+          </form>
 
-              <div className="pt-4 border-t border-gray-200">
-                <button
-                  onClick={() => {
-                    setCurrentPage('about');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'about' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <HelpCircle className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Om os</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCurrentPage('support');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'support' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <HelpCircle className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Hjælp & Support</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCurrentPage('contact');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'contact' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <Mail className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Kontakt & Klager</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCurrentPage('terms');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'terms' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Vilkår & Betingelser</span>
-                </button>
+          {/* Social Login */}
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
               </div>
-            </nav>
-            <p className="text-blue-100 text-sm sm:text-base">Find hjælp. Få job. Gør rent.</p>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">Eller fortsæt med</span>
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-3 gap-3">
+              <button
+                onClick={() => handleSocialLogin('google')}
+                className="flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+              </button>
+              
+              <button
+                onClick={() => handleSocialLogin('apple')}
+                className="flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                </svg>
+              </button>
+              
+              <button
+                onClick={() => handleSocialLogin('facebook')}
+                className="flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </button>
+            </div>
           </div>
-        </div>
 
-        {showSidebar && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
-            onClick={() => setShowSidebar(false)}
-          />
-        )}
-
-        <div className="flex-1 lg:ml-0">
-          <main className="py-6 px-3 sm:px-6 lg:px-8">
-            {renderMainContent()}
-          </main>
+          {/* Terms */}
+          <p className="mt-6 text-xs text-gray-500 text-center">
+            Ved at fortsætte accepterer du vores{' '}
+            <a href="#" className="text-blue-600 hover:underline">Vilkår & Betingelser</a>
+            {' '}og{' '}
+            <a href="#" className="text-blue-600 hover:underline">Privatlivspolitik</a>
+          </p>
         </div>
       </div>
-
-      {/* Modals */}
-      <MessagesModal
-        isOpen={showMessages}
-        onClose={() => setShowMessages(false)}
-        currentUser={currentUser}
-      />
-
-      <NotificationModal
-        isOpen={showNotifications}
-        onClose={() => setShowNotifications(false)}
-        currentUser={currentUser}
-      />
-
-      <SettingsModal
-        isOpen={showSettings}
-        onClose={() => setShowSettings(false)}
-        currentUser={currentUser}
-        onUpdateUser={handleUpdateUser}
-      />
-
-      <InstallPrompt />
     </div>
   );
-}
+};
 
-export default App;
+export default AuthScreen;
