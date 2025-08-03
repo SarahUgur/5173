@@ -120,6 +120,7 @@ function App() {
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Private Rengøring</h1>
           <p className="text-gray-600">Indlæser...</p>
         </div>
       </div>
