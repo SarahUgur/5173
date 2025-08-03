@@ -1,7 +1,7 @@
 {
   "name": "Private Rengøring",
   "short_name": "Private Rengøring",
-  "description": "Danmarks største sociale platform for rengøringsservices - Find jobs, eksperter og byg dit netværk",
+  "description": "Find hjælp. Få job. Gør rent. - Danmarks platform for rengøringsservices",
   "start_url": "https://privaterengoring.dk/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],

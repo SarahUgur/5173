@@ -158,7 +158,7 @@ export default function Header({
                 <h1 className="text-base sm:text-lg lg:text-xl font-bold bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent leading-tight">
                   Private Rengøring
                 </h1>
-                <p className="text-xs text-gray-500 -mt-0.5 hidden lg:block leading-none">100% GRATIS platform</p>
+                <p className="text-xs text-gray-500 -mt-0.5 hidden lg:block leading-none">Find hjælp. Få job. Gør rent.</p>
               </div>
             </button>
           </div>

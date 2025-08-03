@@ -395,7 +395,7 @@ function App() {
                 </button>
               </div>
             </nav>
-
+            <p className="text-blue-100 text-sm sm:text-base">Find hjælp. Få job. Gør rent.</p>
           </div>
         </div>
 
