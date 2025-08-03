@@ -38,6 +38,8 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,28 +81,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
     }
   };
 
-  const handleSocialLogin = (provider: 'google' | 'apple' | 'facebook') => {
-    // Demo social login
-    const demoUser: User = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} Bruger`,
-      email: `demo@${provider}.com`,
-      phone: '+45 12 34 56 78',
-      location: 'København',
-      bio: 'Ny bruger via social login.',
-      avatar: `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000) + 1500000000000}?w=150&h=150&fit=crop&crop=face`,
-      isVerified: true,
-      isPro: false,
-      rating: 4.0,
-      completedJobs: 0,
-      joinDate: new Date().toISOString(),
-      skills: [],
-      hourlyRate: 0,
-      availability: []
-    };
-    
-    onLogin(demoUser);
-  };
+  const userTypes = [
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
@@ -135,7 +116,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             {!isLogin && (
               <>
                 <div>
