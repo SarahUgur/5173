@@ -81,6 +81,36 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
     }
   };
 
+  const handleSocialLogin = async (provider: 'google' | 'apple' | 'facebook') => {
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Create user object
+      const user: User = {
+        id: Math.random().toString(36).substr(2, 9),
+        name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} Bruger`,
+        email: `${provider}@example.com`,
+        phone: '+45 12 34 56 78',
+        location: 'København',
+        bio: `Logget ind via ${provider.charAt(0).toUpperCase() + provider.slice(1)}`,
+        avatar: `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000) + 1500000000000}?w=150&h=150&fit=crop&crop=face`,
+        isVerified: true,
+        isPro: Math.random() > 0.5,
+        rating: 4.2 + Math.random() * 0.8,
+        completedJobs: Math.floor(Math.random() * 50) + 5,
+        joinDate: new Date().toISOString(),
+        skills: ['Almindelig rengøring', 'Vinduespolering', 'Dybderengøring'],
+        hourlyRate: 200 + Math.floor(Math.random() * 100),
+        availability: ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag']
+      };
+
+      onLogin(user);
+    } catch (err) {
+      setError('Der opstod en fejl. Prøv igen.');
+    }
+  };
+
   const userTypes = [
   ];
 
