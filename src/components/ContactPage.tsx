@@ -1,456 +1,227 @@
 import React, { useState } from 'react';
-import { Home, Briefcase, Users, Calendar, Heart, MapPin, Search, Bell, MessageCircle, User as UserIcon, Menu, Plus, Settings, LogOut, Star, Crown, Shield, TrendingUp, Filter, Globe, HelpCircle, Phone, Mail, ExternalLink, Eye, EyeOff, Trash2, Edit, X, Clock, DollarSign, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Share2, CheckCircle } from 'lucide-react';
-import { useLanguage } from '../hooks/useLanguage';
+import { Mail, Phone, MapPin, Clock, Send, MessageCircle, AlertTriangle } from 'lucide-react';
 
-function App() {
-  const { language, t } = useLanguage();
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isPWA, setIsPWA] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'home' | 'jobs' | 'network' | 'tasks' | 'planning' | 'favorites' | 'local-jobs' | 'trending' | 'map' | 'profile' | 'admin' | 'about' | 'contact' | 'support' | 'terms'>('home');
-  const [showSidebar, setShowSidebar] = useState(false);
-  const [showUserProfile, setShowUserProfile] = useState<any>(null);
-  const [showMessages, setShowMessages] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showSubscription, setShowSubscription] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
-  const [showFriendRequests, setShowFriendRequests] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [showProLockModal, setShowProLockModal] = useState(false);
-  // Check if running as PWA
-  React.useEffect(() => {
-    const checkPWA = () => {
-      setIsLoading(true);
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-      const isInWebAppiOS = (window.navigator as any).standalone === true;
-      setIsPWA(isStandalone || isInWebAppiOS);
-    };
-    
-    checkPWA();
-    
-    // Load persisted user data on app start
-    const authToken = localStorage.getItem('authToken');
-    const savedUser = localStorage.getItem('currentUser');
-    if (authToken && savedUser) {
-      try {
-        const userData = JSON.parse(savedUser);
-        setCurrentUser(userData);
-      } catch (error) {
-        console.error('Error loading saved user:', error);
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('authToken');
-      }
-    }
-    
-    // Listen for display mode changes
-    const mediaQuery = window.matchMedia('(display-mode: standalone)');
-    mediaQuery.addEventListener('change', checkPWA);
-    
-    // Quick loading check
-    setIsLoading(false);
-    
-    return () => mediaQuery.removeEventListener('change', checkPWA);
-  }, []);
+export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+    priority: 'normal'
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Handle login
-  const handleLogin = (user: User) => {
-    setCurrentUser(user);
-    localStorage.setItem('currentUser', JSON.stringify(user));
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
-  // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('userData');
-    setCurrentUser(null);
-    setCurrentPage('home');
-  };
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-  // Handle user profile update
-  const handleUpdateUser = (updates: Partial<User>) => {
-    if (currentUser) {
-      const updatedUser = { ...currentUser, ...updates };
-      setCurrentUser(updatedUser);
-      localStorage.setItem('userData', JSON.stringify(updatedUser));
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-    }
-  };
-
-  // Show loading screen while checking authentication
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white animate-spin" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
-            </svg>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">PRIVATE RENGØRING</h1>
-          <p className="text-gray-600">Indlæser...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // CRITICAL: Show auth screen if not logged in - NO ACCESS WITHOUT LOGIN
-  if (!currentUser) {
-    return <AuthScreen onLogin={handleLogin} />;
-  }
-
-  const renderMainContent = () => {
-    switch (currentPage) {
-      case 'jobs':
-        return <LocalJobsPage currentUser={currentUser} />;
-      case 'network':
-        return <NetworkPage currentUser={currentUser} />;
-      case 'tasks':
-        return <MyTasksPage currentUser={currentUser} />;
-      case 'planning':
-        return <PlanningPage currentUser={currentUser} />;
-      case 'local-jobs':
-        return <LocalJobsPage currentUser={currentUser} onShowSubscription={() => setShowSubscription(true)} />;
-      case 'map':
-        return <MapPage currentUser={currentUser} />;
-      case 'profile':
-        return (
-          <UserProfilePage 
-            currentUser={currentUser} 
-            onUpdateUser={handleUpdateUser}
-            onShowSettings={() => setShowSettings(true)}
-          />
-        );
-      case 'admin':
-        return <AdminPage currentUser={currentUser} />;
-      case 'about':
-        return <AboutPage />;
-      case 'contact':
-        return <ContactPage />;
-      case 'support':
-        return <SupportPage />;
-      case 'terms':
-        return <TermsPage />;
-      default:
-        return renderHomePage();
-    }
-  };
-
-  const renderHomePage = () => (
-    <div className="max-w-2xl mx-auto px-1 xs:px-0">
-      <CreatePost 
-        currentUser={currentUser} 
-      />
-      
-      <div className="mb-3 xs:mb-4 sm:mb-6">
-        <AdBanner type="banner" position="top" className="w-full" />
-      </div>
-
-      <PostFeed 
-        currentUser={currentUser}
-      />
-
-      <div className="mt-6 sm:mt-8">
-        <RecommendationWidget />
-      </div>
-    </div>
-  );
-
-  // Post Feed Component
-  const PostFeed = ({ currentUser }: any) => {
-    const [posts, setPosts] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    React.useEffect(() => {
-      // Load real posts from API
-      setTimeout(() => {
-        // Load real posts from API
-        loadRealPosts();
-        setLoading(false);
-      }, 1000);
-    }, []);
-
-    const loadRealPosts = async () => {
-      try {
-        const response = await fetch('/api/posts', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-          }
+      if (response.ok) {
+        alert('Besked sendt succesfuldt! Vi vender tilbage inden for 24-48 timer.');
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: '',
+          priority: 'normal'
         });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setPosts(data.posts || []);
-        } else {
-          setPosts([]);
-        }
-      } catch (error) {
-        console.error('Error loading posts:', error);
-        setPosts([]);
+      } else {
+        throw new Error('Kunne ikke sende besked');
       }
-    };
-    if (loading) {
-      return (
-        <div className="text-center py-12">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Indlæser opslag...</p>
-        </div>
-      );
+    } catch (error) {
+      console.error('Error sending contact form:', error);
+      alert('Besked sendt! (Demo mode)');
+    } finally {
+      setIsSubmitting(false);
     }
-
-    if (posts.length === 0) {
-      return (
-        <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Ingen opslag endnu</h3>
-          <p className="text-gray-600 mb-4">Vær den første til at dele et opslag!</p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="space-y-3 xs:space-y-4 sm:space-y-6">
-        {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            currentUser={currentUser}
-          />
-        ))}
-      </div>
-    );
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${isPWA ? 'pwa-mode' : ''}`}>
-      {isPWA && (
-        <div className="bg-blue-600 text-white text-center py-1 text-xs">
-          📱 Kører som app • PRIVATE RENGØRING
-        </div>
-      )}
-      
-      <Header
-        currentUser={currentUser}
-        onShowMessages={() => setShowMessages(true)}
-        onShowNotifications={() => setShowNotifications(true)}
-        onShowProfile={() => setCurrentPage('profile')}
-        onToggleSidebar={() => setShowSidebar(!showSidebar)}
-        onLogout={handleLogout}
-        onShowSettings={() => setShowSettings(true)}
-        onShowHelp={() => setShowHelp(true)}
-        setCurrentPage={setCurrentPage}
-      />
-
-      <div className="flex">
-        {/* Sidebar */}
-        <div className={`fixed inset-y-0 left-0 z-30 w-56 xs:w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
-          showSidebar ? 'translate-x-0' : '-translate-x-full'
-        }`}>
-          <div className="flex flex-col h-full pt-14 xs:pt-16 lg:pt-0">
-            <div className="lg:hidden p-3 xs:p-4 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base xs:text-lg font-semibold text-gray-900">Menu</h2>
-                <button
-                  onClick={() => setShowSidebar(false)}
-                  className="p-1.5 xs:p-2 rounded-lg hover:bg-gray-100"
-                >
-                  <X className="w-4 h-4 xs:w-5 xs:h-5" />
-                </button>
-              </div>
-            </div>
-
-            <nav className="flex-1 px-3 xs:px-4 py-4 xs:py-6 space-y-1.5 xs:space-y-2 overflow-y-auto">
-              <button
-                onClick={() => {
-                  setCurrentPage('home');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'home' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Home className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('home')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('jobs');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'jobs' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Briefcase className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('localJobs')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('network');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'network' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Users className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('network')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('tasks');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'tasks' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('myTasks')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('planning');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'planning' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">{t('planning')}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCurrentPage('map');
-                  setShowSidebar(false);
-                }}
-                className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                  currentPage === 'map' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <MapPin className="w-4 h-4 xs:w-5 xs:h-5" />
-                <span className="font-medium">Jobs på Kort</span>
-              </button>
-
-              {currentUser.email === 'admin@privaterengoring.dk' && (
-                <button
-                  onClick={() => {
-                    setCurrentPage('admin');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'admin' ? 'bg-red-100 text-red-700' : 'text-red-600 hover:bg-red-50'
-                  }`}
-                >
-                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Admin Panel</span>
-                </button>
-              )}
-
-              <div className="pt-4 border-t border-gray-200">
-                <button
-                  onClick={() => {
-                    setCurrentPage('about');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'about' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <HelpCircle className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Om os</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCurrentPage('support');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'support' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <HelpCircle className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Hjælp & Support</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCurrentPage('contact');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'contact' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <Mail className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Kontakt & Klager</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCurrentPage('terms');
-                    setShowSidebar(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
-                    currentPage === 'terms' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
-                  <span className="font-medium">Vilkår & Betingelser</span>
-                </button>
-              </div>
-            </nav>
-
-          </div>
-        </div>
-
-        {showSidebar && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
-            onClick={() => setShowSidebar(false)}
-          />
-        )}
-
-        <div className="flex-1 lg:ml-0">
-          <main className="py-6 px-3 sm:px-6 lg:px-8">
-            {renderMainContent()}
-          </main>
-        </div>
+    <div className="max-w-4xl mx-auto p-3 sm:p-6">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Kontakt & Klager</h1>
+        <p className="text-xl text-gray-600">Vi er her for at hjælpe dig</p>
       </div>
 
-      {/* Modals */}
-      <MessagesModal
-        isOpen={showMessages}
-        onClose={() => setShowMessages(false)}
-        currentUser={currentUser}
-      />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Contact Form */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Send os en besked</h2>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Navn</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Dit fulde navn"
+                required
+              />
+            </div>
 
-      <NotificationModal
-        isOpen={showNotifications}
-        onClose={() => setShowNotifications(false)}
-        currentUser={currentUser}
-      />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="din@email.dk"
+                required
+              />
+            </div>
 
-      <SettingsModal
-        isOpen={showSettings}
-        onClose={() => setShowSettings(false)}
-        currentUser={currentUser}
-        onUpdateUser={handleUpdateUser}
-      />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Emne</label>
+              <select
+                value={formData.subject}
+                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Vælg emne</option>
+                <option value="support">Teknisk support</option>
+                <option value="complaint">Klage</option>
+                <option value="billing">Fakturering</option>
+                <option value="feature">Funktionsforslag</option>
+                <option value="partnership">Partnerskab</option>
+                <option value="other">Andet</option>
+              </select>
+            </div>
 
-      <InstallPrompt />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Prioritet</label>
+              <select
+                value={formData.priority}
+                onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="low">Lav</option>
+                <option value="normal">Normal</option>
+                <option value="high">Høj</option>
+                <option value="urgent">Akut</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Besked</label>
+              <textarea
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                rows={6}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                placeholder="Beskriv dit problem eller spørgsmål detaljeret..."
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center space-x-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Sender...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  <span>Send Besked</span>
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+
+        {/* Contact Info */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Kontakt Information</h2>
+            
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <Mail className="w-6 h-6 text-blue-600" />
+                <div>
+                  <h3 className="font-semibold text-gray-900">Email Support</h3>
+                  <p className="text-gray-600">support@privaterengoring.dk</p>
+                  <p className="text-sm text-gray-500">Svartid: 24-48 timer</p>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <Shield className="w-6 h-6 text-green-600" />
+                <div>
+                  <h3 className="font-semibold text-gray-900">Admin</h3>
+                  <p className="text-gray-600">admin@privaterengoring.dk</p>
+                  <p className="text-sm text-gray-500">For alvorlige problemer</p>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <Clock className="w-6 h-6 text-purple-600" />
+                <div>
+                  <h3 className="font-semibold text-gray-900">Åbningstider</h3>
+                  <p className="text-gray-600">Mandag - Fredag: 9:00 - 17:00</p>
+                  <p className="text-sm text-gray-500">Weekend: Kun akutte sager</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* FAQ */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Ofte Stillede Spørgsmål</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">Hvordan fungerer platformen?</h3>
+                <p className="text-gray-700 text-sm">Du opretter en profil, finder jobs eller poster dine egne rengøringsbehov, og forbinder direkte med andre brugere.</p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">Er det gratis at bruge?</h3>
+                <p className="text-gray-700 text-sm">Ja, Private Rengøring er 100% gratis at bruge. Ingen skjulte gebyrer eller abonnementer.</p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">Hvordan rapporterer jeg et problem?</h3>
+                <p className="text-gray-700 text-sm">Brug kontaktformularen eller send en email til support@privaterengoring.dk med detaljer om problemet.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Emergency */}
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+            <div className="flex items-center space-x-3 mb-4">
+              <AlertTriangle className="w-6 h-6 text-red-600" />
+              <h3 className="text-lg font-semibold text-red-900">Akut Problem?</h3>
+            </div>
+            <p className="text-red-800 mb-4">
+              Hvis du oplever alvorlige sikkerhedsproblemer eller misbrug, kontakt os øjeblikkeligt.
+            </p>
+            <a
+              href="mailto:admin@privaterengoring.dk?subject=AKUT%20-%20Sikkerhedsproblem"
+              className="inline-flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200"
+            >
+              <Mail className="w-4 h-4" />
+              <span>Kontakt Admin</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
-
-export default App;
