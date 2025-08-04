@@ -286,10 +286,19 @@ export default function MapPage({ currentUser }: MapPageProps) {
             onChange={(e) => setMapFilter(e.target.value)}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="all">Alle job typer</option>
-            <option value="home_cleaning">Hjemmerengøring</option>
-            <option value="office_cleaning">Kontorrengøring</option>
-            <option value="deep_cleaning">Hovedrengøring</option>
+            <option value="all">Alle kategorier</option>
+            <option value="hjemmerengoring">🏠 Hjemmerengøring</option>
+            <option value="kontorrengoring">🏢 Kontorrengøring</option>
+            <option value="hovedrengoring">✨ Hovedrengøring</option>
+            <option value="vinduesrengoring">🪟 Vinduesrengøring</option>
+            <option value="gulvrengoring">🧽 Gulvrengøring</option>
+            <option value="tappetrengoring">🛋️ Tæpperengøring</option>
+            <option value="fraflytningsrengoring">📦 Fraflytningsrengøring</option>
+            <option value="byggererengoring">🔨 Byggerengøring</option>
+            <option value="hotelrengoring">🏨 Hotel/Restaurant</option>
+            <option value="butikrengoring">🏪 Butik/Showroom</option>
+            <option value="industrirengoring">🏭 Industrirengøring</option>
+            <option value="specialrengoring">⭐ Specialrengøring</option>
           </select>
 
           {/* Search Radius */}

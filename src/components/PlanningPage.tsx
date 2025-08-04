@@ -573,12 +573,18 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
                       onChange={(e) => setNewPostData({...newPostData, jobType: e.target.value})}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                      <option value="home_cleaning">Hjemmerengøring</option>
-                      <option value="office_cleaning">Kontorrengøring</option>
-                      <option value="deep_cleaning">Hovedrengøring</option>
-                      <option value="regular_cleaning">Fast rengøring</option>
-                      <option value="window_cleaning">Vinduesrengøring</option>
-                      <option value="move_cleaning">Fraflytningsrengøring</option>
+                      <option value="hjemmerengoring">🏠 Hjemmerengøring</option>
+                      <option value="kontorrengoring">🏢 Kontorrengøring</option>
+                      <option value="hovedrengoring">✨ Hovedrengøring</option>
+                      <option value="vinduesrengoring">🪟 Vinduesrengøring</option>
+                      <option value="gulvrengoring">🧽 Gulvrengøring</option>
+                      <option value="tappetrengoring">🛋️ Tæpperengøring</option>
+                      <option value="fraflytningsrengoring">📦 Fraflytningsrengøring</option>
+                      <option value="byggererengoring">🔨 Byggerengøring</option>
+                      <option value="hotelrengoring">🏨 Hotel/Restaurant</option>
+                      <option value="butikrengoring">🏪 Butik/Showroom</option>
+                      <option value="industrirengoring">🏭 Industrirengøring</option>
+                      <option value="specialrengoring">⭐ Specialrengøring</option>
                     </select>
                   </div>
                 </div>

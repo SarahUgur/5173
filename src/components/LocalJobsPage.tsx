@@ -14,6 +14,7 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [filters, setFilters] = useState({
     location: '',
+    jobCategory: 'all',
     jobType: 'all',
     budget: 'all',
     urgency: 'all'
@@ -134,17 +135,42 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+            <select
+              value={filters.jobCategory}
+              onChange={(e) => setFilters({...filters, jobCategory: e.target.value})}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">Alle kategorier</option>
+              <option value="hjemmerengoring">🏠 Hjemmerengøring</option>
+              <option value="kontorrengoring">🏢 Kontorrengøring</option>
+              <option value="hovedrengoring">✨ Hovedrengøring</option>
+              <option value="vinduesrengoring">🪟 Vinduesrengøring</option>
+              <option value="gulvrengoring">🧽 Gulvrengøring</option>
+              <option value="tappetrengoring">🛋️ Tæpperengøring</option>
+              <option value="fraflytningsrengoring">📦 Fraflytningsrengøring</option>
+              <option value="byggererengoring">🔨 Byggerengøring</option>
+              <option value="hotelrengoring">🏨 Hotel/Restaurant</option>
+              <option value="butikrengoring">🏪 Butik/Showroom</option>
+              <option value="industrirengoring">🏭 Industrirengøring</option>
+              <option value="specialrengoring">⭐ Specialrengøring</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
             <select
               value={filters.jobType}
               onChange={(e) => setFilters({...filters, jobType: e.target.value})}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">Alle typer</option>
-              <option value="home_cleaning">Hjemmerengøring</option>
-              <option value="office_cleaning">Kontorrengøring</option>
-              <option value="deep_cleaning">Hovedrengøring</option>
-              <option value="regular_cleaning">Fast rengøring</option>
+              <option value="engangsjob">🔄 Engangsjob</option>
+              <option value="fast_ugentlig">📅 Fast ugentlig</option>
+              <option value="fast_14_dage">📅 Fast hver 14. dag</option>
+              <option value="fast_maanedlig">📅 Fast månedlig</option>
+              <option value="efter_behov">🎯 Efter behov</option>
+              <option value="akut">🚨 Akut (samme dag)</option>
             </select>
           </div>
 
