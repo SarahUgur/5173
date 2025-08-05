@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, FileText, Users, Globe, Lock, Mail } from 'lucide-react';
+import { Shield, FileText, Users, Globe, Lock, Mail, Heart } from 'lucide-react';
 
 export default function TermsPage() {
   return (
