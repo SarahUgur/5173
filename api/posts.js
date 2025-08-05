@@ -1,100 +1,160 @@
 const jwt = require('jsonwebtoken');
 
 // Middleware to verify JWT token
-const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
+const verifyToken = (event, callback) => {
+  const token = event.headers.authorization?.split(' ')[1];
   
   if (!token) {
-    return res.status(401).json({ error: 'Ingen adgangstoken' });
+    return callback(null, {
+      statusCode: 401,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ error: 'Ingen adgangstoken' })
+    });
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'demo-secret');
-    req.userId = decoded.userId;
-    next();
+    return callback(null, { userId: decoded.userId });
   } catch (error) {
-    return res.status(401).json({ error: 'Ugyldig token' });
+    return callback(null, {
+      statusCode: 401,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ error: 'Ugyldig token' })
+    });
   }
 };
 
-module.exports = async function handler(req, res) {
+exports.handler = async (event, context) => {
   // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Content-Type': 'application/json'
+  };
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers,
+      body: ''
+    };
   }
 
-  if (req.method === 'POST') {
-    verifyToken(req, res, async () => {
-      try {
-        const { type, content, location, jobType, jobCategory, targetAudience, urgency, budget } = req.body;
+  if (event.httpMethod === 'POST') {
+    return new Promise((resolve) => {
+      verifyToken(event, (err, result) => {
+        if (result.statusCode) {
+          return resolve(result);
+        }
 
-        // Create mock post response
-        const mockPost = {
-          id: Date.now().toString(),
-          type: type || 'regular',
-          content: content || '',
-          location: location || '',
-          job_type: jobType || null,
-          job_category: jobCategory || null,
-          target_audience: targetAudience || null,
-          urgency: urgency || null,
-          budget: budget || null,
-          created_at: new Date().toISOString()
-        };
+        try {
+          const body = JSON.parse(event.body || '{}');
+          const { type, content, location, jobType, jobCategory, targetAudience, urgency, budget } = body;
 
-        res.status(201).json({
-          postId: mockPost.id,
-          message: 'Opslag oprettet succesfuldt'
-        });
+          // Create mock post response
+          const mockPost = {
+            id: Date.now().toString(),
+            type: type || 'regular',
+            content: content || '',
+            location: location || '',
+            job_type: jobType || null,
+            job_category: jobCategory || null,
+            target_audience: targetAudience || null,
+            urgency: urgency || null,
+            budget: budget || null,
+            created_at: new Date().toISOString()
+          };
 
-      } catch (error) {
-        console.error('Error creating post:', error);
-        res.status(500).json({ error: 'Server fejl ved oprettelse af opslag' });
-      }
-    });
+          resolve({
+            statusCode: 201,
+            headers,
+            body: JSON.stringify({
+              postId: mockPost.id,
+              message: 'Opslag oprettet succesfuldt'
+            })
+          });
 
-  } else if (req.method === 'GET') {
-    // Get posts
-    try {
-      res.status(200).json({
-        posts: [],
-        hasMore: false,
-        pagination: {
-          page: 1,
-          limit: 10,
-          total: 0
+        } catch (error) {
+          console.error('Error creating post:', error);
+          resolve({
+            statusCode: 500,
+            headers,
+            body: JSON.stringify({ error: 'Server fejl ved oprettelse af opslag' })
+          });
         }
       });
+    });
+
+  } else if (event.httpMethod === 'GET') {
+    // Get posts
+    try {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          posts: [],
+          hasMore: false,
+          pagination: {
+            page: 1,
+            limit: 10,
+            total: 0
+          }
+        })
+      };
 
     } catch (error) {
       console.error('Error fetching posts:', error);
-      res.status(500).json({ error: 'Server fejl ved hentning af opslag' });
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Server fejl ved hentning af opslag' })
+      };
     }
 
-  } else if (req.method === 'PUT') {
+  } else if (event.httpMethod === 'PUT') {
     // Handle post sharing
-    const urlParts = req.url.split('/');
+    const urlParts = event.path.split('/');
     if (urlParts[urlParts.length - 1] === 'share') {
       try {
-        const { platform } = req.body;
+        const body = JSON.parse(event.body || '{}');
+        const { platform } = body;
         const postId = urlParts[urlParts.length - 2];
         
         console.log('Post shared:', { postId, platform });
         
-        res.status(200).json({ message: 'Deling registreret' });
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ message: 'Deling registreret' })
+        };
       } catch (error) {
         console.error('Error tracking share:', error);
-        res.status(500).json({ error: 'Server fejl ved registrering af deling' });
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify({ error: 'Server fejl ved registrering af deling' })
+        };
       }
     } else {
-      res.status(404).json({ error: 'Endpoint ikke fundet' });
+      return {
+        statusCode: 404,
+        headers,
+        body: JSON.stringify({ error: 'Endpoint ikke fundet' })
+      };
     }
 
   } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({ error: 'Method not allowed' })
+    };
   }
-}
+};
