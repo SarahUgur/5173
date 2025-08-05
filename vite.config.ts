@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: '0.0.0.0',
     port: 5175,
-    proxy: !process.env.NETLIFY_DEV ? {
+    proxy: process.env.NETLIFY_DEV !== 'true' ? {
       '/api': {
         target: 'http://localhost:3001',
         changeOrigin: true,
