@@ -1,13 +1,16 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
-export default defineConfig(() => ({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  
+  return {
   plugins: [react()],
   server: {
     host: '0.0.0.0',
     port: 5175,
-    ...(process.env.VITE_NETLIFY_DEV !== 'true' && {
+    ...(env.VITE_NETLIFY_DEV !== 'true' && {
       proxy: {
         '/api': {
           target: 'http://localhost:8888',
@@ -20,4 +23,3 @@ export default defineConfig(() => ({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-}));
