@@ -223,7 +223,11 @@ function App() {
 
     const loadRealPosts = async () => {
       try {
-        const response = await fetch('/api/posts', {
+        const apiUrl = window.location.hostname === 'localhost' && window.location.port === '8888' 
+          ? '/api/posts' 
+          : `${window.location.origin}/api/posts`;
+        
+        const response = await fetch(apiUrl, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`
           }
