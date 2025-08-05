@@ -12,6 +12,7 @@
   "dependencies": {
     "@stripe/stripe-js": "^7.4.0",
     "bcrypt": "^6.0.0",
+    "ci-info": "^4.3.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.344.0",
     "pg": "^8.16.3",

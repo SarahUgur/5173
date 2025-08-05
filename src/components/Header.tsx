@@ -144,7 +144,11 @@ export default function Header({
 
             {/* Logo */}
             <button 
-              onClick={() => setCurrentPage('home')}
+              onClick={() => {
+                setCurrentPage('home');
+                // Force page refresh to update content
+                window.location.reload();
+              }}
               className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity duration-200 flex-shrink-0"
             >
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-400 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">

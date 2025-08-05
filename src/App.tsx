@@ -109,6 +109,14 @@ function App() {
     }
   };
 
+  // Handle home navigation with refresh
+  const handleHomeNavigation = () => {
+    setCurrentPage('home');
+    setShowSidebar(false);
+    // Force refresh of posts when going to home
+    window.location.reload();
+  };
+
   // Show loading screen while checking authentication
   if (isLoading) {
     return (
@@ -294,8 +302,7 @@ function App() {
             <nav className="flex-1 px-3 xs:px-4 py-4 xs:py-6 space-y-1.5 xs:space-y-2 overflow-y-auto">
               <button
                 onClick={() => {
-                  setCurrentPage('home');
-                  setShowSidebar(false);
+                  handleHomeNavigation();
                 }}
                 className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
                   currentPage === 'home' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
