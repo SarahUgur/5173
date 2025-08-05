@@ -287,18 +287,18 @@ export default function MapPage({ currentUser }: MapPageProps) {
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">Alle kategorier</option>
-            <option value="hjemmerengoring">🏠 Hjemmerengøring</option>
-            <option value="kontorrengoring">🏢 Kontorrengøring</option>
-            <option value="hovedrengoring">✨ Hovedrengøring</option>
-            <option value="vinduesrengoring">🪟 Vinduesrengøring</option>
-            <option value="gulvrengoring">🧽 Gulvrengøring</option>
-            <option value="tappetrengoring">🛋️ Tæpperengøring</option>
-            <option value="fraflytningsrengoring">📦 Fraflytningsrengøring</option>
-            <option value="byggererengoring">🔨 Byggerengøring</option>
-            <option value="hotelrengoring">🏨 Hotel/Restaurant</option>
-            <option value="butikrengoring">🏪 Butik/Showroom</option>
-            <option value="industrirengoring">🏭 Industrirengøring</option>
-            <option value="specialrengoring">⭐ Specialrengøring</option>
+            <option value="hjemmerengoring">🏠 Hjemmerengøring - Private boliger</option>
+            <option value="kontorrengoring">🏢 Kontorrengøring - Kontor og arbejdspladser</option>
+            <option value="hovedrengoring">✨ Hovedrengøring - Dyb og grundig rengøring</option>
+            <option value="vinduesrengoring">🪟 Vinduesrengøring - Vinduer og glaspartier</option>
+            <option value="gulvrengoring">🧽 Gulvrengøring - Alle typer gulve</option>
+            <option value="tappetrengoring">🛋️ Tæpperengøring - Tæpper og møbler</option>
+            <option value="fraflytningsrengoring">📦 Fraflytningsrengøring - Ved flytning</option>
+            <option value="byggererengoring">🔨 Byggerengøring - Efter renovering</option>
+            <option value="hotelrengoring">🏨 Hotel & Restaurant - Erhvervsrengøring</option>
+            <option value="butikrengoring">🏪 Butik & Showroom - Detailhandel</option>
+            <option value="industrirengoring">🏭 Industrirengøring - Fabrikker og lagre</option>
+            <option value="specialrengoring">⭐ Specialrengøring - Særlige opgaver</option>
           </select>
 
           {/* Search Radius */}

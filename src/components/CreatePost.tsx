@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MapPin, Briefcase, Clock, DollarSign, Users, Camera, X } from 'lucide-react';
+import CategorySelector from './CategorySelector';
 import type { User } from '../types';
 
 interface CreatePostProps {
@@ -147,48 +148,15 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
         </div>
 
         {postType === 'job' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-              <select
-                value={jobCategory}
-                onChange={(e) => setJobCategory(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
-              >
-                <option value="">Vælg kategori</option>
-                <option value="hjemmerengoring">🏠 Hjemmerengøring</option>
-                <option value="kontorrengoring">🏢 Kontorrengøring</option>
-                <option value="hovedrengoring">✨ Hovedrengøring</option>
-                <option value="vinduesrengoring">🪟 Vinduesrengøring</option>
-                <option value="gulvrengoring">🧽 Gulvrengøring</option>
-                <option value="tappetrengoring">🛋️ Tæpperengøring</option>
-                <option value="fraflytningsrengoring">📦 Fraflytningsrengøring</option>
-                <option value="byggererengoring">🔨 Byggerengøring</option>
-                <option value="hotelrengoring">🏨 Hotel/Restaurant</option>
-                <option value="butikrengoring">🏪 Butik/Showroom</option>
-                <option value="industrirengoring">🏭 Industrirengøring</option>
-                <option value="specialrengoring">⭐ Specialrengøring</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-              <select
-                value={jobType}
-                onChange={(e) => setJobType(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
-              >
-                <option value="">Vælg type</option>
-                <option value="engangsjob">🔄 Engangsjob</option>
-                <option value="fast_ugentlig">📅 Fast ugentlig</option>
-                <option value="fast_14_dage">📅 Fast hver 14. dag</option>
-                <option value="fast_maanedlig">📅 Fast månedlig</option>
-                <option value="efter_behov">🎯 Efter behov</option>
-                <option value="akut">🚨 Akut (samme dag)</option>
-              </select>
-            </div>
+          <div className="space-y-4">
+            <CategorySelector
+              selectedCategory={jobCategory}
+              selectedType={jobType}
+              onCategoryChange={setJobCategory}
+              onTypeChange={setJobType}
+              showDescriptions={true}
+              compact={false}
+            />
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Målgruppe</label>

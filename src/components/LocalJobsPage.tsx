@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Briefcase, MapPin, Filter, Search, DollarSign, Clock, Star, Users, TrendingUp } from 'lucide-react';
+import { JOB_CATEGORIES, JOB_TYPES, getCategoryName, getTypeName } from '../lib/jobCategories';
 import JobApplicationModal from './JobApplicationModal';
 
 interface LocalJobsPageProps {
@@ -142,18 +143,11 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">Alle kategorier</option>
-              <option value="hjemmerengoring">🏠 Hjemmerengøring</option>
-              <option value="kontorrengoring">🏢 Kontorrengøring</option>
-              <option value="hovedrengoring">✨ Hovedrengøring</option>
-              <option value="vinduesrengoring">🪟 Vinduesrengøring</option>
-              <option value="gulvrengoring">🧽 Gulvrengøring</option>
-              <option value="tappetrengoring">🛋️ Tæpperengøring</option>
-              <option value="fraflytningsrengoring">📦 Fraflytningsrengøring</option>
-              <option value="byggererengoring">🔨 Byggerengøring</option>
-              <option value="hotelrengoring">🏨 Hotel/Restaurant</option>
-              <option value="butikrengoring">🏪 Butik/Showroom</option>
-              <option value="industrirengoring">🏭 Industrirengøring</option>
-              <option value="specialrengoring">⭐ Specialrengøring</option>
+              {JOB_CATEGORIES.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.icon} {category.name} - {category.description}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -165,12 +159,11 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">Alle typer</option>
-              <option value="engangsjob">🔄 Engangsjob</option>
-              <option value="fast_ugentlig">📅 Fast ugentlig</option>
-              <option value="fast_14_dage">📅 Fast hver 14. dag</option>
-              <option value="fast_maanedlig">📅 Fast månedlig</option>
-              <option value="efter_behov">🎯 Efter behov</option>
-              <option value="akut">🚨 Akut (samme dag)</option>
+              {JOB_TYPES.map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.icon} {type.name} - {type.description}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -251,10 +244,10 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
                 
                 <div className="flex space-x-2">
                   <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                    {getJobTypeLabel(job.jobType || 'home_cleaning')}
+                    {getCategoryName(job.jobCategory || 'hjemmerengoring')}
                   </span>
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getUrgencyColor(job.urgency || 'flexible')}`}>
-                    {getUrgencyLabel(job.urgency || 'flexible')}
+                    {getTypeName(job.jobType || 'engangsjob')}
                   </span>
                 </div>
               </div>

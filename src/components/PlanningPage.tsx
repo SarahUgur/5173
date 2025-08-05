@@ -596,18 +596,18 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
                     onChange={(e) => setNewPostData({...newPostData, urgency: e.target.value})}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="flexible">Fleksibel</option>
-                    <option value="this_week">Denne uge</option>
-                    <option value="immediate">Akut</option>
-                  </select>
-                </div>
-
-                {/* Preview */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-medium text-blue-900 mb-2">📅 Preview af dit planlagte opslag:</h4>
-                  <div className="bg-white rounded-lg p-3 border border-blue-200">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <img
+                    <option value="hjemmerengoring">🏠 Hjemmerengøring - Private boliger og lejligheder</option>
+                    <option value="kontorrengoring">🏢 Kontorrengøring - Kontor og arbejdspladser</option>
+                    <option value="hovedrengoring">✨ Hovedrengøring - Dyb og grundig rengøring</option>
+                    <option value="vinduesrengoring">🪟 Vinduesrengøring - Vinduer og glaspartier</option>
+                    <option value="gulvrengoring">🧽 Gulvrengøring - Alle typer gulve</option>
+                    <option value="tappetrengoring">🛋️ Tæpperengøring - Tæpper og møbler</option>
+                    <option value="fraflytningsrengoring">📦 Fraflytningsrengøring - Ved flytning</option>
+                    <option value="byggererengoring">🔨 Byggerengøring - Efter renovering</option>
+                    <option value="hotelrengoring">🏨 Hotel & Restaurant - Erhvervsrengøring</option>
+                    <option value="butikrengoring">🏪 Butik & Showroom - Detailhandel</option>
+                    <option value="industrirengoring">🏭 Industrirengøring - Fabrikker og lagre</option>
+                    <option value="specialrengoring">⭐ Specialrengøring - Særlige opgaver</option>
                         src={currentUser?.avatar}
                         alt="Din avatar"
                         className="w-8 h-8 rounded-full"
