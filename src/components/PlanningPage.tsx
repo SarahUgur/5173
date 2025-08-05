@@ -147,15 +147,19 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
     try {
       // Opret opslag med specifik dato
       const postData = {
-        ...newPostData,
-        scheduledDate: selectedDateForPost.toISOString(),
         type: 'job',
         content: `${newPostData.title} - ${newPostData.description}`,
+        location: newPostData.location,
+        budget: newPostData.budget,
+        jobType: newPostData.jobType,
+        urgency: newPostData.urgency,
+        scheduledDate: selectedDateForPost.toISOString(),
         isScheduled: true,
         isJobPost: true
       };
 
-      const response = await fetch('/api/posts', {
+      const apiUrl = `${window.location.origin}/.netlify/functions/posts`;
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

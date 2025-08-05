@@ -192,6 +192,10 @@ function App() {
     <div className="max-w-2xl mx-auto px-1 xs:px-0">
       <CreatePost 
         currentUser={currentUser} 
+        onPostCreated={() => {
+          // Reload posts when new post is created
+          window.location.reload();
+        }}
       />
       
       <div className="mb-3 xs:mb-4 sm:mb-6">
