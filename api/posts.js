@@ -1,32 +1,18 @@
 const jwt = require('jsonwebtoken');
 
-// Middleware to verify JWT token
-const verifyToken = (event, callback) => {
+// Refactored verifyToken function to use async/await instead of callbacks
+const verifyToken = async (event) => {
   const token = event.headers.authorization?.split(' ')[1];
   
   if (!token) {
-    return callback(null, {
-      statusCode: 401,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ error: 'Ingen adgangstoken' })
-    });
+    throw new Error('Ingen adgangstoken');
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'demo-secret');
-    return callback(null, { userId: decoded.userId });
+    return decoded.userId;
   } catch (error) {
-    return callback(null, {
-      statusCode: 401,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ error: 'Ugyldig token' })
-    });
+    throw new Error('Ugyldig token');
   }
 };
 
@@ -47,54 +33,47 @@ exports.handler = async (event, context) => {
     };
   }
 
-  if (event.httpMethod === 'POST') {
-    return new Promise((resolve) => {
-      verifyToken(event, (err, result) => {
-        if (result.statusCode) {
-          return resolve(result);
-        }
+  try {
+    if (event.httpMethod === 'POST') {
+      // Verify token for POST requests
+      try {
+        const userId = await verifyToken(event);
+      } catch (error) {
+        return {
+          statusCode: 401,
+          headers,
+          body: JSON.stringify({ error: error.message })
+        };
+      }
 
-        try {
-          const body = JSON.parse(event.body || '{}');
-          const { type, content, location, jobType, jobCategory, targetAudience, urgency, budget } = body;
+      const body = JSON.parse(event.body || '{}');
+      const { type, content, location, jobType, jobCategory, targetAudience, urgency, budget } = body;
 
-          // Create mock post response
-          const mockPost = {
-            id: Date.now().toString(),
-            type: type || 'regular',
-            content: content || '',
-            location: location || '',
-            job_type: jobType || null,
-            job_category: jobCategory || null,
-            target_audience: targetAudience || null,
-            urgency: urgency || null,
-            budget: budget || null,
-            created_at: new Date().toISOString()
-          };
+      // Create mock post response
+      const mockPost = {
+        id: Date.now().toString(),
+        type: type || 'regular',
+        content: content || '',
+        location: location || '',
+        job_type: jobType || null,
+        job_category: jobCategory || null,
+        target_audience: targetAudience || null,
+        urgency: urgency || null,
+        budget: budget || null,
+        created_at: new Date().toISOString()
+      };
 
-          resolve({
-            statusCode: 201,
-            headers,
-            body: JSON.stringify({
-              postId: mockPost.id,
-              message: 'Opslag oprettet succesfuldt'
-            })
-          });
+      return {
+        statusCode: 201,
+        headers,
+        body: JSON.stringify({
+          postId: mockPost.id,
+          message: 'Opslag oprettet succesfuldt'
+        })
+      };
 
-        } catch (error) {
-          console.error('Error creating post:', error);
-          resolve({
-            statusCode: 500,
-            headers,
-            body: JSON.stringify({ error: 'Server fejl ved oprettelse af opslag' })
-          });
-        }
-      });
-    });
-
-  } else if (event.httpMethod === 'GET') {
-    // Get posts
-    try {
+    } else if (event.httpMethod === 'GET') {
+      // Get posts
       return {
         statusCode: 200,
         headers,
@@ -109,20 +88,10 @@ exports.handler = async (event, context) => {
         })
       };
 
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({ error: 'Server fejl ved hentning af opslag' })
-      };
-    }
-
-  } else if (event.httpMethod === 'PUT') {
-    // Handle post sharing
-    const urlParts = event.path.split('/');
-    if (urlParts[urlParts.length - 1] === 'share') {
-      try {
+    } else if (event.httpMethod === 'PUT') {
+      // Handle post sharing
+      const urlParts = event.path.split('/');
+      if (urlParts[urlParts.length - 1] === 'share') {
         const body = JSON.parse(event.body || '{}');
         const { platform } = body;
         const postId = urlParts[urlParts.length - 2];
@@ -134,27 +103,28 @@ exports.handler = async (event, context) => {
           headers,
           body: JSON.stringify({ message: 'Deling registreret' })
         };
-      } catch (error) {
-        console.error('Error tracking share:', error);
+      } else {
         return {
-          statusCode: 500,
+          statusCode: 404,
           headers,
-          body: JSON.stringify({ error: 'Server fejl ved registrering af deling' })
+          body: JSON.stringify({ error: 'Endpoint ikke fundet' })
         };
       }
+
     } else {
       return {
-        statusCode: 404,
+        statusCode: 405,
         headers,
-        body: JSON.stringify({ error: 'Endpoint ikke fundet' })
+        body: JSON.stringify({ error: 'Method not allowed' })
       };
     }
 
-  } else {
+  } catch (error) {
+    console.error('API Error:', error);
     return {
-      statusCode: 405,
+      statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Method not allowed' })
+      body: JSON.stringify({ error: 'Server fejl' })
     };
   }
 };

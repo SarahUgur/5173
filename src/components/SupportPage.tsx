@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HelpCircle, Search, Book, Video, MessageCircle, Phone, Mail, ExternalLink, ChevronDown, ChevronRight } from 'lucide-react';
+import { HelpCircle, Search, Book, Video, MessageCircle, Phone, Mail, ExternalLink, ChevronDown, ChevronRight, Shield, DollarSign } from 'lucide-react';
 
 export default function SupportPage() {
   const [searchTerm, setSearchTerm] = useState('');
