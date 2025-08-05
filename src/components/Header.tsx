@@ -43,6 +43,10 @@ export default function Header({
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'ar', name: 'العربية', flag: '🇸🇦' },
     { code: 'pl', name: 'Polski', flag: '🇵🇱' },
+  ];
+
+  const currentLanguage = languages.find(lang => lang.code === language);
+
   // Real search - will search API
   const performSearch = async (query: string) => {
     try {
@@ -128,6 +132,7 @@ export default function Header({
       default: return '';
     }
   };
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
