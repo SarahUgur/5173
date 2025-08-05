@@ -7,13 +7,13 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5175,
-    proxy: {
+    proxy: !process.env.NETLIFY_DEV ? {
       '/api': {
         target: 'http://localhost:8888',
         changeOrigin: true,
         secure: false
       }
-    }
+    } : undefined
   },
   optimizeDeps: {
     exclude: ['lucide-react'],
