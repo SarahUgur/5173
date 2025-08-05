@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:netlify": "VITE_NETLIFY_DEV=true npx netlify dev",
+    "dev:netlify": "NETLIFY_DEV=true npx netlify dev",
     "build": "vite build",
     "lint": "eslint ."
   },
