@@ -109,24 +109,24 @@ function App() {
     }
   };
 
-  // Handle contact navigation
-  const handleShowContact = () => {
-    setCurrentPage('contact');
-    setShowSidebar(false);
-  };
-
-  // Handle terms navigation
-  const handleShowTerms = () => {
-    setCurrentPage('terms');
-    setShowSidebar(false);
-  };
-
   // Handle home navigation with refresh
   const handleHomeNavigation = () => {
     setCurrentPage('home');
     setShowSidebar(false);
     // Force refresh of posts when going to home
     window.location.reload();
+  };
+
+  // Handle show contact
+  const handleShowContact = () => {
+    setCurrentPage('contact');
+    setShowSidebar(false);
+  };
+
+  // Handle show terms
+  const handleShowTerms = () => {
+    setCurrentPage('terms');
+    setShowSidebar(false);
   };
 
   // Show loading screen while checking authentication
