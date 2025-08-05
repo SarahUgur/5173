@@ -161,14 +161,18 @@ const PlanningPage: React.FC<PlanningPageProps> = ({ currentUser }) => {
                   required
                 >
                   <option value="">Vælg kategori</option>
-                  <option value="rengøring">Rengøring</option>
-                  <option value="havearbejde">Havearbejde</option>
-                  <option value="malerarbejde">Malerarbejde</option>
-                  <option value="flyttehjælp">Flyttehjælp</option>
-                  <option value="babysitting">Babysitting</option>
-                  <option value="hundeluftning">Hundeluftning</option>
-                  <option value="madlavning">Madlavning</option>
-                  <option value="andet">Andet</option>
+                  <option value="hjemmerengoring">🏠 Hjemmerengøring</option>
+                  <option value="kontorrengoring">🏢 Kontorrengøring</option>
+                  <option value="hovedrengoring">✨ Hovedrengøring</option>
+                  <option value="vinduesrengoring">🪟 Vinduesrengøring</option>
+                  <option value="gulvrengoring">🧽 Gulvrengøring</option>
+                  <option value="tappetrengoring">🛋️ Tæpperengøring</option>
+                  <option value="fraflytningsrengoring">📦 Fraflytningsrengøring</option>
+                  <option value="byggererengoring">🔨 Byggerengøring</option>
+                  <option value="hotelrengoring">🏨 Hotel & Restaurant</option>
+                  <option value="butikrengoring">🏪 Butik & Showroom</option>
+                  <option value="industrirengoring">🏭 Industrirengøring</option>
+                  <option value="specialrengoring">⭐ Specialrengøring</option>
                 </select>
               </div>
 
