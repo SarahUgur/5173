@@ -231,7 +231,7 @@ function App() {
         
         if (response.ok) {
           const data = await response.json();
-      const response = await fetch('/.netlify/functions/posts', {
+          setPosts(data);
         } else {
           setPosts([]);
         }
