@@ -55,6 +55,6 @@ export interface Post {
     preferredContact?: 'phone' | 'email' | 'app';
   };
   isBoosted?: boolean;
-  boostExpiresAt?: string;
+  boostExpiresAt?: string | null; // null = never expires (free forever)
   boostType?: 'free' | 'standard' | 'premium';
 }

@@ -61,7 +61,7 @@ exports.handler = async (event, context) => {
         urgency: urgency || null,
         budget: budget || null,
         is_boosted: true,
-        boost_expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days free
+        boost_expires_at: null, // Never expires - free forever
         created_at: new Date().toISOString()
       };
 
@@ -70,7 +70,7 @@ exports.handler = async (event, context) => {
         headers,
         body: JSON.stringify({
           postId: mockPost.id,
-          message: 'Opslag oprettet og boostet gratis i 7 dage'
+          message: 'Opslag oprettet og boostet gratis for altid'
         })
       };
 

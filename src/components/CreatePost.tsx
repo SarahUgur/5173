@@ -68,7 +68,7 @@ export default function CreatePost({ currentUser, onPostCreated }: CreatePostPro
         
         // Automatically boost all posts for free
         setTimeout(() => {
-          alert('🎉 Opslag oprettet og boostet GRATIS!\n\n✨ Dit opslag vil nu være synligt for flere brugere i 7 dage');
+          alert('🎉 Opslag oprettet og boostet GRATIS FOR ALTID!\n\n✨ Dit opslag vil altid være synligt øverst for alle brugere');
         }, 1000);
         
         // Reload page to show new post
