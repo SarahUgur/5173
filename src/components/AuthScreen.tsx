@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, User, Building, Users, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User as UserIcon, Building, Users, CheckCircle } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import type { User } from '../types';
 
@@ -85,7 +85,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
   };
 
   const userTypes = [
-    { id: 'private', label: 'Privat person', icon: User, description: 'Jeg har brug for rengøring' },
+    { id: 'private', label: 'Privat person', icon: UserIcon, description: 'Jeg har brug for rengøring' },
     { id: 'professional', label: 'Professionel', icon: CheckCircle, description: 'Jeg tilbyder rengøringsservice' },
     { id: 'small_business', label: 'Lille virksomhed', icon: Building, description: '1-10 medarbejdere' },
     { id: 'large_business', label: 'Stor virksomhed', icon: Users, description: '10+ medarbejdere' }
@@ -127,7 +127,7 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Fulde navn</label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                    <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                     <input
                       type="text"
                       value={name}
