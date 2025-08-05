@@ -28,15 +28,35 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
   const loadJobs = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/posts', {
+      const response = await fetch('/api/posts?type=job', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
+      // Check if response is HTML (indicates wrong endpoint or server error)
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('text/html')) {
+        console.warn('Received HTML response instead of JSON from /api/posts');
+        setJobs([]);
+        return;
+      }
+
       if (response.ok) {
-        const data = await response.json();
-        setJobs(data.posts || []);
+        const text = await response.text();
+        if (!text) {
+          console.log('Empty response from API');
+          setJobs([]);
+          return;
+        }
+        
+        try {
+          const data = JSON.parse(text);
+          setJobs(data.posts || []);
+        } catch (jsonError) {
+          console.error('Invalid JSON response:', text);
+          setJobs([]);
+        }
       } else {
         setJobs([]);
       }
