@@ -6,14 +6,7 @@ export default defineConfig(() => ({
   plugins: [react()],
   server: {
     host: '0.0.0.0',
-    port: 5175,
-    proxy: process.env.NETLIFY_DEV === 'true' ? undefined : {
-      '/api': {
-        target: 'http://localhost:8888',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/.netlify/functions')
-      }
-    }
+    port: 5175
   },
   optimizeDeps: {
     exclude: ['lucide-react'],
