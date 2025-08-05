@@ -280,9 +280,21 @@ export function useLanguage() {
     localStorage.setItem('language', newLanguage);
   };
 
+  const getUserTypeLabel = (type: string) => {
+    const labels = {
+      'private': 'Privat kunde',
+      'cleaner': 'Rengøringsekspert', 
+      'small_business': 'Lille virksomhed',
+      'large_business': 'Stor virksomhed'
+    };
+    return labels[type as keyof typeof labels] || type;
+  };
+
   return {
     language,
     t,
-    changeLanguage
+    changeLanguage,
+    setLanguage,
+    getUserTypeLabel
   };
 }
