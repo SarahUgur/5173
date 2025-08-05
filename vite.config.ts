@@ -7,11 +7,11 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: '0.0.0.0',
     port: 5175,
-    proxy: process.env.NETLIFY_DEV === 'true' ? undefined : {
+    proxy: {
       '/api': {
         target: 'http://localhost:9999',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (path) => path.replace(/^\/api/, '/.netlify/functions')
       }
     }
   },
