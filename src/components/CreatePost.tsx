@@ -26,7 +26,7 @@ export default function CreatePost({ currentUser, onPostCreated }: CreatePostPro
     setIsSubmitting(true);
 
     try {
-      const apiUrl = `${window.location.origin}/.netlify/functions/posts`;
+      const apiUrl = `${window.location.origin}/api/posts`;
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
