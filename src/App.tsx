@@ -109,6 +109,18 @@ function App() {
     }
   };
 
+  // Handle contact navigation
+  const handleShowContact = () => {
+    setCurrentPage('contact');
+    setShowSidebar(false);
+  };
+
+  // Handle terms navigation
+  const handleShowTerms = () => {
+    setCurrentPage('terms');
+    setShowSidebar(false);
+  };
+
   // Handle home navigation with refresh
   const handleHomeNavigation = () => {
     setCurrentPage('home');
@@ -219,7 +231,7 @@ function App() {
         
         if (response.ok) {
           const data = await response.json();
-          setPosts(data.posts || []);
+      const response = await fetch('/.netlify/functions/posts', {
         } else {
           setPosts([]);
         }
