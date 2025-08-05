@@ -69,14 +69,18 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
   const handleShare = async () => {
     try {
       // Track share for analytics
-      await fetch(`/api/posts/${post.id}/share`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: JSON.stringify({ platform: 'native' })
-      });
+      try {
+        await fetch(`/api/posts/${post.id}/share`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          },
+          body: JSON.stringify({ platform: 'native' })
+        });
+      } catch (apiError) {
+        console.log('API share tracking failed, continuing with share...');
+      }
 
       // Create shareable link
       const shareUrl = `https://privaterengoring.dk/post/${post.id}`;
@@ -89,6 +93,7 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
           text: post.content,
           url: shareUrl
         });
+        console.log('Post shared successfully via Web Share API');
       } else {
         // Desktop: Show share options
         const shareOptions = [
@@ -114,21 +119,40 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
           }
         ];
 
-        // Show share menu
-        const choice = prompt(
-          'Vælg hvordan du vil dele:\n\n' +
-          shareOptions.map((opt, i) => `${i + 1}. ${opt.name}`).join('\n') +
-          '\n\nIndtast nummer (1-5):'
-        );
+        // Try to copy to clipboard first as fallback
+        try {
+          await navigator.clipboard.writeText(shareText);
+          
+          // Show share menu with better UX
+          const userChoice = confirm(
+            `📋 Link kopieret til udklipsholder!\n\n` +
+            `Du kan nu dele det på:\n` +
+            `• WhatsApp, SMS, Facebook\n` +
+            `• Email eller andre sociale medier\n\n` +
+            `Vil du åbne en deling side nu?`
+          );
+          
+          if (userChoice) {
+            // Open WhatsApp as most popular choice
+            window.open(shareOptions[1].url, '_blank', 'width=600,height=400');
+          }
+        } catch (clipboardError) {
+          // If clipboard fails, show simple share options
+          const choice = prompt(
+            'Vælg hvordan du vil dele:\n\n' +
+            shareOptions.map((opt, i) => `${i + 1}. ${opt.name}`).join('\n') +
+            '\n\nIndtast nummer (1-5):'
+          );
 
-        const selectedOption = shareOptions[parseInt(choice || '0') - 1];
-        
-        if (selectedOption) {
-          if (selectedOption.action === 'copy') {
-            await navigator.clipboard.writeText(shareText);
-            alert('Link kopieret til udklipsholder! 📋');
-          } else if (selectedOption.url) {
-            window.open(selectedOption.url, '_blank', 'width=600,height=400');
+          const selectedOption = shareOptions[parseInt(choice || '0') - 1];
+          
+          if (selectedOption) {
+            if (selectedOption.action === 'copy') {
+              // Manual copy fallback
+              prompt('Kopier dette link:', shareText);
+            } else if (selectedOption.url) {
+              window.open(selectedOption.url, '_blank', 'width=600,height=400');
+            }
           }
         }
       }
@@ -138,10 +162,18 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
       try {
         const shareUrl = `https://privaterengoring.dk/post/${post.id}`;
         const shareText = `${post.content}\n\nSe mere på PRIVATE RENGØRING: ${shareUrl}`;
-        await navigator.clipboard.writeText(shareText);
-        alert('Link kopieret til udklipsholder! 📋\n\nDu kan nu dele det på WhatsApp, SMS, Facebook eller andre sociale medier.');
+        
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(shareText);
+          alert('📋 Link kopieret til udklipsholder!\n\nDu kan nu dele det på WhatsApp, SMS, Facebook eller andre sociale medier.');
+        } else {
+          // Manual copy for older browsers
+          prompt('Kopier dette link manuelt:', shareText);
+        }
       } catch (clipboardError) {
-        alert('Opslag delt! (Demo mode)');
+        console.error('Clipboard error:', clipboardError);
+        // Last resort - show the text to copy manually
+        prompt('Kopier dette link manuelt:', `${post.content}\n\nSe mere på: https://privaterengoring.dk/post/${post.id}`);
       }
     }
   };
