@@ -43,12 +43,6 @@ export default function Header({
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'ar', name: 'العربية', flag: '🇸🇦' },
     { code: 'pl', name: 'Polski', flag: '🇵🇱' },
-    { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
-    { code: 'de', name: 'Deutsch', flag: '🇩🇪' }
-  ];
-
-  const currentLanguage = languages.find(lang => lang.code === language);
-
   // Real search - will search API
   const performSearch = async (query: string) => {
     try {
