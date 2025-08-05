@@ -39,12 +39,6 @@ export default function Header({
   };
 
   const languages = [
-    { code: 'da', name: 'Dansk', flag: '🇩🇰' },
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-    { code: 'pl', name: 'Polski', flag: '🇵🇱' },
-  ];
-
   const currentLanguage = languages.find(lang => lang.code === language);
 
   // Real search - will search API
