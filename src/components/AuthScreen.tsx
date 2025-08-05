@@ -47,38 +47,40 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
     setError('');
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Admin login
+      if (formData.email === 'admin@privaterengoring.dk' && formData.password === 'admin123') {
+        const adminUser = {
+          id: 'admin',
+          name: 'Administrator',
+          email: 'admin@privaterengoring.dk',
+          userType: 'admin',
+          verified: true,
+          isSubscribed: true,
+          location: 'Danmark',
+          avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          rating: 5.0,
+          completedJobs: 0,
+          bio: 'Platform Administrator',
+          phone: '+45 12 34 56 78',
+          website: 'https://privaterengoring.dk',
+          joinedDate: '2024-01-01'
+        };
+        
+        localStorage.setItem('authToken', 'admin-token');
+        onLogin(adminUser);
+        setIsLoading(false);
+        return;
+      }
 
-      // Create user object
-      const user: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        name: formData.name || 'Demo Bruger',
-        email: formData.email,
-        phone: formData.phone || '+45 12 34 56 78',
-        location: formData.location || 'København',
-        bio: formData.userType === 'helper' 
-          ? 'Erfaren rengøringshjælper med fokus på kvalitet og pålidelighed.'
-          : 'Søger pålidelig rengøringshjælp til mit hjem.',
-        avatar: `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000) + 1500000000000}?w=150&h=150&fit=crop&crop=face`,
-        isVerified: true,
-        isPro: Math.random() > 0.5,
-        rating: 4.2 + Math.random() * 0.8,
-        completedJobs: Math.floor(Math.random() * 50) + 5,
-        joinDate: new Date().toISOString(),
-        skills: formData.userType === 'helper' 
-          ? ['Almindelig rengøring', 'Vinduespolering', 'Dybderengøring']
-          : [],
-        hourlyRate: formData.userType === 'helper' ? 200 + Math.floor(Math.random() * 100) : 0,
-        availability: ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag']
-      };
-
-      onLogin(user);
-    } catch (err) {
-      setError('Der opstod en fejl. Prøv igen.');
-    } finally {
-      setIsLoading(false);
+      // For alle andre - kræv rigtig registrering
+      alert('Kun registrerede brugere kan logge ind. Kontakt admin@privaterengoring.dk for at få adgang.');
+      
+    } catch (error) {
+      console.error('Authentication error:', error);
+      alert('Der opstod en fejl. Prøv igen.');
     }
+    
+    setIsLoading(false);
   };
 
   const handleSocialLogin = async (provider: 'google' | 'apple' | 'facebook') => {
