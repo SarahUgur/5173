@@ -231,7 +231,7 @@ function App() {
         
         if (response.ok) {
           const data = await response.json();
-          setPosts(data);
+          setPosts(data.posts || []);
         } else {
           setPosts([]);
         }
