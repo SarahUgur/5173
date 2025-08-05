@@ -121,6 +121,22 @@ This file documents all locked functions that should NOT be modified unless spec
 - **Shareable links** - Direct links to posts
 - **Status: WORKING - DO NOT TOUCH**
 
+#### 16. Post Boost System (LOCKED ✅)
+- **Permanent free boost** - All posts boosted gratis for altid
+- **No time limits** - Boost never expires (boostExpiresAt: null)
+- **Automatic boost** - All new posts automatically boosted
+- **Manual boost** - Users can boost existing posts for free
+- **Enhanced visibility** - Boosted posts always show first
+- **No payment required** - 100% free boost system
+- **Status: WORKING - DO NOT TOUCH**
+
+#### 17. Vite Proxy Configuration (LOCKED ✅)
+- **Netlify Dev detection** - Proper environment variable checking
+- **Proxy management** - Disables proxy when Netlify Dev runs
+- **API routing** - Correct /api/* handling
+- **No connection errors** - Fixed ECONNREFUSED issues
+- **Status: WORKING - DO NOT TOUCH**
+
 ### 🔗 SOCIAL MEDIA INTEGRATION READY:
 
 #### Facebook App Integration:
@@ -168,6 +184,9 @@ This file documents all locked functions that should NOT be modified unless spec
 - 2025-01-20: **LOGIN REQUIRED LOCK** - Login required at app start
 - 2025-01-20: **REAL USERS ONLY LOCK** - Removed all demo/mock data
 - 2025-01-20: **FINAL PRODUCTION LOCK** - Ready for public use
+- 2025-01-20: **BOOST SYSTEM LOCK** - Added permanent free boost for all posts
+- 2025-01-20: **PROXY FIX LOCK** - Fixed Vite proxy configuration for Netlify Dev
+- 2025-01-20: **PERMANENT FREE BOOST LOCK** - All posts boosted gratis for altid
 
 ### ⚠️ CRITICAL WARNING:
 **ALL FUNCTIONS ARE NOW LOCKED AND WORKING PERFECTLY**
@@ -186,6 +205,9 @@ This file documents all locked functions that should NOT be modified unless spec
 - ✅ Emails: MATCHING (@privaterengoring.dk)
 - ✅ Real Data Only: ENFORCED (No fake content)
 - ✅ Social Sharing: WORKING (Facebook, WhatsApp, SMS, Email)
+- ✅ Post Boost: WORKING (Permanent free boost for all posts)
+- ✅ Vite Proxy: WORKING (Fixed Netlify Dev configuration)
+- ✅ API Routing: WORKING (No connection errors)
 
 **DO NOT MODIFY** any locked functions without explicit permission.
 **ONLY UNLOCK** when specifically requested for fixes or improvements.
@@ -198,6 +220,9 @@ This file documents all locked functions that should NOT be modified unless spec
 **NO DEMO ACCESS** - Real users only
 **BRANDING:** PRIVATE RENGØRING (locked)
 **LOGIN:** REQUIRED AT START (locked)
+**BOOST SYSTEM:** PERMANENT FREE (locked)
+**PROXY CONFIG:** FIXED (locked)
+**ALL POSTS:** BOOSTED GRATIS FOR ALTID (locked)
 
 ### 🔒 AUTO-LOCK SYSTEM:
 All corrections are automatically saved and locked upon completion.
@@ -206,3 +231,6 @@ Real users only - no demo/mock data anywhere in the system.
 Share functionality locked with proper social media integration.
 Login requirement locked at app start - no access without authentication.
 All demo data removed and replaced with real API calls.
+Post boost system locked with permanent free boost for all posts.
+Vite proxy configuration locked and working with Netlify Dev.
+All posts automatically boosted gratis for altid - no expiration.

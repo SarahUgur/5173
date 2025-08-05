@@ -108,7 +108,9 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
           {
             name: 'SMS',
             url: `sms:?body=${encodeURIComponent(shareText)}`
-          },
+          }
+        ];
+      }
       // Permanently free boost - no time limits
       const response = await fetch(`/api/posts/${post.id}/boost`, {
         method: 'POST',
