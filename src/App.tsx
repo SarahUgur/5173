@@ -228,6 +228,10 @@ function App() {
           : `${window.location.origin}/api/posts`;
         
         const response = await fetch(apiUrl, {
+          ? '/api/posts' 
+          : `${window.location.origin}/api/posts`;
+        
+        const response = await fetch(apiUrl, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`
           }
