@@ -33,7 +33,3 @@
 [functions]
   directory = "api"
   node_bundler = "esbuild"
-  
-[edge_functions]
-  # Explicitly disable edge functions
-  directory = ""
