@@ -16,8 +16,8 @@
 
 [dev]
   framework = "vite"
-  command = "NETLIFY_DEV=true vite"
-  env = { NETLIFY_DEV = "true" }
+  command = "VITE_NETLIFY_DEV=true vite"
+  env = { VITE_NETLIFY_DEV = "true" }
   targetPort = 5175
   port = 8888
   publish = "dist"

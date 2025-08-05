@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: '0.0.0.0',
     port: 5175,
-    proxy: process.env.NETLIFY_DEV === 'true' ? undefined : {
+    proxy: process.env.VITE_NETLIFY_DEV === 'true' ? undefined : {
       '/api': {
         target: 'http://localhost:8888',
         changeOrigin: true,
