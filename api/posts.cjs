@@ -76,16 +76,102 @@ exports.handler = async (event, context) => {
 
     } else if (event.httpMethod === 'GET') {
       // Get posts
+      // Mock posts data with permanent free boost
+      const mockPosts = [
+        {
+          id: '1',
+          userId: 'user1',
+          user: {
+            id: 'user1',
+            name: 'Maria Hansen',
+            email: 'maria@example.com',
+            avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            verified: true,
+            location: 'København NV',
+            rating: 4.8,
+            completedJobs: 23
+          },
+          content: 'Søger hjælp til hjemmerengøring hver 14. dag. Har 2 børn og en hund, så erfaring med familier er et plus! 🏠✨',
+          location: 'København NV',
+          budget: '350 kr',
+          jobType: 'hjemmerengoring',
+          jobCategory: 'hjemmerengoring',
+          urgency: 'flexible',
+          isJobPost: true,
+          isBoosted: true,
+          boostExpiresAt: null,
+          boostType: 'free',
+          likes: 12,
+          comments: [],
+          images: ['https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop'],
+          createdAt: '4 timer siden'
+        },
+        {
+          id: '2',
+          userId: 'user2',
+          user: {
+            id: 'user2',
+            name: 'Lars Nielsen',
+            email: 'lars@example.com',
+            avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            verified: true,
+            location: 'Aarhus C',
+            rating: 4.9,
+            completedJobs: 45
+          },
+          content: 'Professionel kontorrengøring tilbydes. Har 5+ års erfaring og alle nødvendige forsikringer. Miljøvenlige produkter! 🌱',
+          location: 'Aarhus C',
+          budget: '600 kr',
+          jobType: 'kontorrengoring',
+          jobCategory: 'kontorrengoring',
+          urgency: 'this_week',
+          isJobPost: false,
+          isBoosted: true,
+          boostExpiresAt: null,
+          boostType: 'free',
+          likes: 8,
+          comments: [],
+          createdAt: '1 dag siden'
+        },
+        {
+          id: '3',
+          userId: 'user3',
+          user: {
+            id: 'user3',
+            name: 'Sofie Andersen',
+            email: 'sofie@example.com',
+            avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+            verified: false,
+            location: 'Odense',
+            rating: 4.7,
+            completedJobs: 12
+          },
+          content: 'AKUT: Vores kontor har brug for rengøring i morgen tidlig! Vigtigt klientmøde kl. 10. Kan betale ekstra for kort varsel. 🚨',
+          location: 'Odense C',
+          budget: '800 kr',
+          jobType: 'kontorrengoring',
+          jobCategory: 'kontorrengoring',
+          urgency: 'immediate',
+          isJobPost: true,
+          isBoosted: true,
+          boostExpiresAt: null,
+          boostType: 'free',
+          likes: 15,
+          comments: [],
+          createdAt: '30 minutter siden'
+        }
+      ];
+
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({
-          posts: [],
+          posts: mockPosts,
           hasMore: false,
           pagination: {
             page: 1,
             limit: 10,
-            total: 0
+            total: mockPosts.length
           }
         })
       };
@@ -93,10 +179,12 @@ exports.handler = async (event, context) => {
     } else if (event.httpMethod === 'PUT') {
       // Handle post sharing
       const urlParts = event.path.split('/');
-      if (urlParts[urlParts.length - 1] === 'share') {
+      const lastPart = urlParts[urlParts.length - 1];
+      const postId = urlParts[urlParts.length - 2];
+      
+      if (lastPart === 'share') {
         const body = JSON.parse(event.body || '{}');
         const { platform } = body;
-        const postId = urlParts[urlParts.length - 2];
         
         console.log('Post shared:', { postId, platform });
         
@@ -104,6 +192,25 @@ exports.handler = async (event, context) => {
           statusCode: 200,
           headers,
           body: JSON.stringify({ message: 'Deling registreret' })
+        };
+      } else if (lastPart === 'boost') {
+        const body = JSON.parse(event.body || '{}');
+        const { type = 'free', duration = 'forever' } = body;
+        
+        console.log('Post boosted:', { postId, type, duration });
+        
+        // Mock successful boost - all posts are permanently boosted for free
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ 
+            message: 'Opslag boostet GRATIS FOR ALTID!',
+            boost: {
+              type: 'free',
+              expiresAt: null,
+              permanent: true
+            }
+          })
         };
       } else {
         return {

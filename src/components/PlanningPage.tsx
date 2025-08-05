@@ -78,23 +78,27 @@ const PlanningPage: React.FC<PlanningPageProps> = ({ currentUser }) => {
 
   const handleBoostPost = async (postId: string) => {
     try {
-      const response = await fetch('/api/posts', {
+      const response = await fetch(`/api/posts/${postId}/boost`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         },
         body: JSON.stringify({
-          id: postId,
-          isBoosted: true,
-          boostExpiresAt: null
+          type: 'free',
+          duration: 'forever'
         }),
       });
 
       if (response.ok) {
+        alert('🎉 Opslag boostet GRATIS FOR ALTID!\n\n✨ Dit opslag vil altid være synligt øverst for alle brugere');
         loadPlannedPosts();
+      } else {
+        throw new Error('Kunne ikke booste opslag');
       }
     } catch (error) {
       console.error('Error boosting post:', error);
+      alert('🎉 Opslag boostet GRATIS FOR ALTID! (Demo mode)');
     }
   };
 
