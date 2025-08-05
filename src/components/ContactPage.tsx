@@ -38,7 +38,7 @@ export default function ContactPage() {
       }
     } catch (error) {
       console.error('Error sending contact form:', error);
-      alert('Besked sendt! (Demo mode)');
+      alert('Fejl ved afsendelse af besked. Prøv igen.');
     } finally {
       setIsSubmitting(false);
     }

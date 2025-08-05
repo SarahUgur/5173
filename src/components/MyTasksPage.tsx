@@ -92,7 +92,7 @@ export default function MyTasksPage({ currentUser }: MyTasksPageProps) {
         }
       } catch (error) {
         console.error('Error canceling task:', error);
-        alert('Opgave annulleret! (Demo mode)');
+        alert('Fejl ved annullering af opgave. Prøv igen.');
       }
     }
   };

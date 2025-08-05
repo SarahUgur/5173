@@ -110,10 +110,7 @@ export default function UserProfilePage({ currentUser, onUpdateUser, onShowSetti
       }
     } catch (error) {
       console.error('Error updating profile:', error);
-      // Still update locally for demo
-      onUpdateUser(formData);
-      setIsEditing(false);
-      alert('Profil opdateret! (Demo mode)');
+      alert('Fejl ved opdatering af profil. Prøv igen.');
     }
   };
 
