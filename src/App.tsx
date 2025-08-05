@@ -228,8 +228,6 @@ function App() {
     const loadRealPosts = async () => {
       try {
         const apiUrl = '/api/posts';
-        
-        const response = await fetch(apiUrl, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`
           }
