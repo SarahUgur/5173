@@ -234,8 +234,20 @@ function App() {
         });
         
         if (response.ok) {
-          const data = await response.json();
-          setPosts(data.posts || []);
+         const text = await response.text();
+         if (!text) {
+           console.log('Empty response from API');
+           setPosts([]);
+           return;
+         }
+         
+         try {
+           const data = JSON.parse(text);
+           setPosts(data.posts || []);
+         } catch (jsonError) {
+           console.error('Invalid JSON response:', text);
+           setPosts([]);
+         }
         } else {
           setPosts([]);
         }
