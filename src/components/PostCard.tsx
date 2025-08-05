@@ -62,7 +62,7 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
       }
     } catch (error) {
       console.error('Error applying for job:', error);
-      alert('Ansøgning sendt! (Demo mode)');
+      alert('Fejl ved afsendelse af ansøgning. Prøv igen.');
     }
   };
 

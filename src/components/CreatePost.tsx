@@ -67,23 +67,7 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
       }
     } catch (error) {
       console.error('Error creating post:', error);
-      alert('✅ Opslag oprettet! (Demo mode)');
-      
-      // Still call callback for demo
-      if (onPostCreated) {
-        onPostCreated();
-      }
-      
-      // Reset form
-      setContent('');
-      setLocation('');
-      setJobType('');
-      setJobCategory('');
-      setTargetAudience('');
-      setUrgency('');
-      setBudget('');
-      setSelectedImages([]);
-      setShowForm(false);
+      alert('Fejl ved oprettelse af opslag. Prøv igen.');
     } finally {
       setIsSubmitting(false);
     }

@@ -75,8 +75,7 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
       }
     } catch (error) {
       console.error('Error sending application:', error);
-      alert('Ansøgning sendt! (Demo mode)');
-      setShowApplicationModal(false);
+      alert('Fejl ved afsendelse af ansøgning. Prøv igen.');
     }
   };
 

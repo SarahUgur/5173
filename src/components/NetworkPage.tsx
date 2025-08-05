@@ -101,7 +101,7 @@ export default function NetworkPage({ currentUser }: NetworkPageProps) {
       }
     } catch (error) {
       console.error('Error accepting friend request:', error);
-      alert('Venskabsanmodning accepteret! (Demo mode)');
+      alert('Fejl ved accept af venskabsanmodning. Prøv igen.');
     }
   };
 
@@ -175,7 +175,7 @@ export default function NetworkPage({ currentUser }: NetworkPageProps) {
       }
     } catch (error) {
       console.error('Error reporting user:', error);
-      alert('Rapport sendt! (Demo mode)');
+      alert('Fejl ved afsendelse af rapport. Prøv igen.');
     }
   };
 

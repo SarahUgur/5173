@@ -38,7 +38,7 @@ export default function JobApplicationModal({
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Success feedback
-      alert('🎉 Ansøgning sendt succesfuldt! Job ejeren vil kontakte dig snart. (Demo mode)');
+       alert('🎉 Ansøgning sendt succesfuldt! Job ejeren vil kontakte dig snart.');
       
       // Reset form
       setApplicationMessage('');
