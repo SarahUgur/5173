@@ -104,20 +104,10 @@ export default function CreatePost({ currentUser, onPostCreated }: CreatePostPro
             className="flex-1 text-left px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-600 transition-colors duration-200"
           >
             Hvad tænker du på, {currentUser.name?.split(' ')[0] || 'bruger'}?
-          </button>
-        </div>
-        
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-          <button
-            onClick={() => {
-              setPostType('regular'); 
-              setShowForm(true);
-            }}
-            className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors duration-200 hover:scale-105"
-          >
-            <MessageCircle className="w-5 h-5" />
-            <span className="text-sm font-medium">Almindeligt Opslag</span>
-          </button>
+          // Automatically boost all posts for free
+          setTimeout(() => {
+            alert('🎉 Opslag oprettet og boostet GRATIS!\n\n✨ Dit opslag vil nu være synligt for flere brugere i 7 dage');
+          }, 1000);
           
           <button
             onClick={() => {

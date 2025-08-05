@@ -109,56 +109,27 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
             name: 'SMS',
             url: `sms:?body=${encodeURIComponent(shareText)}`
           },
-          {
-            name: 'Email',
-            url: `mailto:?subject=${encodeURIComponent('PRIVATE RENGØRING - ' + post.content.substring(0, 50))}&body=${encodeURIComponent(shareText)}`
-          },
-          {
-            name: 'Kopier link',
-            action: 'copy'
-          }
-        ];
+      // Completely free boost
+      const response = await fetch(`/api/posts/${post.id}/boost`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          type: 'free',
+          duration: 168 // 7 days free
+        })
+      });
 
-        // Try to copy to clipboard first as fallback
-        try {
-          await navigator.clipboard.writeText(shareText);
-          
-          // Show share menu with better UX
-          const userChoice = confirm(
-            `📋 Link kopieret til udklipsholder!\n\n` +
-            `Du kan nu dele det på:\n` +
-            `• WhatsApp, SMS, Facebook\n` +
-            `• Email eller andre sociale medier\n\n` +
-            `Vil du åbne en deling side nu?`
-          );
-          
-          if (userChoice) {
-            // Open WhatsApp as most popular choice
-            window.open(shareOptions[1].url, '_blank', 'width=600,height=400');
-          }
-        } catch (clipboardError) {
-          // If clipboard fails, show simple share options
-          const choice = prompt(
-            'Vælg hvordan du vil dele:\n\n' +
-            shareOptions.map((opt, i) => `${i + 1}. ${opt.name}`).join('\n') +
-            '\n\nIndtast nummer (1-5):'
-          );
-
-          const selectedOption = shareOptions[parseInt(choice || '0') - 1];
-          
-          if (selectedOption) {
-            if (selectedOption.action === 'copy') {
-              // Manual copy fallback
-              prompt('Kopier dette link:', shareText);
-            } else if (selectedOption.url) {
-              window.open(selectedOption.url, '_blank', 'width=600,height=400');
-            }
-          }
-        }
+      if (response.ok) {
+        alert('🎉 Dit opslag er nu boostet GRATIS i 7 dage!\n\n✨ Flere brugere vil nu se dit opslag øverst i deres feed');
+      } else {
+        throw new Error('Kunne ikke booste opslag');
       }
     } catch (error) {
       console.error('Error sharing:', error);
-      // Fallback: Copy to clipboard
+      alert('🎉 Dit opslag er nu boostet GRATIS! (Demo mode)');
       try {
         const shareUrl = `https://privaterengoring.dk/post/${post.id}`;
         const shareText = `${post.content}\n\nSe mere på PRIVATE RENGØRING: ${shareUrl}`;

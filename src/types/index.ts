@@ -54,4 +54,7 @@ export interface Post {
     email?: string;
     preferredContact?: 'phone' | 'email' | 'app';
   };
+  isBoosted?: boolean;
+  boostExpiresAt?: string;
+  boostType?: 'free' | 'standard' | 'premium';
 }
