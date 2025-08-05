@@ -596,29 +596,30 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
                     onChange={(e) => setNewPostData({...newPostData, urgency: e.target.value})}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="hjemmerengoring">🏠 Hjemmerengøring - Private boliger og lejligheder</option>
-                    <option value="kontorrengoring">🏢 Kontorrengøring - Kontor og arbejdspladser</option>
-                    <option value="hovedrengoring">✨ Hovedrengøring - Dyb og grundig rengøring</option>
-                    <option value="vinduesrengoring">🪟 Vinduesrengøring - Vinduer og glaspartier</option>
-                    <option value="gulvrengoring">🧽 Gulvrengøring - Alle typer gulve</option>
-                    <option value="tappetrengoring">🛋️ Tæpperengøring - Tæpper og møbler</option>
-                    <option value="fraflytningsrengoring">📦 Fraflytningsrengøring - Ved flytning</option>
-                    <option value="byggererengoring">🔨 Byggerengøring - Efter renovering</option>
-                    <option value="hotelrengoring">🏨 Hotel & Restaurant - Erhvervsrengøring</option>
-                    <option value="butikrengoring">🏪 Butik & Showroom - Detailhandel</option>
-                    <option value="industrirengoring">🏭 Industrirengøring - Fabrikker og lagre</option>
-                    <option value="specialrengoring">⭐ Specialrengøring - Særlige opgaver</option>
-                        src={currentUser?.avatar}
-                        alt="Din avatar"
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <div>
-                        <p className="font-medium text-gray-900">{currentUser?.name}</p>
-                        <p className="text-xs text-gray-600">
-                          Planlagt til {selectedDateForPost.toLocaleDateString('da-DK')}
-                          {newPostData.time && ` kl. ${newPostData.time}`}
-                        </p>
-                      </div>
+                    <option value="flexible">🎯 Fleksibel - Når det passer</option>
+                    <option value="this_week">📅 Denne uge - Inden for 7 dage</option>
+                    <option value="urgent">🚨 Akut - Samme dag</option>
+                    <option value="asap">⚡ Hurtigst muligt - Inden for 2 dage</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Preview */}
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h4 className="text-sm font-medium text-gray-700 mb-3">Forhåndsvisning af opslag</h4>
+                <div className="bg-white p-4 rounded-lg border border-gray-200">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <img
+                      src={currentUser?.avatar}
+                      alt="Din avatar"
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <div>
+                      <p className="font-medium text-gray-900">{currentUser?.name}</p>
+                      <p className="text-xs text-gray-600">
+                        Planlagt til {selectedDateForPost.toLocaleDateString('da-DK')}
+                        {newPostData.time && ` kl. ${newPostData.time}`}
+                      </p>
                     </div>
                     <p className="text-gray-800 text-sm mb-2">
                       <strong>{newPostData.title || 'Din titel kommer her'}</strong>
