@@ -1,6 +1,7 @@
 [build]
   publish = "dist"
   command = "npm run build"
+  edge_functions = ""
 
 [[redirects]]
   from = "https://privatrengoering.dk/*"
@@ -18,6 +19,7 @@
   framework = "vite"
   command = "vite"
   env = { VITE_NETLIFY_DEV = "true" }
+  edge_functions = false
   targetPort = 5175
   port = 8888
   publish = "dist"
@@ -31,3 +33,7 @@
 [functions]
   directory = "api"
   node_bundler = "esbuild"
+  
+[edge_functions]
+  # Explicitly disable edge functions
+  directory = ""
