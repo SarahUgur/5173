@@ -74,8 +74,20 @@ export default function CreatePost({ currentUser, onPostCreated }: CreatePostPro
         // Reload page to show new post
         window.location.reload();
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Kunne ikke oprette opslag');
+        let errorMessage = 'Kunne ikke oprette opslag';
+        try {
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorMessage;
+          } else {
+            const errorText = await response.text();
+            errorMessage = errorText || errorMessage;
+          }
+        } catch (parseError) {
+          console.error('Error parsing response:', parseError);
+        }
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.error('Error creating post:', error);
