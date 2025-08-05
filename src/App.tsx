@@ -227,9 +227,7 @@ function App() {
 
     const loadRealPosts = async () => {
       try {
-        const apiUrl = window.location.hostname === 'localhost' && window.location.port === '8888' 
-          ? '/api/posts' 
-          : `${window.location.origin}/api/posts`;
+        const apiUrl = '/api/posts';
         
         const response = await fetch(apiUrl, {
           headers: {
