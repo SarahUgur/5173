@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
     server: {
       host: '0.0.0.0',
       port: 5175,
-      ...(env.VITE_NETLIFY_DEV !== 'true' && {
+      ...(process.env.NETLIFY_DEV !== 'true' && {
         proxy: {
           '/api': {
             target: 'http://localhost:8888',
