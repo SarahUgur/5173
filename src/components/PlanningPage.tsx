@@ -151,7 +151,8 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
         scheduledDate: selectedDateForPost.toISOString(),
         type: 'job',
         content: `${newPostData.title} - ${newPostData.description}`,
-        isScheduled: true
+        isScheduled: true,
+        isJobPost: true
       };
 
       const response = await fetch('/api/posts', {
@@ -166,6 +167,7 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
       if (response.ok) {
         alert(`🎉 Opslag planlagt til ${selectedDateForPost.toLocaleDateString('da-DK')}!`);
         setShowCreateModal(false);
+        setSelectedDateForPost(null);
         setNewPostData({
           title: '',
           description: '',
@@ -175,12 +177,15 @@ export default function PlanningPage({ currentUser }: PlanningPageProps) {
           jobType: 'home_cleaning',
           urgency: 'flexible'
         });
+        // Reload appointments to show the new scheduled post
+        loadAppointments();
       } else {
-        throw new Error('Kunne ikke oprette opslag');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Kunne ikke oprette opslag');
       }
     } catch (error) {
       console.error('Error creating scheduled post:', error);
-      alert('Kunne ikke oprette opslag. Prøv igen.');
+      alert(`Fejl: ${error.message || 'Kunne ikke oprette opslag. Prøv igen.'}`);
     }
   };
 
