@@ -4,13 +4,14 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
+  const isNetlifyDev = process.env.NETLIFY_DEV === 'true';
   
   return {
     plugins: [react()],
     server: {
       host: '0.0.0.0',
       port: 5175,
-      ...(process.env.NETLIFY_DEV !== 'true' && {
+      ...(!isNetlifyDev && {
         proxy: {
           '/api': {
             target: 'http://localhost:8888',
