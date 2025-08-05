@@ -109,7 +109,7 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
             name: 'SMS',
             url: `sms:?body=${encodeURIComponent(shareText)}`
           },
-      // Completely free boost
+      // Permanently free boost - no time limits
       const response = await fetch(`/api/posts/${post.id}/boost`, {
         method: 'POST',
         headers: {
@@ -118,18 +118,18 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
         },
         body: JSON.stringify({
           type: 'free',
-          duration: 168 // 7 days free
+          duration: 'forever' // Permanently free
         })
       });
 
       if (response.ok) {
-        alert('🎉 Dit opslag er nu boostet GRATIS i 7 dage!\n\n✨ Flere brugere vil nu se dit opslag øverst i deres feed');
+        alert('🎉 Dit opslag er nu boostet GRATIS FOR ALTID!\n\n✨ Dit opslag vil altid være synligt øverst i feed og på kort');
       } else {
         throw new Error('Kunne ikke booste opslag');
       }
     } catch (error) {
       console.error('Error sharing:', error);
-      alert('🎉 Dit opslag er nu boostet GRATIS! (Demo mode)');
+      alert('🎉 Dit opslag er nu boostet GRATIS FOR ALTID! (Demo mode)');
       try {
         const shareUrl = `https://privaterengoring.dk/post/${post.id}`;
         const shareText = `${post.content}\n\nSe mere på PRIVATE RENGØRING: ${shareUrl}`;

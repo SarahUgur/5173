@@ -66,6 +66,11 @@ export default function CreatePost({ currentUser, onPostCreated }: CreatePostPro
         
         alert('✅ Opslag oprettet succesfuldt!');
         
+        // Automatically boost all posts for free
+        setTimeout(() => {
+          alert('🎉 Opslag oprettet og boostet GRATIS!\n\n✨ Dit opslag vil nu være synligt for flere brugere i 7 dage');
+        }, 1000);
+        
         // Reload page to show new post
         window.location.reload();
       } else {
@@ -104,10 +109,7 @@ export default function CreatePost({ currentUser, onPostCreated }: CreatePostPro
             className="flex-1 text-left px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-600 transition-colors duration-200"
           >
             Hvad tænker du på, {currentUser.name?.split(' ')[0] || 'bruger'}?
-          // Automatically boost all posts for free
-          setTimeout(() => {
-            alert('🎉 Opslag oprettet og boostet GRATIS!\n\n✨ Dit opslag vil nu være synligt for flere brugere i 7 dage');
-          }, 1000);
+          </button>
           
           <button
             onClick={() => {
