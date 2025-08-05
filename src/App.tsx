@@ -456,6 +456,31 @@ function App() {
                   <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
                   <span className="font-medium">Vilkår & Betingelser</span>
                 </button>
+                <button
+                  onClick={() => {
+                    setCurrentPage('contact');
+                    setShowSidebar(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                    currentPage === 'contact' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Mail className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <span className="font-medium">Kontakt & Klager</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setCurrentPage('terms');
+                    setShowSidebar(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 xs:space-x-3 px-3 xs:px-4 py-2.5 xs:py-3 rounded-lg transition-colors duration-200 text-sm xs:text-base ${
+                    currentPage === 'terms' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Shield className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <span className="font-medium">Vilkår & Betingelser</span>
+                </button>
               </div>
             </nav>
 
