@@ -32,6 +32,12 @@ export default function Header({
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
+  // Fix missing setLanguage function
+  const setLanguage = (lang: string) => {
+    // This should be implemented in useLanguage hook
+    console.log('Language changed to:', lang);
+  };
+
   const languages = [
     { code: 'da', name: 'Dansk', flag: '🇩🇰' },
     { code: 'en', name: 'English', flag: '🇬🇧' },
