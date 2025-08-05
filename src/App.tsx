@@ -233,6 +233,13 @@ function App() {
           }
         });
         
+        // Check if response is HTML (indicates we're hitting the wrong endpoint)
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('text/html')) {
+          console.warn('Received HTML response instead of JSON. Make sure to access the app through Netlify Dev (http://localhost:8888)');
+          return;
+        }
+        
         if (response.ok) {
          const text = await response.text();
          if (!text) {
