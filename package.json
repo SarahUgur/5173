@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx vite",
+    "dev:netlify": "netlify dev",
     "dev:netlify": "npx netlify dev",
     "build": "vite build",
     "lint": "eslint ."
