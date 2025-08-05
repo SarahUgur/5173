@@ -5,9 +5,10 @@ import type { User } from '../types';
 
 interface CreatePostProps {
   currentUser: User;
+  onPostCreated?: () => void;
 }
 
-export default function CreatePost({ currentUser }: CreatePostProps) {
+export default function CreatePost({ currentUser, onPostCreated }: CreatePostProps) {
   const [showForm, setShowForm] = useState(false);
   const [postType, setPostType] = useState<'regular' | 'job'>('regular');
   const [content, setContent] = useState('');
@@ -25,7 +26,8 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/posts', {
+      const apiUrl = `${window.location.origin}/.netlify/functions/posts`;
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,11 +38,12 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
           content,
           location,
           images: selectedImages,
-          jobType: postType === 'job' ? jobType : null,
-          jobCategory: postType === 'job' ? jobCategory : null,
-          targetAudience: postType === 'job' ? targetAudience : null,
-          urgency: postType === 'job' ? urgency : null,
-          budget: postType === 'job' ? budget : null
+          jobType: postType === 'job' ? jobType : undefined,
+          jobCategory: postType === 'job' ? jobCategory : undefined,
+          targetAudience: postType === 'job' ? targetAudience : undefined,
+          urgency: postType === 'job' ? urgency : undefined,
+          budget: postType === 'job' ? budget : undefined,
+          isJobPost: postType === 'job'
         })
       });
 
@@ -62,12 +65,16 @@ export default function CreatePost({ currentUser }: CreatePostProps) {
         }
         
         alert('✅ Opslag oprettet succesfuldt!');
+        
+        // Reload page to show new post
+        window.location.reload();
       } else {
-        throw new Error('Kunne ikke oprette opslag');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Kunne ikke oprette opslag');
       }
     } catch (error) {
       console.error('Error creating post:', error);
-      alert('Fejl ved oprettelse af opslag. Prøv igen.');
+      alert(`Fejl: ${error instanceof Error ? error.message : 'Kunne ikke oprette opslag. Prøv igen.'}`);
     } finally {
       setIsSubmitting(false);
     }
