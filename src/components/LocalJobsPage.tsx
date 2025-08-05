@@ -28,7 +28,7 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
   const loadJobs = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/jobs', {
+      const response = await fetch('/api/posts', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
@@ -36,7 +36,7 @@ export default function LocalJobsPage({ currentUser, onShowSubscription }: Local
 
       if (response.ok) {
         const data = await response.json();
-        setJobs(data.jobs || []);
+        setJobs(data.posts || []);
       } else {
         setJobs([]);
       }
