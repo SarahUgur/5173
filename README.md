@@ -1,30 +1,39 @@
-import { defineConfig, loadEnv } from 'vite';
-import react from '@vitejs/plugin-react';
+# Private Rengøring Platform
 
-// https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
+En moderne platform for rengøring i Danmark, bygget med React, TypeScript og Supabase.
+
+## Teknologi Stack
+
+- **Frontend**: React 18 + TypeScript + Vite
+- **Styling**: Tailwind CSS + Lucide Icons
+- **Backend**: Supabase (PostgreSQL + Auth + Storage)
 - **API**: Netlify Functions  
 - **Database**: Supabase PostgreSQL
 - **Authentication**: Supabase Auth + JWT
-  
-  return {
-    plugins: [react()],
-    server: {
-      host: '0.0.0.0',
-      port: 5175,
-      ...(!isNetlifyDev && {
-        proxy: {
-          '/api': {
-            target: 'http://localhost:8888',
-            changeOrigin: true,
-            secure: false
-          }
-        }
-      })
-    },
-    optimizeDeps: {
-      exclude: ['lucide-react'],
-    },
-  };
-});
+- **Deployment**: Netlify
+
+## Features
+
+- 🔐 Bruger authentication (email/password + social login)
+- 👥 Bruger profiler og netværk
+- 📝 Opret og administrer rengøringsjobs
+- 💬 Messaging system
+- 🔔 Notifikationer
+- 📱 Responsive design
+- 🌍 Lokalisering (dansk)
+- 💳 Betalingsintegration (Stripe)
+
+## Kom i gang
+
+1. Klon projektet
+2. Installer dependencies: `npm install`
+3. Konfigurer miljøvariabler (se `.env.example`)
+4. Start udvikling: `npm run dev`
+
+## Deployment
+
+Projektet er konfigureret til automatisk deployment på Netlify.
+
+## Support
+
+For support, kontakt: support@privatrengoring.dk
