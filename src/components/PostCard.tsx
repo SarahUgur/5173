@@ -131,7 +131,7 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
       }
     } catch (error) {
       console.error('Error sharing:', error);
-      alert('🎉 Dit opslag er nu boostet GRATIS FOR ALTID! (Demo mode)');
+      alert('❌ Fejl ved deling af opslag. Prøv igen senere.');
       try {
         const shareUrl = `https://privaterengoring.dk/post/${post.id}`;
         const shareText = `${post.content}\n\nSe mere på PRIVATE RENGØRING: ${shareUrl}`;

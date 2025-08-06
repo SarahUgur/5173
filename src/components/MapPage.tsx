@@ -211,11 +211,12 @@ export default function MapPage({ currentUser }: MapPageProps) {
   const generateGoogleMapsEmbedUrl = () => {
     if (!userLocation) return '';
     
-    // Use public Google Maps embed (no API key required)
-    const query = encodeURIComponent(`rengøring ${userLocation.lat},${userLocation.lng}`);
-    const baseUrl = 'https://www.google.com/maps/embed';
+    // Dynamic Google Maps embed URL centered on user location
+    const lat = userLocation.lat;
+    const lng = userLocation.lng;
+    const zoom = mapZoom;
     
-    return `${baseUrl}?pb=!1m18!1m12!1m3!1d2249.9!2d${userLocation.lng}!3d${userLocation.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTXCsDQwJzM0LjAiTiAxMsKwMzQnMDYuMCJF!5e0!3m2!1sda!2sdk!4v1234567890!5m2!1sda!2sdk`;
+    return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2249.9!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f${zoom}!3m3!1m2!1s0x0%3A0x0!2z${btoa(`${lat},${lng}`)}!5e0!3m2!1sda!2sdk!4v${Date.now()}!5m2!1sda!2sdk`;
   };
 
   return (
