@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { User, Lock, Mail, Phone, MapPin, Globe, FileText } from 'lucide-react';
+import TermsModal from './TermsModal';
+import PrivacyModal from './PrivacyModal';
 
 interface AuthScreenProps {
   onLogin: (userData: any) => void;
@@ -7,6 +9,8 @@ interface AuthScreenProps {
 
 export default function AuthScreen({ onLogin }: AuthScreenProps) {
   const [isLogin, setIsLogin] = useState(true);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -50,7 +54,10 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
       const data = await response.json();
 
       if (response.ok) {
-        onLogin(data.user);
+        const userData = data.user;
+        userData.token = data.token; // Add token to user object
+        localStorage.setItem('authToken', data.token);
+        onLogin(userData);
       } else {
         setError(data.error || 'Der opstod en fejl');
       }
@@ -235,18 +242,26 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
                   name="acceptedTerms"
                   checked={formData.acceptedTerms}
                   onChange={handleInputChange}
-                  className="mt-1 mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="mt-1 mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
                   required
                 />
-                <label className="text-sm text-gray-600">
+                <label htmlFor="acceptedTerms" className="text-sm text-gray-600 cursor-pointer">
                   Jeg accepterer{' '}
-                  <a href="#" className="text-blue-600 hover:underline">
+                  <button 
+                    type="button"
+                    onClick={() => setShowTerms(true)}
+                    className="text-blue-600 hover:underline"
+                  >
                     vilkår og betingelser
-                  </a>{' '}
+                  </button>{' '}
                   og{' '}
-                  <a href="#" className="text-blue-600 hover:underline">
+                  <button 
+                    type="button"
+                    onClick={() => setShowPrivacy(true)}
+                    className="text-blue-600 hover:underline"
+                  >
                     privatlivspolitik
-                  </a>
+                  </button>
                 </label>
               </div>
             </>
@@ -270,6 +285,18 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
             {isLogin ? 'Har du ikke en konto? Opret en her' : 'Har du allerede en konto? Log ind her'}
           </button>
         </div>
+
+        {/* Terms Modal */}
+        <TermsModal
+          isOpen={showTerms}
+          onClose={() => setShowTerms(false)}
+        />
+
+        {/* Privacy Modal */}
+        <PrivacyModal
+          isOpen={showPrivacy}
+          onClose={() => setShowPrivacy(false)}
+        />
       </div>
     </div>
   );

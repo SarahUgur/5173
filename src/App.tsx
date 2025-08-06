@@ -88,6 +88,7 @@ function App() {
   const handleLogin = (user: User) => {
     setCurrentUser(user);
     localStorage.setItem('currentUser', JSON.stringify(user));
+    localStorage.setItem('authToken', user.token || 'demo-token');
   };
 
   // Handle logout
