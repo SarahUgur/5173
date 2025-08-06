@@ -3,11 +3,6 @@ const { createClient } = require('@supabase/supabase-js');
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('Missing Supabase environment variables');
-  // Use fallback for demo
-}
-
 const supabase = supabaseUrl && supabaseServiceKey 
   ? createClient(supabaseUrl, supabaseServiceKey)
   : null;
@@ -23,9 +18,20 @@ exports.handler = async (event, context) => {
     return { statusCode: 200, headers, body: '' };
   }
 
+  // Check if Supabase is properly configured
+  if (!supabase) {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ 
+        error: 'Server konfigurationsfejl - Supabase ikke tilgængelig' 
+      })
+    };
+  }
+
   try {
     const { action } = event.queryStringParameters || {};
-    const body = JSON.parse(event.body || '{}');
+    const body = event.body ? JSON.parse(event.body) : {};
 
     if (action === 'register') {
       const { email, password, name, phone, location, website, bio, userType, acceptedTerms } = body;
@@ -48,47 +54,53 @@ exports.handler = async (event, context) => {
         };
       }
 
-      // Create user with demo data if Supabase not available
-      const userId = `user_${Date.now()}`;
-      const userData = {
-        id: userId,
-        name,
+      // Create user in Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email,
-        avatar: `https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop`,
-        userType: userType || 'private',
-        verified: false,
-        isSubscribed: false,
-        location: location || '',
-        bio: bio || '',
-        phone: phone || '',
-        website: website || '',
-        rating: 0,
-        completedJobs: 0,
-        joinedDate: new Date().toISOString().split('T')[0]
-      };
+        password,
+        email_confirm: true
+      });
 
-      // Save to localStorage for demo
-      const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-      
-      // Check if user already exists
-      if (existingUsers.find((u: any) => u.email === email)) {
+      if (authError) {
         return {
           statusCode: 400,
           headers,
-          body: JSON.stringify({ error: 'En bruger med denne email eksisterer allerede' })
+          body: JSON.stringify({ error: authError.message })
         };
       }
 
-      existingUsers.push(userData);
-      localStorage.setItem('registeredUsers', JSON.stringify(existingUsers));
+      // Create user profile in public.users table
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .insert({
+          id: authData.user.id,
+          name,
+          email,
+          user_type: userType || 'private',
+          location: location || '',
+          bio: bio || '',
+          phone: phone || '',
+          website: website || '',
+          verified: false,
+          is_subscribed: false
+        })
+        .select()
+        .single();
+
+      if (userError) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: userError.message })
+        };
+      }
 
       return {
         statusCode: 201,
         headers,
         body: JSON.stringify({
           message: 'Bruger oprettet succesfuldt',
-          user: userData,
-          token: `token_${userId}`
+          user: userData
         })
       };
     }
@@ -104,56 +116,42 @@ exports.handler = async (event, context) => {
         };
       }
 
-      // Check for admin login
-      if (email === 'admin@privaterengoring.dk' && password === 'admin123') {
-        const adminUser = {
-          id: 'admin_user',
-          name: 'Admin',
-          email: 'admin@privaterengoring.dk',
-          avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop',
-          userType: 'admin',
-          verified: true,
-          isSubscribed: true,
-          location: 'Danmark',
-          bio: 'Platform Administrator',
-          phone: '+45 12 34 56 78',
-          website: 'https://privaterengoring.dk',
-          rating: 5.0,
-          completedJobs: 0,
-          joinedDate: '2024-01-01'
-        };
+      // Sign in with Supabase
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
-        return {
-          statusCode: 200,
-          headers,
-          body: JSON.stringify({
-            message: 'Admin login succesfuldt',
-            user: adminUser,
-            token: 'admin_token'
-          })
-        };
-      }
-
-      // Check registered users from localStorage
-      const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-      const user = existingUsers.find((u: any) => u.email === email);
-
-      if (!user) {
+      if (authError) {
         return {
           statusCode: 401,
           headers,
-          body: JSON.stringify({ error: 'Bruger ikke fundet. Opret venligst en konto først.' })
+          body: JSON.stringify({ error: 'Ugyldig email eller adgangskode' })
         };
       }
 
-      // For demo, we don't validate password - just return user
+      // Get user profile
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', authData.user.id)
+        .single();
+
+      if (userError) {
+        return {
+          statusCode: 404,
+          headers,
+          body: JSON.stringify({ error: 'Brugerprofil ikke fundet' })
+        };
+      }
+
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({
           message: 'Login succesfuldt',
-          user: user,
-          token: `token_${user.id}`
+          user: userData,
+          token: authData.session.access_token
         })
       };
     }
