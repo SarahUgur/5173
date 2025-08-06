@@ -20,7 +20,6 @@ Kør følgende SQL i Supabase SQL Editor:
 ### Environment Variables
 Sæt følgende miljøvariabler i Supabase:
 - `JWT_SECRET`
-- `STRIPE_SECRET_KEY` (hvis du bruger betalinger)
 
 ## 2. Netlify Deployment
 
@@ -37,7 +36,6 @@ Tilføj følgende i Netlify dashboard:
 - `SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `JWT_SECRET`
-- `STRIPE_SECRET_KEY`
 
 ## 3. Domain Setup
 

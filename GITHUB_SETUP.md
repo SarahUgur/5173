@@ -31,7 +31,6 @@ Tilføj følgende secrets:
 - `SUPABASE_ANON_KEY`: Din Supabase anon key
 - `SUPABASE_SERVICE_ROLE_KEY`: Din Supabase service role key
 - `JWT_SECRET`: En sikker random string til JWT tokens
-- `STRIPE_SECRET_KEY`: Din Stripe secret key (hvis du bruger betalinger)
 
 ## 4. Netlify Integration
 

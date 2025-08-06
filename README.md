@@ -21,7 +21,6 @@ En moderne platform for rengøring i Danmark, bygget med React, TypeScript og Su
 - 🔔 Notifikationer
 - 📱 Responsive design
 - 🌍 Lokalisering (dansk)
-- 💳 Betalingsintegration (Stripe)
 
 ## Kom i gang
 
