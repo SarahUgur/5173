@@ -44,7 +44,7 @@ window.addEventListener('load', async () => {
   // Wait a bit before asking for permission to not overwhelm user
   setTimeout(async () => {
     if ('Notification' in window && Notification.permission === 'default') {
-      // const permission = await notificationManager.requestPermission();
+      const permission = await notificationManager.requestPermission();
       console.log('Initial notification permission:', permission);
     }
   }, 3000); // Ask after 3 seconds

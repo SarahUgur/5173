@@ -18,7 +18,7 @@ const verifyToken = (req, res, next) => {
 };
 
 module.exports = async function handler(req, res) {
-  if (req.method === 'POST') {
+  if (req.httpMethod === 'POST') {
     verifyToken(req, res, async () => {
       try {
         // In a real implementation, you would:
@@ -29,7 +29,7 @@ module.exports = async function handler(req, res) {
         // 5. Return the new image URL
 
         // For now, we'll just acknowledge the upload
-        const { type } = req.body;
+        const { type } = JSON.parse(req.body || '{}');
         
         // Mock successful upload response
         const mockImageUrl = type === 'avatar' 

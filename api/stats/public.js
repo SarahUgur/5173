@@ -1,5 +1,5 @@
 module.exports = async function handler(req, res) {
-  if (req.method === 'GET') {
+  if (req.httpMethod === 'GET') {
     try {
       // Mock public stats for demo
       const mockStats = {

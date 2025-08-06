@@ -265,6 +265,10 @@ const translations: Translations = {
   nextMonth: {
     da: 'Næste måned',
     en: 'Next month'
+  },
+  searchPlaceholder: {
+    da: 'Søg brugere, jobs, sider...',
+    en: 'Search users, jobs, pages...'
   }
 };
 

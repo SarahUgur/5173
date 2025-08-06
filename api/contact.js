@@ -1,7 +1,7 @@
 module.exports = async function handler(req, res) {
-  if (req.method === 'POST') {
+  if (req.httpMethod === 'POST') {
     try {
-      const { name, email, subject, message, priority } = req.body;
+      const { name, email, subject, message, priority } = JSON.parse(req.body || '{}');
 
       // Validate required fields
       if (!name || !email || !subject || !message) {

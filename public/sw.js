@@ -2,8 +2,8 @@
 const CACHE_NAME = 'private-rengoring-v1';
 const urlsToCache = [
   '/',
-  '/src/main.tsx',
-  '/src/index.css',
+  '/assets/index.js',
+  '/assets/index.css',
   '/manifest.json'
 ];
 

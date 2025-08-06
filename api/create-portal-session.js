@@ -1,12 +1,12 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') {
+  if (req.httpMethod !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { customerId, returnUrl } = req.body;
+    const { customerId, returnUrl } = JSON.parse(req.body || '{}');
 
     if (!customerId) {
       return res.status(400).json({ error: 'Customer ID is required' });

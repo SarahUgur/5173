@@ -86,18 +86,29 @@ function App() {
 
   // Handle login
   const handleLogin = (user: User) => {
+    console.log('Logging in user:', user);
     setCurrentUser(user);
     localStorage.setItem('currentUser', JSON.stringify(user));
     localStorage.setItem('authToken', user.token || 'demo-token');
+    
+    // Force page refresh to ensure clean state
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   };
 
   // Handle logout
   const handleLogout = () => {
+    console.log('Logging out user');
     localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('userData');
+    localStorage.removeItem('registeredUsers');
     setCurrentUser(null);
     setCurrentPage('home');
+    
+    // Force page refresh
+    window.location.reload();
   };
 
   // Handle user profile update

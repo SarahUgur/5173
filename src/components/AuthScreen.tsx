@@ -31,6 +31,13 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
     setError('');
 
     try {
+      // Validate terms acceptance for registration
+      if (!isLogin && !formData.acceptedTerms) {
+        setError('Du skal acceptere vilkår og betingelser for at oprette en konto');
+        setLoading(false);
+        return;
+      }
+
       const endpoint = isLogin ? '/api/auth?action=login' : '/api/auth?action=register';
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -40,14 +47,15 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
-          name: isLogin ? undefined : formData.name,
-          phone: isLogin ? undefined : formData.phone,
-          location: isLogin ? undefined : formData.location,
-          website: isLogin ? undefined : formData.website,
-          bio: isLogin ? undefined : formData.bio,
-          userType: isLogin ? undefined : formData.userType,
-          acceptedTerms: isLogin ? undefined : formData.acceptedTerms,
-          isLogin: isLogin
+          ...(isLogin ? {} : {
+            name: formData.name,
+            phone: formData.phone,
+            location: formData.location,
+            website: formData.website,
+            bio: formData.bio,
+            userType: formData.userType,
+            acceptedTerms: formData.acceptedTerms
+          })
         }),
       });
 
@@ -57,11 +65,20 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
         const userData = data.user;
         userData.token = data.token; // Add token to user object
         localStorage.setItem('authToken', data.token);
+        localStorage.setItem('currentUser', JSON.stringify(userData));
         onLogin(userData);
+        
+        // Show success message
+        if (isLogin) {
+          console.log('Login succesfuldt for:', userData.name);
+        } else {
+          alert('🎉 Konto oprettet succesfuldt! Velkommen til PRIVATE RENGØRING!');
+        }
       } else {
         setError(data.error || 'Der opstod en fejl');
       }
     } catch (err) {
+      console.error('Auth error:', err);
       setError('Netværksfejl. Prøv igen.');
     } finally {
       setLoading(false);

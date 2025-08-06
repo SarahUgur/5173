@@ -14,7 +14,6 @@ export interface User {
   phone?: string;
   website?: string;
   skills?: string[];
-  hourlyRate?: string;
   hourlyRate?: number;
   availability?: string[];
   languages?: string[];
