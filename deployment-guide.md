@@ -35,6 +35,7 @@ Sæt følgende miljøvariabler i Supabase:
 Tilføj følgende i Netlify dashboard:
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
 - `JWT_SECRET`
 - `STRIPE_SECRET_KEY`
 
