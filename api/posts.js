@@ -32,18 +32,24 @@ exports.handler = async (event, context) => {
             name,
             avatar_url,
             user_type,
-            rating,
             verified
           )
         `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching posts:', error);
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify({ error: 'Failed to fetch posts' })
+        };
+      }
 
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify(posts || [])
+        body: JSON.stringify({ posts: posts || [] })
       };
     }
 
@@ -57,31 +63,21 @@ exports.handler = async (event, context) => {
         };
       }
 
-      const token = authHeader.replace('Bearer ', '');
-      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-      
-      if (authError || !user) {
-        return {
-          statusCode: 401,
-          headers,
-          body: JSON.stringify({ error: 'Invalid token' })
-        };
-      }
+      const body = JSON.parse(event.body);
+      const { content, location, job_type, job_category, urgency, budget, is_job_post, images, user_id } = body;
 
-      const postData = JSON.parse(event.body);
-      
       const { data: post, error } = await supabase
         .from('posts')
         .insert([{
-          user_id: user.id,
-          content: postData.content,
-          location: postData.location,
-          job_type: postData.job_type,
-          job_category: postData.job_category,
-          urgency: postData.urgency,
-          budget: postData.budget,
-          is_job_post: postData.is_job_post || false,
-          images: postData.images || []
+          user_id,
+          content,
+          location,
+          job_type,
+          job_category,
+          urgency,
+          budget,
+          is_job_post: is_job_post || false,
+          images: images || []
         }])
         .select(`
           *,
@@ -90,18 +86,24 @@ exports.handler = async (event, context) => {
             name,
             avatar_url,
             user_type,
-            rating,
             verified
           )
         `)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating post:', error);
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify({ error: 'Failed to create post' })
+        };
+      }
 
       return {
         statusCode: 201,
         headers,
-        body: JSON.stringify(post)
+        body: JSON.stringify({ post })
       };
     }
 
