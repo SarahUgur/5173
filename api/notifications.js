@@ -1,13 +1,7 @@
-const { createClient } = require('@supabase/supabase-js');
+const jwt = require('jsonwebtoken');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables');
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Simple in-memory storage for notifications
+let notifications = [];
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -31,83 +25,41 @@ exports.handler = async (event, context) => {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const user = jwt.verify(token, process.env.JWT_SECRET || 'demo-secret');
     
-    if (authError || !user) {
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({ error: 'Invalid token' })
-      };
-    }
-
     if (event.httpMethod === 'GET') {
       // Get notifications for user
-      const { data: notifications, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
+      const userNotifications = notifications.filter(notif => 
+        notif.user_id === user.userId
+      );
 
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify(notifications || [])
+        body: JSON.stringify(userNotifications)
       };
     }
 
     if (event.httpMethod === 'POST') {
       const notificationData = JSON.parse(event.body);
       
-      const { data: notification, error } = await supabase
-        .from('notifications')
-        .insert([{
-          user_id: notificationData.user_id,
-          type: notificationData.type,
-          title: notificationData.title,
-          message: notificationData.message,
-          data: notificationData.data
-        }])
-        .select()
-        .single();
+      const newNotification = {
+        id: 'notif-' + Date.now(),
+        user_id: notificationData.user_id,
+        type: notificationData.type,
+        title: notificationData.title,
+        message: notificationData.message,
+        read: false,
+        data: notificationData.data,
+        created_at: new Date().toISOString()
+      };
 
-      if (error) throw error;
+      notifications.push(newNotification);
 
       return {
         statusCode: 201,
         headers,
-        body: JSON.stringify(notification)
-      };
-    }
-
-    if (event.httpMethod === 'PUT') {
-      const { notificationId } = event.queryStringParameters || {};
-      
-      if (!notificationId) {
-        return {
-          statusCode: 400,
-          headers,
-          body: JSON.stringify({ error: 'Notification ID required' })
-        };
-      }
-
-      // Mark notification as read
-      const { data: notification, error } = await supabase
-        .from('notifications')
-        .update({ read: true })
-        .eq('id', notificationId)
-        .eq('user_id', user.id)
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify(notification)
+        body: JSON.stringify(newNotification)
       };
     }
 

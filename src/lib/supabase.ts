@@ -1,15 +1,35 @@
-import { createClient } from '@supabase/supabase-js';
+// Local storage utilities to replace Supabase
+export const localDB = {
+  users: new Map(),
+  posts: new Map(),
+  messages: new Map(),
+  notifications: new Map(),
+  
+  // Initialize with admin user
+  init() {
+    if (!this.users.has('admin-user-id')) {
+      this.users.set('admin-user-id', {
+        id: 'admin-user-id',
+        name: 'Admin',
+        email: 'admin@privaterengoring.dk',
+        user_type: 'admin',
+        location: 'Danmark',
+        bio: 'Platform administrator',
+        verified: true,
+        is_subscribed: true,
+        avatar_url: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop',
+        rating: 5.0,
+        completed_jobs: 0,
+        created_at: new Date().toISOString()
+      });
+    }
+  }
+};
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Initialize on import
+localDB.init();
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Database types
+// Database types (kept for compatibility)
 export interface Database {
   public: {
     Tables: {
@@ -31,167 +51,6 @@ export interface Database {
           is_subscribed: boolean;
           created_at: string;
           updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          email: string;
-          avatar_url?: string;
-          cover_photo_url?: string;
-          user_type?: 'private' | 'cleaner' | 'small_business' | 'large_business' | 'admin';
-          location?: string;
-          bio?: string;
-          phone?: string;
-          website?: string;
-          rating?: number;
-          completed_jobs?: number;
-          verified?: boolean;
-          is_subscribed?: boolean;
-        };
-        Update: {
-          name?: string;
-          avatar_url?: string;
-          cover_photo_url?: string;
-          location?: string;
-          bio?: string;
-          phone?: string;
-          website?: string;
-          rating?: number;
-          completed_jobs?: number;
-          verified?: boolean;
-          is_subscribed?: boolean;
-          updated_at?: string;
-        };
-      };
-      posts: {
-        Row: {
-          id: string;
-          user_id: string;
-          content: string;
-          location?: string;
-          job_type?: string;
-          job_category?: string;
-          urgency?: string;
-          budget?: string;
-          is_job_post: boolean;
-          is_boosted: boolean;
-          boost_expires_at?: string;
-          images?: string[];
-          likes_count: number;
-          comments_count: number;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          content: string;
-          location?: string;
-          job_type?: string;
-          job_category?: string;
-          urgency?: string;
-          budget?: string;
-          is_job_post?: boolean;
-          is_boosted?: boolean;
-          boost_expires_at?: string;
-          images?: string[];
-          likes_count?: number;
-          comments_count?: number;
-        };
-        Update: {
-          content?: string;
-          location?: string;
-          is_boosted?: boolean;
-          boost_expires_at?: string;
-          likes_count?: number;
-          comments_count?: number;
-          updated_at?: string;
-        };
-      };
-      messages: {
-        Row: {
-          id: string;
-          sender_id: string;
-          receiver_id: string;
-          content: string;
-          read: boolean;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          sender_id: string;
-          receiver_id: string;
-          content: string;
-          read?: boolean;
-        };
-        Update: {
-          read?: boolean;
-        };
-      };
-      notifications: {
-        Row: {
-          id: string;
-          user_id: string;
-          type: string;
-          title: string;
-          message: string;
-          read: boolean;
-          data?: any;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          type: string;
-          title: string;
-          message: string;
-          read?: boolean;
-          data?: any;
-        };
-        Update: {
-          read?: boolean;
-        };
-      };
-      friend_requests: {
-        Row: {
-          id: string;
-          sender_id: string;
-          receiver_id: string;
-          message?: string;
-          status: 'pending' | 'accepted' | 'rejected';
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          sender_id: string;
-          receiver_id: string;
-          message?: string;
-          status?: 'pending' | 'accepted' | 'rejected';
-        };
-        Update: {
-          status?: 'pending' | 'accepted' | 'rejected';
-        };
-      };
-      job_applications: {
-        Row: {
-          id: string;
-          post_id: string;
-          applicant_id: string;
-          message: string;
-          contact_method: string;
-          status: 'pending' | 'accepted' | 'rejected';
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          post_id: string;
-          applicant_id: string;
-          message: string;
-          contact_method: string;
-          status?: 'pending' | 'accepted' | 'rejected';
-        };
-        Update: {
-          status?: 'pending' | 'accepted' | 'rejected';
         };
       };
     };

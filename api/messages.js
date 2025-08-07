@@ -1,13 +1,7 @@
-const { createClient } = require('@supabase/supabase-js');
+const jwt = require('jsonwebtoken');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables');
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Simple in-memory storage for messages
+let messages = [];
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -31,105 +25,39 @@ exports.handler = async (event, context) => {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const user = jwt.verify(token, process.env.JWT_SECRET || 'demo-secret');
     
-    if (authError || !user) {
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({ error: 'Invalid token' })
-      };
-    }
-
     if (event.httpMethod === 'GET') {
       // Get messages for user
-      const { data: messages, error } = await supabase
-        .from('messages')
-        .select(`
-          *,
-          sender:users!messages_sender_id_fkey (
-            id,
-            name,
-            avatar_url
-          ),
-          receiver:users!messages_receiver_id_fkey (
-            id,
-            name,
-            avatar_url
-          )
-        `)
-        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
+      const userMessages = messages.filter(msg => 
+        msg.sender_id === user.userId || msg.receiver_id === user.userId
+      );
 
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify(messages || [])
+        body: JSON.stringify(userMessages)
       };
     }
 
     if (event.httpMethod === 'POST') {
       const messageData = JSON.parse(event.body);
       
-      const { data: message, error } = await supabase
-        .from('messages')
-        .insert([{
-          sender_id: user.id,
-          receiver_id: messageData.receiver_id,
-          content: messageData.content
-        }])
-        .select(`
-          *,
-          sender:users!messages_sender_id_fkey (
-            id,
-            name,
-            avatar_url
-          ),
-          receiver:users!messages_receiver_id_fkey (
-            id,
-            name,
-            avatar_url
-          )
-        `)
-        .single();
+      const newMessage = {
+        id: 'msg-' + Date.now(),
+        sender_id: user.userId,
+        receiver_id: messageData.receiver_id,
+        content: messageData.content,
+        read: false,
+        created_at: new Date().toISOString()
+      };
 
-      if (error) throw error;
+      messages.push(newMessage);
 
       return {
         statusCode: 201,
         headers,
-        body: JSON.stringify(message)
-      };
-    }
-
-    if (event.httpMethod === 'PUT') {
-      const { messageId } = event.queryStringParameters || {};
-      
-      if (!messageId) {
-        return {
-          statusCode: 400,
-          headers,
-          body: JSON.stringify({ error: 'Message ID required' })
-        };
-      }
-
-      // Mark message as read
-      const { data: message, error } = await supabase
-        .from('messages')
-        .update({ read: true })
-        .eq('id', messageId)
-        .eq('receiver_id', user.id)
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify(message)
+        body: JSON.stringify(newMessage)
       };
     }
 

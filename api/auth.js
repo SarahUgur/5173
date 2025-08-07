@@ -1,24 +1,26 @@
-const { createClient } = require('@supabase/supabase-js');
+const jwt = require('jsonwebtoken');
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-console.log('Auth API - Environment check:', {
-  hasUrl: !!supabaseUrl,
-  hasServiceKey: !!supabaseServiceKey,
-  url: supabaseUrl ? supabaseUrl.substring(0, 20) + '...' : 'missing'
-});
-
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('Missing Supabase environment variables:', {
-    hasUrl: !!supabaseUrl,
-    hasServiceKey: !!supabaseServiceKey
-  });
-}
-
-const supabase = supabaseUrl && supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey)
-  : null;
+// Simple in-memory user storage for demo
+let users = [
+  {
+    id: 'admin-user-id',
+    name: 'Admin',
+    email: 'admin@privaterengoring.dk',
+    password: 'admin123',
+    user_type: 'admin',
+    location: 'Danmark',
+    bio: 'Platform administrator',
+    phone: '',
+    website: '',
+    verified: true,
+    is_subscribed: true,
+    avatar_url: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop',
+    cover_photo_url: '',
+    rating: 5.0,
+    completed_jobs: 0,
+    created_at: '2024-01-01T00:00:00Z'
+  }
+];
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -31,34 +33,12 @@ exports.handler = async (event, context) => {
     return { statusCode: 200, headers, body: '' };
   }
 
-  console.log('Auth API called:', {
-    method: event.httpMethod,
-    query: event.queryStringParameters,
-    hasBody: !!event.body
-  });
-
-  // Check if Supabase is properly configured
-  if (!supabase) {
-    console.error('Supabase not configured properly');
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ 
-        error: 'Server konfigurationsfejl - Supabase ikke tilgængelig' 
-      })
-    };
-  }
-
   try {
     const { action } = event.queryStringParameters || {};
     const body = event.body ? JSON.parse(event.body) : {};
 
-    console.log('Processing action:', action, 'with body keys:', Object.keys(body));
-
     if (action === 'register') {
       const { email, password, name, phone, location, website, bio, userType, acceptedTerms } = body;
-
-      console.log('Registration attempt for:', email);
 
       // Validate required fields
       if (!email || !password || !name) {
@@ -69,61 +49,43 @@ exports.handler = async (event, context) => {
         };
       }
 
-      // Validate terms acceptance
-      if (!acceptedTerms) {
+      // Check if user already exists
+      const existingUser = users.find(u => u.email === email);
+      if (existingUser) {
         return {
           statusCode: 400,
           headers,
-          body: JSON.stringify({ error: 'Du skal acceptere vilkår og betingelser for at oprette en konto' })
+          body: JSON.stringify({ error: 'Bruger med denne email eksisterer allerede' })
         };
       }
 
-      // Create user in Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      // Create new user
+      const newUser = {
+        id: 'user-' + Date.now(),
+        name,
         email,
         password,
-        email_confirm: true
-      });
+        user_type: userType || 'private',
+        location: location || '',
+        bio: bio || '',
+        phone: phone || '',
+        website: website || '',
+        verified: false,
+        is_subscribed: false,
+        avatar_url: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop',
+        cover_photo_url: '',
+        rating: 0,
+        completed_jobs: 0,
+        created_at: new Date().toISOString()
+      };
 
-      if (authError) {
-        console.error('Supabase auth error:', authError);
-        return {
-          statusCode: 400,
-          headers,
-          body: JSON.stringify({ error: authError.message })
-        };
-      }
+      users.push(newUser);
 
-      console.log('User created in auth, creating profile...');
-
-      // Create user profile in public.users table
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .insert({
-          id: authData.user.id,
-          name,
-          email,
-          user_type: userType || 'private',
-          location: location || '',
-          bio: bio || '',
-          phone: phone || '',
-          website: website || '',
-          verified: false,
-          is_subscribed: false
-        })
-        .select()
-        .single();
-
-      if (userError) {
-        console.error('User profile creation error:', userError);
-        return {
-          statusCode: 400,
-          headers,
-          body: JSON.stringify({ error: userError.message })
-        };
-      }
-
-      console.log('Registration successful for:', email);
+      const token = jwt.sign(
+        { userId: newUser.id, email: newUser.email },
+        process.env.JWT_SECRET || 'demo-secret',
+        { expiresIn: '7d' }
+      );
 
       return {
         statusCode: 201,
@@ -131,31 +93,29 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({
           message: 'Bruger oprettet succesfuldt',
           user: {
-            id: userData.id,
-            name: userData.name,
-            email: userData.email,
-            userType: userData.user_type,
-            location: userData.location,
-            bio: userData.bio,
-            phone: userData.phone,
-            website: userData.website,
-            verified: userData.verified,
-            isSubscribed: userData.is_subscribed,
-            avatar: userData.avatar_url,
-            coverPhoto: userData.cover_photo_url,
-            rating: userData.rating,
-            completedJobs: userData.completed_jobs,
-            joinedDate: userData.created_at?.split('T')[0]
+            id: newUser.id,
+            name: newUser.name,
+            email: newUser.email,
+            userType: newUser.user_type,
+            location: newUser.location,
+            bio: newUser.bio,
+            phone: newUser.phone,
+            website: newUser.website,
+            verified: newUser.verified,
+            isSubscribed: newUser.is_subscribed,
+            avatar: newUser.avatar_url,
+            coverPhoto: newUser.cover_photo_url,
+            rating: newUser.rating,
+            completedJobs: newUser.completed_jobs,
+            joinedDate: newUser.created_at.split('T')[0]
           },
-          token: 'demo-token-' + userData.id
+          token
         })
       };
     }
 
     if (action === 'login') {
       const { email, password } = body;
-
-      console.log('Login attempt for:', email);
 
       if (!email || !password) {
         return {
@@ -165,63 +125,22 @@ exports.handler = async (event, context) => {
         };
       }
 
-      // Special handling for admin user
-      if (email === 'admin@privaterengoring.dk' && password === 'admin123') {
-        console.log('Admin login successful');
-        return {
-          statusCode: 200,
-          headers,
-          body: JSON.stringify({
-            message: 'Admin login succesfuldt',
-            user: {
-              id: 'admin-user-id',
-              name: 'Admin',
-              email: 'admin@privaterengoring.dk',
-              userType: 'admin',
-              location: 'Danmark',
-              bio: 'Platform administrator',
-              phone: '',
-              website: '',
-              verified: true,
-              isSubscribed: true,
-              avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop',
-              coverPhoto: '',
-              rating: 5.0,
-              completedJobs: 0,
-              joinedDate: '2024-01-01'
-            },
-            token: 'admin-token-123'
-          })
-        };
-      }
-
-      // Try to get user from database first
-      const { data: existingUser, error: userError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('email', email)
-        .single();
-
-      if (userError && userError.code !== 'PGRST116') {
-        console.error('Database error:', userError);
-        return {
-          statusCode: 500,
-          headers,
-          body: JSON.stringify({ error: 'Database fejl' })
-        };
-      }
-
-      if (!existingUser) {
+      // Find user
+      const user = users.find(u => u.email === email && u.password === password);
+      
+      if (!user) {
         return {
           statusCode: 401,
           headers,
-          body: JSON.stringify({ error: 'Bruger ikke fundet. Opret venligst en konto først.' })
+          body: JSON.stringify({ error: 'Ugyldig email eller adgangskode' })
         };
       }
 
-      // For demo purposes, accept any password for existing users
-      // In production, you would verify the password with Supabase Auth
-      console.log('Login successful for:', email);
+      const token = jwt.sign(
+        { userId: user.id, email: user.email },
+        process.env.JWT_SECRET || 'demo-secret',
+        { expiresIn: '7d' }
+      );
 
       return {
         statusCode: 200,
@@ -229,23 +148,23 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({
           message: 'Login succesfuldt',
           user: {
-            id: existingUser.id,
-            name: existingUser.name,
-            email: existingUser.email,
-            userType: existingUser.user_type,
-            location: existingUser.location,
-            bio: existingUser.bio,
-            phone: existingUser.phone,
-            website: existingUser.website,
-            verified: existingUser.verified,
-            isSubscribed: existingUser.is_subscribed,
-            avatar: existingUser.avatar_url,
-            coverPhoto: existingUser.cover_photo_url,
-            rating: existingUser.rating,
-            completedJobs: existingUser.completed_jobs,
-            joinedDate: existingUser.created_at?.split('T')[0]
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            userType: user.user_type,
+            location: user.location,
+            bio: user.bio,
+            phone: user.phone,
+            website: user.website,
+            verified: user.verified,
+            isSubscribed: user.is_subscribed,
+            avatar: user.avatar_url,
+            coverPhoto: user.cover_photo_url,
+            rating: user.rating,
+            completedJobs: user.completed_jobs,
+            joinedDate: user.created_at.split('T')[0]
           },
-          token: 'demo-token-' + existingUser.id
+          token
         })
       };
     }
@@ -261,7 +180,7 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Server fejl ved authentication: ' + error.message })
+      body: JSON.stringify({ error: 'Server fejl: ' + error.message })
     };
   }
 };

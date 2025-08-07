@@ -1,13 +1,7 @@
-const { createClient } = require('@supabase/supabase-js');
+const jwt = require('jsonwebtoken');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables');
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Simple in-memory storage for job applications
+let jobApplications = [];
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -32,45 +26,17 @@ exports.handler = async (event, context) => {
       }
 
       const token = authHeader.replace('Bearer ', '');
-      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-      
-      if (authError || !user) {
-        return {
-          statusCode: 401,
-          headers,
-          body: JSON.stringify({ error: 'Invalid token' })
-        };
-      }
+      const user = jwt.verify(token, process.env.JWT_SECRET || 'demo-secret');
 
-      // Get job applications for user's posts
-      const { data: applications, error } = await supabase
-        .from('job_applications')
-        .select(`
-          *,
-          posts (
-            id,
-            content,
-            location,
-            job_category,
-            budget
-          ),
-          applicant:users!job_applications_applicant_id_fkey (
-            id,
-            name,
-            avatar_url,
-            user_type,
-            rating,
-            verified
-          )
-        `)
-        .eq('posts.user_id', user.id);
-
-      if (error) throw error;
+      // Get job applications for user
+      const userApplications = jobApplications.filter(app => 
+        app.applicant_id === user.userId
+      );
 
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify(applications || [])
+        body: JSON.stringify(userApplications)
       };
     }
 
@@ -85,52 +51,26 @@ exports.handler = async (event, context) => {
       }
 
       const token = authHeader.replace('Bearer ', '');
-      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+      const user = jwt.verify(token, process.env.JWT_SECRET || 'demo-secret');
       
-      if (authError || !user) {
-        return {
-          statusCode: 401,
-          headers,
-          body: JSON.stringify({ error: 'Invalid token' })
-        };
-      }
-
       const applicationData = JSON.parse(event.body);
       
-      const { data: application, error } = await supabase
-        .from('job_applications')
-        .insert([{
-          post_id: applicationData.post_id,
-          applicant_id: user.id,
-          message: applicationData.message,
-          contact_method: applicationData.contact_method
-        }])
-        .select(`
-          *,
-          posts (
-            id,
-            content,
-            location,
-            job_category,
-            budget
-          ),
-          applicant:users!job_applications_applicant_id_fkey (
-            id,
-            name,
-            avatar_url,
-            user_type,
-            rating,
-            verified
-          )
-        `)
-        .single();
+      const newApplication = {
+        id: 'app-' + Date.now(),
+        post_id: applicationData.post_id || applicationData.postId,
+        applicant_id: user.userId,
+        message: applicationData.message,
+        contact_method: applicationData.contact_method || applicationData.contactMethod,
+        status: 'pending',
+        created_at: new Date().toISOString()
+      };
 
-      if (error) throw error;
+      jobApplications.push(newApplication);
 
       return {
         statusCode: 201,
         headers,
-        body: JSON.stringify(application)
+        body: JSON.stringify(newApplication)
       };
     }
 

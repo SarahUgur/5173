@@ -1,13 +1,21 @@
-const { createClient } = require('@supabase/supabase-js');
+const jwt = require('jsonwebtoken');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
+// Simple in-memory storage for posts
+let posts = [];
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables');
-}
+// Helper function to verify JWT token
+const verifyToken = (authHeader) => {
+  if (!authHeader) {
+    throw new Error('Authorization required');
+  }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+  const token = authHeader.replace('Bearer ', '');
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET || 'demo-secret');
+  } catch (error) {
+    throw new Error('Invalid token');
+  }
+};
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -22,88 +30,67 @@ exports.handler = async (event, context) => {
 
   try {
     if (event.httpMethod === 'GET') {
-      // Get posts with user information
-      const { data: posts, error } = await supabase
-        .from('posts')
-        .select(`
-          *,
-          users (
-            id,
-            name,
-            avatar_url,
-            user_type,
-            verified
-          )
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching posts:', error);
-        return {
-          statusCode: 500,
-          headers,
-          body: JSON.stringify({ error: 'Failed to fetch posts' })
-        };
-      }
+      // Return all posts with mock user data
+      const postsWithUsers = posts.map(post => ({
+        ...post,
+        users: {
+          id: post.user_id,
+          name: post.user_id === 'admin-user-id' ? 'Admin' : 'Demo User',
+          avatar_url: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          user_type: post.user_id === 'admin-user-id' ? 'admin' : 'private',
+          verified: true
+        }
+      }));
 
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ posts: posts || [] })
+        body: JSON.stringify({ posts: postsWithUsers })
       };
     }
 
     if (event.httpMethod === 'POST') {
-      const authHeader = event.headers.authorization;
-      if (!authHeader) {
-        return {
-          statusCode: 401,
-          headers,
-          body: JSON.stringify({ error: 'Authorization required' })
-        };
-      }
-
+      const user = verifyToken(event.headers.authorization);
       const body = JSON.parse(event.body);
-      const { content, location, job_type, job_category, urgency, budget, is_job_post, images, user_id } = body;
+      
+      const { content, location, job_type, job_category, urgency, budget, is_job_post, images } = body;
 
-      const { data: post, error } = await supabase
-        .from('posts')
-        .insert([{
-          user_id,
-          content,
-          location,
-          job_type,
-          job_category,
-          urgency,
-          budget,
-          is_job_post: is_job_post || false,
-          images: images || []
-        }])
-        .select(`
-          *,
-          users (
-            id,
-            name,
-            avatar_url,
-            user_type,
-            verified
-          )
-        `)
-        .single();
+      const newPost = {
+        id: 'post-' + Date.now(),
+        user_id: user.userId,
+        content,
+        location,
+        job_type,
+        job_category,
+        urgency,
+        budget,
+        is_job_post: is_job_post || false,
+        is_boosted: true,
+        boost_expires_at: null,
+        images: images || [],
+        likes_count: 0,
+        comments_count: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
 
-      if (error) {
-        console.error('Error creating post:', error);
-        return {
-          statusCode: 500,
-          headers,
-          body: JSON.stringify({ error: 'Failed to create post' })
-        };
-      }
+      posts.unshift(newPost);
+
+      const postWithUser = {
+        ...newPost,
+        users: {
+          id: user.userId,
+          name: user.userId === 'admin-user-id' ? 'Admin' : 'Demo User',
+          avatar_url: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+          user_type: user.userId === 'admin-user-id' ? 'admin' : 'private',
+          verified: true
+        }
+      };
 
       return {
         statusCode: 201,
         headers,
-        body: JSON.stringify({ post })
+        body: JSON.stringify({ post: postWithUser })
       };
     }
 
