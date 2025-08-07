@@ -59,7 +59,23 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
         }),
       });
 
-      const data = await response.json();
+      const responseText = await response.text();
+      let data;
+      
+      if (responseText) {
+        try {
+          data = JSON.parse(responseText);
+        } catch (parseError) {
+          console.error('JSON parse error:', parseError);
+          setError('Server returnerede ugyldig data');
+          setLoading(false);
+          return;
+        }
+      } else {
+        setError('Server returnerede tom response');
+        setLoading(false);
+        return;
+      }
 
       if (response.ok) {
         const userData = data.user;
