@@ -17,7 +17,7 @@
 [dev]
   framework = "vite"
   command = "vite"
-  env = { VITE_NETLIFY_DEV = "true" }
+  env = { VITE_NETLIFY_DEV = "true", JWT_SECRET = "private-rengoring-super-secret-key-2024" }
   edge_functions = false
   targetPort = 5175
   port = 8888

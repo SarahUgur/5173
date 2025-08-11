@@ -23,6 +23,10 @@ let users = [
 ];
 
 exports.handler = async (event, context) => {
+  // Debug JWT_SECRET availability
+  console.log('JWT_SECRET status:', process.env.JWT_SECRET ? 'Defined' : 'Undefined');
+  console.log('Environment variables available:', Object.keys(process.env).filter(key => key.includes('JWT')));
+  
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
