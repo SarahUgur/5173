@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User, Lock, Mail, Phone, MapPin, Globe, FileText } from 'lucide-react';
+import { login, register } from '../lib/auth';
 import TermsModal from './TermsModal';
 import PrivacyModal from './PrivacyModal';
 
@@ -38,64 +39,29 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
         return;
       }
 
-      const endpoint = isLogin ? '/api/auth?action=login' : '/api/auth?action=register';
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      if (isLogin) {
+        // Login
+        const userData = login(formData.email, formData.password);
+        onLogin(userData);
+        console.log('Login succesfuldt for:', userData.name);
+      } else {
+        // Register
+        const userData = register({
+          name: formData.name,
           email: formData.email,
           password: formData.password,
-          ...(isLogin ? {} : {
-            name: formData.name,
-            phone: formData.phone,
-            location: formData.location,
-            website: formData.website,
-            bio: formData.bio,
-            userType: formData.userType,
-            acceptedTerms: formData.acceptedTerms
-          })
-        }),
-      });
-
-      const responseText = await response.text();
-      let data;
-      
-      if (responseText) {
-        try {
-          data = JSON.parse(responseText);
-        } catch (parseError) {
-          console.error('JSON parse error:', parseError);
-          setError('Server returnerede ugyldig data');
-          setLoading(false);
-          return;
-        }
-      } else {
-        setError('Server returnerede tom response');
-        setLoading(false);
-        return;
-      }
-
-      if (response.ok) {
-        const userData = data.user;
-        userData.token = data.token; // Add token to user object
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('currentUser', JSON.stringify(userData));
+          phone: formData.phone,
+          location: formData.location,
+          website: formData.website,
+          bio: formData.bio,
+          userType: formData.userType as any
+        });
         onLogin(userData);
-        
-        // Show success message
-        if (isLogin) {
-          console.log('Login succesfuldt for:', userData.name);
-        } else {
-          alert('🎉 Konto oprettet succesfuldt! Velkommen til PRIVATE RENGØRING!');
-        }
-      } else {
-        setError(data.error || 'Der opstod en fejl');
+        alert('🎉 Konto oprettet succesfuldt! Velkommen til PRIVATE RENGØRING!');
       }
     } catch (err) {
       console.error('Auth error:', err);
-      setError('Netværksfejl. Prøv igen.');
+      setError(err instanceof Error ? err.message : 'Der opstod en fejl. Prøv igen.');
     } finally {
       setLoading(false);
     }

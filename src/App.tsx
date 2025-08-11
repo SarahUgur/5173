@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Home, Briefcase, Users, Calendar, Heart, MapPin, Search, Bell, MessageCircle, User as UserIcon, Menu, Plus, Settings, LogOut, Star, Crown, Shield, TrendingUp, Filter, Globe, HelpCircle, Phone, Mail, ExternalLink, Eye, EyeOff, Trash2, Edit, X, Clock, DollarSign, Lock, MoreHorizontal, Flag, AlertTriangle, Ban, ThumbsUp, Smile, Share2, CheckCircle } from 'lucide-react';
 import { useLanguage } from './hooks/useLanguage';
+import { getCurrentUser, logout as authLogout } from './lib/auth';
 import Header from './components/Header';
 import CreatePost from './components/CreatePost';
 import PostCard from './components/PostCard';
@@ -62,17 +63,9 @@ function App() {
     checkPWA();
     
     // Load persisted user data on app start
-    const authToken = localStorage.getItem('authToken');
-    const savedUser = localStorage.getItem('currentUser');
-    if (authToken && savedUser) {
-      try {
-        const userData = JSON.parse(savedUser);
-        setCurrentUser(userData);
-      } catch (error) {
-        console.error('Error loading saved user:', error);
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('authToken');
-      }
+    const savedUser = getCurrentUser();
+    if (savedUser) {
+      setCurrentUser(savedUser);
     }
     
     // Listen for display mode changes
@@ -101,10 +94,7 @@ function App() {
   // Handle logout
   const handleLogout = () => {
     console.log('Logging out user');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('userData');
-    localStorage.removeItem('registeredUsers');
+    authLogout();
     setCurrentUser(null);
     setCurrentPage('home');
     
